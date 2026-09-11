@@ -52,7 +52,7 @@ export default function Navbar() {
         }}
       >
         <div
-          className={`relative mx-auto flex items-center justify-between border ${
+          className={`mx-auto flex items-center justify-between border ${
             isFloating
               ? "max-w-[1120px] rounded-full border-black/[0.07] bg-[#f2f2ef] shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:border-white/10 dark:bg-[#1c1d1b] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] sm:bg-[#f2f2ef]/90 sm:backdrop-blur-md sm:dark:bg-[#1c1d1b]/90"
               : "max-w-full rounded-none border-transparent bg-transparent shadow-none"
@@ -62,38 +62,40 @@ export default function Navbar() {
               "max-width 520ms cubic-bezier(0.16,1,0.3,1), padding 520ms cubic-bezier(0.16,1,0.3,1), border-radius 380ms ease, background-color 380ms ease, border-color 380ms ease, box-shadow 380ms ease",
             paddingTop: isFloating ? 10 : 24,
             paddingBottom: isFloating ? 10 : 24,
-            paddingLeft: isFloating ? 26 : "clamp(18px, 3.2vw, 80px)",
-            paddingRight: isFloating ? 10 : "clamp(18px, 3.2vw, 80px)",
+            paddingLeft: isFloating ? 24 : "clamp(18px, 3.2vw, 80px)",
+            paddingRight: isFloating ? 24 : "clamp(18px, 3.2vw, 80px)",
           }}
         >
-          {/* Logo (Left) */}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="group flex shrink-0 items-center gap-2.5 select-none z-10"
-            aria-label="WhyCreatives home"
-          >
-            <img
-              src="/logo.png"
-              alt="WhyCreatives logo"
-              width={36}
-              height={36}
-              className="h-7 w-7 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 motion-reduce:transform-none dark:invert md:h-8 md:w-8"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
+          {/* Left: Logo (flex-1 to balance center nav) */}
+          <div className="flex flex-1 items-center justify-start min-w-0">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-            />
-            <span className="text-2xl md:text-3xl font-black tracking-tighter text-black transition-colors duration-300 dark:text-white">
-              WhyCreatives.
-            </span>
-          </a>
+              className="group flex shrink-0 items-center gap-2.5 select-none"
+              aria-label="WhyCreatives home"
+            >
+              <img
+                src="/logo.png"
+                alt="WhyCreatives logo"
+                width={36}
+                height={36}
+                className="h-7 w-7 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 motion-reduce:transform-none dark:invert md:h-8 md:w-8"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+              <span className="text-2xl md:text-3xl font-black tracking-tighter text-black transition-colors duration-300 dark:text-white">
+                WhyCreatives.
+              </span>
+            </a>
+          </div>
 
-          {/* Centered Desktop nav (Absolute center of the bar) */}
+          {/* Center: Desktop nav (centered at the center of the screen) */}
           <nav
-            className="hidden lg:flex items-center gap-10 text-[13px] font-bold text-black/80 transition-colors duration-300 dark:text-white/80 absolute left-1/2 -translate-x-1/2"
+            className="hidden lg:flex shrink-0 items-center justify-center gap-10 text-[13px] font-bold text-black/80 transition-colors duration-300 dark:text-white/80"
             aria-label="Main navigation"
           >
             {NAV_LINKS.map((link) => {
@@ -117,8 +119,8 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Right Action Cluster */}
-          <div className="flex items-center gap-4 z-10">
+          {/* Right: Action Cluster (flex-1 to balance center nav) */}
+          <div className="flex flex-1 items-center justify-end gap-4 min-w-0">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -156,7 +158,7 @@ export default function Navbar() {
             {/* Start a project CTA */}
             <button
               onClick={() => scrollTo("#contact")}
-              className="group hidden sm:inline-flex select-none items-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-[13px] font-bold text-background transition-opacity hover:opacity-85"
+              className="group hidden sm:inline-flex shrink-0 select-none items-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-[13px] font-bold text-background transition-opacity hover:opacity-85"
             >
               Start a project
               <span className="text-[10px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -167,7 +169,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen((v) => !v)}
-              className="relative z-[60] flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full text-black hover:bg-black/5 dark:text-white dark:hover:bg-white/10 lg:hidden"
+              className="relative z-[60] flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-full text-black hover:bg-black/5 dark:text-white dark:hover:bg-white/10 lg:hidden"
               aria-label="Toggle menu"
             >
               <span
