@@ -3,18 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 
 const NAV_LINKS = [
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
+  { label: "Services", href: "#services" },
+  { label: "Work", href: "#work" },
   { label: "About", href: "#about" },
+  { label: "Blog", href: "#insights" },
   { label: "Contact", href: "#contact" },
 ];
-
-const ease = [0.16, 1, 0.3, 1];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [activeHref, setActiveHref] = useState("#services");
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -51,6 +51,7 @@ export default function Navbar() {
 
   const scrollTo = useCallback((href) => {
     setMenuOpen(false);
+    setActiveHref(href);
     const el = document.querySelector(href);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -61,7 +62,7 @@ export default function Navbar() {
     <>
       <header
         data-floating={isFloating ? "true" : "false"}
-        className="fixed left-0 right-0 top-0 z-[60] px-3 font-['Schibsted_Grotesk',sans-serif] sm:px-4"
+        className="group/nav fixed left-0 right-0 top-0 z-[60] px-3 font-['Schibsted_Grotesk',sans-serif] sm:px-4"
         style={{
           transform: `translate3d(0, ${hidden ? "-135%" : isFloating ? "14px" : "0px"}, 0)`,
           transition: "transform 520ms cubic-bezier(0.16, 1, 0.3, 1)",
@@ -90,152 +91,159 @@ export default function Navbar() {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="group flex shrink-0 items-center gap-2.5"
-            aria-label="byanam home"
+            className="group flex shrink-0 items-center gap-2.5 select-none"
+            aria-label="WhyCreatives home"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background transition-transform duration-300 group-hover:scale-110">
-              <span className="text-sm font-bold">A</span>
-            </div>
-            <span
-              className={`text-sm font-semibold tracking-tight transition-all duration-300 ${
-                isFloating ? "w-0 overflow-hidden opacity-0" : "opacity-100"
-              }`}
-            >
-              byanam
+            <img
+              src="/logo.png"
+              alt="WhyCreatives logo"
+              width={36}
+              height={36}
+              className="h-7 w-7 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 motion-reduce:transform-none dark:invert md:h-8 md:w-8"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+            <span className="text-2xl md:text-3xl font-black tracking-tighter text-black transition-colors duration-300 dark:text-white">
+              WhyCreatives.
             </span>
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
-            {NAV_LINKS.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => scrollTo(link.href)}
-                className="relative rounded-full px-4 py-2 text-[13px] font-medium text-foreground/70 transition-colors duration-200 hover:text-foreground"
-              >
-                {link.label}
-              </button>
-            ))}
-            {/* Theme toggle */}
-            <button
-              onClick={toggleTheme}
-              className="ml-2 flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-all duration-200 hover:bg-foreground/10 hover:text-foreground"
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              )}
-            </button>
-            {/* CTA */}
-            <a
-              href="mailto:anamrazzaque.work@gmail.com"
-              className={`ml-2 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-[13px] font-semibold text-background transition-all duration-200 hover:opacity-90 ${
-                isFloating ? "" : "border border-foreground/10"
-              }`}
-            >
-              Let's Talk
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 17 17 7M7 7h10v10" />
-              </svg>
-            </a>
+          <nav
+            className="hidden lg:flex items-center gap-10 text-[13px] font-bold text-black/80 transition-colors duration-300 dark:text-white/80"
+            aria-label="Main navigation"
+          >
+            {NAV_LINKS.map((link) => {
+              const isActive = activeHref === link.href;
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => scrollTo(link.href)}
+                  aria-current={isActive ? "page" : undefined}
+                  className="group relative py-1 text-inherit transition-colors hover:text-black dark:hover:text-white"
+                >
+                  {link.label}
+                  <span
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute -bottom-0.5 left-0 h-[1.5px] w-full origin-left rounded-full bg-current transition-transform duration-[450ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                      isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    }`}
+                  />
+                </button>
+              );
+            })}
           </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground/5 md:hidden"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-          >
-            <div className="relative h-4 w-5">
+          {/* Right Action Cluster */}
+          <div className="flex items-center gap-4">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="relative flex h-10 w-10 md:h-11 md:w-11 shrink-0 items-center justify-center overflow-hidden rounded-full text-foreground transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+              aria-label="Toggle theme"
+            >
+              {/* Sun icon */}
+              <svg
+                className="h-5 w-5 md:h-[1.35rem] md:w-[1.35rem] transition-all duration-500 rotate-0 scale-100 dark:-rotate-90 dark:scale-0 text-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+              {/* Moon icon */}
+              <svg
+                className="absolute h-5 w-5 md:h-[1.35rem] md:w-[1.35rem] transition-all duration-500 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+              <span className="sr-only">Toggle theme</span>
+            </button>
+
+            {/* Start a project CTA */}
+            <button
+              onClick={() => scrollTo("#contact")}
+              className="group hidden sm:inline-flex select-none items-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-[13px] font-bold text-background transition-opacity hover:opacity-85"
+            >
+              Start a project
+              <span className="text-[10px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                ↗
+              </span>
+            </button>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="relative z-[60] flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full text-black hover:bg-black/5 dark:text-white dark:hover:bg-white/10 lg:hidden"
+              aria-label="Toggle menu"
+            >
               <span
-                className="absolute left-0 block h-[1.5px] w-full bg-foreground transition-all duration-300"
-                style={{
-                  top: menuOpen ? "50%" : "20%",
-                  transform: menuOpen ? "translateY(-50%) rotate(45deg)" : "none",
-                }}
+                className={`h-[2px] w-5 rounded-full bg-current transition-all duration-300 ${
+                  menuOpen ? "translate-y-2 rotate-45" : ""
+                }`}
               />
               <span
-                className="absolute left-0 top-1/2 block h-[1.5px] w-full -translate-y-1/2 bg-foreground transition-all duration-300"
-                style={{ opacity: menuOpen ? 0 : 1 }}
+                className={`h-[2px] w-5 rounded-full bg-current transition-all duration-300 ${
+                  menuOpen ? "opacity-0" : ""
+                }`}
               />
               <span
-                className="absolute left-0 block h-[1.5px] w-full bg-foreground transition-all duration-300"
-                style={{
-                  bottom: menuOpen ? "50%" : "20%",
-                  top: menuOpen ? "50%" : "auto",
-                  transform: menuOpen ? "translateY(-50%) rotate(-45deg)" : "none",
-                }}
+                className={`h-[2px] w-5 rounded-full bg-current transition-all duration-300 ${
+                  menuOpen ? "-translate-y-2 -rotate-45" : ""
+                }`}
               />
-            </div>
-          </button>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile Drawer (exact match to WhyCreatives) */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex flex-col bg-background/98 backdrop-blur-xl md:hidden"
-            style={{ paddingTop: 100 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-50 flex flex-col justify-between bg-white px-6 pb-10 pt-28 font-['Schibsted_Grotesk',sans-serif] dark:bg-[#111] lg:hidden"
           >
-            <nav className="flex flex-col items-center gap-2 px-6">
+            <div className="flex flex-col gap-6">
               {NAV_LINKS.map((link, i) => (
-                <motion.button
-                  key={link.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08, duration: 0.4, ease }}
-                  onClick={() => scrollTo(link.href)}
-                  className="w-full rounded-2xl py-4 text-center text-2xl font-semibold text-foreground transition-colors hover:bg-foreground/5"
+                <motion.div
+                  key={link.label}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
                 >
-                  {link.label}
-                </motion.button>
+                  <button
+                    onClick={() => scrollTo(link.href)}
+                    className="text-left text-2xl font-bold text-black transition-opacity hover:opacity-60 dark:text-white sm:text-3xl"
+                  >
+                    {link.label}
+                  </button>
+                </motion.div>
               ))}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: NAV_LINKS.length * 0.08, duration: 0.4, ease }}
-                className="mt-4 flex items-center gap-4"
+            </div>
+
+            <div className="border-t border-black/10 pt-8 dark:border-white/10">
+              <button
+                onClick={() => scrollTo("#contact")}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-4 text-sm font-bold text-background"
               >
-                <button
-                  onClick={toggleTheme}
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5"
-                  aria-label="Toggle theme"
-                >
-                  {theme === "dark" ? (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="4" />
-                      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                    </svg>
-                  )}
-                </button>
-                <a
-                  href="mailto:anamrazzaque.work@gmail.com"
-                  onClick={() => setMenuOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-base font-semibold text-background"
-                >
-                  Let's Talk
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M7 17 17 7M7 7h10v10" />
-                  </svg>
-                </a>
-              </motion.div>
-            </nav>
+                Start a project ↗
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

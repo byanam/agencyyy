@@ -1,29 +1,15 @@
 import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 
-/*
-  Nu = ["One stop solution for", "all creative needs", "and goals"]
-  Text adapted for Anam's portfolio.
-*/
 const HERO_LINES = ["One stop solution for", "all creative needs", "and goals"];
 const ease = [0.16, 1, 0.3, 1];
 
-/* ── helpers ── */
 const R = (n) => Math.round(n * 100) / 100;
 const arc = (r, sweep, x, y) =>
   `A ${R(r)} ${R(r)} 0 0 ${sweep} ${R(x)} ${R(y)}`;
 
 /**
- * Builds the SVG clip-path for the dark video panel.
- * The path is a rounded rectangle with step-shaped notches on the
- * left side where each line of hero text "cuts into" the panel.
- *
- * @param {number} w      - container width
- * @param {number} h      - container height
- * @param {Array}  corners - array of {right, bottom} for each text element
- * @param {number} r      - outer corner radius
- * @param {number} s      - inner step corner radius
- * @param {number} i      - left inset for the brand-label notch (optional)
+ * Exact geometric SVG clip-path builder matching WhyCreatives showreel container.
  */
 function buildClipPath(w, h, corners, r, s, i = 0) {
   const lastBottom = corners[corners.length - 1].bottom;
@@ -34,20 +20,20 @@ function buildClipPath(w, h, corners, r, s, i = 0) {
 
   const d = [];
 
-  /* ── top edge: start after the first text block, go right ── */
+  // Top edge
   d.push(`M ${R(corners[0].right)} 0`);
   d.push(`H ${R(w - r)}`);
   d.push(arc(r, 1, w, r));
 
-  /* ── right edge ── */
+  // Right edge
   d.push(`V ${R(h - r)}`);
   d.push(arc(r, 1, w - r, h));
 
-  /* ── bottom edge ── */
+  // Bottom edge
   d.push(`H ${R(r)}`);
   d.push(arc(r, 1, 0, h - r));
 
-  /* ── left edge: either with brand-notch or plain ── */
+  // Left notch
   if (hasBrandNotch) {
     d.push(`V ${R(firstBottom + l)}`);
     d.push(arc(l, 1, l, firstBottom));
@@ -60,7 +46,7 @@ function buildClipPath(w, h, corners, r, s, i = 0) {
     d.push(arc(r, 1, r, lastBottom));
   }
 
-  /* ── step notches going upward through each text line ── */
+  // Ascending step notches for each hero line
   for (let idx = corners.length - 1; idx >= 0; idx--) {
     const right = corners[idx].right;
     const prevBottom = idx === 0 ? 0 : corners[idx - 1].bottom;
@@ -79,7 +65,10 @@ function buildClipPath(w, h, corners, r, s, i = 0) {
     const prevRight = corners[idx - 1].right;
     const segAbove = prevBottom - (idx - 2 >= 0 ? corners[idx - 2].bottom : 0);
     const segBelow = corners[idx].bottom - prevBottom;
-    const m = Math.max(3, Math.min(s, Math.abs(prevRight - right) / 2, segAbove / 2, segBelow / 2));
+    const m = Math.max(
+      3,
+      Math.min(s, Math.abs(prevRight - right) / 2, segAbove / 2, segBelow / 2)
+    );
 
     if (prevRight > right) {
       d.push(`V ${R(prevBottom + m)}`);
@@ -99,12 +88,11 @@ function buildClipPath(w, h, corners, r, s, i = 0) {
 }
 
 export default function Hero() {
-  /* refs for clip-path measurement */
-  const containerRef = useRef(null);   // the aspect-ratio wrapper
-  const textGroupRef = useRef(null);   // the text overlay group (left-top positioned)
-  const labelRef = useRef(null);       // "byanam" label above h1
-  const lineRefs = useRef([]);         // each h1 line <span>
-  const ctaRef = useRef(null);         // CTA row below h1
+  const containerRef = useRef(null);
+  const textGroupRef = useRef(null);
+  const labelRef = useRef(null);
+  const lineRefs = useRef([]);
+  const ctaRef = useRef(null);
 
   const [clipPath, setClipPath] = useState(null);
 
@@ -125,7 +113,6 @@ export default function Hero() {
 
     const rad = Math.max(14, Math.min(34, w * 0.026));
 
-    /* measure each element relative to the container */
     const rel = (el) => {
       const r = el.getBoundingClientRect();
       return { right: r.right - cRect.left, bottom: r.bottom - cRect.top };
@@ -135,10 +122,8 @@ export default function Hero() {
     const linePositions = lines.map(rel);
     const ctaPos = rel(ctaEl);
 
-    /* merge the measurements into "corners" array */
     let corners = [...linePositions, ctaPos];
 
-    /* merge corners that are very close together */
     for (let i = corners.length - 2; i >= 0; i--) {
       corners[i] = {
         ...corners[i],
@@ -169,7 +154,6 @@ export default function Hero() {
 
     if (!merged.length) return;
 
-    // Add the label's corner at the front
     const allCorners = [
       { right: Math.max(labelPos.right, merged[0].right), bottom: merged[0].bottom },
       ...merged.slice(1),
@@ -187,19 +171,31 @@ export default function Hero() {
 
     let rafId = 0;
     const schedule = () => {
-      if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; computeClip(); });
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          computeClip();
+        });
+      }
     };
     const ro = new ResizeObserver(schedule);
     ro.observe(container);
     ro.observe(textGroup);
-    return () => { ro.disconnect(); if (rafId) cancelAnimationFrame(rafId); };
+    return () => {
+      ro.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [computeClip]);
 
   useEffect(() => {
     if (typeof document === "undefined" || !("fonts" in document)) return;
     let active = true;
-    document.fonts.ready.then(() => { if (active) computeClip(); });
-    return () => { active = false; };
+    document.fonts.ready.then(() => {
+      if (active) computeClip();
+    });
+    return () => {
+      active = false;
+    };
   }, [computeClip]);
 
   const padL = "var(--pad-l)";
@@ -219,7 +215,7 @@ export default function Hero() {
           className="relative w-full aspect-[9/16] md:aspect-video"
           style={{ "--panel-w": "calc(100vw - 24px)" }}
         >
-          {/* ── Dark video/background panel (clipped) ── */}
+          {/* ── Outer Showreel Panel (Clipped exactly like WhyCreatives without the video) ── */}
           <div
             className="absolute inset-0 overflow-hidden bg-[#161616] dark:bg-[#202020]"
             style={{
@@ -228,36 +224,44 @@ export default function Hero() {
               borderRadius: clipPath ? undefined : "clamp(20px, 2.6vw, 34px)",
             }}
           >
-            {/* Animated gradient background (replacing video) */}
+            {/* Elegant dark background presentation */}
             <div className="absolute inset-0">
-              {/* Base gradient */}
+              {/* Subtle ambient lighting */}
               <div
                 className="absolute inset-0"
                 style={{
                   background:
-                    "radial-gradient(ellipse at 25% 40%, rgba(30,30,60,0.8) 0%, transparent 55%), radial-gradient(ellipse at 75% 60%, rgba(20,20,50,0.6) 0%, transparent 55%), #0a0a0f",
+                    "radial-gradient(ellipse at 35% 35%, rgba(45,45,65,0.7) 0%, transparent 60%), radial-gradient(ellipse at 75% 65%, rgba(28,28,45,0.7) 0%, transparent 60%), #141416",
                 }}
               />
-              {/* Floating orbs */}
+              {/* Geometric grid lines */}
+              <div
+                className="absolute inset-0 opacity-[0.06]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+                  backgroundSize: "64px 64px",
+                }}
+              />
+              {/* Floating ambient glow spots */}
               {[
-                { color: "rgba(99,102,241,0.15)", x: "20%", y: "30%", size: 300, dur: 12 },
-                { color: "rgba(236,72,153,0.1)", x: "70%", y: "60%", size: 250, dur: 15 },
-                { color: "rgba(6,182,212,0.1)", x: "50%", y: "20%", size: 200, dur: 18 },
+                { color: "rgba(255,255,255,0.04)", x: "30%", y: "40%", size: 450, dur: 18 },
+                { color: "rgba(180,180,220,0.05)", x: "70%", y: "60%", size: 380, dur: 22 },
               ].map((orb, i) => (
                 <motion.div
                   key={i}
-                  className="absolute rounded-full blur-3xl"
+                  className="absolute rounded-full blur-3xl pointer-events-none"
                   style={{
                     width: orb.size,
                     height: orb.size,
-                    background: `radial-gradient(circle, ${orb.color}, transparent)`,
+                    background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
                     left: orb.x,
                     top: orb.y,
                     transform: "translate(-50%, -50%)",
                   }}
                   animate={{
-                    x: [0, 40 * (i % 2 ? 1 : -1), 0],
-                    y: [0, -30 * (i % 2 ? -1 : 1), 0],
+                    x: [0, 30 * (i % 2 ? 1 : -1), 0],
+                    y: [0, -25 * (i % 2 ? -1 : 1), 0],
                   }}
                   transition={{
                     duration: orb.dur,
@@ -266,15 +270,6 @@ export default function Hero() {
                   }}
                 />
               ))}
-              {/* Subtle grid */}
-              <div
-                className="absolute inset-0 opacity-[0.035]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
-                  backgroundSize: "60px 60px",
-                }}
-              />
             </div>
           </div>
 
@@ -283,7 +278,7 @@ export default function Hero() {
             ref={textGroupRef}
             className="absolute left-0 top-0 z-10 flex flex-col items-start [--pad-l:12px] [--pad-r:16px] md:left-[min(7vw,104px)] md:[--pad-l:clamp(20px,2.2vw,34px)] md:[--pad-r:clamp(20px,2vw,30px)]"
           >
-            {/* Brand label */}
+            {/* Brand label: WhyCreatives */}
             <div
               ref={labelRef}
               className="w-fit"
@@ -302,14 +297,14 @@ export default function Hero() {
               >
                 <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-black dark:bg-white" />
                 <span className="whitespace-nowrap text-[12px] font-medium leading-none text-black sm:text-[13px] lg:text-[15px] dark:text-white">
-                  byanam
+                  WhyCreatives
                 </span>
               </motion.span>
             </div>
 
-            {/* Headline */}
+            {/* Headline matching WhyCreatives */}
             <h1
-              className="font-['Schibsted_Grotesk','Plus_Jakarta_Sans',sans-serif] text-black dark:text-white"
+              className="text-black dark:text-white"
               style={{
                 fontSize: "clamp(1.6rem, 7.5vw, 104px)",
                 fontWeight: 500,
@@ -320,7 +315,9 @@ export default function Hero() {
               {HERO_LINES.map((line, i) => (
                 <span
                   key={line}
-                  ref={(el) => { lineRefs.current[i] = el; }}
+                  ref={(el) => {
+                    lineRefs.current[i] = el;
+                  }}
                   className="block w-fit overflow-hidden whitespace-nowrap"
                   style={{
                     lineHeight: 1,
@@ -347,7 +344,7 @@ export default function Hero() {
               ))}
             </h1>
 
-            {/* CTA buttons */}
+            {/* CTA buttons matching WhyCreatives */}
             <div
               ref={ctaRef}
               className="w-fit"
@@ -365,22 +362,38 @@ export default function Hero() {
                 transition={{ duration: 0.6, ease, delay: 0.45 }}
               >
                 <a
-                  href="#projects"
+                  href="#work"
                   className="group flex items-center gap-2.5 rounded-full bg-[#161616] py-2 pl-5 pr-2 text-[14px] font-semibold text-white transition-colors hover:bg-black lg:text-[15px] dark:bg-white dark:text-black dark:hover:bg-white/85"
                 >
-                  View my work
+                  View our work
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5 dark:bg-black/15">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      className="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M7 17 17 7M7 7h10v10" />
                     </svg>
                   </span>
                 </a>
                 <a
-                  href="mailto:anamrazzaque.work@gmail.com"
+                  href="#contact"
                   className="group flex items-center gap-1.5 pl-5 text-[14px] font-semibold text-black transition-opacity hover:opacity-60 md:pl-0 lg:text-[15px] dark:text-white"
                 >
                   Start a project
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  <svg
+                    className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M7 17 17 7M7 7h10v10" />
                   </svg>
                 </a>
