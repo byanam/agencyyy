@@ -224,13 +224,15 @@ export default function Hero() {
               borderRadius: clipPath ? undefined : "clamp(20px, 2.6vw, 34px)",
             }}
           >
-            <iframe
-              src="https://customer-8l64zx8lmsynng2s.cloudflarestream.com/a2f314ee5d2cfcc77f3c3b61fddf5c75/iframe?muted=true&preload=true&loop=true&autoplay=true&poster=https%3A%2F%2Fcustomer-8l64zx8lmsynng2s.cloudflarestream.com%2Fa2f314ee5d2cfcc77f3c3b61fddf5c75%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&controls=false"
-              title="WhyCreatives showreel"
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              loading="eager"
-              className="pointer-events-none absolute left-1/2 top-0 h-full w-[calc(var(--panel-w)*256/81)] -translate-x-1/2 border-none md:left-0 md:w-full md:translate-x-0"
+            {/* Subtle elegant ambient backdrop without video */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#1f1f24] via-[#141416] to-[#0d0d0f]" />
+            <div
+              className="absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+                backgroundSize: "48px 48px",
+              }}
             />
           </div>
 
