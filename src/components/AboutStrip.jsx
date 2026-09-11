@@ -1,9 +1,7 @@
-import { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const ease = [0.16, 1, 0.3, 1];
-const PADDING_BOTTOM = "0.14em";
-const TRANSLATE_Y_HIDDEN = "118%";
 
 // Lucide SVG Icons matching WhyCreatives
 function ClapperboardIcon({ className, strokeWidth = 2 }) {
@@ -129,43 +127,6 @@ function AnimatedArrow({ className = "h-3.5 w-3.5" }) {
   );
 }
 
-const DESKTOP_LINES = [
-  "An independent studio",
-  "in India crafting video, motion",
-  "design, websites, apps and",
-  "brands built to grow.",
-];
-
-const MOBILE_FONT_SIZE = "clamp(2rem, 11vw, 4rem)";
-const MOBILE_RATIO = 0.55;
-const MOBILE_SUB_LINES = [
-  "studio in India crafting video,",
-  "motion design, websites, apps",
-  "and brands built to grow.",
-];
-
-const MOBILE_LINES = [
-  {
-    text: "An independent",
-    style: {
-      fontSize: MOBILE_FONT_SIZE,
-      fontWeight: 600,
-      lineHeight: 1.05,
-      letterSpacing: "-0.03em",
-    },
-  },
-  ...MOBILE_SUB_LINES.map((text, idx) => ({
-    text,
-    style: {
-      fontSize: `calc(${MOBILE_FONT_SIZE} * ${MOBILE_RATIO})`,
-      fontWeight: 400,
-      lineHeight: 1.25,
-      letterSpacing: "-0.02em",
-      marginTop: idx === 0 ? "0.35em" : undefined,
-    },
-  })),
-];
-
 const SERVICES = [
   { label: "Web Development", Icon: GlobeIcon },
   { label: "App Development", Icon: SmartphoneIcon },
@@ -177,119 +138,6 @@ const SERVICES = [
   { label: "Colour Grading", Icon: PaletteIcon },
   { label: "Short-Form Reels", Icon: FilmIcon },
 ];
-
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
-/**
- * Animated Typography Line Revealer matching WhyCreatives exact indent math
- */
-function WordLineReveal({
-  lines,
-  className,
-  style,
-  nowrapFromLg = false,
-  alignFirstLineRightEdge = false,
-  duration = 0.9,
-  stagger = 0.09,
-  baseDelay = 0.08,
-}) {
-  const containerRef = useRef(null);
-  const lineRefs = useRef([]);
-  const normalizedLines = lines.map((l) => (typeof l === "string" ? { text: l } : l));
-  const [indentEm, setIndentEm] = useState(0);
-  const [isLg, setIsLg] = useState(false);
-
-  useEffect(() => {
-    if (!alignFirstLineRightEdge) return;
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    setIsLg(mediaQuery.matches);
-    const handler = (e) => setIsLg(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, [alignFirstLineRightEdge]);
-
-  const computeAlignment = useCallback(() => {
-    if (!alignFirstLineRightEdge) return;
-    const el = containerRef.current;
-    const spans = lineRefs.current.slice(0, lines.length);
-    if (!el || spans.length !== lines.length || spans.some((s) => !s)) return;
-    const fs = parseFloat(window.getComputedStyle(el).fontSize);
-    if (!fs) return;
-    const widths = spans.map((s) => s.getBoundingClientRect().width);
-    const maxWidth = Math.max(...widths);
-    setIndentEm(Math.max(0, (maxWidth - widths[0]) / fs));
-  }, [alignFirstLineRightEdge, lines.length]);
-
-  useIsomorphicLayoutEffect(() => {
-    if (!alignFirstLineRightEdge || !isLg) return;
-    computeAlignment();
-    const el = containerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => computeAlignment());
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [alignFirstLineRightEdge, isLg, computeAlignment]);
-
-  useEffect(() => {
-    if (!alignFirstLineRightEdge || !isLg || typeof document === "undefined" || !("fonts" in document)) return;
-    let active = true;
-    document.fonts.ready.then(() => {
-      if (active) computeAlignment();
-    });
-    return () => {
-      active = false;
-    };
-  }, [alignFirstLineRightEdge, isLg, computeAlignment]);
-
-  const firstLinePadding = alignFirstLineRightEdge && isLg ? `${indentEm}em` : undefined;
-
-  return (
-    <motion.span
-      ref={containerRef}
-      className={className}
-      style={style}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.25 }}
-    >
-      <span className="sr-only">{normalizedLines.map((l) => l.text).join(" ")}</span>
-      {normalizedLines.map((line, idx) => (
-        <span
-          key={line.text}
-          aria-hidden="true"
-          className={`block overflow-hidden${nowrapFromLg ? " lg:whitespace-nowrap" : ""}${
-            line.className ? ` ${line.className}` : ""
-          }`}
-          style={{
-            ...line.style,
-            paddingBottom: PADDING_BOTTOM,
-            marginBottom: idx === normalizedLines.length - 1 ? 0 : `-${PADDING_BOTTOM}`,
-            paddingLeft: idx === 0 ? firstLinePadding : undefined,
-          }}
-        >
-          <motion.span
-            ref={(el) => {
-              lineRefs.current[idx] = el;
-            }}
-            className="inline-block"
-            variants={{
-              hidden: { y: TRANSLATE_Y_HIDDEN },
-              show: { y: "0%" },
-            }}
-            transition={{
-              duration,
-              ease,
-              delay: baseDelay + idx * stagger,
-            }}
-            style={{ willChange: "transform" }}
-          >
-            {line.text}
-          </motion.span>
-        </span>
-      ))}
-    </motion.span>
-  );
-}
 
 export default function AboutStrip() {
   const marqueeRef = useRef(null);
@@ -308,61 +156,94 @@ export default function AboutStrip() {
   return (
     <section
       id="about"
-      className="w-full overflow-hidden bg-black text-white"
-      style={{
-        paddingTop: "clamp(80px, 10vw, 160px)",
-        paddingBottom: "clamp(60px, 8vw, 130px)",
-      }}
+      className="relative flex min-h-[85vh] w-full flex-col justify-between overflow-hidden bg-black text-white py-12 md:py-20 lg:min-h-screen lg:py-24 select-none"
     >
-      {/* ── Main Section Container ── */}
-      <div className="relative mx-auto w-full max-w-[1600px] px-6 md:px-12 lg:px-20">
+      {/* ── Main Section Centerpiece (DEAD-CENTER IN VIEWPORT) ── */}
+      <div className="relative my-auto flex w-full items-center justify-center px-6 md:px-12 lg:px-16">
         
-        {/* Left Badge: "• WHO ARE WE?" (exact match to WhyCreatives screenshot) */}
-        <div className="hidden lg:flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] text-white/50 absolute left-8 lg:left-14 top-4 select-none">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/50" />
+        {/* Left Badge: "• WHO ARE WE?" (aligned to far left matching screenshot) */}
+        <div className="hidden lg:flex absolute left-8 xl:left-14 top-1/2 -translate-y-1/2 items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] text-white/40">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/40" />
           WHO ARE WE?
         </div>
 
-        {/* ── Centered Composition: Both headline and left-aligned buttons centered as a single unit on the screen ── */}
-        <div className="mx-auto flex flex-col items-start w-fit max-w-full">
-          {/* Main Headline (Serif typography matching screenshot) */}
+        {/* ── The Centerpiece Block: mx-auto w-fit ensures mathematical center of the entire screen ── */}
+        <div className="mx-auto flex w-fit max-w-full flex-col items-start justify-center">
+          {/* Main 4-line Headline in classic serif font */}
           <h2
-            className="text-left text-white"
+            className="flex flex-col items-start text-white"
             style={{
               fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
+              fontSize: "clamp(2.1rem, 4.8vw, 5.2rem)",
+              lineHeight: 1.08,
+              letterSpacing: "-0.025em",
               fontWeight: 400,
             }}
           >
-            {/* Mobile View */}
-            <span className="block md:hidden">
-              <WordLineReveal lines={MOBILE_LINES} className="block" />
-            </span>
+            {/* Line 1: Indented to the right edge (ml-auto guarantees right edge aligns with widest line) */}
+            <div className="overflow-hidden ml-auto pb-[0.12em] -mb-[0.12em]">
+              <motion.span
+                className="inline-block whitespace-nowrap"
+                initial={{ y: "118%" }}
+                whileInView={{ y: "0%" }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.9, ease, delay: 0.08 }}
+                style={{ willChange: "transform" }}
+              >
+                An independent studio
+              </motion.span>
+            </div>
 
-            {/* Desktop View (MD+) with signature right-edge indent on first line */}
-            <span
-              className="hidden md:block"
-              style={{
-                fontSize: "clamp(2.4rem, 5.2vw, 5.8rem)",
-                lineHeight: 1.05,
-                letterSpacing: "-0.025em",
-              }}
-            >
-              <WordLineReveal
-                lines={DESKTOP_LINES}
-                className="block"
-                nowrapFromLg={true}
-                alignFirstLineRightEdge={true}
-              />
-            </span>
+            {/* Line 2: Widest line, locks the left edge and width of the centered unit */}
+            <div className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
+              <motion.span
+                className="inline-block whitespace-nowrap"
+                initial={{ y: "118%" }}
+                whileInView={{ y: "0%" }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.9, ease, delay: 0.17 }}
+                style={{ willChange: "transform" }}
+              >
+                in India crafting video, motion
+              </motion.span>
+            </div>
+
+            {/* Line 3: Aligned with left edge */}
+            <div className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
+              <motion.span
+                className="inline-block whitespace-nowrap"
+                initial={{ y: "118%" }}
+                whileInView={{ y: "0%" }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.9, ease, delay: 0.26 }}
+                style={{ willChange: "transform" }}
+              >
+                design, websites, apps and
+              </motion.span>
+            </div>
+
+            {/* Line 4: Aligned with left edge */}
+            <div className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
+              <motion.span
+                className="inline-block whitespace-nowrap"
+                initial={{ y: "118%" }}
+                whileInView={{ y: "0%" }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.9, ease, delay: 0.35 }}
+                style={{ willChange: "transform" }}
+              >
+                brands built to grow.
+              </motion.span>
+            </div>
           </h2>
 
-          {/* Action Buttons: Left-aligned with lines 2, 3, and 4 */}
+          {/* Action Buttons: Left-aligned with Lines 2, 3, and 4 */}
           <motion.div
             className="mt-8 flex flex-wrap items-center gap-3.5 md:mt-10 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]"
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.6, ease, delay: 0.2 }}
+            transition={{ duration: 0.6, ease, delay: 0.4 }}
           >
             {/* Button 1: Solid White Pill with circular arrow badge */}
             <a
@@ -388,7 +269,7 @@ export default function AboutStrip() {
       </div>
 
       {/* ── Infinite Services Marquee Strip (Serif font + icons matching screenshot) ── */}
-      <div ref={marqueeRef} className="mt-16 md:mt-24 lg:mt-32">
+      <div ref={marqueeRef} className="mt-12 w-full pb-4">
         <div
           className="relative flex select-none overflow-hidden py-2"
           style={{
