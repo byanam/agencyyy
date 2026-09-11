@@ -1,7 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
-
-const ease = [0.16, 1, 0.3, 1];
 
 // Lucide SVG Icons matching WhyCreatives
 function ClapperboardIcon({ className, strokeWidth = 2 }) {
@@ -156,95 +153,62 @@ export default function AboutStrip() {
   return (
     <section
       id="about"
-      className="relative flex min-h-[85vh] w-full flex-col justify-between overflow-hidden bg-black text-white py-12 md:py-20 lg:min-h-screen lg:py-24 select-none"
+      className="relative flex min-h-[85vh] w-full flex-col justify-between overflow-hidden bg-black text-white py-16 md:py-24 lg:min-h-screen lg:py-28 select-none"
     >
-      {/* ── Main Section Centerpiece (DEAD-CENTER IN VIEWPORT) ── */}
+      {/* ── Main Section Centerpiece (ALWAYS VISIBLE & DEAD-CENTER) ── */}
       <div className="relative my-auto flex w-full items-center justify-center px-6 md:px-12 lg:px-16">
         
-        {/* Left Badge: "• WHO ARE WE?" (aligned to far left matching screenshot) */}
-        <div className="hidden lg:flex absolute left-8 xl:left-14 top-1/2 -translate-y-1/2 items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] text-white/40">
+        {/* Left Badge: "• WHO ARE WE?" */}
+        <div className="hidden lg:flex absolute left-8 xl:left-14 top-1/2 -translate-y-1/2 items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] text-white/40 select-none">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/40" />
           WHO ARE WE?
         </div>
 
-        {/* ── The Centerpiece Block: mx-auto w-fit ensures mathematical center of the entire screen ── */}
+        {/* ── Centerpiece Block: mx-auto w-fit locks it in the dead center of the screen ── */}
         <div className="mx-auto flex w-fit max-w-full flex-col items-start justify-center">
-          {/* Main 4-line Headline in classic serif font */}
+          
+          {/* Main 4-line Headline in Serif font (matches screenshot) */}
           <h2
             className="flex flex-col items-start text-white"
             style={{
               fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
-              fontSize: "clamp(2.1rem, 4.8vw, 5.2rem)",
+              fontSize: "clamp(2rem, 4.8vw, 5.2rem)",
               lineHeight: 1.08,
               letterSpacing: "-0.025em",
               fontWeight: 400,
             }}
           >
-            {/* Line 1: Indented to the right edge (ml-auto guarantees right edge aligns with widest line) */}
-            <div className="overflow-hidden ml-auto pb-[0.12em] -mb-[0.12em]">
-              <motion.span
-                className="inline-block whitespace-nowrap"
-                initial={{ y: "118%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.9, ease, delay: 0.08 }}
-                style={{ willChange: "transform" }}
-              >
+            {/* Line 1: Indented to the right (ml-auto aligns right edge with line 2) */}
+            <div className="ml-auto w-fit">
+              <span className="inline-block whitespace-nowrap">
                 An independent studio
-              </motion.span>
+              </span>
             </div>
 
-            {/* Line 2: Widest line, locks the left edge and width of the centered unit */}
-            <div className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
-              <motion.span
-                className="inline-block whitespace-nowrap"
-                initial={{ y: "118%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.9, ease, delay: 0.17 }}
-                style={{ willChange: "transform" }}
-              >
+            {/* Line 2: Widest line, defines the width of the centered unit */}
+            <div className="w-fit">
+              <span className="inline-block whitespace-nowrap">
                 in India crafting video, motion
-              </motion.span>
+              </span>
             </div>
 
-            {/* Line 3: Aligned with left edge */}
-            <div className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
-              <motion.span
-                className="inline-block whitespace-nowrap"
-                initial={{ y: "118%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.9, ease, delay: 0.26 }}
-                style={{ willChange: "transform" }}
-              >
+            {/* Line 3: Left aligned */}
+            <div className="w-fit">
+              <span className="inline-block whitespace-nowrap">
                 design, websites, apps and
-              </motion.span>
+              </span>
             </div>
 
-            {/* Line 4: Aligned with left edge */}
-            <div className="overflow-hidden pb-[0.12em] -mb-[0.12em]">
-              <motion.span
-                className="inline-block whitespace-nowrap"
-                initial={{ y: "118%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.9, ease, delay: 0.35 }}
-                style={{ willChange: "transform" }}
-              >
+            {/* Line 4: Left aligned */}
+            <div className="w-fit">
+              <span className="inline-block whitespace-nowrap">
                 brands built to grow.
-              </motion.span>
+              </span>
             </div>
           </h2>
 
           {/* Action Buttons: Left-aligned with Lines 2, 3, and 4 */}
-          <motion.div
-            className="mt-8 flex flex-wrap items-center gap-3.5 md:mt-10 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]"
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.6, ease, delay: 0.4 }}
-          >
+          <div className="mt-8 flex flex-wrap items-center gap-3.5 md:mt-10 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]">
             {/* Button 1: Solid White Pill with circular arrow badge */}
             <a
               href="#about"
@@ -264,7 +228,7 @@ export default function AboutStrip() {
               <span>Start a project</span>
               <AnimatedArrow className="h-3 w-3 text-white" />
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
 
