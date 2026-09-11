@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 
 // Lucide SVG Icons matching WhyCreatives reference
@@ -136,11 +136,56 @@ const SERVICES = [
   { label: "Short-Form Reels", Icon: FilmIcon },
 ];
 
+const HEADLINE_LINES = [
+  "An independent studio",
+  "in India crafting video, motion",
+  "design, websites, apps and",
+  "brands built to grow.",
+];
+
 const ease = [0.16, 1, 0.3, 1];
 
 export default function AboutStrip() {
   const marqueeRef = useRef(null);
+  const headlineRef = useRef(null);
+  const lineSpansRef = useRef([]);
+  const [padLeftEm, setPadLeftEm] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // Measure the difference between Line 1 and the longest line to align Line 1's right edge
+  // WITHOUT any w-full or stretching that would push the container off-center!
+  const calculateRightEdgeAlignment = useCallback(() => {
+    const root = headlineRef.current;
+    const spans = lineSpansRef.current.filter(Boolean);
+    if (!root || spans.length < 2) return;
+    const fontSize = parseFloat(window.getComputedStyle(root).fontSize);
+    if (!fontSize) return;
+    const widths = spans.map((s) => s.getBoundingClientRect().width);
+    const maxWidth = Math.max(...widths);
+    // Line 0 is "An independent studio"
+    const diff = Math.max(0, (maxWidth - widths[0]) / fontSize);
+    setPadLeftEm(diff);
+  }, []);
+
+  useLayoutEffect(() => {
+    calculateRightEdgeAlignment();
+    const root = headlineRef.current;
+    if (!root) return;
+    const ro = new ResizeObserver(() => calculateRightEdgeAlignment());
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, [calculateRightEdgeAlignment]);
+
+  useEffect(() => {
+    if (typeof document === "undefined" || !("fonts" in document)) return;
+    let active = true;
+    document.fonts.ready.then(() => {
+      if (active) calculateRightEdgeAlignment();
+    });
+    return () => {
+      active = false;
+    };
+  }, [calculateRightEdgeAlignment]);
 
   useEffect(() => {
     const el = marqueeRef.current;
@@ -161,10 +206,11 @@ export default function AboutStrip() {
         paddingBottom: "clamp(64px, 8vw, 140px)",
       }}
     >
-      {/* ── DEAD-CENTER MAIN CONTAINER (Guaranteed horizontal center on all screen sizes) ── */}
-      <div className="relative w-full px-4 sm:px-8 md:px-12">
+      {/* ── GUARANTEED DEAD-CENTER WRAPPER (Centers the centerpiece on the entire website) ── */}
+      <div className="relative flex w-full justify-center px-4 sm:px-8 md:px-12">
         <motion.div
-          className="mx-auto flex w-fit max-w-full flex-col items-start justify-center"
+          className="mx-auto flex flex-col items-start"
+          style={{ width: "fit-content", maxWidth: "100%" }}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -172,6 +218,7 @@ export default function AboutStrip() {
         >
           {/* Main 4-line Headline in Serif font matching WhyCreatives reference */}
           <h2
+            ref={headlineRef}
             className="flex flex-col items-start text-white"
             style={{
               fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
@@ -181,36 +228,61 @@ export default function AboutStrip() {
               fontWeight: 400,
             }}
           >
-            {/* Line 1: Right-aligned across the width of the centered block (studio ends above motion) */}
-            <div className="w-full flex justify-end">
-              <span className="inline-block whitespace-nowrap">
-                An independent studio
+            {/* Line 1: Right edge aligns with Line 2 via dynamic paddingLeft (NEVER w-full) */}
+            <div
+              style={{
+                paddingLeft: padLeftEm > 0 ? `${padLeftEm}em` : undefined,
+                width: "fit-content",
+              }}
+            >
+              <span
+                ref={(el) => {
+                  lineSpansRef.current[0] = el;
+                }}
+                className="inline-block whitespace-nowrap"
+              >
+                {HEADLINE_LINES[0]}
               </span>
             </div>
 
-            {/* Line 2: Defines the width of the centered unit */}
-            <div className="w-fit">
-              <span className="inline-block whitespace-nowrap">
-                in India crafting video, motion
+            {/* Line 2: Widest line defining the block width */}
+            <div style={{ width: "fit-content" }}>
+              <span
+                ref={(el) => {
+                  lineSpansRef.current[1] = el;
+                }}
+                className="inline-block whitespace-nowrap"
+              >
+                {HEADLINE_LINES[1]}
               </span>
             </div>
 
             {/* Line 3 */}
-            <div className="w-fit">
-              <span className="inline-block whitespace-nowrap">
-                design, websites, apps and
+            <div style={{ width: "fit-content" }}>
+              <span
+                ref={(el) => {
+                  lineSpansRef.current[2] = el;
+                }}
+                className="inline-block whitespace-nowrap"
+              >
+                {HEADLINE_LINES[2]}
               </span>
             </div>
 
             {/* Line 4 */}
-            <div className="w-fit">
-              <span className="inline-block whitespace-nowrap">
-                brands built to grow.
+            <div style={{ width: "fit-content" }}>
+              <span
+                ref={(el) => {
+                  lineSpansRef.current[3] = el;
+                }}
+                className="inline-block whitespace-nowrap"
+              >
+                {HEADLINE_LINES[3]}
               </span>
             </div>
           </h2>
 
-          {/* Action Buttons: Left-aligned with Lines 2, 3, and 4 */}
+          {/* Action Buttons: Left-aligned with Lines 2, 3, and 4 inside the centered block */}
           <div className="mt-9 flex flex-wrap items-center gap-3.5 md:mt-11 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]">
             {/* Button 1: Solid White Pill with circular arrow badge */}
             <a
