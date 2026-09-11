@@ -214,7 +214,7 @@ function ProjectCard({ project, index }) {
 export default function FeaturedProjects() {
   return (
     <section
-      id="projects"
+      id="work"
       aria-labelledby="featured-projects-heading"
       className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground md:px-[clamp(32px,6vw,160px)]"
       style={{

@@ -13,41 +13,23 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
   const [activeHref, setActiveHref] = useState("#services");
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    let lastY = window.scrollY;
-    let rafId = 0;
-
-    const update = () => {
-      rafId = 0;
-      const y = Math.max(0, window.scrollY);
-      const delta = y - lastY;
-      setIsFloating(y > 12);
-      if (y < 96) {
-        setIsHidden(false);
-      } else if (delta > 6) {
-        setIsHidden(true);
-      } else if (delta < -6) {
-        setIsHidden(false);
-      }
-      lastY = y;
+    const handleScroll = () => {
+      const y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      setIsFloating(y > 20);
     };
 
-    const onScroll = () => {
-      if (!rafId) rafId = requestAnimationFrame(update);
-    };
+    // Run once on mount to establish initial state
+    handleScroll();
 
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const hidden = isHidden && !menuOpen;
 
   const scrollTo = useCallback((href) => {
     setMenuOpen(false);
@@ -64,13 +46,13 @@ export default function Navbar() {
         data-floating={isFloating ? "true" : "false"}
         className="group/nav fixed left-0 right-0 top-0 z-[60] px-3 font-['Schibsted_Grotesk',sans-serif] sm:px-4"
         style={{
-          transform: `translate3d(0, ${hidden ? "-135%" : isFloating ? "14px" : "0px"}, 0)`,
+          transform: `translate3d(0, ${isFloating ? "14px" : "0px"}, 0)`,
           transition: "transform 520ms cubic-bezier(0.16, 1, 0.3, 1)",
           willChange: "transform",
         }}
       >
         <div
-          className={`mx-auto flex items-center justify-between border ${
+          className={`relative mx-auto flex items-center justify-between border ${
             isFloating
               ? "max-w-[1120px] rounded-full border-black/[0.07] bg-[#f2f2ef] shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:border-white/10 dark:bg-[#1c1d1b] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] sm:bg-[#f2f2ef]/90 sm:backdrop-blur-md sm:dark:bg-[#1c1d1b]/90"
               : "max-w-full rounded-none border-transparent bg-transparent shadow-none"
@@ -84,14 +66,14 @@ export default function Navbar() {
             paddingRight: isFloating ? 10 : "clamp(18px, 3.2vw, 80px)",
           }}
         >
-          {/* Logo */}
+          {/* Logo (Left) */}
           <a
             href="#"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="group flex shrink-0 items-center gap-2.5 select-none"
+            className="group flex shrink-0 items-center gap-2.5 select-none z-10"
             aria-label="WhyCreatives home"
           >
             <img
@@ -109,9 +91,9 @@ export default function Navbar() {
             </span>
           </a>
 
-          {/* Desktop nav */}
+          {/* Centered Desktop nav (Absolute center of the bar) */}
           <nav
-            className="hidden lg:flex items-center gap-10 text-[13px] font-bold text-black/80 transition-colors duration-300 dark:text-white/80"
+            className="hidden lg:flex items-center gap-10 text-[13px] font-bold text-black/80 transition-colors duration-300 dark:text-white/80 absolute left-1/2 -translate-x-1/2"
             aria-label="Main navigation"
           >
             {NAV_LINKS.map((link) => {
@@ -136,7 +118,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action Cluster */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 z-10">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}

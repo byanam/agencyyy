@@ -85,6 +85,7 @@ export default function FAQ() {
 
   return (
     <section
+      id="insights"
       className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] md:px-[clamp(32px,6vw,160px)]"
       style={{
         paddingTop: "clamp(56px, 7vw, 120px)",

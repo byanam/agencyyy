@@ -27,6 +27,7 @@ export default function AboutStrip() {
 
   return (
     <section
+      id="about"
       ref={sectionRef}
       className="w-full overflow-hidden bg-background font-['Schibsted_Grotesk',sans-serif]"
       style={{

@@ -90,7 +90,7 @@ export default function Services() {
   const gap = cardSize + 28;
 
   return (
-    <div id="skills" className="w-full bg-background px-3 sm:px-5 md:px-6">
+    <div id="services" className="w-full bg-background px-3 sm:px-5 md:px-6">
       <section className="w-full overflow-hidden rounded-[24px] bg-[#0A0A0C] font-['Schibsted_Grotesk',sans-serif] text-white md:rounded-[36px]">
         {/* Custom cursor */}
         {isDesktop && (
