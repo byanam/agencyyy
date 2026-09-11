@@ -44,7 +44,7 @@ export default function Navbar() {
     <>
       <header
         data-floating={isFloating ? "true" : "false"}
-        className="group/nav fixed left-0 right-0 top-0 z-[60] px-3 font-['Schibsted_Grotesk',sans-serif] sm:px-4"
+        className="group/nav fixed left-0 right-0 top-0 z-[60] flex w-full justify-center px-3 font-['Schibsted_Grotesk',sans-serif] sm:px-4"
         style={{
           transform: `translate3d(0, ${isFloating ? "14px" : "0px"}, 0)`,
           transition: "transform 520ms cubic-bezier(0.16, 1, 0.3, 1)",
@@ -52,12 +52,14 @@ export default function Navbar() {
         }}
       >
         <div
-          className={`mx-auto flex items-center justify-between border ${
+          className={`w-full mx-auto flex items-center justify-between border ${
             isFloating
               ? "max-w-[1120px] rounded-full border-black/[0.07] bg-[#f2f2ef] shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:border-white/10 dark:bg-[#1c1d1b] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] sm:bg-[#f2f2ef]/90 sm:backdrop-blur-md sm:dark:bg-[#1c1d1b]/90"
               : "max-w-full rounded-none border-transparent bg-transparent shadow-none"
           }`}
           style={{
+            marginLeft: "auto",
+            marginRight: "auto",
             transition:
               "max-width 520ms cubic-bezier(0.16,1,0.3,1), padding 520ms cubic-bezier(0.16,1,0.3,1), border-radius 380ms ease, background-color 380ms ease, border-color 380ms ease, box-shadow 380ms ease",
             paddingTop: isFloating ? 10 : 24,
