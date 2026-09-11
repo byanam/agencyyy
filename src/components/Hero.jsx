@@ -207,7 +207,7 @@ export default function Hero() {
         className="w-full px-3 md:px-[clamp(28px,4.5vw,120px)]"
         style={{
           paddingTop: "clamp(100px, 11vw, 112px)",
-          paddingBottom: "clamp(30px, 4vw, 76px)",
+          paddingBottom: "clamp(48px, 6vw, 96px)",
         }}
       >
         <div

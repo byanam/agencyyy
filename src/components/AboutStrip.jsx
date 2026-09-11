@@ -155,10 +155,14 @@ export default function AboutStrip() {
   return (
     <section
       id="about"
-      className="relative flex min-h-[85vh] w-full flex-col justify-between overflow-hidden bg-black text-white py-16 md:py-24 lg:min-h-screen lg:py-28 select-none"
+      className="relative w-full overflow-hidden bg-black text-white select-none"
+      style={{
+        paddingTop: "clamp(120px, 15vw, 240px)",
+        paddingBottom: "clamp(64px, 8vw, 140px)",
+      }}
     >
-      {/* ── DEAD-CENTER MAIN CONTAINER (Centered horizontally in the entire viewport on all screen sizes) ── */}
-      <div className="relative my-auto flex w-full items-center justify-center px-4 sm:px-8 md:px-12">
+      {/* ── DEAD-CENTER MAIN CONTAINER (Guaranteed horizontal center on all screen sizes) ── */}
+      <div className="relative w-full px-4 sm:px-8 md:px-12">
         <motion.div
           className="mx-auto flex w-fit max-w-full flex-col items-start justify-center"
           initial={{ opacity: 0, y: 24 }}
@@ -166,7 +170,7 @@ export default function AboutStrip() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, ease }}
         >
-          {/* Main 4-line Headline in Serif font matching the user's reference screenshot */}
+          {/* Main 4-line Headline in Serif font matching WhyCreatives reference */}
           <h2
             className="flex flex-col items-start text-white"
             style={{
@@ -207,7 +211,7 @@ export default function AboutStrip() {
           </h2>
 
           {/* Action Buttons: Left-aligned with Lines 2, 3, and 4 */}
-          <div className="mt-8 flex flex-wrap items-center gap-3.5 md:mt-10 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]">
+          <div className="mt-9 flex flex-wrap items-center gap-3.5 md:mt-11 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]">
             {/* Button 1: Solid White Pill with circular arrow badge */}
             <a
               href="#about"
@@ -231,8 +235,8 @@ export default function AboutStrip() {
         </motion.div>
       </div>
 
-      {/* ── Infinite Services Marquee Strip (Matching screenshot) ── */}
-      <div ref={marqueeRef} className="mt-12 w-full pb-4">
+      {/* ── Infinite Services Marquee Strip (Ample breathing room below buttons) ── */}
+      <div ref={marqueeRef} className="mt-20 w-full pb-6 md:mt-28 lg:mt-36">
         <div
           className="relative flex select-none overflow-hidden py-2"
           style={{
