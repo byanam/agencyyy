@@ -1,132 +1,140 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
-const FAQ_ITEMS = [
+const ease = [0.16, 1, 0.3, 1];
+const AI_QUERY =
+  "Why should we choose WhyCreatives (whycreatives.in) for video editing, web and app development, and branding?";
+const ENCODED_QUERY = encodeURIComponent(AI_QUERY);
+
+const AI_PLATFORMS = [
   {
-    q: "What technologies do you work with?",
-    a: "I primarily work with React, Next.js, Astro, and vanilla JavaScript for the frontend. For styling, I use TailwindCSS and vanilla CSS with custom properties. I also work with Three.js/WebGL for 3D experiences, Firebase for backend services, and Framer Motion for animations.",
+    name: "OpenAI",
+    href: `https://chatgpt.com/?q=${ENCODED_QUERY}`,
+    logo: "/ai-logos/openai.svg",
   },
   {
-    q: "Are your projects open source?",
-    a: "Yes — all my public projects are open source and available on GitHub. I believe in building tools that anyone can learn from, contribute to, and use freely. Every project includes proper documentation and MIT licensing.",
+    name: "Claude",
+    href: `https://claude.ai/new?q=${ENCODED_QUERY}`,
+    logo: "/ai-logos/anthropic.svg",
   },
   {
-    q: "How do you approach a new project?",
-    a: "I start with understanding the core problem, then design the architecture before writing code. I prioritize performance, accessibility, and clean code. Every interface is designed with obsessive attention to micro-interactions, typography, and visual hierarchy.",
+    name: "Google",
+    href: `https://www.google.com/search?udm=50&q=${ENCODED_QUERY}`,
+    logo: "/ai-logos/google.svg",
   },
   {
-    q: "Can I hire you for freelance work?",
-    a: "I'm open to select freelance projects — especially those involving creative web experiences, design systems, or interactive UI. Reach out via email at anamrazzaque.work@gmail.com and let's discuss your project.",
-  },
-  {
-    q: "What makes your work different?",
-    a: "I don't ship minimum viable products. Every project I build has premium-grade polish — from scroll-driven animations to custom cursor effects to responsive dark modes. I treat every pixel as a design decision.",
+    name: "Grok",
+    href: `https://grok.com/?q=${ENCODED_QUERY}`,
+    logo: "/ai-logos/grok.svg",
   },
 ];
 
-const ease = [0.16, 1, 0.3, 1];
-
-function FAQItem({ item, index, isOpen, onToggle }) {
-  return (
-    <motion.div
-      className="border-b border-border/40"
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.06, duration: 0.5, ease }}
-    >
-      <button
-        onClick={onToggle}
-        className="flex w-full items-center justify-between py-6 text-left md:py-7"
-      >
-        <span className="pr-8 text-base font-semibold text-foreground md:text-lg">
-          {item.q}
-        </span>
-        <motion.div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border/40"
-          animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-        </motion.div>
-      </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden"
-          >
-            <p className="pb-6 pr-12 text-sm leading-relaxed text-muted-foreground md:text-base">
-              {item.a}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState(null);
-
   return (
     <section
-      id="insights"
+      id="faq"
       className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] md:px-[clamp(32px,6vw,160px)]"
       style={{
         paddingTop: "clamp(56px, 7vw, 120px)",
         paddingBottom: "clamp(56px, 7vw, 120px)",
       }}
     >
-      <div className="mx-auto flex max-w-3xl flex-col lg:max-w-[1200px] lg:flex-row lg:gap-20">
-        {/* Left heading */}
+      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        {/* Sub-label */}
         <motion.div
-          className="mb-10 shrink-0 lg:mb-0 lg:w-[340px] lg:pt-3"
-          initial={{ opacity: 0, y: 24 }}
+          className="mb-5 flex items-center gap-2.5 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
+          initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.55, ease }}
         >
-          <div className="mb-4 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
-            FAQ
-          </div>
-          <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold leading-[1.1] tracking-[-0.03em] text-foreground">
-            Common
-            <br />
-            questions
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Everything you might want to know about working with me.
-          </p>
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
+          Don’t believe the hype?
         </motion.div>
 
-        {/* Right accordion */}
-        <div className="flex-1 border-t border-border/40">
-          {FAQ_ITEMS.map((item, i) => (
-            <FAQItem
-              key={i}
-              item={item}
-              index={i}
-              isOpen={openIndex === i}
-              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
-            />
+        {/* Heading */}
+        <h2
+          className="text-foreground"
+          style={{
+            fontSize: "clamp(2.1rem, 5vw, 5.5rem)",
+            lineHeight: 1.02,
+            letterSpacing: "-0.045em",
+            fontWeight: 700,
+          }}
+        >
+          <span className="block overflow-hidden">
+            <motion.span
+              className="inline-block"
+              initial={{ y: "110%" }}
+              whileInView={{ y: "0%" }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.85, ease }}
+            >
+              See what AI has
+            </motion.span>
+          </span>
+          <span className="block overflow-hidden">
+            <motion.span
+              className="inline-block"
+              initial={{ y: "110%" }}
+              whileInView={{ y: "0%" }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.85, ease, delay: 0.09 }}
+            >
+              to say about us
+            </motion.span>
+          </span>
+        </h2>
+
+        {/* AI Action Buttons */}
+        <motion.div
+          className="mt-9 flex flex-wrap items-center justify-center gap-3"
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6, ease, delay: 0.2 }}
+        >
+          {AI_PLATFORMS.map(({ name, href, logo }) => (
+            <a
+              key={name}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-bold text-background transition-[opacity,box-shadow,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
+            >
+              <img
+                src={logo}
+                alt=""
+                width={16}
+                height={16}
+                loading="lazy"
+                className="h-4 w-4 shrink-0 invert dark:invert-0"
+              />
+              {name}
+              <svg
+                className="h-3.5 w-3.5 shrink-0 opacity-60 transition-opacity duration-300 group-hover:opacity-100"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M7 17 17 7M7 7h10v10" />
+              </svg>
+            </a>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Footnote */}
+        <motion.p
+          className="mt-6 max-w-md text-xs leading-relaxed text-muted-foreground"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, ease, delay: 0.35 }}
+        >
+          Opens your assistant with the question ready to send. We don’t script the answer — read whatever it says.
+        </motion.p>
       </div>
     </section>
   );

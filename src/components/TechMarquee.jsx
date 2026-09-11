@@ -1,89 +1,79 @@
 import { useRef, useState, useEffect } from "react";
 
-const TECH_ITEMS = [
-  { name: "React", icon: "⚛️" },
-  { name: "Next.js", icon: "▲" },
-  { name: "Astro", icon: "🚀" },
-  { name: "TypeScript", icon: "TS" },
-  { name: "TailwindCSS", icon: "🎨" },
-  { name: "Framer Motion", icon: "✦" },
-  { name: "Three.js", icon: "🧊" },
-  { name: "Firebase", icon: "🔥" },
-  { name: "Node.js", icon: "⬢" },
-  { name: "Figma", icon: "◈" },
-  { name: "Vite", icon: "⚡" },
-  { name: "Git", icon: "⎇" },
-];
+const MARQUEE_TEXT = "Let's make something worth watching.";
+
+function MarqueeRow({ reverse = false, duration = 28, running = true }) {
+  return (
+    <div className="flex w-max">
+      {[0, 1].map((copy) => (
+        <div
+          key={copy}
+          className={`flex w-max shrink-0 ${
+            reverse
+              ? "animate-[marquee-right_linear_infinite]"
+              : "animate-[marquee-left_linear_infinite]"
+          }`}
+          style={{
+            animationDuration: `${duration}s`,
+            animationPlayState: running ? "running" : "paused",
+          }}
+        >
+          {[0, 1].map((item) => (
+            <span
+              key={item}
+              className="whitespace-nowrap pr-[0.35em] text-foreground"
+              style={{
+                fontSize: "clamp(2.75rem, 11vw, 13rem)",
+                lineHeight: 1.02,
+                letterSpacing: "-0.04em",
+                fontWeight: 500,
+              }}
+            >
+              {MARQUEE_TEXT}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function TechMarquee() {
-  const trackRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
-    const el = trackRef.current;
+    const el = containerRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
+      ([entry]) => setIsInView(entry.isIntersecting),
       { rootMargin: "200px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const items = [...TECH_ITEMS, ...TECH_ITEMS, ...TECH_ITEMS, ...TECH_ITEMS];
-
   return (
     <section
-      ref={trackRef}
-      className="w-full overflow-hidden bg-background py-10 md:py-14"
+      ref={containerRef}
+      className="w-full overflow-hidden bg-background font-['Schibsted_Grotesk',sans-serif]"
+      style={{
+        paddingTop: "clamp(56px, 7vw, 120px)",
+        paddingBottom: "clamp(56px, 7vw, 120px)",
+      }}
+      aria-label="Let's work together"
     >
-      {/* Top marquee — left */}
-      <div
-        className="mb-4 flex w-max gap-6"
-        style={{
-          animation: isVisible ? "marquee-left 48s linear infinite" : "none",
-          maskImage:
-            "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-        }}
+      <a
+        href="#contact"
+        className="group block select-none opacity-90 transition-opacity duration-500 hover:opacity-100"
       >
-        {items.map((item, i) => (
-          <div
-            key={`top-${i}`}
-            className="flex shrink-0 items-center gap-3 rounded-full border border-border/40 bg-card/50 px-5 py-2.5 transition-colors hover:border-border hover:bg-card"
-          >
-            <span className="text-lg">{item.icon}</span>
-            <span className="whitespace-nowrap text-sm font-medium text-foreground/70">
-              {item.name}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom marquee — right */}
-      <div
-        className="flex w-max gap-6"
-        style={{
-          animation: isVisible ? "marquee-right 48s linear infinite" : "none",
-          maskImage:
-            "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-        }}
-      >
-        {[...items].reverse().map((item, i) => (
-          <div
-            key={`bottom-${i}`}
-            className="flex shrink-0 items-center gap-3 rounded-full border border-border/40 bg-card/50 px-5 py-2.5 transition-colors hover:border-border hover:bg-card"
-          >
-            <span className="text-lg">{item.icon}</span>
-            <span className="whitespace-nowrap text-sm font-medium text-foreground/70">
-              {item.name}
-            </span>
-          </div>
-        ))}
-      </div>
+        <div className="overflow-hidden" aria-hidden="true">
+          <MarqueeRow duration={26} running={isInView} />
+        </div>
+        <div className="mt-1 hidden overflow-hidden sm:block lg:mt-2" aria-hidden="true">
+          <MarqueeRow reverse duration={32} running={isInView} />
+        </div>
+      </a>
     </section>
   );
 }

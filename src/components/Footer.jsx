@@ -1,36 +1,13 @@
 import { motion } from "framer-motion";
 
-const FOOTER_LINKS = [
-  {
-    heading: "Navigation",
-    links: [
-      { label: "Projects", href: "#projects" },
-      { label: "Skills", href: "#skills" },
-      { label: "About", href: "#about" },
-      { label: "Contact", href: "#contact" },
-    ],
-  },
-  {
-    heading: "Projects",
-    links: [
-      { label: "Notes 101", href: "https://notes--101.web.app", external: true },
-      { label: "PlayStation UI", href: "https://byanam.github.io/PlayStation-Store-UI/", external: true },
-      { label: "Digital You", href: "https://byanam.github.io/digital-you/", external: true },
-      { label: "Unbrief", href: "#", external: false },
-    ],
-  },
-  {
-    heading: "Connect",
-    links: [
-      { label: "GitHub", href: "https://github.com/byanam", external: true },
-      { label: "Email", href: "mailto:anamrazzaque.work@gmail.com", external: true },
-    ],
-  },
-];
-
-const MARQUEE_TEXT = "ANAM RAZZAQUE • DEVELOPER & DESIGNER • ";
-
 const ease = [0.16, 1, 0.3, 1];
+
+const SOCIAL_LINKS = [
+  { label: "Instagram", href: "https://www.instagram.com/why.creatives/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/whycreatives" },
+  { label: "X", href: "https://twitter.com/whycreatives" },
+  { label: "WhatsApp", href: "https://wa.me/918210198880" },
+];
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -40,167 +17,165 @@ export default function Footer() {
   return (
     <div className="mt-12 w-full bg-background p-3 font-['Schibsted_Grotesk',sans-serif] [--footer-card:#0d0d0d] [--footer-frame:hsl(var(--background))] sm:mt-16 sm:p-5 md:p-6 dark:[--footer-card:#1c1c1c]">
       <div className="relative w-full overflow-hidden rounded-[24px] bg-[var(--footer-card)] md:rounded-[32px]">
-        {/* Top-left notch */}
+        {/* Top-Right "Send me back up" Pill */}
         <div
-          className="absolute left-0 top-0 z-20 rounded-br-[24px] rounded-tl-[24px] bg-[var(--footer-frame)] md:rounded-tl-[32px]"
-          style={{ width: "clamp(100px, 14vw, 200px)", height: "clamp(48px, 6vw, 80px)" }}
+          onClick={scrollToTop}
+          className="absolute right-0 top-0 z-20 hidden h-[44px] cursor-pointer items-center gap-1.5 rounded-bl-[24px] rounded-tr-[24px] bg-[var(--footer-frame)] px-6 text-xs font-semibold text-neutral-800 transition-opacity hover:opacity-90 md:flex md:rounded-tr-[32px] dark:text-neutral-200 select-none"
         >
-          {/* Inner notch corners */}
-          <div
-            className="absolute bg-[var(--footer-card)]"
-            style={{
-              bottom: 0,
-              right: "-16px",
-              width: "16px",
-              height: "16px",
-            }}
-          >
-            <div className="h-full w-full rounded-bl-[16px] bg-[var(--footer-frame)]" />
-          </div>
-          <div
-            className="absolute bg-[var(--footer-card)]"
-            style={{
-              top: "0",
-              left: "100%",
-              width: "16px",
-              height: "16px",
-            }}
-          >
-            <div className="h-full w-full rounded-tl-[16px] bg-[var(--footer-frame)]" />
-          </div>
+          <span>Sh*t I've gone too far, send me back up</span>
+          <span className="text-sm">👆</span>
+        </div>
 
-          {/* Back to top button inside notch */}
-          <button
-            onClick={scrollToTop}
-            className="flex h-full w-full items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 19V5M5 12l7-7 7 7" />
-            </svg>
-            Top
-          </button>
+        {/* Mobile version of the back to top pill */}
+        <div
+          onClick={scrollToTop}
+          className="absolute bottom-0 right-0 z-20 flex h-[40px] cursor-pointer items-center gap-1.5 rounded-br-[24px] rounded-tl-[24px] bg-[var(--footer-frame)] px-4 text-[11px] font-semibold text-neutral-800 transition-opacity hover:opacity-90 md:hidden dark:text-neutral-200 select-none"
+        >
+          <span>Back to top</span>
+          <span className="text-xs">👆</span>
         </div>
 
         {/* Footer content */}
-        <div className="px-6 pt-28 pb-8 md:px-12 md:pt-36 md:pb-10 lg:px-16">
-          {/* Large footer heading */}
-          <motion.div
-            className="mb-16 md:mb-24"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, ease }}
-          >
-            <h2 className="text-[clamp(2rem,6vw,5rem)] font-bold leading-[0.95] tracking-[-0.04em] text-white">
-              Let's create
-              <br />
-              <span className="text-white/30">something together.</span>
-            </h2>
-          </motion.div>
-
-          {/* Footer marquee */}
-          <div
-            className="mb-12 overflow-hidden border-y border-white/5 py-4 md:mb-16"
-            style={{
-              maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-            }}
-          >
-            <div
-              className="flex w-max gap-0"
-              style={{ animation: "marquee-strip 48s linear infinite" }}
-            >
-              {Array.from({ length: 8 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="whitespace-nowrap font-['Space_Mono',monospace] text-sm uppercase tracking-[0.25em] text-white/10"
+        <footer className="relative overflow-hidden px-5 pb-16 pt-12 text-white sm:px-8 sm:pt-16 md:pb-12 md:pt-20 lg:px-20">
+          <div className="relative mx-auto max-w-7xl">
+            <div className="flex flex-col items-start justify-between gap-12 pb-12 pt-4 lg:flex-row lg:gap-16">
+              {/* Left Column: Brand & CTA */}
+              <div className="flex max-w-sm flex-col items-start gap-6">
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToTop();
+                  }}
+                  className="group inline-flex items-center gap-3 select-none"
+                  aria-label="WhyCreatives home"
                 >
-                  {MARQUEE_TEXT}
-                </span>
-              ))}
-            </div>
-          </div>
+                  <img
+                    src="/logo.png"
+                    alt="WhyCreatives logo"
+                    width={44}
+                    height={44}
+                    className="h-9 w-9 shrink-0 object-contain invert transition-transform duration-300 group-hover:scale-105 sm:h-10 sm:w-10"
+                  />
+                  <span className="text-xl font-black tracking-tighter text-white sm:text-2xl">
+                    WhyCreatives.
+                  </span>
+                </a>
 
-          {/* Links grid */}
-          <div className="grid gap-10 md:grid-cols-3 lg:grid-cols-4">
-            {/* Brand column */}
-            <div className="lg:col-span-1">
-              <div className="mb-4 flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black">
-                  <span className="text-sm font-bold">A</span>
+                <h2 className="text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
+                  Do you like
+                  <br />
+                  what you see?
+                </h2>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  <a
+                    href="#contact"
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:bg-white/85"
+                  >
+                    <span>Start a project</span>
+                    <svg
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M7 17 17 7M7 7h10v10" />
+                    </svg>
+                  </a>
+                  <div className="flex flex-col gap-1 leading-none">
+                    <span className="text-[11px] font-semibold text-white">
+                      Scope-led proposals
+                    </span>
+                    <span className="text-[10px] text-neutral-400">
+                      Built around your brief
+                    </span>
+                  </div>
                 </div>
-                <span className="text-sm font-semibold text-white">byanam</span>
               </div>
-              <p className="text-xs leading-relaxed text-white/30">
-                Developer & designer building polished digital experiences from
-                the ground up.
-              </p>
+
+              {/* Right Columns: Nav Links */}
+              <div className="grid w-full flex-1 grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-12 lg:w-auto">
+                {/* Learn Column */}
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-white opacity-95">
+                    Learn
+                  </h3>
+                  <ul className="flex flex-col gap-2.5 text-xs text-neutral-300 sm:text-sm">
+                    {["About", "Culture", "Client work", "Processes", "FAQs", "Blog"].map((item) => (
+                      <li key={item}>
+                        <a
+                          href="#about"
+                          className="group relative inline-block transition-colors hover:text-white"
+                        >
+                          <span>{item}</span>
+                          <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Explore Column */}
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-white opacity-95">
+                    Explore
+                  </h3>
+                  <ul className="flex flex-col gap-2.5 text-xs text-neutral-300 sm:text-sm">
+                    {[
+                      { label: "Services", href: "#services" },
+                      { label: "Case Studies", href: "#work" },
+                      { label: "Client story", href: "#client-story" },
+                      { label: "Ask AI", href: "#faq" },
+                      { label: "Contact", href: "#contact" },
+                    ].map(({ label, href }) => (
+                      <li key={label}>
+                        <a
+                          href={href}
+                          className="group relative inline-block transition-colors hover:text-white"
+                        >
+                          <span>{label}</span>
+                          <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Social Column */}
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-white opacity-95">
+                    Social
+                  </h3>
+                  <ul className="flex flex-col gap-2.5 text-xs text-neutral-300 sm:text-sm">
+                    {SOCIAL_LINKS.map(({ label, href }) => (
+                      <li key={label}>
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group relative inline-block transition-colors hover:text-white"
+                        >
+                          <span>{label}</span>
+                          <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
 
-            {/* Link columns */}
-            {FOOTER_LINKS.map((group) => (
-              <div key={group.heading}>
-                <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/30">
-                  {group.heading}
-                </h3>
-                <ul className="space-y-2.5">
-                  {group.links.map((link) => (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        target={link.external ? "_blank" : undefined}
-                        rel={link.external ? "noopener noreferrer" : undefined}
-                        onClick={
-                          !link.external
-                            ? (e) => {
-                                e.preventDefault();
-                                const el = document.querySelector(link.href);
-                                if (el) el.scrollIntoView({ behavior: "smooth" });
-                              }
-                            : undefined
-                        }
-                        className="group flex items-center gap-1.5 text-sm text-white/50 transition-colors hover:text-white"
-                      >
-                        {link.label}
-                        {link.external && (
-                          <svg
-                            width="10"
-                            height="10"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            className="opacity-0 transition-opacity group-hover:opacity-100"
-                          >
-                            <path d="M7 17 17 7M7 7h10v10" />
-                          </svg>
-                        )}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {/* Bottom Copyright Bar */}
+            <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row text-xs text-neutral-400">
+              <p>© {new Date().getFullYear()} WhyCreatives. All rights reserved.</p>
+              <p>One team for video, digital products, and growth.</p>
+            </div>
           </div>
-
-          {/* Bottom bar */}
-          <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 md:flex-row">
-            <p className="font-['Space_Mono',monospace] text-[11px] text-white/20">
-              © {new Date().getFullYear()} Anam Razzaque. All rights reserved.
-            </p>
-            <p className="font-['Space_Mono',monospace] text-[11px] text-white/20">
-              Crafted with obsessive attention to detail.
-            </p>
-          </div>
-        </div>
+        </footer>
       </div>
     </div>
   );

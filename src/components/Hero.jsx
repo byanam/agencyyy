@@ -202,7 +202,7 @@ export default function Hero() {
   const padR = "var(--pad-r)";
 
   return (
-    <section className="relative min-h-svh w-full bg-white transition-colors duration-300 md:min-h-0 dark:bg-[#111]">
+    <section className="relative min-h-svh w-full bg-white transition-colors duration-300 md:min-h-0 dark:bg-[#111] font-['Schibsted_Grotesk',sans-serif]">
       <div
         className="w-full px-3 md:px-[clamp(28px,4.5vw,120px)]"
         style={{
@@ -215,7 +215,7 @@ export default function Hero() {
           className="relative w-full aspect-[9/16] md:aspect-video"
           style={{ "--panel-w": "calc(100vw - 24px)" }}
         >
-          {/* ── Outer Showreel Panel (Clipped exactly like WhyCreatives without the video) ── */}
+          {/* ── Outer Showreel Panel with Cloudflare stream iframe video ── */}
           <div
             className="absolute inset-0 overflow-hidden bg-[#161616] dark:bg-[#202020]"
             style={{
@@ -224,56 +224,17 @@ export default function Hero() {
               borderRadius: clipPath ? undefined : "clamp(20px, 2.6vw, 34px)",
             }}
           >
-            {/* Elegant dark background presentation */}
-            <div className="absolute inset-0">
-              {/* Subtle ambient lighting */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at 35% 35%, rgba(45,45,65,0.7) 0%, transparent 60%), radial-gradient(ellipse at 75% 65%, rgba(28,28,45,0.7) 0%, transparent 60%), #141416",
-                }}
-              />
-              {/* Geometric grid lines */}
-              <div
-                className="absolute inset-0 opacity-[0.06]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-                  backgroundSize: "64px 64px",
-                }}
-              />
-              {/* Floating ambient glow spots */}
-              {[
-                { color: "rgba(255,255,255,0.04)", x: "30%", y: "40%", size: 450, dur: 18 },
-                { color: "rgba(180,180,220,0.05)", x: "70%", y: "60%", size: 380, dur: 22 },
-              ].map((orb, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute rounded-full blur-3xl pointer-events-none"
-                  style={{
-                    width: orb.size,
-                    height: orb.size,
-                    background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
-                    left: orb.x,
-                    top: orb.y,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                  animate={{
-                    x: [0, 30 * (i % 2 ? 1 : -1), 0],
-                    y: [0, -25 * (i % 2 ? -1 : 1), 0],
-                  }}
-                  transition={{
-                    duration: orb.dur,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </div>
+            <iframe
+              src="https://customer-8l64zx8lmsynng2s.cloudflarestream.com/a2f314ee5d2cfcc77f3c3b61fddf5c75/iframe?muted=true&preload=true&loop=true&autoplay=true&poster=https%3A%2F%2Fcustomer-8l64zx8lmsynng2s.cloudflarestream.com%2Fa2f314ee5d2cfcc77f3c3b61fddf5c75%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&controls=false"
+              title="WhyCreatives showreel"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+              loading="eager"
+              className="pointer-events-none absolute left-1/2 top-0 h-full w-[calc(var(--panel-w)*256/81)] -translate-x-1/2 border-none md:left-0 md:w-full md:translate-x-0"
+            />
           </div>
 
-          {/* ── Text overlay (positioned OUTSIDE the clip, top-left) ── */}
+          {/* ── Text overlay (positioned outside the clip, top-left) ── */}
           <div
             ref={textGroupRef}
             className="absolute left-0 top-0 z-10 flex flex-col items-start [--pad-l:12px] [--pad-r:16px] md:left-[min(7vw,104px)] md:[--pad-l:clamp(20px,2.2vw,34px)] md:[--pad-r:clamp(20px,2vw,30px)]"
@@ -302,7 +263,7 @@ export default function Hero() {
               </motion.span>
             </div>
 
-            {/* Headline matching WhyCreatives */}
+            {/* Headline matching WhyCreatives - NO negative overlap so lines never collide */}
             <h1
               className="text-black dark:text-white"
               style={{
@@ -320,11 +281,11 @@ export default function Hero() {
                   }}
                   className="block w-fit overflow-hidden whitespace-nowrap"
                   style={{
-                    lineHeight: 1,
+                    lineHeight: 1.05,
                     paddingLeft: padL,
                     paddingRight: padR,
                     paddingBottom: "0.14em",
-                    marginBottom: i === HERO_LINES.length - 1 ? 0 : "-0.25em",
+                    marginBottom: i === HERO_LINES.length - 1 ? 0 : "-0.14em",
                   }}
                 >
                   <motion.span

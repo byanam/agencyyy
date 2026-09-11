@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
+import { motion } from "framer-motion";
 
 // Lucide SVG Icons matching WhyCreatives
-function ClapperboardIcon({ className, strokeWidth = 2 }) {
+function ClapperboardIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" />
@@ -12,7 +13,7 @@ function ClapperboardIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function SparklesIcon({ className, strokeWidth = 2 }) {
+function SparklesIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
@@ -24,7 +25,7 @@ function SparklesIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function PaletteIcon({ className, strokeWidth = 2 }) {
+function PaletteIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
@@ -36,7 +37,7 @@ function PaletteIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function FilmIcon({ className, strokeWidth = 2 }) {
+function FilmIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <rect width="18" height="18" x="3" y="3" rx="2" />
@@ -51,7 +52,7 @@ function FilmIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function GlobeIcon({ className, strokeWidth = 2 }) {
+function GlobeIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
@@ -61,7 +62,7 @@ function GlobeIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function SmartphoneIcon({ className, strokeWidth = 2 }) {
+function SmartphoneIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
@@ -70,7 +71,7 @@ function SmartphoneIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function PenToolIcon({ className, strokeWidth = 2 }) {
+function PenToolIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z" />
@@ -81,7 +82,7 @@ function PenToolIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function TrendingUpIcon({ className, strokeWidth = 2 }) {
+function TrendingUpIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
@@ -90,7 +91,7 @@ function TrendingUpIcon({ className, strokeWidth = 2 }) {
   );
 }
 
-function SearchIcon({ className, strokeWidth = 2 }) {
+function SearchIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="8" />
@@ -108,7 +109,6 @@ function ArrowUpRightIcon({ className, strokeWidth = 2.5 }) {
   );
 }
 
-// Dual-arrow hover motion icon
 function AnimatedArrow({ className = "h-3.5 w-3.5" }) {
   return (
     <span className="relative block h-3.5 w-3.5 overflow-hidden" aria-hidden="true">
@@ -125,16 +125,160 @@ function AnimatedArrow({ className = "h-3.5 w-3.5" }) {
 }
 
 const SERVICES = [
+  { label: "Video Editing", Icon: ClapperboardIcon },
+  { label: "Motion Design", Icon: SparklesIcon },
+  { label: "Colour Grading", Icon: PaletteIcon },
+  { label: "Short-Form Reels", Icon: FilmIcon },
   { label: "Web Development", Icon: GlobeIcon },
   { label: "App Development", Icon: SmartphoneIcon },
   { label: "Brand Identity", Icon: PenToolIcon },
   { label: "Performance Ads", Icon: TrendingUpIcon },
   { label: "SEO", Icon: SearchIcon },
-  { label: "Video Editing", Icon: ClapperboardIcon },
-  { label: "Motion Design", Icon: SparklesIcon },
-  { label: "Colour Grading", Icon: PaletteIcon },
-  { label: "Short-Form Reels", Icon: FilmIcon },
 ];
+
+const DESKTOP_LINES = [
+  "An independent studio",
+  "in India crafting video, motion",
+  "design, websites, apps and",
+  "brands built to grow.",
+];
+
+const MOBILE_HEADLINE_SIZE = "clamp(2rem, 12vw, 4.5rem)";
+const MOBILE_RATIO = 0.52;
+const MOBILE_SECONDARY_LINES = [
+  "studio in India crafting video,",
+  "motion design, websites, apps",
+  "and brands built to grow.",
+];
+const MOBILE_LINES = [
+  {
+    text: "An independent",
+    style: {
+      fontSize: MOBILE_HEADLINE_SIZE,
+      fontWeight: 700,
+      lineHeight: 1.05,
+      letterSpacing: "-0.05em",
+    },
+  },
+  ...MOBILE_SECONDARY_LINES.map((text, idx) => ({
+    text,
+    style: {
+      fontSize: `calc(${MOBILE_HEADLINE_SIZE} * ${MOBILE_RATIO})`,
+      fontWeight: 500,
+      lineHeight: 1.3,
+      letterSpacing: "-0.022em",
+      marginTop: idx === 0 ? "0.4em" : undefined,
+    },
+  })),
+];
+
+const ease = [0.16, 1, 0.3, 1];
+
+/**
+ * Custom line renderer that dynamically aligns Line 1's right edge
+ * with the right boundary of the longest line on desktop (>= 1024px).
+ */
+function DynamicHeadline({ lines, className, style, alignFirstLineRightEdge = false, nowrapFromLg = false }) {
+  const rootRef = useRef(null);
+  const lineRefs = useRef([]);
+  const [padLeft, setPadLeft] = useState(0);
+  const [isLg, setIsLg] = useState(false);
+
+  useEffect(() => {
+    if (!alignFirstLineRightEdge) return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsLg(mq.matches);
+    const handler = (e) => setIsLg(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [alignFirstLineRightEdge]);
+
+  const compute = useCallback(() => {
+    if (!alignFirstLineRightEdge) return;
+    const root = rootRef.current;
+    const spans = lineRefs.current.slice(0, lines.length);
+    if (!root || spans.length !== lines.length || spans.some((s) => !s)) return;
+    const fontSize = parseFloat(window.getComputedStyle(root).fontSize);
+    if (!fontSize) return;
+    const widths = spans.map((s) => s.getBoundingClientRect().width);
+    const maxWidth = Math.max(...widths);
+    setPadLeft(Math.max(0, (maxWidth - widths[0]) / fontSize));
+  }, [alignFirstLineRightEdge, lines.length]);
+
+  useLayoutEffect(() => {
+    if (!alignFirstLineRightEdge || !isLg) return;
+    compute();
+    const root = rootRef.current;
+    if (!root) return;
+    const ro = new ResizeObserver(() => compute());
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, [alignFirstLineRightEdge, isLg, compute]);
+
+  useEffect(() => {
+    if (!alignFirstLineRightEdge || !isLg || typeof document === "undefined" || !("fonts" in document)) return;
+    let active = true;
+    document.fonts.ready.then(() => {
+      if (active) compute();
+    });
+    return () => {
+      active = false;
+    };
+  }, [alignFirstLineRightEdge, isLg, compute]);
+
+  const padLeftEm = alignFirstLineRightEdge && isLg ? `${padLeft}em` : undefined;
+
+  return (
+    <motion.span
+      ref={rootRef}
+      className={className}
+      style={style}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.25 }}
+    >
+      <span className="sr-only">
+        {lines.map((l) => (typeof l === "string" ? l : l.text)).join(" ")}
+      </span>
+      {lines.map((lineItem, idx) => {
+        const text = typeof lineItem === "string" ? lineItem : lineItem.text;
+        const lineStyle = typeof lineItem === "object" ? lineItem.style : undefined;
+        return (
+          <span
+            key={idx}
+            aria-hidden="true"
+            className={"block overflow-hidden" + (nowrapFromLg ? " lg:whitespace-nowrap" : "")}
+            style={{
+              ...lineStyle,
+              paddingBottom: "0.14em",
+              marginBottom: idx === lines.length - 1 ? 0 : "-0.14em",
+              paddingLeft: idx === 0 ? padLeftEm : undefined,
+            }}
+          >
+            <motion.span
+              ref={(el) => {
+                lineRefs.current[idx] = el;
+              }}
+              className="inline-block"
+              variants={{
+                hidden: { y: "118%" },
+                show: { y: "0%" },
+              }}
+              transition={{
+                duration: 0.9,
+                ease,
+                delay: 0.08 + idx * 0.09,
+              }}
+              style={{ willChange: "transform" }}
+            >
+              {text}
+            </motion.span>
+          </span>
+        );
+      })}
+    </motion.span>
+  );
+}
 
 export default function AboutStrip() {
   const marqueeRef = useRef(null);
@@ -153,93 +297,73 @@ export default function AboutStrip() {
   return (
     <section
       id="about"
-      className="relative flex min-h-[85vh] w-full flex-col justify-between overflow-hidden bg-black text-white py-16 md:py-24 lg:min-h-screen lg:py-28 select-none"
+      className="w-full overflow-hidden bg-background font-['Schibsted_Grotesk',sans-serif]"
+      style={{
+        paddingTop: "clamp(64px, 8vw, 140px)",
+        paddingBottom: "clamp(56px, 7vw, 120px)",
+      }}
     >
-      {/* ── Main Section Centerpiece (ALWAYS VISIBLE & DEAD-CENTER) ── */}
-      <div className="relative my-auto flex w-full items-center justify-center px-6 md:px-12 lg:px-16">
-        
-        {/* Left Badge: "• WHO ARE WE?" */}
-        <div className="hidden lg:flex absolute left-8 xl:left-14 top-1/2 -translate-y-1/2 items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] text-white/40 select-none">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/40" />
-          WHO ARE WE?
-        </div>
-
-        {/* ── Centerpiece Block: mx-auto w-fit locks it in the dead center of the screen ── */}
-        <div className="mx-auto flex w-fit max-w-full flex-col items-start justify-center">
-          
-          {/* Main 4-line Headline in Serif font (matches screenshot) */}
-          <h2
-            className="flex flex-col items-start text-white"
-            style={{
-              fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
-              fontSize: "clamp(2rem, 4.8vw, 5.2rem)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.025em",
-              fontWeight: 400,
-            }}
-          >
-            {/* Line 1: Indented to the right (ml-auto aligns right edge with line 2) */}
-            <div className="ml-auto w-fit">
-              <span className="inline-block whitespace-nowrap">
-                An independent studio
-              </span>
-            </div>
-
-            {/* Line 2: Widest line, defines the width of the centered unit */}
-            <div className="w-fit">
-              <span className="inline-block whitespace-nowrap">
-                in India crafting video, motion
-              </span>
-            </div>
-
-            {/* Line 3: Left aligned */}
-            <div className="w-fit">
-              <span className="inline-block whitespace-nowrap">
-                design, websites, apps and
-              </span>
-            </div>
-
-            {/* Line 4: Left aligned */}
-            <div className="w-fit">
-              <span className="inline-block whitespace-nowrap">
-                brands built to grow.
-              </span>
-            </div>
+      <div className="relative px-4 md:px-[clamp(32px,6vw,160px)]">
+        {/* Centered container for headline and buttons */}
+        <div className="lg:mx-auto lg:w-fit lg:max-w-full">
+          <h2 className="text-left text-foreground" style={{ fontWeight: 500 }}>
+            {/* Mobile View */}
+            <span className="block md:hidden">
+              <DynamicHeadline lines={MOBILE_LINES} className="block" />
+            </span>
+            {/* Desktop View with Right-edge aligned Line 1 */}
+            <span
+              className="hidden md:block"
+              style={{
+                fontSize: "clamp(2.3rem, 5vw, 6.25rem)",
+                lineHeight: 1.02,
+                letterSpacing: "-0.045em",
+              }}
+            >
+              <DynamicHeadline
+                lines={DESKTOP_LINES}
+                className="block"
+                nowrapFromLg={true}
+                alignFirstLineRightEdge={true}
+              />
+            </span>
           </h2>
 
-          {/* Action Buttons: Left-aligned with Lines 2, 3, and 4 */}
-          <div className="mt-8 flex flex-wrap items-center gap-3.5 md:mt-10 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]">
-            {/* Button 1: Solid White Pill with circular arrow badge */}
+          {/* Action buttons: Left-aligned with Lines 2, 3, 4 */}
+          <motion.div
+            className="mt-8 flex flex-wrap items-center gap-3 md:mt-10 lg:mt-12"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.6, ease, delay: 0.2 }}
+          >
+            {/* Button 1: Solid Pill with circular arrow badge */}
             <a
               href="#about"
-              className="group inline-flex select-none items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-[13px] md:text-[13.5px] font-bold leading-none text-black transition-all duration-300 ease-out hover:bg-white/90 active:scale-[0.98]"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-foreground px-6 py-3 text-sm font-bold text-background transition-[opacity,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
             >
-              <span>About WhyCreatives</span>
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black/10 transition-transform duration-300 ease-out group-hover:scale-105">
-                <AnimatedArrow className="h-3 w-3 text-black" />
+              About WhyCreatives
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/15 transition-[background-color,transform] duration-300 ease-out group-hover:scale-110 group-hover:bg-background/25 motion-reduce:transform-none">
+                <AnimatedArrow className="h-3.5 w-3.5 text-background" />
               </span>
             </a>
 
-            {/* Button 2: Outlined Black Pill with diagonal arrow */}
+            {/* Button 2: Outlined Pill */}
             <a
               href="#contact"
-              className="group inline-flex select-none items-center gap-2 rounded-full border border-white/25 bg-black px-5 py-2.5 text-[13px] md:text-[13.5px] font-medium leading-none text-white transition-all duration-300 ease-out hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/25 px-6 py-3 text-sm font-semibold text-foreground transition-[background-color,border-color,color,transform] duration-300 ease-out hover:border-foreground hover:bg-foreground hover:text-background active:scale-[0.98] motion-reduce:transform-none"
             >
-              <span>Start a project</span>
-              <AnimatedArrow className="h-3 w-3 text-white" />
+              Start a project
+              <AnimatedArrow className="h-3.5 w-3.5 text-current" />
             </a>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* ── Infinite Services Marquee Strip (Serif font + icons matching screenshot) ── */}
-      <div ref={marqueeRef} className="mt-12 w-full pb-4">
+      {/* Infinite Services Marquee Strip */}
+      <div ref={marqueeRef} className="mt-12 md:mt-20 md:py-4 lg:mt-28 lg:py-8">
         <div
           className="relative flex select-none overflow-hidden py-2"
-          style={{
-            maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-            WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-          }}
           aria-hidden="true"
         >
           {[0, 1].map((copyIndex) => (
@@ -251,15 +375,10 @@ export default function AboutStrip() {
               {SERVICES.map(({ label, Icon }) => (
                 <span
                   key={label}
-                  className="flex shrink-0 items-center gap-3 pr-10 text-white/90 sm:gap-4 sm:pr-16 lg:pr-20"
+                  className="flex shrink-0 items-center gap-2.5 pr-8 text-foreground sm:gap-4 sm:pr-20 lg:pr-24"
                 >
-                  <Icon className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 text-white/80" strokeWidth={2} />
-                  <span
-                    className="whitespace-nowrap text-[18px] sm:text-2xl lg:text-[28px] font-normal tracking-[-0.01em] text-white"
-                    style={{
-                      fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
-                    }}
-                  >
+                  <Icon className="h-[18px] w-[18px] shrink-0 sm:h-6 sm:w-6" strokeWidth={2.25} />
+                  <span className="whitespace-nowrap text-[17px] font-bold tracking-[-0.03em] sm:text-2xl lg:text-[30px]">
                     {label}
                   </span>
                 </span>

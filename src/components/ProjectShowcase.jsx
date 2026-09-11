@@ -6,171 +6,143 @@ export default function ProjectShowcase() {
   return (
     <div
       id="client-story"
-      className="relative z-10 w-full scroll-mt-24 px-3 pb-[clamp(28px,4vw,64px)] sm:px-5 md:px-6"
-      style={{ marginTop: "-40px" }}
+      className="relative z-10 w-full scroll-mt-24 px-3 pb-[clamp(28px,4vw,64px)] sm:px-5 md:px-6 font-['Schibsted_Grotesk',sans-serif]"
+      style={{ marginTop: "calc(-1 * clamp(180px, 20vw, 280px))" }}
     >
       <motion.figure
-        className="relative mx-auto w-full max-w-[1500px] overflow-hidden rounded-[24px] bg-[#111] md:rounded-[32px]"
+        className="relative mx-auto w-full max-w-[1500px] overflow-hidden rounded-[24px] bg-secondary shadow-[0_40px_90px_-50px_rgba(0,0,0,0.7)] md:rounded-[40px]"
+        style={{ height: "clamp(440px, 48vw, 640px)" }}
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.8, ease }}
+        transition={{ duration: 0.9, ease }}
       >
-        {/* Gradient background */}
+        {/* Background Team Collaboration Image */}
+        <img
+          src="/team-collab.webp"
+          alt="The WhyCreatives team working together on a client project"
+          width={1600}
+          height={900}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         <div
-          className="relative flex flex-col items-center justify-center px-6 py-20 md:flex-row md:py-28 lg:py-36"
-          style={{
-            background:
-              "radial-gradient(ellipse at 30% 50%, rgba(79,70,229,0.15) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(219,39,119,0.12) 0%, transparent 60%), #111",
-          }}
-        >
-          {/* Left: showcase text */}
-          <div className="max-w-xl md:flex-1 md:pr-12">
-            <motion.div
-              className="mb-4 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-white/40"
-              initial={{ opacity: 0, x: -8 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, ease }}
-            >
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/40" />
-              Spotlight
-            </motion.div>
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-br from-black/45 via-black/10 to-black/45"
+        />
 
-            <motion.h3
-              className="mb-4 text-[clamp(1.5rem,4vw,3rem)] font-bold leading-[1.1] tracking-tight text-white"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.6, ease }}
-            >
-              Unbrief
-            </motion.h3>
-
-            <motion.p
-              className="mb-6 text-sm leading-relaxed text-white/60 md:text-base"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5, ease }}
-            >
-              Turn messy client briefs and discovery calls into scoped,
-              defensibly priced 3-tier proposals in 8 minutes. Engineered for
-              digital and creative agency leaders.
-            </motion.p>
-
-            <motion.div
-              className="flex flex-wrap gap-2"
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5, ease }}
-            >
-              {["SaaS Tool", "Design System", "Swiss Modernist", "AI-Powered"].map(
-                (tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-white/10 px-3 py-1.5 text-[11px] font-medium text-white/50"
-                  >
-                    {tag}
-                  </span>
-                )
-              )}
-            </motion.div>
-
-            <motion.div
-              className="mt-8 flex items-center gap-4"
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5, ease }}
-            >
-              <span className="text-xs font-medium uppercase tracking-widest text-white/30">
-                Key features
-              </span>
-            </motion.div>
-
-            <motion.ul
-              className="mt-4 space-y-2 text-sm text-white/50"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.5 } } }}
-            >
-              {[
-                "Messy input ingest — emails, briefs, audio transcripts",
-                "Ambiguity & risk scanner before quoting",
-                "3-tier Good/Better/Best pricing architecture",
-                "Interactive web proposals with e-signatures",
-              ].map((item) => (
-                <motion.li
-                  key={item}
-                  className="flex items-start gap-2"
-                  variants={{
-                    hidden: { opacity: 0, x: -10 },
-                    show: { opacity: 1, x: 0, transition: { duration: 0.4 } },
-                  }}
-                >
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
-                  {item}
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
-
-          {/* Right: visual */}
+        {/* Floating Quote Badge (Top Left) */}
+        <div className="absolute left-3 top-3 max-w-[min(88%,30rem)] sm:left-6 sm:top-6 md:left-8 md:top-8">
           <motion.div
-            className="mt-12 flex-1 md:mt-0"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.7, ease }}
+            className="relative rounded-2xl bg-white px-4 py-3.5 text-black sm:px-6 sm:py-5 shadow-lg"
+            initial={{ opacity: 0, y: -14, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.15 }}
           >
-            <div className="relative mx-auto max-w-md overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] p-6 shadow-2xl md:max-w-lg">
-              {/* Fake app UI */}
-              <div className="mb-4 flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-[#FF5F57]" />
-                <div className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
-                <div className="h-3 w-3 rounded-full bg-[#28C840]" />
-                <span className="ml-auto font-['Space_Mono',monospace] text-[10px] text-white/20">
-                  unbrief.app
-                </span>
-              </div>
-
-              {/* Content blocks */}
-              <div className="space-y-3">
-                <div className="h-4 w-3/4 rounded bg-white/5" />
-                <div className="h-4 w-1/2 rounded bg-white/5" />
-                <div className="mt-6 grid grid-cols-3 gap-3">
-                  {["Good", "Better", "Best"].map((tier, i) => (
-                    <div
-                      key={tier}
-                      className={`rounded-lg border p-3 text-center ${
-                        i === 1
-                          ? "border-indigo-500/40 bg-indigo-500/10"
-                          : "border-white/5 bg-white/[0.02]"
-                      }`}
-                    >
-                      <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/40">
-                        {tier}
-                      </div>
-                      <div className="font-['Space_Mono',monospace] text-lg font-bold text-white/70">
-                        ${(i + 1) * 2.5}k
-                      </div>
-                      <div className="mt-2 space-y-1">
-                        {Array.from({ length: 2 + i }).map((_, j) => (
-                          <div key={j} className="h-2 w-full rounded bg-white/5" />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 h-3 w-full rounded bg-white/5" />
-                <div className="h-3 w-2/3 rounded bg-white/5" />
-              </div>
-            </div>
+            <p
+              className="font-bold tracking-[-0.03em]"
+              style={{ fontSize: "clamp(1.05rem, 2.1vw, 2.1rem)", lineHeight: 1.14 }}
+            >
+              <svg
+                className="mr-1.5 inline-block h-[0.7em] w-[0.7em] -translate-y-[0.15em] text-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                aria-hidden="true"
+              >
+                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
+                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
+              </svg>
+              One team from first idea to launch day
+            </p>
+            {/* Speech bubble tail */}
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-1.5 left-7 h-4 w-4 rotate-45 rounded-[3px] bg-white"
+            />
           </motion.div>
+
+          {/* Author Figcaption */}
+          <motion.figcaption
+            className="mt-3 inline-flex items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-black sm:gap-3 sm:px-3.5 sm:py-2.5 shadow-md"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.55, ease, delay: 0.32 }}
+          >
+            <img
+              src="/logo.png"
+              alt=""
+              width={36}
+              height={36}
+              loading="lazy"
+              className="h-8 w-8 shrink-0 rounded-full object-cover sm:h-9 sm:w-9"
+            />
+            <span className="leading-tight">
+              <span className="block text-xs font-bold sm:text-sm">WhyCreatives Studio</span>
+              <span className="block text-[10px] text-black/50 sm:text-xs">
+                Creative, product & growth team
+              </span>
+            </span>
+          </motion.figcaption>
         </div>
+
+        {/* Bottom Actions Cluster */}
+        <motion.div
+          className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3 sm:inset-x-6 sm:bottom-6 md:inset-x-8 md:bottom-8"
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6, ease, delay: 0.4 }}
+        >
+          {/* Left Arrow Button */}
+          <a
+            href="#work"
+            aria-label="See client work"
+            className="group hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none sm:flex sm:h-14 sm:w-14"
+          >
+            <svg
+              className="h-5 w-5 transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 17 17 7M7 7h10v10" />
+            </svg>
+          </a>
+
+          {/* Right Action Buttons */}
+          <div className="ml-auto flex flex-col items-end gap-2 sm:flex-row sm:items-center">
+            <a
+              href="#work"
+              className="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-4 pr-2 text-[11px] font-bold text-black transition-colors duration-300 hover:bg-white/85 sm:text-xs"
+            >
+              See client work
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/15 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none">
+                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17 17 7M7 7h10v10" />
+                </svg>
+              </span>
+            </a>
+            <a
+              href="#about"
+              className="group inline-flex items-center gap-2 rounded-full bg-black/85 py-2.5 pl-4 pr-2 text-[11px] font-bold text-white transition-colors duration-300 hover:bg-black sm:text-xs"
+            >
+              About WhyCreatives
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none">
+                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17 17 7M7 7h10v10" />
+                </svg>
+              </span>
+            </a>
+          </div>
+        </motion.div>
       </motion.figure>
     </div>
   );
