@@ -5,7 +5,7 @@ const ease = [0.16, 1, 0.3, 1];
 const PADDING_BOTTOM = "0.14em";
 const TRANSLATE_Y_HIDDEN = "118%";
 
-// Exact Lucide SVG Icon components matching WhyCreatives
+// Lucide SVG Icons matching WhyCreatives
 function ClapperboardIcon({ className, strokeWidth = 2 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
@@ -113,16 +113,16 @@ function ArrowUpRightIcon({ className, strokeWidth = 2.5 }) {
   );
 }
 
-// Double arrow icon that animates diagonally across the button on hover
-function AnimatedArrow() {
+// Dual-arrow hover motion icon
+function AnimatedArrow({ className = "h-3.5 w-3.5" }) {
   return (
-    <span className="relative block h-[18px] w-[18px] overflow-hidden" aria-hidden="true">
+    <span className="relative block h-3.5 w-3.5 overflow-hidden" aria-hidden="true">
       <ArrowUpRightIcon
-        className="absolute inset-0 h-full w-full transition-transform duration-300 ease-out group-hover:translate-x-full group-hover:-translate-y-full"
+        className={`absolute inset-0 h-full w-full transition-transform duration-300 ease-out group-hover:translate-x-full group-hover:-translate-y-full ${className}`}
         strokeWidth={2.5}
       />
       <ArrowUpRightIcon
-        className="absolute inset-0 h-full w-full -translate-x-full translate-y-full transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:translate-y-0"
+        className={`absolute inset-0 h-full w-full -translate-x-full translate-y-full transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:translate-y-0 ${className}`}
         strokeWidth={2.5}
       />
     </span>
@@ -136,8 +136,8 @@ const DESKTOP_LINES = [
   "brands built to grow.",
 ];
 
-const MOBILE_FONT_SIZE = "clamp(2rem, 12vw, 4.5rem)";
-const MOBILE_RATIO = 0.52;
+const MOBILE_FONT_SIZE = "clamp(2rem, 11vw, 4rem)";
+const MOBILE_RATIO = 0.55;
 const MOBILE_SUB_LINES = [
   "studio in India crafting video,",
   "motion design, websites, apps",
@@ -149,39 +149,39 @@ const MOBILE_LINES = [
     text: "An independent",
     style: {
       fontSize: MOBILE_FONT_SIZE,
-      fontWeight: 700,
-      lineHeight: 1.02,
-      letterSpacing: "-0.05em",
+      fontWeight: 600,
+      lineHeight: 1.05,
+      letterSpacing: "-0.03em",
     },
   },
   ...MOBILE_SUB_LINES.map((text, idx) => ({
     text,
     style: {
       fontSize: `calc(${MOBILE_FONT_SIZE} * ${MOBILE_RATIO})`,
-      fontWeight: 500,
-      lineHeight: 1.3,
-      letterSpacing: "-0.022em",
-      marginTop: idx === 0 ? "0.4em" : undefined,
+      fontWeight: 400,
+      lineHeight: 1.25,
+      letterSpacing: "-0.02em",
+      marginTop: idx === 0 ? "0.35em" : undefined,
     },
   })),
 ];
 
 const SERVICES = [
-  { label: "Video Editing", Icon: ClapperboardIcon },
-  { label: "Motion Design", Icon: SparklesIcon },
-  { label: "Colour Grading", Icon: PaletteIcon },
-  { label: "Short-Form Reels", Icon: FilmIcon },
   { label: "Web Development", Icon: GlobeIcon },
   { label: "App Development", Icon: SmartphoneIcon },
   { label: "Brand Identity", Icon: PenToolIcon },
   { label: "Performance Ads", Icon: TrendingUpIcon },
   { label: "SEO", Icon: SearchIcon },
+  { label: "Video Editing", Icon: ClapperboardIcon },
+  { label: "Motion Design", Icon: SparklesIcon },
+  { label: "Colour Grading", Icon: PaletteIcon },
+  { label: "Short-Form Reels", Icon: FilmIcon },
 ];
 
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /**
- * Animated Typography Line Revealer (1:1 with WhyCreatives Wl component)
+ * Animated Typography Line Revealer matching WhyCreatives exact indent math
  */
 function WordLineReveal({
   lines,
@@ -308,75 +308,89 @@ export default function AboutStrip() {
   return (
     <section
       id="about"
-      className="w-full overflow-hidden bg-background font-['Schibsted_Grotesk',sans-serif]"
+      className="w-full overflow-hidden bg-black text-white"
       style={{
-        paddingTop: "clamp(64px, 8vw, 140px)",
-        paddingBottom: "clamp(56px, 7vw, 120px)",
+        paddingTop: "clamp(80px, 10vw, 160px)",
+        paddingBottom: "clamp(60px, 8vw, 130px)",
       }}
     >
-      {/* ── Main Typography & CTA Container (Centered) ── */}
-      <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center justify-center px-4 text-center">
-        <div className="flex w-full flex-col items-center justify-center">
-          {/* Main Headline (Centered) */}
-          <h2 className="text-center text-foreground" style={{ fontWeight: 500 }}>
+      {/* ── Main Section Container ── */}
+      <div className="relative mx-auto w-full max-w-[1600px] px-6 md:px-12 lg:px-20">
+        
+        {/* Left Badge: "• WHO ARE WE?" (exact match to WhyCreatives screenshot) */}
+        <div className="hidden lg:flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] text-white/50 absolute left-8 lg:left-14 top-4 select-none">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/50" />
+          WHO ARE WE?
+        </div>
+
+        {/* ── Centered Composition: Both headline and left-aligned buttons centered as a single unit on the screen ── */}
+        <div className="mx-auto flex flex-col items-start w-fit max-w-full">
+          {/* Main Headline (Serif typography matching screenshot) */}
+          <h2
+            className="text-left text-white"
+            style={{
+              fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
+              fontWeight: 400,
+            }}
+          >
             {/* Mobile View */}
             <span className="block md:hidden">
-              <WordLineReveal lines={MOBILE_LINES} className="block text-center" />
+              <WordLineReveal lines={MOBILE_LINES} className="block" />
             </span>
 
-            {/* Desktop View (MD+) Centered */}
+            {/* Desktop View (MD+) with signature right-edge indent on first line */}
             <span
               className="hidden md:block"
               style={{
-                fontSize: "clamp(2.3rem, 5vw, 5.5rem)",
-                lineHeight: 1.06,
-                letterSpacing: "-0.04em",
+                fontSize: "clamp(2.4rem, 5.2vw, 5.8rem)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.025em",
               }}
             >
               <WordLineReveal
                 lines={DESKTOP_LINES}
-                className="block text-center"
+                className="block"
                 nowrapFromLg={true}
-                alignFirstLineRightEdge={false}
+                alignFirstLineRightEdge={true}
               />
             </span>
           </h2>
 
-          {/* Action CTAs (Centered) */}
+          {/* Action Buttons: Left-aligned with lines 2, 3, and 4 */}
           <motion.div
-            className="mt-8 flex flex-wrap items-center justify-center gap-3.5 md:mt-10 lg:mt-12"
-            initial={{ opacity: 0, y: 12 }}
+            className="mt-8 flex flex-wrap items-center gap-3.5 md:mt-10 lg:mt-12 font-['Schibsted_Grotesk',sans-serif]"
+            initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.6, ease, delay: 0.2 }}
           >
-            {/* Primary Filled Pill Button */}
+            {/* Button 1: Solid White Pill with circular arrow badge */}
             <a
               href="#about"
-              className="group inline-flex select-none items-center gap-2.5 rounded-full bg-foreground px-6 py-3 text-[13.5px] font-bold leading-none text-background transition-[opacity,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none md:text-[14px]"
+              className="group inline-flex select-none items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-[13px] md:text-[13.5px] font-bold leading-none text-black transition-all duration-300 ease-out hover:bg-white/90 active:scale-[0.98]"
             >
               <span>About WhyCreatives</span>
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/15 transition-[background-color,transform] duration-300 ease-out group-hover:scale-110 group-hover:bg-background/25 motion-reduce:transform-none">
-                <AnimatedArrow />
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black/10 transition-transform duration-300 ease-out group-hover:scale-105">
+                <AnimatedArrow className="h-3 w-3 text-black" />
               </span>
             </a>
 
-            {/* Secondary Outlined Pill Button */}
+            {/* Button 2: Outlined Black Pill with diagonal arrow */}
             <a
               href="#contact"
-              className="group inline-flex select-none items-center gap-2.5 rounded-full border border-foreground/25 px-6 py-3 text-[13.5px] font-semibold leading-none text-foreground transition-[background-color,border-color,color,transform] duration-300 ease-out hover:border-foreground hover:bg-foreground hover:text-background active:scale-[0.98] motion-reduce:transform-none md:text-[14px]"
+              className="group inline-flex select-none items-center gap-2 rounded-full border border-white/25 bg-black px-5 py-2.5 text-[13px] md:text-[13.5px] font-medium leading-none text-white transition-all duration-300 ease-out hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
             >
               <span>Start a project</span>
-              <AnimatedArrow />
+              <AnimatedArrow className="h-3 w-3 text-white" />
             </a>
           </motion.div>
         </div>
       </div>
 
-      {/* ── Infinite Services Strip Marquee ── */}
-      <div ref={marqueeRef} className="mt-12 md:mt-20 md:py-4 lg:mt-28 lg:py-8">
+      {/* ── Infinite Services Marquee Strip (Serif font + icons matching screenshot) ── */}
+      <div ref={marqueeRef} className="mt-16 md:mt-24 lg:mt-32">
         <div
-          className="relative flex select-none overflow-hidden"
+          className="relative flex select-none overflow-hidden py-2"
           style={{
             maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
             WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
@@ -392,10 +406,15 @@ export default function AboutStrip() {
               {SERVICES.map(({ label, Icon }) => (
                 <span
                   key={label}
-                  className="flex shrink-0 items-center gap-2.5 pr-8 text-foreground sm:gap-4 sm:pr-20 lg:pr-24"
+                  className="flex shrink-0 items-center gap-3 pr-10 text-white/90 sm:gap-4 sm:pr-16 lg:pr-20"
                 >
-                  <Icon className="h-[18px] w-[18px] shrink-0 sm:h-6 sm:w-6" strokeWidth={2.25} />
-                  <span className="whitespace-nowrap text-[17px] font-bold tracking-[-0.03em] sm:text-2xl lg:text-[30px]">
+                  <Icon className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 text-white/80" strokeWidth={2} />
+                  <span
+                    className="whitespace-nowrap text-[18px] sm:text-2xl lg:text-[28px] font-normal tracking-[-0.01em] text-white"
+                    style={{
+                      fontFamily: "'Playfair Display', 'Times New Roman', Times, Georgia, serif",
+                    }}
+                  >
                     {label}
                   </span>
                 </span>
