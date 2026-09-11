@@ -314,49 +314,37 @@ export default function AboutStrip() {
         paddingBottom: "clamp(56px, 7vw, 120px)",
       }}
     >
-      {/* ── Main Typography & CTA Container ── */}
-      <div className="relative px-4 md:px-[clamp(32px,6vw,160px)]">
-        {/* Section Pill Label ("Who are we?") */}
-        <motion.div
-          className="mb-7 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground lg:absolute lg:left-6 lg:top-2 lg:mb-0 lg:text-sm"
-          initial={{ opacity: 0, x: -8 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.55, ease }}
-        >
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
-          Who are we?
-        </motion.div>
-
-        <div className="lg:mx-auto lg:w-fit lg:max-w-full">
-          {/* Main Headline */}
-          <h2 className="text-left text-foreground" style={{ fontWeight: 500 }}>
+      {/* ── Main Typography & CTA Container (Centered) ── */}
+      <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center justify-center px-4 text-center">
+        <div className="flex w-full flex-col items-center justify-center">
+          {/* Main Headline (Centered) */}
+          <h2 className="text-center text-foreground" style={{ fontWeight: 500 }}>
             {/* Mobile View */}
             <span className="block md:hidden">
-              <WordLineReveal lines={MOBILE_LINES} className="block" />
+              <WordLineReveal lines={MOBILE_LINES} className="block text-center" />
             </span>
 
-            {/* Desktop View (MD+) with WhyCreatives signature indent */}
+            {/* Desktop View (MD+) Centered */}
             <span
               className="hidden md:block"
               style={{
-                fontSize: "clamp(2.3rem, 5vw, 6.25rem)",
-                lineHeight: 1.02,
-                letterSpacing: "-0.045em",
+                fontSize: "clamp(2.3rem, 5vw, 5.5rem)",
+                lineHeight: 1.06,
+                letterSpacing: "-0.04em",
               }}
             >
               <WordLineReveal
                 lines={DESKTOP_LINES}
-                className="block"
+                className="block text-center"
                 nowrapFromLg={true}
-                alignFirstLineRightEdge={true}
+                alignFirstLineRightEdge={false}
               />
             </span>
           </h2>
 
-          {/* Action CTAs */}
+          {/* Action CTAs (Centered) */}
           <motion.div
-            className="mt-8 flex flex-wrap items-center gap-3 md:mt-10 lg:mt-12"
+            className="mt-8 flex flex-wrap items-center justify-center gap-3.5 md:mt-10 lg:mt-12"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -365,9 +353,9 @@ export default function AboutStrip() {
             {/* Primary Filled Pill Button */}
             <a
               href="#about"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-foreground px-6 py-3 text-sm font-bold text-background transition-[opacity,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
+              className="group inline-flex select-none items-center gap-2.5 rounded-full bg-foreground px-6 py-3 text-[13.5px] font-bold leading-none text-background transition-[opacity,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none md:text-[14px]"
             >
-              About WhyCreatives
+              <span>About WhyCreatives</span>
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/15 transition-[background-color,transform] duration-300 ease-out group-hover:scale-110 group-hover:bg-background/25 motion-reduce:transform-none">
                 <AnimatedArrow />
               </span>
@@ -376,9 +364,9 @@ export default function AboutStrip() {
             {/* Secondary Outlined Pill Button */}
             <a
               href="#contact"
-              className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/25 px-6 py-3 text-sm font-semibold text-foreground transition-[background-color,border-color,color,transform] duration-300 ease-out hover:border-foreground hover:bg-foreground hover:text-background active:scale-[0.98] motion-reduce:transform-none"
+              className="group inline-flex select-none items-center gap-2.5 rounded-full border border-foreground/25 px-6 py-3 text-[13.5px] font-semibold leading-none text-foreground transition-[background-color,border-color,color,transform] duration-300 ease-out hover:border-foreground hover:bg-foreground hover:text-background active:scale-[0.98] motion-reduce:transform-none md:text-[14px]"
             >
-              Start a project
+              <span>Start a project</span>
               <AnimatedArrow />
             </a>
           </motion.div>
