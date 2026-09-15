@@ -61,10 +61,10 @@ export default function FAQ() {
             fontWeight: 700,
           }}
         >
-          <span className="block overflow-hidden">
+          <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
             <motion.span
               className="inline-block"
-              initial={{ y: "110%" }}
+              initial={{ y: "118%" }}
               whileInView={{ y: "0%" }}
               viewport={{ once: true }}
               transition={{ duration: 0.85, ease }}
@@ -72,10 +72,10 @@ export default function FAQ() {
               See what AI has
             </motion.span>
           </span>
-          <span className="block overflow-hidden">
+          <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
             <motion.span
               className="inline-block"
-              initial={{ y: "110%" }}
+              initial={{ y: "118%" }}
               whileInView={{ y: "0%" }}
               viewport={{ once: true }}
               transition={{ duration: 0.85, ease, delay: 0.09 }}
@@ -99,7 +99,7 @@ export default function FAQ() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-bold text-background transition-[opacity,box-shadow,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
+              className="group inline-flex select-none items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-bold leading-none text-background transition-[opacity,box-shadow,transform] duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
             >
               <img
                 src={logo}
@@ -109,7 +109,7 @@ export default function FAQ() {
                 loading="lazy"
                 className="h-4 w-4 shrink-0 invert dark:invert-0"
               />
-              {name}
+              <span>{name}</span>
               <svg
                 className="h-3.5 w-3.5 shrink-0 opacity-60 transition-opacity duration-300 group-hover:opacity-100"
                 viewBox="0 0 24 24"

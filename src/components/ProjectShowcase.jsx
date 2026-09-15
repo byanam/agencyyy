@@ -7,7 +7,7 @@ export default function ProjectShowcase() {
     <div
       id="client-story"
       className="relative z-10 w-full scroll-mt-24 px-3 pb-[clamp(28px,4vw,64px)] sm:px-5 md:px-6 font-['Schibsted_Grotesk',sans-serif]"
-      style={{ marginTop: "calc(-1 * clamp(180px, 20vw, 280px))" }}
+      style={{ marginTop: "calc(-1 * clamp(220px, 24vw, 320px))" }}
     >
       <motion.figure
         className="relative mx-auto w-full max-w-[1500px] overflow-hidden rounded-[24px] bg-secondary shadow-[0_40px_90px_-50px_rgba(0,0,0,0.7)] md:rounded-[40px]"
@@ -121,9 +121,9 @@ export default function ProjectShowcase() {
           <div className="ml-auto flex flex-col items-end gap-2 sm:flex-row sm:items-center">
             <a
               href="#work"
-              className="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-4 pr-2 text-[11px] font-bold text-black transition-colors duration-300 hover:bg-white/85 sm:text-xs"
+              className="group inline-flex select-none items-center justify-center gap-2 rounded-full bg-white py-2.5 pl-4 pr-2 text-[11px] font-bold leading-none text-black transition-colors duration-300 hover:bg-white/85 active:scale-[0.98] sm:text-xs"
             >
-              See client work
+              <span>See client work</span>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/15 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none">
                 <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M7 17 17 7M7 7h10v10" />
@@ -132,9 +132,9 @@ export default function ProjectShowcase() {
             </a>
             <a
               href="#about"
-              className="group inline-flex items-center gap-2 rounded-full bg-black/85 py-2.5 pl-4 pr-2 text-[11px] font-bold text-white transition-colors duration-300 hover:bg-black sm:text-xs"
+              className="group inline-flex select-none items-center justify-center gap-2 rounded-full bg-black/85 py-2.5 pl-4 pr-2 text-[11px] font-bold leading-none text-white transition-colors duration-300 hover:bg-black active:scale-[0.98] sm:text-xs"
             >
-              About WhyCreatives
+              <span>About WhyCreatives</span>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none">
                 <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M7 17 17 7M7 7h10v10" />

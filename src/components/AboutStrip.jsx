@@ -287,21 +287,21 @@ export default function AboutStrip() {
             {/* Button 1: Solid White Pill with circular arrow badge */}
             <a
               href="#about"
-              className="group inline-flex select-none items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-[13px] md:text-[13.5px] font-bold leading-none text-black transition-all duration-300 ease-out hover:bg-white/90 active:scale-[0.98]"
+              className="group inline-flex select-none items-center justify-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-bold leading-none text-black transition-all duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
             >
               <span>About WhyCreatives</span>
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black/10 transition-transform duration-300 ease-out group-hover:scale-105">
-                <AnimatedArrow className="h-3 w-3 text-black" />
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/10 transition-all duration-300 ease-out group-hover:scale-110 group-hover:bg-black/20 motion-reduce:transform-none">
+                <AnimatedArrow className="h-3.5 w-3.5 text-black" />
               </span>
             </a>
 
-            {/* Button 2: Outlined Black Pill with diagonal arrow */}
+            {/* Button 2: Outlined Pill with diagonal arrow */}
             <a
               href="#contact"
-              className="group inline-flex select-none items-center gap-2 rounded-full border border-white/25 bg-black px-5 py-2.5 text-[13px] md:text-[13.5px] font-medium leading-none text-white transition-all duration-300 ease-out hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
+              className="group inline-flex select-none items-center justify-center gap-2.5 rounded-full border border-white/25 px-6 py-3 text-sm font-semibold leading-none text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black active:scale-[0.98] motion-reduce:transform-none"
             >
               <span>Start a project</span>
-              <AnimatedArrow className="h-3 w-3 text-white" />
+              <AnimatedArrow className="h-3.5 w-3.5" />
             </a>
           </div>
         </motion.div>

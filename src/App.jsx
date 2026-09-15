@@ -11,9 +11,6 @@ import FAQ from "./components/FAQ";
 import GetInTouch from "./components/GetInTouch";
 import Footer from "./components/Footer";
 
-function ScrollToTop() {
-  return null; // Lenis handles this
-}
 
 function AppContent() {
   useLenis();

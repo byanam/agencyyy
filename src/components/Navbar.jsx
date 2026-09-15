@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
 
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
@@ -14,7 +13,6 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
   const [activeHref, setActiveHref] = useState("#services");
-  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -123,47 +121,13 @@ export default function Navbar() {
 
           {/* Right: Action Cluster (flex-1 to balance center nav) */}
           <div className="flex flex-1 items-center justify-end gap-4 min-w-0">
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="relative flex h-10 w-10 md:h-11 md:w-11 shrink-0 items-center justify-center overflow-hidden rounded-full text-foreground transition-colors hover:bg-black/5 dark:hover:bg-white/10"
-              aria-label="Toggle theme"
-            >
-              {/* Sun icon */}
-              <svg
-                className="h-5 w-5 md:h-[1.35rem] md:w-[1.35rem] transition-all duration-500 rotate-0 scale-100 dark:-rotate-90 dark:scale-0 text-black"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-              </svg>
-              {/* Moon icon */}
-              <svg
-                className="absolute h-5 w-5 md:h-[1.35rem] md:w-[1.35rem] transition-all duration-500 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-              <span className="sr-only">Toggle theme</span>
-            </button>
-
             {/* Start a project CTA */}
             <button
               onClick={() => scrollTo("#contact")}
-              className="group hidden sm:inline-flex shrink-0 select-none items-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-[13px] font-bold text-background transition-opacity hover:opacity-85"
+              className="group hidden sm:inline-flex shrink-0 select-none items-center justify-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-[13px] font-bold leading-none text-background transition-opacity hover:opacity-85"
             >
-              Start a project
-              <span className="text-[10px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              <span>Start a project</span>
+              <span className="text-[10px] leading-none transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                 ↗
               </span>
             </button>

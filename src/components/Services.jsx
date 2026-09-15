@@ -114,7 +114,7 @@ export default function Services() {
         <div
           style={{
             paddingTop: "clamp(84px, 9vw, 176px)",
-            paddingBottom: "calc(clamp(84px, 9vw, 176px) + clamp(180px, 20vw, 280px))",
+            paddingBottom: "calc(clamp(84px, 9vw, 176px) + clamp(220px, 24vw, 320px))",
           }}
         >
           {/* Header Grid: 12 Columns */}
@@ -135,10 +135,10 @@ export default function Services() {
                 fontWeight: 500,
               }}
             >
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
                 <motion.span
                   className="inline-block"
-                  initial={{ y: "110%" }}
+                  initial={{ y: "118%" }}
                   whileInView={{ y: "0%" }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.85, ease }}
@@ -146,10 +146,10 @@ export default function Services() {
                   How we take your
                 </motion.span>
               </span>
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
                 <motion.span
                   className="inline-block"
-                  initial={{ y: "110%" }}
+                  initial={{ y: "118%" }}
                   whileInView={{ y: "0%" }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.85, ease, delay: 0.09 }}
@@ -172,10 +172,10 @@ export default function Services() {
               </p>
               <a
                 href="#services"
-                className="group mt-5 inline-flex items-center gap-2 rounded-full bg-white py-2 pl-4 pr-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-black transition-colors hover:bg-white/85"
+                className="group mt-5 inline-flex select-none items-center justify-center gap-2 rounded-full bg-white py-2 pl-4 pr-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] leading-none text-black transition-colors hover:bg-white/85 active:scale-[0.98] motion-reduce:transform-none"
               >
-                See all services
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/15 transition-transform duration-300 group-hover:translate-x-0.5">
+                <span>See all services</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/15 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transform-none">
                   <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M7 17 17 7M7 7h10v10" />
                   </svg>

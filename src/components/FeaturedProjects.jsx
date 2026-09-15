@@ -218,10 +218,10 @@ export default function FeaturedProjects() {
                 fontWeight: 600,
               }}
             >
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
                 <motion.span
                   className="inline-block"
-                  initial={{ y: "110%" }}
+                  initial={{ y: "118%" }}
                   whileInView={{ y: "0%" }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.85, ease }}
@@ -229,10 +229,10 @@ export default function FeaturedProjects() {
                   Design in the
                 </motion.span>
               </span>
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
                 <motion.span
                   className="inline-block"
-                  initial={{ y: "110%" }}
+                  initial={{ y: "118%" }}
                   whileInView={{ y: "0%" }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.85, ease, delay: 0.09 }}
