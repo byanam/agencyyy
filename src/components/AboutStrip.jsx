@@ -202,8 +202,8 @@ export default function AboutStrip() {
       id="about"
       className="relative w-full overflow-hidden bg-black text-white select-none"
       style={{
-        paddingTop: "clamp(120px, 15vw, 240px)",
-        paddingBottom: "clamp(64px, 8vw, 140px)",
+        paddingTop: "clamp(80px, 10vw, 160px)",
+        paddingBottom: "clamp(60px, 8vw, 120px)",
       }}
     >
       {/* ── GUARANTEED DEAD-CENTER WRAPPER (Centers the centerpiece on the entire website) ── */}
@@ -312,7 +312,7 @@ export default function AboutStrip() {
         ref={marqueeRef}
         className="w-full pb-8 md:pb-12"
         style={{
-          marginTop: "clamp(120px, 16vw, 260px)",
+          marginTop: "clamp(80px, 10vw, 150px)",
         }}
       >
         <div
