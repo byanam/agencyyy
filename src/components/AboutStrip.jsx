@@ -307,8 +307,14 @@ export default function AboutStrip() {
         </motion.div>
       </div>
 
-      {/* ── Infinite Services Marquee Strip (Ample breathing room below buttons) ── */}
-      <div ref={marqueeRef} className="mt-20 w-full pb-6 md:mt-28 lg:mt-36">
+      {/* ── Infinite Services Marquee Strip (Generous breathing room below headline & buttons) ── */}
+      <div
+        ref={marqueeRef}
+        className="w-full pb-8 md:pb-12"
+        style={{
+          marginTop: "clamp(120px, 16vw, 260px)",
+        }}
+      >
         <div
           className="relative flex select-none overflow-hidden py-2"
           style={{
