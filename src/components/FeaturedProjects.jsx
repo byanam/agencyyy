@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 
 const PROJECTS = [
@@ -135,7 +135,7 @@ function NotchedFrame({
   const [clipPath, setClipPath] = useState(null);
   const [size, setSize] = useState(null);
 
-  const calculatePath = () => {
+  const calculatePath = useCallback(() => {
     const el = frame.current;
     const tEl = tagsRef.current;
     const mEl = metaRef.current;
@@ -145,9 +145,12 @@ function NotchedFrame({
     const tRect = { w: tEl.offsetWidth, h: tEl.offsetHeight };
     const mRect = { w: mEl.offsetWidth, h: mEl.offsetHeight };
     const radius = parseFloat(window.getComputedStyle(el).borderTopLeftRadius) || 16;
-    setSize({ w: W, h: H });
+    
+    setSize((prev) => (prev?.w === W && prev?.h === H ? prev : { w: W, h: H }));
+    
     if (W < 2 || H < 2 || tRect.w < 2 || tRect.h < 2 || mRect.w < 2 || mRect.h < 2) {
-      return setClipPath(null);
+      setClipPath((prev) => (prev === null ? prev : null));
+      return;
     }
     const innerRadius = Math.max(4, Math.min(radius, 24, tRect.w / 2, tRect.h / 2, mRect.w / 2, mRect.h / 2));
     if (
@@ -159,10 +162,12 @@ function NotchedFrame({
         tRect.h + mRect.h + 2 * innerRadius < H
       )
     ) {
-      return setClipPath(null);
+      setClipPath((prev) => (prev === null ? prev : null));
+      return;
     }
-    setClipPath(buildNotchedPath(W, H, tRect, mRect, radius, innerRadius));
-  };
+    const newPath = buildNotchedPath(W, H, tRect, mRect, radius, innerRadius);
+    setClipPath((prev) => (prev === newPath ? prev : newPath));
+  }, [frame]);
 
   useLayoutEffect(() => {
     calculatePath();
@@ -175,23 +180,18 @@ function NotchedFrame({
     ro.observe(tEl);
     ro.observe(mEl);
     return () => ro.disconnect();
-  });
-
-  const calculatePathRef = useRef(calculatePath);
-  useLayoutEffect(() => {
-    calculatePathRef.current = calculatePath;
-  });
+  }, [calculatePath, frame]);
 
   useEffect(() => {
     if (typeof document === "undefined" || !("fonts" in document)) return;
     let active = true;
     document.fonts.ready.then(() => {
-      if (active) calculatePathRef.current?.();
+      if (active) calculatePath();
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [calculatePath]);
 
   return (
     <div
