@@ -9,8 +9,6 @@ const BRANDS = [
   "WEBFLOW",
   "VERCEL",
   "FRAMER",
-  "APPLE",
-  "NIKE LAB",
 ];
 
 export default function Marquee() {
