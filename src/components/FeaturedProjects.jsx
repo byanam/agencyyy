@@ -61,6 +61,40 @@ const PROJECTS = [
 const ease = [0.16, 1, 0.3, 1];
 const springConfig = { stiffness: 420, damping: 26 };
 
+// Custom embossed glyph for each folder
+function FolderGlyph({ id }) {
+  if (id === 1) {
+    // Web Layout / Wireframe glyph for Nest Studio
+    return (
+      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+        <path d="M3 9h18" />
+        <path d="M9 21V9" />
+      </svg>
+    );
+  }
+  if (id === 2) {
+    // Gamepad / Storefront glyph for PlayStation UI
+    return (
+      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <line x1="6" x2="10" y1="12" y2="12" />
+        <line x1="8" x2="8" y1="10" y2="14" />
+        <line x1="15" x2="15.01" y1="13" y2="13" />
+        <line x1="18" x2="18.01" y1="11" y2="11" />
+        <rect width="20" height="12" x="2" y="6" rx="6" />
+      </svg>
+    );
+  }
+  // Code / Document glyph for Notes 101
+  return (
+    <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="m16 18 6-6-6-6" />
+      <path d="m8 6-6 6 6 6" />
+      <path d="m14.5 4-5 16" />
+    </svg>
+  );
+}
+
 function ProjectCard({ project, index, column, className = "", style }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hasFinePointer, setHasFinePointer] = useState(false);
@@ -116,66 +150,207 @@ function ProjectCard({ project, index, column, className = "", style }) {
     >
       <a
         href={project.href}
+        target="_blank"
+        rel="noopener noreferrer"
         className="group block"
       >
+        {/* ── Outer 3D Folder Canvas with perspective ── */}
         <div
           ref={cardRef}
           onMouseEnter={handleMouseEnter}
           onMouseMove={hasFinePointer ? handleMouseMove : undefined}
           onMouseLeave={() => setIsHovered(false)}
-          className="relative mb-5 aspect-[4/3] w-full overflow-hidden rounded-2xl md:rounded-3xl bg-secondary lg:cursor-none shadow-[0_2px_4px_rgba(0,0,0,0.06),0_18px_36px_rgba(0,0,0,0.13)] transition-shadow duration-500 group-hover:shadow-[0_3px_6px_rgba(0,0,0,0.08),0_30px_56px_rgba(0,0,0,0.2)] dark:shadow-[0_2px_5px_rgba(0,0,0,0.5),0_22px_44px_rgba(0,0,0,0.65)]"
+          className="relative mb-6 aspect-[4/3] w-full select-none pt-4 lg:cursor-none"
+          style={{ perspective: 1200 }}
         >
-          {/* Top-right tags */}
-          <div className="absolute right-0 top-0 z-20 flex items-center gap-2.5 p-4 md:p-6">
-            {project.tags.map((tag, tagIndex) => (
-              <motion.span
-                key={tag}
-                animate={isHovered ? { y: 2, opacity: 1, scale: 1.04 } : { y: 0, opacity: 0.85, scale: 1 }}
-                transition={{ type: "spring", stiffness: 420, damping: 26, delay: isHovered ? tagIndex * 0.05 : 0 }}
-                className="whitespace-nowrap rounded-full bg-foreground px-4 py-1.5 text-xs font-bold text-background"
+          {/* 1. BACK FOLDER BASE (MacBook Folder Silhouette with Tab) */}
+          <div className="absolute inset-0 z-0 overflow-hidden drop-shadow-xl">
+            <svg
+              viewBox="0 0 500 375"
+              preserveAspectRatio="none"
+              className="h-full w-full"
+            >
+              <defs>
+                <linearGradient id={`folderBackGrad-${project.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#1e4a7a" />
+                  <stop offset="50%" stopColor="#13365c" />
+                  <stop offset="100%" stopColor="#0d2440" />
+                </linearGradient>
+                <linearGradient id={`folderHighlight-${project.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.45)" />
+                  <stop offset="35%" stopColor="rgba(255,255,255,0.2)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0.05)" />
+                </linearGradient>
+              </defs>
+              {/* Back folder body + top-left tab */}
+              <path
+                d="M 12 36 C 12 18, 22 14, 38 14 L 176 14 C 190 14, 198 22, 208 32 L 222 46 C 232 56, 244 60, 260 60 L 468 60 C 484 60, 496 72, 496 88 L 496 352 C 496 366, 484 374, 468 374 L 28 374 C 14 374, 4 366, 4 352 L 4 52 C 4 42, 6 36, 12 36 Z"
+                fill={`url(#folderBackGrad-${project.id})`}
+                stroke="rgba(255,255,255,0.18)"
+                strokeWidth="1.5"
+              />
+              {/* Subtle top rim highlight line */}
+              <path
+                d="M 38 15 L 176 15 C 190 15, 198 23, 208 33 L 222 47 C 232 57, 244 61, 260 61 L 468 61"
+                fill="none"
+                stroke={`url(#folderHighlight-${project.id})`}
+                strokeWidth="2"
+              />
+            </svg>
+          </div>
+
+          {/* 2. THE IMAGE WINDOW (The File that pops out of the folder on hover!) */}
+          <motion.div
+            className="absolute inset-x-5 sm:inset-x-8 bottom-6 top-8 z-10 overflow-hidden rounded-xl bg-[#141416] border border-white/20 shadow-2xl transition-shadow"
+            initial={false}
+            animate={
+              isHovered
+                ? {
+                    y: -58,
+                    scale: 1.03,
+                    rotate: -1,
+                    boxShadow: "0 35px 60px -15px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.25)",
+                  }
+                : {
+                    y: 0,
+                    scale: 1,
+                    rotate: 0,
+                    boxShadow: "0 18px 30px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.15)",
+                  }
+            }
+            transition={{ type: "spring", stiffness: 320, damping: 24, mass: 0.8 }}
+          >
+            {/* macOS Window Header Bar */}
+            <div className="flex h-7 sm:h-8 w-full items-center justify-between border-b border-white/10 bg-[#1e1e24] px-3">
+              {/* Traffic light window controls */}
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F]" />
+              </div>
+              {/* Title / Domain pill */}
+              <span className="font-mono text-[10px] text-white/60 tracking-wider">
+                {project.client.toLowerCase().replace(/\s+/g, "")}.byanam.dev
+              </span>
+              {/* Category tag */}
+              <span className="rounded bg-white/10 px-1.5 py-0.5 text-[9px] font-semibold text-white/80">
+                {project.tags[0]}
+              </span>
+            </div>
+
+            {/* High-res project screenshot */}
+            <div className="relative h-[calc(100%-28px)] sm:h-[calc(100%-32px)] w-full overflow-hidden bg-black">
+              <img
+                src={project.image}
+                alt={project.title}
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+            </div>
+          </motion.div>
+
+          {/* 3. FRONT FOLDER FLAP (Hinges open forward in 3D on hover) */}
+          <div
+            className="absolute inset-x-0 bottom-0 top-[32%] z-20 pointer-events-none"
+            style={{ perspective: 1000 }}
+          >
+            <motion.div
+              className="relative h-full w-full drop-shadow-2xl"
+              style={{
+                transformOrigin: "bottom center",
+                transformStyle: "preserve-3d",
+              }}
+              initial={false}
+              animate={isHovered ? { rotateX: -26 } : { rotateX: 0 }}
+              transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            >
+              <svg
+                viewBox="0 0 500 255"
+                preserveAspectRatio="none"
+                className="h-full w-full"
               >
-                {tag}
-              </motion.span>
-            ))}
+                <defs>
+                  <linearGradient id={`frontFlapGrad-${project.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#2563eb" />
+                    <stop offset="35%" stopColor="#1d4ed8" />
+                    <stop offset="100%" stopColor="#172554" />
+                  </linearGradient>
+                  <linearGradient id={`frontRimHighlight-${project.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.7)" />
+                    <stop offset="50%" stopColor="rgba(255,255,255,0.4)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.7)" />
+                  </linearGradient>
+                </defs>
+                {/* Front flap body with scooped top pocket rim */}
+                <path
+                  d="M 4 24 C 4 12, 14 6, 28 6 L 190 6 C 206 6, 216 16, 230 20 C 242 22, 258 22, 270 20 C 284 16, 294 6, 310 6 L 472 6 C 486 6, 496 12, 496 24 L 496 235 C 496 248, 484 255, 468 255 L 28 255 C 14 255, 4 248, 4 235 Z"
+                  fill={`url(#frontFlapGrad-${project.id})`}
+                  stroke="rgba(255,255,255,0.22)"
+                  strokeWidth="1.5"
+                />
+                {/* Top rim glowing edge */}
+                <path
+                  d="M 28 7 L 190 7 C 206 7, 216 17, 230 21 C 242 23, 258 23, 270 21 C 284 17, 294 7, 310 7 L 472 7"
+                  fill="none"
+                  stroke={`url(#frontRimHighlight-${project.id})`}
+                  strokeWidth="2.5"
+                />
+              </svg>
+
+              {/* Embossed Folder Glyph in Center */}
+              <div className="absolute inset-0 flex items-center justify-center -translate-y-2">
+                <motion.div
+                  animate={isHovered ? { scale: 1.1, opacity: 0.9 } : { scale: 1, opacity: 0.5 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FolderGlyph id={project.id} />
+                </motion.div>
+              </div>
+
+              {/* Front Flap Bottom Info Bar */}
+              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-4 sm:p-6 text-white">
+                <div className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-sky-300" />
+                  <span className="text-xs sm:text-sm font-bold tracking-tight text-white/95">
+                    {project.client}
+                  </span>
+                </div>
+                <span className="rounded-full bg-black/30 px-2.5 py-0.5 font-mono text-[10px] font-medium tracking-widest text-sky-200 backdrop-blur-sm">
+                  {project.year}
+                </span>
+              </div>
+            </motion.div>
           </div>
 
-          {/* Bottom-left meta */}
-          <div className="absolute bottom-0 left-0 z-20 flex items-center gap-2 p-4 md:p-6 text-[11px] font-bold uppercase tracking-[0.14em] text-white/80">
-            <span>{project.year}</span>
-            <span aria-hidden="true">•</span>
-            <span className="whitespace-nowrap">{project.client}</span>
-          </div>
-
-          {/* Image presentation */}
-          <div className="relative h-full w-full overflow-hidden">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-          </div>
-
-          {/* Cursor follower */}
+          {/* 4. CURSOR FOLLOWER */}
           {hasFinePointer && isHovered && (
             <motion.div
               style={{ x: smoothX, y: smoothY }}
               initial={{ scale: 0.2, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 24, mass: 0.6 } }}
-              className="pointer-events-none absolute left-0 top-0 z-30 -ml-8 -mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-foreground text-background shadow-[0_12px_35px_rgba(0,0,0,0.28)]"
+              animate={{
+                scale: 1,
+                opacity: 1,
+                transition: { type: "spring", stiffness: 300, damping: 24, mass: 0.6 },
+              }}
+              className="pointer-events-none absolute left-0 top-0 z-40 -ml-8 -mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-white text-black shadow-[0_12px_35px_rgba(0,0,0,0.35)]"
             >
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17 17 7M7 7h10v10" />
               </svg>
             </motion.div>
           )}
         </div>
 
-        {/* Title underneath the card */}
-        <h3 className="text-base font-medium leading-snug text-foreground transition-colors group-hover:text-muted-foreground sm:text-lg">
-          {project.title}
-        </h3>
+        {/* Title underneath the folder */}
+        <div className="flex items-center justify-between gap-3 px-1">
+          <h3 className="text-base font-medium leading-snug text-foreground transition-colors group-hover:text-muted-foreground sm:text-lg">
+            {project.title}
+          </h3>
+          <span className="shrink-0 text-xs font-semibold text-muted-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-sm">
+            Open folder ↗
+          </span>
+        </div>
       </a>
     </motion.article>
   );
