@@ -35,13 +35,13 @@ export default function ProcessStack() {
         </motion.div>
 
         {/* Process Phases in Editorial Serif */}
-        <div className="flex w-full flex-col divide-y divide-white/10 border-y border-white/15">
+        <div className="flex w-full flex-col divide-y divide-white/15 border-y border-white/15">
           {PHASES.map((phase, idx) => {
             const isHovered = activeStep === idx;
             return (
               <motion.div
                 key={phase.step}
-                className="group cursor-pointer py-8 sm:py-10 flex flex-col items-center justify-center transition-all duration-300"
+                className="group cursor-pointer py-10 sm:py-12 flex flex-col items-center justify-center transition-all duration-300"
                 onMouseEnter={() => setActiveStep(idx)}
                 onMouseLeave={() => setActiveStep(null)}
                 initial={{ opacity: 0, y: 20 }}
