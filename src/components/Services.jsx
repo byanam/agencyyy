@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 
+const // Redis Agency 5-Boutique Service Model
 const SERVICES_DATA = [
   {
     title: "AD Creative",
