@@ -24,7 +24,7 @@ export default function Navbar({ onOpenContact }) {
     <header className="fixed left-0 right-0 top-6 z-50 flex w-full justify-center px-4 font-sans-swiss select-none">
       {/* Top Floating Pill Bar Matching Redis Agency */}
       <div
-        className={`flex items-center gap-5 sm:gap-8 rounded-full border px-5 py-2 sm:px-6 sm:py-2.5 transition-all duration-300 ${
+        className={`flex items-center gap-5 sm:gap-8 rounded-full border px-6 py-2.5 sm:px-6 sm:py-2.5 transition-all duration-300 ${
           isFloating
             ? "border-white/20 bg-black/90 backdrop-blur-md"
             : "border-white/15 bg-black/75 backdrop-blur-sm"
@@ -35,7 +35,7 @@ export default function Navbar({ onOpenContact }) {
           onClick={() => scrollToTarget(0)}
           className="font-editorial text-sm sm:text-base font-medium tracking-tight text-white hover:text-white/80 transition-colors"
         >
-          Byanam® Agency
+          Byanam®
         </button>
 
         <span className="h-3 w-px bg-white/20" />
