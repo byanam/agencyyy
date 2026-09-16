@@ -3,14 +3,10 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useLenis } from "./hooks/useLenis";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import ClientStrip from "./components/ClientStrip";
-import AboutStrip from "./components/AboutStrip";
 import FeaturedProjects from "./components/FeaturedProjects";
+import ProcessStack from "./components/ProcessStack";
 import Services from "./components/Services";
-import ProjectShowcase from "./components/ProjectShowcase";
-import TechMarquee from "./components/TechMarquee";
-import FAQ from "./components/FAQ";
-import GetInTouch from "./components/GetInTouch";
+import ClientBubbles from "./components/ClientBubbles";
 import Footer from "./components/Footer";
 import ContactDrawer from "./components/ContactDrawer";
 
@@ -18,15 +14,13 @@ function PageBody({ isClone = false, onOpenContact }) {
   return (
     <>
       <Hero onOpenContact={onOpenContact} />
-      <ClientStrip />
-      <AboutStrip isClone={isClone} />
       <FeaturedProjects isClone={isClone} />
-      <Services onOpenContact={onOpenContact} isClone={isClone} />
-      <ProjectShowcase isClone={isClone} />
-      <TechMarquee />
-      <FAQ isClone={isClone} />
-      <GetInTouch onOpenContact={onOpenContact} isClone={isClone} />
-      <Footer onOpenContact={onOpenContact} isClone={isClone} />
+      <div id={isClone ? undefined : "process"}>
+        <ProcessStack />
+      </div>
+      <Services isClone={isClone} />
+      <ClientBubbles />
+      <Footer onOpenContact={onOpenContact} />
     </>
   );
 }
@@ -41,18 +35,21 @@ function AppContent() {
   const handleCloseContact = () => setContactOpen(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#050505] text-white">
+      {/* Top Floating Pill Navigation */}
       <Navbar onOpenContact={handleOpenContact} />
+
+      {/* Global Slide-In Contact Drawer */}
       <ContactDrawer isOpen={contactOpen} onClose={handleCloseContact} />
 
-      {/* ── Redis Agency-Style Continuous Loop Container ── */}
+      {/* ── Continuous Infinite Scroll Loop Container ── */}
       <main data-loop-scroll="main" className="relative w-full">
-        {/* Primary Page Wrap (Measured for seamless scroll wrapping) */}
+        {/* Primary Page Wrap */}
         <div ref={wrapRef} data-loop-scroll="wrap" className="relative w-full">
           <PageBody onOpenContact={handleOpenContact} />
         </div>
 
-        {/* Secondary Page Wrap (Visual loop clone for uninterrupted continuous flow) */}
+        {/* Secondary Page Wrap (Clone for Seamless Infinite Loop Continuity) */}
         <div
           data-loop-scroll="wrap"
           aria-hidden="true"
