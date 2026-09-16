@@ -37,7 +37,7 @@ function AppContent() {
   const handleCloseContact = () => setContactOpen(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-black text-white selection:bg-white selection:text-black">
+    <div className="relative min-h-screen overflow-x-hidden bg-black text-white antialiased selection:bg-white selection:text-black">
       {/* Top Floating Pill Navigation */}
       <Navbar onOpenContact={handleOpenContact} />
 
