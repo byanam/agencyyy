@@ -93,11 +93,11 @@ export default function FeaturedProjects({ isClone = false }) {
                   className="group block w-full flex flex-col items-center text-center"
                 >
                   {/* Clean Visual Preview Card with 1px border and smooth zoom */}
-                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-white/15 bg-[#0e0f11] transition-all duration-500 group-hover:border-white/35">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/15 bg-[#0e0f11] transition-all duration-500 group-hover:border-white/35">
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                      className="h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:contrast-105 group-hover:scale-105"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/15 transition-opacity duration-300 group-hover:opacity-0" />
