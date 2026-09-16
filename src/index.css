@@ -123,3 +123,18 @@ section, footer, main, article, h1, h2, h3, h4, p {
   margin-left: auto;
   margin-right: auto;
 }
+
+@keyframes redisMarquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.redis-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: redisMarquee 28s linear infinite;
+}
+
+.redis-marquee-track:hover {
+  animation-play-state: paused;
+}
