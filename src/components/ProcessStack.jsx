@@ -40,10 +40,10 @@ export default function ProcessStack() {
                 <h2
                   className={`font-syncopate w-full text-center font-bold uppercase tracking-wider transition-all duration-300 ${
                     isHovered
-                      ? "text-white scale-105 drop-shadow-[0_0_24px_rgba(255,255,255,0.5)]"
+                      ? "text-white scale-105"
                       : activeIndex !== null
                       ? "text-white/20"
-                      : "text-white/90 hover:text-white"
+                      : "text-white/80 hover:text-white"
                   }`}
                   style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)", lineHeight: 1.1 }}
                 >

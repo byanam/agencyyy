@@ -22,6 +22,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   background-color: #000000;
   color: #ffffff;
+  text-align: center;
 }
 
 html.lenis,
@@ -46,6 +47,11 @@ body {
   background-color: #000000;
   color: #ffffff;
   overflow-x: hidden;
+  text-align: center !important;
+}
+
+section, footer, main, article, h1, h2, h3, h4, p {
+  text-align: center;
 }
 
 .font-syne {

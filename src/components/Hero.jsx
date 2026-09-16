@@ -7,7 +7,7 @@ export default function Hero({ onOpenContact }) {
     <section className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black px-4 pt-10 pb-28 text-center select-none">
       {/* Top Silver Metallic Capsule Bar from Paper */}
       <motion.div
-        className="mx-auto h-5 sm:h-6 md:h-7 w-full max-w-[420px] rounded-full shadow-md cursor-pointer transition-opacity hover:opacity-90"
+        className="mx-auto h-5 sm:h-6 md:h-7 w-full max-w-[420px] rounded-full cursor-pointer transition-opacity hover:opacity-90"
         style={{
           background: "linear-gradient(180deg, #E5E5E5 0%, #B7B7B7 69%)",
         }}

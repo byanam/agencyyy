@@ -18,7 +18,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
   const [submitted, setSubmitted] = useState(false);
   const drawerRef = useRef(null);
 
-  const directEmail = "hello@byanam.dev";
+  const directEmail = "anamrazzaque.work@gmail.com";
 
   // Handle escape key
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={onClose}
-            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm"
           />
 
           {/* Slide-in Drawer */}
@@ -92,17 +92,14 @@ export default function ContactDrawer({ isOpen, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 320 }}
-            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-[560px] flex-col border-l border-white/10 bg-[#0c0d0e] font-['Schibsted_Grotesk',sans-serif] text-white shadow-2xl"
+            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-[560px] flex-col border-l border-white/15 bg-black font-space text-white"
           >
             {/* Header bar */}
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8">
               <div className="flex items-center gap-3">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                </span>
+                <span className="h-2 w-2 rounded-full bg-white" />
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
-                  Available Q2/Q3 2026
+                  Available for new projects
                 </span>
               </div>
 
@@ -121,7 +118,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
             <div className="flex-1 overflow-y-auto px-6 py-8 sm:px-8" data-lenis-prevent>
               {/* Title & Copy */}
               <div className="mb-8">
-                <p className="mb-2 text-xs font-mono uppercase tracking-widest text-emerald-400">
+                <p className="mb-2 text-xs font-mono uppercase tracking-widest text-white/50">
                   [ INITIATE COLLABORATION ]
                 </p>
                 <h2 className="text-3xl font-black tracking-tight sm:text-4xl">
@@ -149,10 +146,10 @@ export default function ContactDrawer({ isOpen, onClose }) {
                   >
                     {copied ? (
                       <>
-                        <svg className="h-3.5 w-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                           <path d="M20 6 9 17l-5-5" />
                         </svg>
-                        <span className="text-emerald-400">Copied!</span>
+                        <span className="text-white">Copied!</span>
                       </>
                     ) : (
                       <>
@@ -184,7 +181,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                           onClick={() => toggleType(type)}
                           className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
                             isSelected
-                              ? "border-emerald-400 bg-emerald-400/15 text-emerald-300"
+                              ? "border-white bg-white text-black"
                               : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
                           }`}
                         >
@@ -207,7 +204,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Alex Vance"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-400 focus:bg-white/[0.07]"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition focus:border-white/40 focus:bg-white/[0.07]"
                   />
                 </div>
 
@@ -222,7 +219,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="alex@company.com"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-400 focus:bg-white/[0.07]"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition focus:border-white/40 focus:bg-white/[0.07]"
                   />
                 </div>
 
@@ -237,7 +234,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell me about the goals, timeline, and deliverables for your project..."
-                    className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-400 focus:bg-white/[0.07]"
+                    className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition focus:border-white/40 focus:bg-white/[0.07]"
                   />
                 </div>
 
@@ -270,7 +267,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     href="https://github.com/byanam"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-emerald-400"
+                    className="transition hover:text-white"
                   >
                     GitHub ↗
                   </a>
@@ -278,7 +275,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     href="https://linkedin.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-emerald-400"
+                    className="transition hover:text-white"
                   >
                     LinkedIn ↗
                   </a>
@@ -286,7 +283,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     href="https://x.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-emerald-400"
+                    className="transition hover:text-white"
                   >
                     X / Twitter ↗
                   </a>
@@ -294,7 +291,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                     href="https://instagram.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-emerald-400"
+                    className="transition hover:text-white"
                   >
                     Instagram ↗
                   </a>
