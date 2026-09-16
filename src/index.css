@@ -76,3 +76,8 @@ section, footer, main, article, h1, h2, h3, h4, p {
   font-family: var(--redis-font-serif);
   letter-spacing: -0.02em;
 }
+
+.font-sans-swiss {
+  font-family: var(--redis-font-sans);
+  letter-spacing: -0.01em;
+}
