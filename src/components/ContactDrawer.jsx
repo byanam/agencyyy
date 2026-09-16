@@ -92,7 +92,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 320 }}
-            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-[560px] flex-col border-l border-white/15 bg-black font-sans-swiss text-white"
+            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-[560px] flex-col border-l border-white/10 bg-black font-space text-white"
           >
             {/* Header bar */}
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8">
@@ -105,7 +105,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
 
               <button
                 onClick={onClose}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
                 aria-label="Close drawer"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -182,7 +182,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
                           className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
                             isSelected
                               ? "border-white bg-white text-black"
-                              : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
+                              : "border-white/10 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
                           }`}
                         >
                           {isSelected ? "✓ " : "+ "}
