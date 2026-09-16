@@ -48,7 +48,7 @@ export default function FeaturedProjects({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "work"}
-      className="relative w-full bg-black px-4 py-36 sm:py-48 select-none flex flex-col items-center justify-center text-center"
+      className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center"
       style={{ textAlign: "center" }}
     >
       <div className="container-redis-cases flex flex-col items-center justify-center text-center">
@@ -104,7 +104,7 @@ export default function FeaturedProjects({ isClone = false }) {
                   </div>
 
                   {/* Editorial Text Content Underneath */}
-                  <div className="mt-6 flex flex-col items-center justify-center text-center px-2 max-w-[540px]">
+                  <div className="mt-6 flex flex-col items-center justify-center text-center px-2 max-w-[580px]">
                     <h3 className="font-editorial text-2xl sm:text-3xl font-medium tracking-tight text-white group-hover:text-white transition-colors">
                       {project.title}
                     </h3>
