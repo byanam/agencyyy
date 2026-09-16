@@ -5,7 +5,7 @@ const ease = [0.16, 1, 0.3, 1];
 
 export default function Hero({ onOpenContact }) {
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black px-4 pt-28 pb-32 sm:pt-36 sm:pb-44 text-center select-none">
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black px-4 pt-32 pb-36 sm:pt-36 sm:pb-44 text-center select-none">
       <div className="container-redis-hero flex flex-col items-center justify-center text-center">
         {/* Subtitle Pill / Tagline */}
         <motion.div
@@ -48,7 +48,7 @@ export default function Hero({ onOpenContact }) {
         >
           <p className="text-swiss-body text-base sm:text-lg text-white/75 leading-relaxed">
             Ultimate design partner for ambitious startups and worldwide brands.
-            Delivering hundreds of digital projects — fast and always on brand.
+            Delivering thousands of projects — fast and always on brand.
           </p>
         </motion.div>
 
