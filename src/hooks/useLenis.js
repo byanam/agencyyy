@@ -35,8 +35,8 @@ export function useLenis({ wrapRef } = {}) {
           orientation: "vertical",
           gestureOrientation: "vertical",
           smoothWheel: true,
-          wheelMultiplier: 1.05,
-          touchMultiplier: 1.8,
+          wheelMultiplier: 1,
+          touchMultiplier: 1.9,
           infinite: false, // We control the seamless wrap precisely across our dual-wrap DOM
         });
 
