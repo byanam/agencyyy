@@ -194,3 +194,10 @@ section, footer, main, article, h1, h2, h3, h4, p {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
+
+/* Responsive typography adjustments */
+@media (max-width: 640px) {
+  .text-editorial-hero {
+    line-height: 0.94;
+  }
+}
