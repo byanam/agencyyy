@@ -24,7 +24,7 @@ export default function ClientBubbles() {
           transition={{ duration: 0.8, ease }}
         >
           <span className="mb-3 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
-            Studio Collective
+            Collective
           </span>
           <h2
             className="text-editorial-section text-white text-center"
@@ -47,7 +47,7 @@ export default function ClientBubbles() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.6, ease, delay: idx * 0.08 }}
             >
-              <div className="relative aspect-square w-24 sm:w-32 md:w-36 overflow-hidden rounded-full border border-white/20 bg-[#0e0f11] p-1 transition-all duration-500 group-hover:border-white group-hover:scale-105">
+              <div className="relative aspect-square w-24 sm:w-32 md:w-36 overflow-hidden rounded-full border border-white/15 bg-[#0e0f11] p-1 transition-all duration-500 group-hover:border-white group-hover:scale-105">
                 <img
                   src={item.image}
                   alt={item.name}
