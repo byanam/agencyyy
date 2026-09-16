@@ -293,97 +293,102 @@ export default function FeaturedProjects() {
     <section
       id="work"
       aria-labelledby="featured-projects-heading"
-      className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground md:px-[clamp(32px,6vw,160px)]"
+      className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground sm:px-6 md:px-8 lg:px-12"
       style={{
         paddingTop: "clamp(64px, 8vw, 132px)",
         paddingBottom: "clamp(64px, 8vw, 132px)",
       }}
     >
-      {/* Editorial 2-column asymmetric grid */}
-      <div className="grid grid-cols-1 items-start gap-y-16 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-32">
-        {/* Header Block: Placed in Column 2, Row 1 on desktop */}
-        <div className="lg:col-start-2 lg:row-start-1">
-          <motion.div
-            className="mb-4 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
-            initial={{ opacity: 0, x: -8 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.55, ease }}
-          >
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
-            Selected work
-          </motion.div>
+      {/* Centered container with perfectly equal margins on both left and right */}
+      <div className="mx-auto w-full max-w-[1200px]">
+        {/* Editorial 2-column grid */}
+        <div className="grid grid-cols-1 items-start gap-y-16 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-28 xl:gap-x-24">
+          {/* Header Block: Placed in Column 2, Row 1 on desktop */}
+          <div className="flex flex-col items-center text-center lg:col-start-2 lg:row-start-1 lg:items-start lg:text-left">
+            <div className="w-full max-w-[440px]">
+              <motion.div
+                className="mb-4 flex items-center justify-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground lg:justify-start"
+                initial={{ opacity: 0, x: -8 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: 0.55, ease }}
+              >
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
+                Selected work
+              </motion.div>
 
-          <a href="#work" className="group inline-block">
-            <h2
-              id="featured-projects-heading"
-              className="text-foreground transition-colors duration-300 group-hover:text-muted-foreground"
-              style={{
-                fontSize: "clamp(2.1rem, 4vw, 4.5rem)",
-                lineHeight: 1.04,
-                letterSpacing: "-0.04em",
-                fontWeight: 600,
-              }}
-            >
-              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
-                <motion.span
-                  className="inline-block"
-                  initial={{ y: "118%" }}
-                  whileInView={{ y: "0%" }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.85, ease }}
+              <a href="#work" className="group inline-block">
+                <h2
+                  id="featured-projects-heading"
+                  className="text-foreground transition-colors duration-300 group-hover:text-muted-foreground"
+                  style={{
+                    fontSize: "clamp(2.1rem, 3.8vw, 4.2rem)",
+                    lineHeight: 1.05,
+                    letterSpacing: "-0.04em",
+                    fontWeight: 600,
+                  }}
                 >
-                  Design in the
-                </motion.span>
-              </span>
-              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
-                <motion.span
-                  className="inline-block"
-                  initial={{ y: "118%" }}
-                  whileInView={{ y: "0%" }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.85, ease, delay: 0.09 }}
-                >
-                  real world ↗
-                </motion.span>
-              </span>
-            </h2>
-          </a>
+                  <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
+                    <motion.span
+                      className="inline-block"
+                      initial={{ y: "118%" }}
+                      whileInView={{ y: "0%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.85, ease }}
+                    >
+                      Design in the
+                    </motion.span>
+                  </span>
+                  <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
+                    <motion.span
+                      className="inline-block"
+                      initial={{ y: "118%" }}
+                      whileInView={{ y: "0%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.85, ease, delay: 0.09 }}
+                    >
+                      real world ↗
+                    </motion.span>
+                  </span>
+                </h2>
+              </a>
 
-          <motion.p
-            className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.65, ease, delay: 0.2 }}
-          >
-            Bespoke web experiences, interactive landing pages, and web apps — engineered with obsessive attention to fluid motion, tactile feedback, and clean code.
-          </motion.p>
+              <motion.p
+                className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.65, ease, delay: 0.2 }}
+              >
+                Bespoke web experiences, interactive landing pages, and web apps — engineered with obsessive attention to fluid motion, tactile feedback, and clean code.
+              </motion.p>
+            </div>
+          </div>
+
+          {/* Project 0: Column 1, Row 1 & 2 */}
+          <ProjectCard
+            project={PROJECTS[0]}
+            index={0}
+            column="left"
+            className="flex flex-col items-center lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:items-end"
+          />
+
+          {/* Project 1: Column 2, Row 2 (staggered down with top margin) */}
+          <ProjectCard
+            project={PROJECTS[1]}
+            index={1}
+            column="right"
+            className="flex flex-col items-center lg:col-start-2 lg:row-start-2 lg:items-start lg:mt-[clamp(80px,10vw,160px)]"
+          />
+
+          {/* Project 2: Column 1, Row 3 */}
+          <ProjectCard
+            project={PROJECTS[2]}
+            index={2}
+            column="left"
+            className="flex flex-col items-center lg:col-start-1 lg:row-start-3 lg:items-end"
+          />
         </div>
-
-        {/* Project 0: Column 1, Row 1 & 2 */}
-        <ProjectCard
-          project={PROJECTS[0]}
-          index={0}
-          column="left"
-          className="lg:col-start-1 lg:row-start-1 lg:row-span-2"
-        />
-
-        {/* Project 1: Column 2, Row 2 (staggered down with top margin) */}
-        <ProjectCard
-          project={PROJECTS[1]}
-          index={1}
-          column="right"
-          className="lg:col-start-2 lg:row-start-2 lg:mt-[clamp(140px,16vw,240px)]"
-        />
-
-        {/* Project 2: Column 1, Row 3 */}
-        <ProjectCard
-          project={PROJECTS[2]}
-          index={2}
-          column="left"
-          className="lg:col-start-1 lg:row-start-3"
-        />
       </div>
     </section>
   );
