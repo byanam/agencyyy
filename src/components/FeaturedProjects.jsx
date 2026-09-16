@@ -9,7 +9,7 @@ const PROJECTS = [
     year: "2025",
     image: "/whycreatives-brand.webp",
     href: "https://byanam.github.io/nest/",
-    colClass: "lg:self-start lg:ml-8",
+    colClass: "lg:self-start lg:ml-6",
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const PROJECTS = [
     year: "2024",
     image: "/whycreatives-ugc.webp",
     href: "https://notes--101.web.app",
-    colClass: "lg:self-end lg:mr-8",
+    colClass: "lg:self-end lg:mr-6",
   },
 ];
 
@@ -39,29 +39,30 @@ export default function FeaturedProjects({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "work"}
-      className="relative w-full bg-[#050505] px-4 py-24 sm:px-6 md:px-10 lg:py-32 font-space select-none"
+      className="relative w-full bg-black px-4 py-28 sm:px-8 md:px-12 lg:py-36 font-space select-none"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center">
-        {/* Centered Tag: OUR WORKS */}
-        <motion.div
-          className="mb-16 flex items-center justify-center font-mono text-xs uppercase tracking-[0.25em] text-white/50 sm:mb-24"
-          initial={{ opacity: 0, y: 10 }}
+        {/* OUR WORKS Title from Paper */}
+        <motion.h2
+          className="font-syncopate mb-20 text-center font-bold tracking-widest text-white sm:mb-28"
+          style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)" }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.6, ease }}
+          transition={{ duration: 0.7, ease }}
         >
           OUR WORKS
-        </motion.div>
+        </motion.h2>
 
-        {/* Staggered Cascade Grid (Left, Center, Right) Matching Prototype */}
+        {/* 3 Staggered Cascade Cards (Left, Center, Right) Matching Paper Export */}
         <div className="flex w-full flex-col gap-12 sm:gap-16 lg:gap-0">
           {PROJECTS.map((project, index) => {
             const isHovered = hoveredId === project.id;
             return (
               <motion.article
                 key={project.id}
-                className={`w-full max-w-[420px] self-center ${project.colClass}`}
-                initial={{ opacity: 0, y: 30 }}
+                className={`w-full max-w-[430px] self-center ${project.colClass}`}
+                initial={{ opacity: 0, y: 36 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10% 0px" }}
                 transition={{ duration: 0.8, ease, delay: index * 0.1 }}
@@ -74,29 +75,26 @@ export default function FeaturedProjects({ isClone = false }) {
                   rel="noopener noreferrer"
                   className="group block w-full"
                 >
-                  {/* Clean Minimalist Showcase Card */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-white/10 bg-[#121214] shadow-2xl transition-all duration-500 group-hover:border-white/30 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    
-                    {/* Hover Arrow Overlay */}
-                    <div className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black opacity-0 shadow-lg transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2">
-                      <span className="font-bold text-sm">↗</span>
+                  {/* Card Frame matching Paper bg-[#DDDDDD] */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-neutral-400/30 bg-[#DDDDDD] p-2 shadow-2xl transition-all duration-500 group-hover:scale-[1.02]">
+                    <div className="relative h-full w-full overflow-hidden bg-black">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     </div>
                   </div>
 
                   {/* Caption underneath */}
                   <div className="mt-4 flex items-center justify-between px-1">
                     <div>
-                      <h3 className="text-base font-bold tracking-tight text-white sm:text-lg">
+                      <h3 className="font-syncopate text-xs font-bold uppercase tracking-wider text-white sm:text-sm">
                         {project.title}
                       </h3>
-                      <p className="mt-0.5 font-mono text-[11px] uppercase tracking-wider text-white/50">
+                      <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-white/50">
                         {project.category}
                       </p>
                     </div>

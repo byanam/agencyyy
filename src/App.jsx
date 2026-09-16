@@ -35,21 +35,21 @@ function AppContent() {
   const handleCloseContact = () => setContactOpen(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#050505] text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
       {/* Top Floating Pill Navigation */}
       <Navbar onOpenContact={handleOpenContact} />
 
       {/* Global Slide-In Contact Drawer */}
       <ContactDrawer isOpen={contactOpen} onClose={handleCloseContact} />
 
-      {/* ── Continuous Infinite Scroll Loop Container ── */}
+      {/* ── Continuous Infinite Scroll Loop Container (Redis Agency mechanics) ── */}
       <main data-loop-scroll="main" className="relative w-full">
         {/* Primary Page Wrap */}
         <div ref={wrapRef} data-loop-scroll="wrap" className="relative w-full">
           <PageBody onOpenContact={handleOpenContact} />
         </div>
 
-        {/* Secondary Page Wrap (Clone for Seamless Infinite Loop Continuity) */}
+        {/* Secondary Page Wrap (Visual Loop Clone for continuous flow) */}
         <div
           data-loop-scroll="wrap"
           aria-hidden="true"
