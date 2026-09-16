@@ -14,7 +14,7 @@ export default function ClientBubbles() {
   const [hoveredId, setHoveredId] = useState(null);
 
   return (
-    <section className="relative w-full bg-black px-4 py-36 sm:py-48 select-none flex flex-col items-center justify-center text-center">
+    <section className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center">
       <div className="container-redis-cases flex flex-col items-center justify-center text-center">
         <motion.div
           className="mb-16 sm:mb-24 flex flex-col items-center justify-center text-center w-full"
@@ -51,7 +51,7 @@ export default function ClientBubbles() {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="h-full w-full rounded-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
+                  className="h-full w-full rounded-full object-cover select-none grayscale transition-all duration-500 group-hover:grayscale-0"
                   onError={(e) => { e.currentTarget.style.display = "none"; }}
                 />
               </div>
