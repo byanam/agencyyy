@@ -131,7 +131,7 @@ const HEADLINE_LINES = [
 
 const ease = [0.16, 1, 0.3, 1];
 
-export default function AboutStrip() {
+export default function AboutStrip({ isClone = false }) {
   const marqueeRef = useRef(null);
   const headlineRef = useRef(null);
   const lineSpansRef = useRef([]);
@@ -185,7 +185,7 @@ export default function AboutStrip() {
 
   return (
     <section
-      id="about"
+      id={isClone ? undefined : "about"}
       className="relative w-full overflow-hidden bg-black text-white select-none"
       style={{
         paddingTop: "clamp(80px, 10vw, 160px)",

@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 
 const ease = [0.16, 1, 0.3, 1];
 
-export default function ProjectShowcase() {
+export default function ProjectShowcase({ isClone = false }) {
   return (
     <div
-      id="client-story"
+      id={isClone ? undefined : "client-story"}
       className="relative z-10 flex w-full justify-center scroll-mt-24 px-3 pb-[clamp(28px,4vw,64px)] sm:px-5 md:px-6 font-['Schibsted_Grotesk',sans-serif]"
       style={{ marginTop: "calc(-1 * clamp(220px, 24vw, 320px))" }}
     >

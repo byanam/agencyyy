@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const SOCIAL_RAIL = [
@@ -35,7 +36,27 @@ function SocialIcon({ label }) {
   );
 }
 
-export default function Footer() {
+export default function Footer({ onOpenContact }) {
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTime(
+        now.toLocaleTimeString("en-US", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -191,8 +212,8 @@ export default function Footer() {
                 </h2>
 
                 <div className="flex flex-wrap items-center gap-5">
-                  <a
-                    href="#contact"
+                  <button
+                    onClick={onOpenContact}
                     className="group inline-flex select-none items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold leading-none text-black transition-all hover:scale-[1.03] hover:bg-white/85 active:scale-[0.98] motion-reduce:transform-none"
                   >
                     <span>Start a project</span>
@@ -207,7 +228,7 @@ export default function Footer() {
                     >
                       <path d="M7 17 17 7M7 7h10v10" />
                     </svg>
-                  </a>
+                  </button>
                   <div className="flex flex-col gap-1 leading-none">
                     <span className="text-[11px] font-semibold text-white">
                       Scope-led proposals
@@ -293,8 +314,15 @@ export default function Footer() {
 
             {/* Bottom Copyright Bar */}
             <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row text-xs text-neutral-400">
-              <p>© {new Date().getFullYear()} Anam Razzaque. All rights reserved.</p>
-              <p>Specialized in bespoke websites & interactive web applications.</p>
+              <div className="flex items-center gap-3">
+                <p>© {new Date().getFullYear()} Anam Razzaque. All rights reserved.</p>
+                <span className="hidden sm:inline text-white/20">•</span>
+                <p className="hidden sm:inline">Specialized in bespoke websites & creative engineering.</p>
+              </div>
+              <div className="flex items-center gap-2 font-mono text-[11px] text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>NEW DELHI / IST (UTC+5:30) {time}</span>
+              </div>
             </div>
           </div>
         </footer>

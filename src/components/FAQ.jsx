@@ -28,10 +28,10 @@ const AI_PLATFORMS = [
   },
 ];
 
-export default function FAQ() {
+export default function FAQ({ isClone = false }) {
   return (
     <section
-      id="faq"
+      id={isClone ? undefined : "faq"}
       className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] md:px-[clamp(32px,6vw,160px)]"
       style={{
         paddingTop: "clamp(56px, 7vw, 120px)",

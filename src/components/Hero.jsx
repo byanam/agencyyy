@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
+import { scrollToTarget } from "../hooks/useLenis";
 
 const HERO_LINES = ["Crafting bespoke sites &", "high-performance web", "experiences"];
 const ease = [0.16, 1, 0.3, 1];
@@ -87,7 +88,7 @@ function buildClipPath(w, h, corners, r, s, i = 0) {
   return d.join(" ");
 }
 
-export default function Hero() {
+export default function Hero({ onOpenContact }) {
   const containerRef = useRef(null);
   const textGroupRef = useRef(null);
   const labelRef = useRef(null);
@@ -324,8 +325,8 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease, delay: 0.45 }}
               >
-                <a
-                  href="#work"
+                <button
+                  onClick={() => scrollToTarget("#work")}
                   className="group flex items-center gap-2.5 rounded-full bg-[#161616] py-2 pl-5 pr-2 text-[14px] font-semibold text-white transition-colors hover:bg-black lg:text-[15px] dark:bg-white dark:text-black dark:hover:bg-white/85"
                 >
                   View our work
@@ -342,9 +343,9 @@ export default function Hero() {
                       <path d="M7 17 17 7M7 7h10v10" />
                     </svg>
                   </span>
-                </a>
-                <a
-                  href="#contact"
+                </button>
+                <button
+                  onClick={onOpenContact}
                   className="group flex items-center gap-1.5 pl-5 text-[14px] font-semibold text-black transition-opacity hover:opacity-60 md:pl-0 lg:text-[15px] dark:text-white"
                 >
                   Start a project
@@ -359,7 +360,7 @@ export default function Hero() {
                   >
                     <path d="M7 17 17 7M7 7h10v10" />
                   </svg>
-                </a>
+                </button>
               </motion.div>
             </div>
           </div>

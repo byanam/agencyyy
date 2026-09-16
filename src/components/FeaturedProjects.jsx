@@ -285,10 +285,10 @@ function ProjectCard({ project, index, className = "", style }) {
   );
 }
 
-export default function FeaturedProjects() {
+export default function FeaturedProjects({ isClone = false }) {
   return (
     <section
-      id="work"
+      id={isClone ? undefined : "work"}
       aria-labelledby="featured-projects-heading"
       className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground sm:px-6 md:px-8 py-20 sm:py-28"
     >
@@ -297,14 +297,14 @@ export default function FeaturedProjects() {
         {/* Centered Header Block */}
         <div className="mb-14 sm:mb-20 flex flex-col items-center text-center">
           <motion.div
-            className="mb-4 flex items-center justify-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+            className="mb-4 flex items-center justify-center gap-2.5 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
             initial={{ opacity: 0, y: -8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.55, ease }}
           >
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
-            Selected work
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+            [ CASES / 03 SELECTED ]
           </motion.div>
 
           <a href="#work" className="group inline-block">

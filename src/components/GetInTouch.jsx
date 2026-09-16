@@ -36,7 +36,7 @@ function MarqueeRow({ reverse = false, outlined = false, seconds = 26 }) {
   );
 }
 
-export default function GetInTouch() {
+export default function GetInTouch({ onOpenContact, isClone = false }) {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -47,7 +47,7 @@ export default function GetInTouch() {
   return (
     <section
       ref={containerRef}
-      id="contact"
+      id={isClone ? undefined : "contact"}
       className="relative overflow-hidden px-4 pb-[clamp(40px,6vw,88px)] pt-[clamp(72px,11vw,168px)] font-['Schibsted_Grotesk',sans-serif] sm:px-6 md:px-[clamp(32px,5vw,96px)]"
     >
       <div className="mx-auto max-w-[1500px]">
@@ -60,16 +60,17 @@ export default function GetInTouch() {
           variants={{ show: { transition: { staggerChildren: 0.16 } } }}
         >
           {/* Yellow Rotated Badge */}
-          <motion.span
-            className="mb-4 inline-block rounded-[3px] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-black sm:mb-5 sm:text-[11px]"
+          <motion.button
+            onClick={onOpenContact}
+            className="mb-4 inline-block rounded-[3px] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-black sm:mb-5 sm:text-[11px] transition hover:scale-105 active:scale-95"
             style={{ backgroundColor: YELLOW_ACCENT, rotate: -4 }}
             variants={{
               hidden: { opacity: 0, y: 18, scale: 0.92 },
               show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.55, ease } },
             }}
           >
-            Get in touch
-          </motion.span>
+            Get in touch ↗
+          </motion.button>
 
           {/* Heading */}
           <h2 className="text-[clamp(2.75rem,10.5vw,10.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.045em] text-foreground">
