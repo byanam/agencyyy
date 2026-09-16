@@ -24,7 +24,7 @@ export default function ClientBubbles() {
           transition={{ duration: 0.8, ease }}
         >
           <span className="mb-3 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
-            Collective
+            Studio Collective
           </span>
           <h2
             className="text-editorial-section text-white text-center"
