@@ -51,7 +51,7 @@ export default function Services({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "services"}
-      className="relative w-full bg-black px-4 py-36 sm:py-48 select-none flex flex-col items-center justify-center text-center"
+      className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center"
       style={{ textAlign: "center" }}
     >
       <div className="container-redis-services flex flex-col items-center justify-center text-center">
@@ -75,11 +75,11 @@ export default function Services({ isClone = false }) {
         </motion.div>
 
         {/* 2-Column Editorial Grid matching Redis Agency */}
-        <div className="flex w-full flex-col border-t border-white/15">
+        <div className="flex w-full flex-col border-t border-white/12">
           {SERVICES_DATA.map((service, idx) => (
             <motion.div
               key={service.title}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 border-b border-white/15 py-12 sm:py-16 text-center md:text-left"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 border-b border-white/12 py-12 sm:py-16 text-center md:text-left"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
