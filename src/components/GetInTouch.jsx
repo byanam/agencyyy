@@ -95,44 +95,11 @@ export default function GetInTouch() {
         />
       </div>
 
-      {/* Dual Background Marquee with Centered Yellow CTA */}
+      {/* Dual Background Marquee */}
       <div className="relative -mx-4 mt-[clamp(48px,7vw,112px)] sm:-mx-6 md:-mx-[clamp(32px,5vw,96px)]">
         <div className="pointer-events-none">
           <MarqueeRow seconds={26} />
           <MarqueeRow reverse outlined seconds={34} />
-        </div>
-
-        {/* Centered Yellow CTA Pill Button */}
-        <div className="absolute inset-0 grid place-items-center px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, ease }}
-          >
-            <a
-              href="https://github.com/byanam"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex select-none items-center justify-center gap-3 rounded-full border-2 border-foreground px-6 py-3.5 text-sm font-bold uppercase tracking-[0.04em] leading-none text-black shadow-[0_10px_30px_-10px_rgba(0,0,0,0.35)] transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-[0.99] motion-reduce:transform-none sm:gap-4 sm:px-9 sm:py-5 sm:text-lg"
-              style={{ backgroundColor: YELLOW_ACCENT }}
-            >
-              <span>Let’s connect</span>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none sm:h-11 sm:w-11">
-                <svg
-                  className="h-4 w-4 sm:h-5 sm:w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M7 17 17 7M7 7h10v10" />
-                </svg>
-              </span>
-            </a>
-          </motion.div>
         </div>
       </div>
     </section>
