@@ -1,40 +1,46 @@
 import { motion } from "framer-motion";
 
-const PILLARS = [
+const SERVICES_DATA = [
   {
-    title: "AD CREATIVE",
-    items: [
+    title: "AD Creative",
+    deliverables: [
       "Key visuals and asset localization for digital and print",
-      "Retail, outdoor and digital OOH campaign branding",
-      "Private label packaging and premium POSM design",
-      "High-conversion bespoke marketing web experiences",
+      "Retail and OOH branding",
+      "Private label packaging and POSM design",
+      "Web design and development",
     ],
   },
   {
-    title: "BRAND IDENTITY & SYSTEMS",
-    items: [
-      "End-to-end brand identity and visual guidelines",
-      "Sub-brand architecture and corporate design systems",
-      "Investor pitch decks, annual reports and keynote presentations",
-      "Custom typographic rules and iconographic libraries",
+    title: "HR Branding & Internal Comms",
+    deliverables: [
+      "Presentations: pitch decks, reports, annual reviews",
+      "Branded merchandise and giveaways",
+      "HR and internal communication platforms",
     ],
   },
   {
-    title: "ILLUSTRATION & MOTION",
-    items: [
-      "Custom 2D / 3D illustration tailored to brand aesthetics",
-      "High-precision 3D product rendering and lighting",
-      "Dynamic motion graphics for social, digital ads and OOH",
-      "Commercial brand films and interactive explainer animations",
+    title: "Illustration & Motion Design",
+    deliverables: [
+      "Custom 2D / 3D illustration in any visual style",
+      "3D product renderings",
+      "Motion graphics for ads and social media",
+      "Commercial videos and explainers",
     ],
   },
   {
-    title: "DEVELOPMENT & INTERACTION",
-    items: [
-      "Interactive 3D WebGL and bespoke React/Next.js platforms",
-      "Smooth momentum scrolling and micro-interaction mechanics",
-      "Zero-compromise page speed and mobile responsiveness",
-      "Headless CMS integration and scalable architectural foundation",
+    title: "Brand Identity & Guidelines",
+    deliverables: [
+      "Event branding",
+      "Sub-brand and employer-brand identity",
+      "Brand updates and visual guidelines",
+    ],
+  },
+  {
+    title: "Development",
+    deliverables: [
+      "Fast, high-quality marketing websites built with modern code",
+      "Interactive 3D WebGL experiences and micro-interactions",
+      "Full responsive optimization and accessibility compliance",
     ],
   },
 ];
@@ -45,92 +51,59 @@ export default function Services({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "services"}
-      className="relative w-full bg-black px-4 py-32 sm:px-8 md:px-12 lg:py-44 select-none flex flex-col items-center justify-center text-center"
+      className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center"
       style={{ textAlign: "center" }}
     >
-      <div
-        className="mx-auto flex w-full max-w-4xl flex-col items-center justify-center text-center"
-        style={{ textAlign: "center", margin: "0 auto" }}
-      >
-        {/* WHAT WE GIVE TO OUR CLIENTS - Redis Agency Inspired Typography */}
+      <div className="container-redis-services flex flex-col items-center justify-center text-center">
+        {/* Section Header */}
         <motion.div
-          className="mb-24 flex flex-col items-center justify-center text-center sm:mb-32 w-full"
-          initial={{ opacity: 0, y: 24 }}
+          className="mb-20 sm:mb-28 flex flex-col items-center justify-center text-center w-full"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.8, ease }}
         >
-          <span
-            className="mb-4 font-mono text-[11px] sm:text-xs uppercase tracking-[0.3em] text-white/50 text-center block w-full"
-            style={{ textAlign: "center" }}
-          >
-            SERVICES & EXPERTISE
+          <span className="mb-3 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
+            Expertise
           </span>
           <h2
-            className="font-syncopate w-full font-bold uppercase tracking-tight text-white text-center"
-            style={{
-              fontSize: "clamp(2.2rem, 5.8vw, 5rem)",
-              lineHeight: 1.1,
-              textAlign: "center",
-            }}
+            className="text-editorial-section text-white text-center"
+            style={{ fontSize: "clamp(2.4rem, 6vw, 4.5rem)" }}
           >
-            WHAT WE GIVE TO
-            <br />
-            OUR CLIENTS
+            Services
           </h2>
         </motion.div>
 
-        {/* Redis Agency Service Pillars - Generous spacing and clean dividers */}
-        <div className="flex w-full flex-col divide-y divide-white/15 border-y border-white/15">
-          {PILLARS.map((pillar, idx) => (
+        {/* 2-Column Editorial Grid matching Redis Agency */}
+        <div className="flex w-full flex-col border-t border-white/15">
+          {SERVICES_DATA.map((service, idx) => (
             <motion.div
-              key={pillar.title}
-              className="flex w-full flex-col items-center justify-center gap-8 py-16 sm:py-20 text-center"
-              style={{ textAlign: "center", margin: "0 auto" }}
-              initial={{ opacity: 0, y: 28 }}
+              key={service.title}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 border-b border-white/15 py-12 sm:py-16 text-center md:text-left"
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.75, ease, delay: idx * 0.08 }}
             >
-              {/* Pillar Title */}
-              <h3
-                className="font-syncopate w-full text-xl font-bold uppercase tracking-wider text-white sm:text-2xl md:text-3xl text-center"
-                style={{ textAlign: "center" }}
-              >
-                {pillar.title}
-              </h3>
-
-              {/* Items List - Fully Centered with elegant spacing */}
-              <div
-                className="flex w-full flex-col items-center justify-center text-center"
-                style={{ textAlign: "center", margin: "0 auto" }}
-              >
-                <div
-                  className="space-y-4 font-space text-xs leading-relaxed text-white/90 sm:text-sm md:text-base text-center max-w-2xl flex flex-col items-center justify-center"
-                  style={{ textAlign: "center", margin: "0 auto" }}
-                >
-                  {pillar.items.map((item, itemIdx) => (
-                    <div
-                      key={itemIdx}
-                      className="flex flex-col items-center justify-center gap-1 text-center w-full"
-                      style={{ textAlign: "center" }}
-                    >
-                      <span
-                        className="text-white/40 text-xs text-center select-none"
-                        style={{ textAlign: "center" }}
-                      >
-                        —
-                      </span>
-                      <p
-                        className="text-white/80 hover:text-white transition-colors text-center block w-full leading-relaxed"
-                        style={{ textAlign: "center" }}
-                      >
-                        {item}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              {/* Column 1: Service Title in Editorial Serif */}
+              <div className="flex flex-col items-center md:items-start justify-start">
+                <h3 className="font-editorial text-2xl sm:text-3xl font-normal text-white">
+                  {service.title}
+                </h3>
               </div>
+
+              {/* Column 2: Deliverables List with Em-dashes */}
+              <ul className="flex flex-col items-center md:items-start gap-4">
+                {service.deliverables.map((item, itemIdx) => (
+                  <li
+                    key={itemIdx}
+                    className="flex items-start gap-3 text-swiss-body text-sm sm:text-base text-white/75"
+                  >
+                    <span className="text-white/40 select-none">—</span>
+                    <span className="leading-snug">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           ))}
         </div>
