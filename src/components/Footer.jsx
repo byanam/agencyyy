@@ -44,7 +44,7 @@ export default function Footer({ onOpenContact }) {
 
           <div className="mt-4 flex w-full justify-center text-center">
             <span className="font-sans-swiss text-xs uppercase tracking-widest text-white/50">
-              {copied ? "✓ Copied to clipboard" : "Click anywhere to copy"}
+              {copied ? "✓ Copied to clipboard" : "Click to copy email"}
             </span>
           </div>
         </motion.div>
@@ -71,7 +71,7 @@ export default function Footer({ onOpenContact }) {
         {/* Bottom Credits Bar */}
         <div className="mt-20 sm:mt-28 border-t border-white/10 pt-8 w-full flex flex-col items-center justify-center text-center">
           <p className="font-sans-swiss text-xs uppercase tracking-[0.2em] text-white/40">
-            © 2026 BYANAM DESIGN STUDIO · ALL RIGHTS RESERVED
+            © 2026 BYANAM® DESIGN STUDIO · ALL RIGHTS RESERVED
           </p>
         </div>
       </div>
