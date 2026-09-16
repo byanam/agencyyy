@@ -6,12 +6,16 @@ export default function ProjectShowcase() {
   return (
     <div
       id="client-story"
-      className="relative z-10 w-full scroll-mt-24 px-3 pb-[clamp(28px,4vw,64px)] sm:px-5 md:px-6 font-['Schibsted_Grotesk',sans-serif]"
+      className="relative z-10 flex w-full justify-center scroll-mt-24 px-3 pb-[clamp(28px,4vw,64px)] sm:px-5 md:px-6 font-['Schibsted_Grotesk',sans-serif]"
       style={{ marginTop: "calc(-1 * clamp(220px, 24vw, 320px))" }}
     >
       <motion.figure
         className="relative mx-auto w-full max-w-[1500px] overflow-hidden rounded-[24px] bg-secondary shadow-[0_40px_90px_-50px_rgba(0,0,0,0.7)] md:rounded-[40px]"
-        style={{ height: "clamp(520px, 56vw, 760px)" }}
+        style={{
+          height: "clamp(520px, 56vw, 760px)",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}

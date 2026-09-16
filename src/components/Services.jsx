@@ -86,8 +86,11 @@ export default function Services() {
   const titleShift = cardSize + 28;
 
   return (
-    <div id="services" className="w-full bg-background px-3 sm:px-5 md:px-6">
-      <section className="w-full overflow-hidden rounded-[24px] bg-[#0A0A0C] font-['Schibsted_Grotesk',sans-serif] text-white md:rounded-[36px]">
+    <div id="services" className="flex w-full justify-center bg-background px-3 sm:px-5 md:px-6">
+      <section
+        className="mx-auto w-full max-w-[1500px] overflow-hidden rounded-[24px] bg-[#0A0A0C] font-['Schibsted_Grotesk',sans-serif] text-white md:rounded-[36px]"
+        style={{ marginLeft: "auto", marginRight: "auto" }}
+      >
         {/* Floating cursor on desktop */}
         {isDesktop && (
           <motion.div
