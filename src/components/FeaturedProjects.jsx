@@ -9,7 +9,6 @@ const PROJECTS = [
     year: "2025",
     image: "/whycreatives-brand.webp",
     href: "https://byanam.github.io/nest/",
-    colClass: "lg:self-start lg:ml-6",
   },
   {
     id: 2,
@@ -18,7 +17,6 @@ const PROJECTS = [
     year: "2025",
     image: "/whycreatives-app.webp",
     href: "https://byanam.github.io/PlayStation-Store-UI/",
-    colClass: "lg:self-center lg:my-16",
   },
   {
     id: 3,
@@ -27,7 +25,6 @@ const PROJECTS = [
     year: "2024",
     image: "/whycreatives-ugc.webp",
     href: "https://notes--101.web.app",
-    colClass: "lg:self-end lg:mr-6",
   },
 ];
 
@@ -39,12 +36,12 @@ export default function FeaturedProjects({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "work"}
-      className="relative w-full bg-black px-4 py-28 sm:px-8 md:px-12 lg:py-36 font-space select-none"
+      className="relative w-full bg-black px-4 py-28 sm:px-8 md:px-12 lg:py-36 font-space select-none flex flex-col items-center justify-center text-center"
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center">
-        {/* OUR WORKS Title from Paper */}
+      <div className="mx-auto flex w-full max-w-4xl flex-col items-center justify-center text-center">
+        {/* OUR WORKS Title - Centered */}
         <motion.h2
-          className="font-syncopate mb-20 text-center font-bold tracking-widest text-white sm:mb-28"
+          className="font-syncopate mb-20 w-full text-center font-bold tracking-widest text-white sm:mb-28"
           style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)" }}
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,14 +51,14 @@ export default function FeaturedProjects({ isClone = false }) {
           OUR WORKS
         </motion.h2>
 
-        {/* 3 Staggered Cascade Cards (Left, Center, Right) Matching Paper Export */}
-        <div className="flex w-full flex-col gap-12 sm:gap-16 lg:gap-0">
+        {/* Centered Cards Stack - Down the exact center spine */}
+        <div className="flex w-full flex-col items-center justify-center gap-16 sm:gap-24">
           {PROJECTS.map((project, index) => {
             const isHovered = hoveredId === project.id;
             return (
               <motion.article
                 key={project.id}
-                className={`w-full max-w-[430px] self-center ${project.colClass}`}
+                className="w-full max-w-[500px] flex flex-col items-center justify-center text-center mx-auto"
                 initial={{ opacity: 0, y: 36 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10% 0px" }}
@@ -73,7 +70,7 @@ export default function FeaturedProjects({ isClone = false }) {
                   href={project.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block w-full"
+                  className="group block w-full flex flex-col items-center text-center"
                 >
                   {/* Card Frame matching Paper bg-[#DDDDDD] */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-neutral-400/30 bg-[#DDDDDD] p-2 shadow-2xl transition-all duration-500 group-hover:scale-[1.02]">
@@ -88,19 +85,14 @@ export default function FeaturedProjects({ isClone = false }) {
                     </div>
                   </div>
 
-                  {/* Caption underneath */}
-                  <div className="mt-4 flex items-center justify-between px-1">
-                    <div>
-                      <h3 className="font-syncopate text-xs font-bold uppercase tracking-wider text-white sm:text-sm">
-                        {project.title}
-                      </h3>
-                      <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-white/50">
-                        {project.category}
-                      </p>
-                    </div>
-                    <span className="font-mono text-xs text-white/40">
-                      {project.year}
-                    </span>
+                  {/* Caption underneath - Completely Centered */}
+                  <div className="mt-5 flex flex-col items-center justify-center text-center px-1">
+                    <h3 className="font-syncopate text-sm font-bold uppercase tracking-wider text-white sm:text-base">
+                      {project.title}
+                    </h3>
+                    <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-white/50">
+                      {project.category} · {project.year}
+                    </p>
                   </div>
                 </a>
               </motion.article>
