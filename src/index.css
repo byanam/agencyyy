@@ -194,7 +194,14 @@ section, footer, main, article, h1, h2, h3, h4, p {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
-.focus-ring-redis:focus-visible {
-  outline: 2px solid #FFFFFF;
-  outline-offset: 2px;
+.sr-only-redis {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
