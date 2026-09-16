@@ -92,7 +92,7 @@ export default function ContactDrawer({ isOpen, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 320 }}
-            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-[560px] flex-col border-l border-white/15 bg-black font-space text-white"
+            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-[560px] flex-col border-l border-white/15 bg-black font-sans-swiss text-white"
           >
             {/* Header bar */}
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8">
