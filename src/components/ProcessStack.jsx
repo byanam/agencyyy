@@ -14,7 +14,7 @@ export default function ProcessStack() {
   const [activeStep, setActiveStep] = useState(null);
 
   return (
-    <section className="relative w-full bg-black px-4 py-36 sm:py-48 text-center select-none flex flex-col items-center justify-center">
+    <section className="relative w-full bg-black px-4 py-32 sm:py-44 text-center select-none flex flex-col items-center justify-center">
       <div className="container-redis-cases flex flex-col items-center justify-center text-center">
         <motion.div
           className="mb-16 sm:mb-24 flex flex-col items-center justify-center text-center w-full"
@@ -35,7 +35,7 @@ export default function ProcessStack() {
         </motion.div>
 
         {/* Process Phases in Editorial Serif */}
-        <div className="flex w-full flex-col divide-y divide-white/15 border-y border-white/15">
+        <div className="flex w-full flex-col divide-y divide-white/10 border-y border-white/15">
           {PHASES.map((phase, idx) => {
             const isHovered = activeStep === idx;
             return (
