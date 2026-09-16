@@ -14,7 +14,7 @@ export default function ClientBubbles() {
   const [hoveredId, setHoveredId] = useState(null);
 
   return (
-    <section className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center">
+    <section className="relative w-full bg-black px-4 py-36 sm:py-48 select-none flex flex-col items-center justify-center text-center">
       <div className="container-redis-cases flex flex-col items-center justify-center text-center">
         <motion.div
           className="mb-16 sm:mb-24 flex flex-col items-center justify-center text-center w-full"
@@ -47,7 +47,7 @@ export default function ClientBubbles() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.6, ease, delay: idx * 0.08 }}
             >
-              <div className="relative aspect-square w-24 sm:w-32 md:w-36 overflow-hidden rounded-full border border-white/15 bg-[#0e0f11] p-1 transition-all duration-500 group-hover:border-white group-hover:scale-105">
+              <div className="relative aspect-square w-24 sm:w-32 md:w-36 overflow-hidden rounded-full border border-white/20 bg-[#0e0f11] p-1 transition-all duration-500 group-hover:border-white group-hover:scale-105">
                 <img
                   src={item.image}
                   alt={item.name}
