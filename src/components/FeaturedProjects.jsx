@@ -48,7 +48,7 @@ export default function FeaturedProjects({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "work"}
-      className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center"
+      className="relative w-full bg-black px-4 py-36 sm:py-48 select-none flex flex-col items-center justify-center text-center"
       style={{ textAlign: "center" }}
     >
       <div className="container-redis-cases flex flex-col items-center justify-center text-center">
@@ -97,7 +97,7 @@ export default function FeaturedProjects({ isClone = false }) {
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:contrast-105 group-hover:scale-105"
+                      className="h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-105"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/15 transition-opacity duration-300 group-hover:opacity-0" />
