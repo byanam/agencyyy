@@ -5,7 +5,7 @@ let globalLenis = null;
 export function scrollToTarget(target, options = {}) {
   if (globalLenis) {
     globalLenis.scrollTo(target, {
-      duration: 1.15,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       ...options,
     });
@@ -30,12 +30,12 @@ export function useLenis({ wrapRef } = {}) {
       try {
         const Lenis = (await import("@studio-freight/lenis")).default;
         lenis = new Lenis({
-          duration: 1.15,
+          duration: 1.2,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: "vertical",
           gestureOrientation: "vertical",
           smoothWheel: true,
-          wheelMultiplier: 1,
+          wheelMultiplier: 1.05,
           touchMultiplier: 1.8,
           infinite: false, // We control the seamless wrap precisely across our dual-wrap DOM
         });
