@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { scrollToTarget } from "../hooks/useLenis";
 
-const NAV_ITEMS = [
-  { label: "Cases", href: "#work" },
-  { label: "Services", href: "#services" },
-  { label: "Process", href: "#process" },
-];
-
 export default function Navbar({ onOpenContact }) {
   const [isFloating, setIsFloating] = useState(false);
 
@@ -21,44 +15,43 @@ export default function Navbar({ onOpenContact }) {
   }, []);
 
   return (
-    <header className="fixed left-0 right-0 top-5 sm:top-6 z-50 flex w-full justify-center px-4 font-sans-swiss select-none">
-      {/* Top Floating Pill Bar Matching Redis Agency */}
-      <div
-        className={`flex items-center gap-5 sm:gap-8 rounded-full border px-5 py-2 sm:px-6 sm:py-2.5 transition-all duration-300 ${
-          isFloating
-            ? "border-white/20 bg-black/90 backdrop-blur-md"
-            : "border-white/15 bg-black/75 backdrop-blur-sm"
-        }`}
-      >
-        {/* Brand / Logo in Editorial Serif */}
+    <header className="fixed left-0 right-0 top-0 z-50 flex w-full justify-between items-center px-4 py-4 sm:px-8 sm:py-6 font-sans-swiss select-none">
+      {/* Left Links: Cases, Services */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        <button
+          onClick={() => scrollToTarget("#cases")}
+          className="redis-btn-pill text-xs sm:text-sm py-1.5 px-4 sm:px-5"
+        >
+          Cases
+        </button>
+        <button
+          onClick={() => scrollToTarget("#services")}
+          className="redis-btn-pill text-xs sm:text-sm py-1.5 px-4 sm:px-5"
+        >
+          Services
+        </button>
+      </div>
+
+      {/* Center Brand: Internet Sites */}
+      <div className="flex items-center justify-center">
         <button
           onClick={() => scrollToTarget(0)}
-          className="font-editorial text-sm sm:text-base font-medium tracking-tight text-white hover:text-white/80 transition-colors"
+          className="font-editorial text-lg sm:text-2xl font-normal tracking-tight text-white hover:opacity-80 transition-opacity"
         >
-          Byanam®
+          Internet Sites
         </button>
+      </div>
 
-        <span className="h-3 w-px bg-white/20" />
-
-        {/* Navigation Items */}
-        <nav className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm font-normal text-white/70">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => scrollToTarget(item.href)}
-              className="transition-colors hover:text-white"
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        <span className="h-3 w-px bg-white/20" />
-
-        {/* Get In Touch Pill Button */}
+      {/* Right Action: Language & Get in touch */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="hidden md:flex items-center gap-1.5 text-xs text-white/60 mr-2">
+          <span className="text-white font-medium cursor-pointer">en</span>
+          <span>/</span>
+          <span className="hover:text-white cursor-pointer transition-colors">ru</span>
+        </div>
         <button
           onClick={onOpenContact}
-          className="rounded-full bg-white px-4 py-1.5 text-[11px] sm:text-xs font-semibold tracking-normal text-black transition-all duration-200 hover:bg-white/90 hover:scale-105"
+          className="redis-btn-pill text-xs sm:text-sm py-1.5 px-4 sm:px-6"
         >
           Get in touch
         </button>

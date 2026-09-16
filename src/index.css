@@ -1,17 +1,16 @@
-/* ── Google Fonts (Redis Agency Editorial Stack) ── */
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&display=swap");
+/* ── Redis Agency 1:1 Typography & Design System ── */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&display=swap");
 
 @import "tailwindcss";
 
 :root {
-  --redis-bg: #000000;
-  --redis-fg: #FFFFFF;
-  --redis-muted: #8E8E93;
-  --redis-border: rgba(255, 255, 255, 0.12);
-  --redis-border-hover: rgba(255, 255, 255, 0.35);
-  --redis-card-bg: #0D0E10;
-  --redis-font-serif: "Playfair Display", "Newsreader", Georgia, serif;
-  --redis-font-sans: "Plus Jakarta Sans", "Space Grotesk", system-ui, sans-serif;
+  --bg: #000000;
+  --white: #FFFFFF;
+  --gray-dim: #8E8E93;
+  --gray-border: rgba(255, 255, 255, 0.12);
+  --gray-border-hover: rgba(255, 255, 255, 0.35);
+  --font-serif: "Newsreader", "Playfair Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 *,
@@ -26,8 +25,8 @@ html {
   scroll-behavior: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--bg);
+  color: var(--white);
   text-align: center;
 }
 
@@ -49,132 +48,101 @@ html.lenis body {
 }
 
 body {
-  font-family: "Space Grotesk", system-ui, sans-serif;
-  background-color: #000000;
-  color: #ffffff;
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--white);
   overflow-x: hidden;
   text-align: center !important;
+  user-select: none;
 }
 
-section, footer, main, article, h1, h2, h3, h4, p {
-  text-align: center;
-}
-
-.font-syne {
-  font-family: "Syne", system-ui, sans-serif;
-}
-
-.font-syncopate {
-  font-family: "Syncopate", system-ui, sans-serif;
-}
-
-.font-space {
-  font-family: "Space Grotesk", system-ui, sans-serif;
-}
-
+/* Redis Agency Typography Utilities */
 .font-editorial {
-  font-family: var(--redis-font-serif);
-  letter-spacing: -0.02em;
+  font-family: var(--font-serif);
+  letter-spacing: -0.025em;
 }
 
 .font-sans-swiss {
-  font-family: var(--redis-font-sans);
+  font-family: var(--font-sans);
   letter-spacing: -0.01em;
 }
 
-.text-editorial-hero {
-  font-family: var(--redis-font-serif);
-  font-weight: 400;
-  line-height: 0.88;
-  letter-spacing: -0.03em;
+/* Redis Agency Button (.Button-module__SBF53G__button-link) */
+.redis-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.6rem 1.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: var(--white);
+  color: var(--bg);
+  border: 1px solid var(--white);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
 }
 
-.text-editorial-section {
-  font-family: var(--redis-font-serif);
-  font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: -0.02em;
+.redis-btn-pill:hover {
+  background-color: var(--bg);
+  color: var(--white);
+  border-color: var(--white);
 }
 
-.text-swiss-body {
-  font-family: var(--redis-font-sans);
-  font-weight: 400;
-  line-height: 1.55;
-  letter-spacing: -0.005em;
+/* Outline Pill variant */
+.redis-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: transparent;
+  color: var(--white);
+  border: 1px solid var(--gray-border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
 }
 
-.container-redis-hero {
-  max-width: 760px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+.redis-btn-outline:hover {
+  border-color: var(--white);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
-.container-redis-cases {
+/* Redis Agency Marquee (.Carousel-module__nu5vFW__carousel) */
+@keyframes redisMarqueeTrack {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.redis-marquee-carousel {
+  display: flex;
+  width: max-content;
+  animation: redisMarqueeTrack 28s linear infinite;
+}
+
+.redis-marquee-carousel:hover {
+  animation-play-state: paused;
+}
+
+/* Redis Agency Max Width Containers */
+.redis-container {
   max-width: 680px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
-.container-redis-services {
-  max-width: 740px;
+.redis-container-wide {
+  max-width: 760px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-}
-
-@keyframes redisMarquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-
-.redis-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: redisMarquee 28s linear infinite;
-}
-
-.redis-marquee-track:hover {
-  animation-play-state: paused;
-}
-
-.btn-redis-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  padding: 0.65rem 1.75rem;
-  font-family: var(--redis-font-sans);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  background-color: #FFFFFF;
-  color: #000000;
-  border: 1px solid #FFFFFF;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-redis-pill:hover {
-  background-color: #000000;
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-  transform: translateY(-1px);
-}
-
-.divider-redis {
-  border-top: 1px solid var(--redis-border);
-}
-
-.card-redis-border {
-  border: 1px solid var(--redis-border);
-  transition: border-color 0.3s ease;
-}
-
-.card-redis-border:hover {
-  border-color: var(--redis-border-hover);
 }
 
 ::selection {
@@ -182,18 +150,7 @@ section, footer, main, article, h1, h2, h3, h4, p {
   color: #000000;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
-p, h1, h2, h3, h4 {
-  text-wrap: balance;
+img {
+  -webkit-user-drag: none;
+  user-select: none;
 }

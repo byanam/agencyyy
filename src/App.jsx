@@ -3,11 +3,10 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useLenis } from "./hooks/useLenis";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Marquee from "./components/Marquee";
-import FeaturedProjects from "./components/FeaturedProjects";
-import ProcessStack from "./components/ProcessStack";
+import ClientLogos from "./components/ClientLogos";
+import Cases from "./components/Cases";
 import Services from "./components/Services";
-import ClientBubbles from "./components/ClientBubbles";
+import Team from "./components/Team";
 import Footer from "./components/Footer";
 import ContactDrawer from "./components/ContactDrawer";
 
@@ -15,13 +14,10 @@ function PageBody({ isClone = false, onOpenContact }) {
   return (
     <>
       <Hero onOpenContact={onOpenContact} />
-      <Marquee />
-      <FeaturedProjects isClone={isClone} />
-      <div id={isClone ? undefined : "process"}>
-        <ProcessStack />
-      </div>
-      <Services isClone={isClone} />
-      <ClientBubbles />
+      <ClientLogos />
+      <Cases isClone={isClone} />
+      <Services isClone={isClone} onOpenContact={onOpenContact} />
+      <Team />
       <Footer onOpenContact={onOpenContact} />
     </>
   );
@@ -37,19 +33,21 @@ function AppContent() {
   const handleCloseContact = () => setContactOpen(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-black text-white selection:bg-white selection:text-black font-sans-swiss">
-      {/* Top Floating Pill Navigation */}
+    <div className="relative min-h-screen overflow-x-hidden bg-black text-white selection:bg-white selection:text-black">
+      {/* Top Header */}
       <Navbar onOpenContact={handleOpenContact} />
 
       {/* Slide-In Contact Drawer */}
       <ContactDrawer isOpen={contactOpen} onClose={handleCloseContact} />
 
-      {/* Continuous Infinite Scroll Loop Container (Redis Agency Mechanics) */}
+      {/* ── Continuous Infinite Scroll Loop Container (Redis Agency Mechanics) ── */}
       <main data-loop-scroll="main" className="relative w-full">
+        {/* Primary Page Wrap */}
         <div ref={wrapRef} data-loop-scroll="wrap" className="relative w-full">
           <PageBody onOpenContact={handleOpenContact} />
         </div>
 
+        {/* Secondary Page Wrap (Visual Loop Clone for seamless flow) */}
         <div data-loop-scroll="wrap" aria-hidden="true" className="relative w-full">
           <PageBody isClone={true} onOpenContact={handleOpenContact} />
         </div>

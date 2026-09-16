@@ -1,72 +1,87 @@
 import { motion } from "framer-motion";
-import { scrollToTarget } from "../hooks/useLenis";
 
 const ease = [0.16, 1, 0.3, 1];
 
 export default function Hero({ onOpenContact }) {
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black px-4 pt-28 pb-32 sm:pt-36 sm:pb-44 text-center select-none">
-      <div className="container-redis-hero flex flex-col items-center justify-center text-center">
-        {/* Subtitle Pill / Tagline */}
-        <motion.div
-          className="mb-10 sm:mb-12 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5"
-          initial={{ opacity: 0, y: -16 }}
+    <section className="relative flex min-h-[90vh] w-full flex-col items-center justify-start bg-black px-4 pt-36 pb-20 sm:pt-48 sm:pb-28 text-center select-none overflow-hidden">
+      {/* Decorative Botanical Graphic 1 (Top Left) */}
+      <div className="absolute left-[-4vw] top-[12vh] w-[22vw] max-w-[240px] pointer-events-none opacity-40 select-none">
+        <img
+          src="/images/67446b8761145d75854e99d6_hero_botva_01@2.png"
+          alt=""
+          className="w-full h-auto object-contain"
+        />
+      </div>
+
+      {/* Decorative Botanical Graphic 2 (Top Right) */}
+      <div className="absolute right-[-3vw] top-[24vh] w-[18vw] max-w-[200px] pointer-events-none opacity-30 select-none">
+        <img
+          src="/images/67446b8761145d75854e99d4_botva-3.png"
+          alt=""
+          className="w-full h-auto object-contain"
+        />
+      </div>
+
+      <div className="redis-container-wide relative z-10 flex flex-col items-center justify-center text-center">
+        {/* Kicker tag */}
+        <motion.p
+          className="font-sans-swiss text-xs sm:text-sm uppercase tracking-[0.2em] text-white/50 mb-6"
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease }}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-          <span className="font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white/70">
-            Design support for ambitious brands
-          </span>
-        </motion.div>
+          design support for major brands
+        </motion.p>
 
-        {/* Main Headline in Editorial Serif - Tight, High-Fashion, Balanced */}
-        <motion.div
-          className="flex flex-col items-center justify-center text-center"
-          initial={{ opacity: 0, y: 28 }}
+        {/* Monumental Headline: Internet Sites — design support */}
+        <motion.h1
+          className="font-editorial text-white text-center font-normal tracking-tight"
+          style={{
+            fontSize: "clamp(2.8rem, 7.5vw, 6.8rem)",
+            lineHeight: 0.88,
+          }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease, delay: 0.1 }}
         >
-          <h1
-            className="text-editorial-hero text-white text-center"
-            style={{
-              fontSize: "clamp(3.2rem, 9vw, 7.5rem)",
-            }}
-          >
-            Internet Sites
-            <br />
-            <span className="italic font-light text-white/90">& Digital Products</span>
-          </h1>
-        </motion.div>
+          Internet Sites
+          <br />
+          <span className="font-light italic text-white/90">— design support</span>
+        </motion.h1>
 
-        {/* Editorial Subtitle with Proportional Width to Prevent Text Stretching */}
-        <motion.div
-          className="mt-8 sm:mt-10 max-w-[560px] px-2 text-center"
-          initial={{ opacity: 0, y: 20 }}
+        {/* Subtitle (.u-p-big) */}
+        <motion.h2
+          className="mt-12 sm:mt-16 font-sans-swiss text-lg sm:text-2xl font-normal text-white max-w-[620px] leading-snug"
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease, delay: 0.25 }}
+          transition={{ duration: 0.8, ease, delay: 0.22 }}
         >
-          <p className="text-swiss-body text-base sm:text-lg text-white/75 leading-relaxed">
-            Ultimate design partner for ambitious startups and worldwide brands.
-            Delivering thousands of projects — fast and always on brand.
-          </p>
-        </motion.div>
+          Ultimate design partner for ambitious startups and worldwide brands
+        </motion.h2>
 
-        {/* Action Buttons: Get in Touch & View Cases */}
-        <motion.div
-          className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-5"
-          initial={{ opacity: 0, y: 18 }}
+        {/* Narrative Description */}
+        <motion.p
+          className="mt-4 sm:mt-6 font-sans-swiss text-sm sm:text-base text-white/65 max-w-[540px] leading-relaxed"
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease, delay: 0.35 }}
+          transition={{ duration: 0.8, ease, delay: 0.3 }}
         >
-          <button onClick={onOpenContact} className="btn-redis-pill">
-            Get in touch
-          </button>
+          For over 17 years, we’ve been helping marketing, HR, and brand teams deliver thousands of projects — fast and always on brand.
+        </motion.p>
+
+        {/* Quick CTA */}
+        <motion.div
+          className="mt-10"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease, delay: 0.38 }}
+        >
           <button
-            onClick={() => scrollToTarget("#work")}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-2.5 font-sans-swiss text-sm font-medium text-white transition-all hover:border-white hover:bg-white/10"
+            onClick={onOpenContact}
+            className="redis-btn-pill text-sm py-2 px-7"
           >
-            Explore Cases ↓
+            Get in touch
           </button>
         </motion.div>
       </div>
