@@ -71,3 +71,8 @@ section, footer, main, article, h1, h2, h3, h4, p {
 .font-space {
   font-family: "Space Grotesk", system-ui, sans-serif;
 }
+
+.font-editorial {
+  font-family: var(--redis-font-serif);
+  letter-spacing: -0.02em;
+}
