@@ -109,3 +109,10 @@ section, footer, main, article, h1, h2, h3, h4, p {
   margin-left: auto;
   margin-right: auto;
 }
+
+.container-redis-cases {
+  max-width: 680px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
