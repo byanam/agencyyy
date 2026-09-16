@@ -50,7 +50,7 @@ export default function Footer({ onOpenContact }) {
         </motion.div>
 
         {/* Links Navigation */}
-        <div className="mt-16 sm:mt-24 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-xs sm:text-sm font-sans-swiss text-white/70">
+        <div className="mt-16 sm:mt-24 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm font-sans-swiss text-white/70">
           <button onClick={onOpenContact} className="transition-colors hover:text-white">
             Contact
           </button>
@@ -69,7 +69,7 @@ export default function Footer({ onOpenContact }) {
         </div>
 
         {/* Bottom Credits Bar */}
-        <div className="mt-20 sm:mt-28 border-t border-white/10 pt-8 w-full flex flex-col items-center justify-center text-center">
+        <div className="mt-20 sm:mt-28 border-t border-white/15 pt-8 w-full flex flex-col items-center justify-center text-center">
           <p className="font-sans-swiss text-xs uppercase tracking-[0.2em] text-white/40">
             © 2026 BYANAM DESIGN STUDIO · ALL RIGHTS RESERVED
           </p>
