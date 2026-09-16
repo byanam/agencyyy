@@ -13,7 +13,7 @@ const BRANDS = [
 
 export default function Marquee() {
   return (
-    <section className="relative w-full overflow-hidden border-y border-white/10 bg-black py-6 sm:py-8 select-none">
+    <section className="relative w-full overflow-hidden border-y border-white/10 bg-black py-7 sm:py-9 select-none">
       <div className="flex w-full overflow-hidden">
         <div className="redis-marquee-track flex items-center gap-12 sm:gap-16 whitespace-nowrap">
           {BRANDS.concat(BRANDS).map((brand, i) => (
