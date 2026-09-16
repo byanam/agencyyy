@@ -138,3 +138,28 @@ section, footer, main, article, h1, h2, h3, h4, p {
 .redis-marquee-track:hover {
   animation-play-state: paused;
 }
+
+.btn-redis-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.65rem 1.75rem;
+  font-family: var(--redis-font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #FFFFFF;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-redis-pill:hover {
+  background-color: #000000;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  transform: translateY(-1px);
+}
