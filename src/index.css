@@ -1,5 +1,59 @@
-/* ── Redis Agency 1:1 Typography & Design System ── */
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&display=swap");
+/* ── Redis Agency Authentic Font Declarations ── */
+@font-face {
+  font-family: "Editorialnew";
+  src: url("/fonts/EditorialNew-Ultralight.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Editorialnew";
+  src: url("/fonts/EditorialNew-Thin.woff2") format("woff2");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Editorialnew";
+  src: url("/fonts/EditorialNew-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Editorialnew";
+  src: url("/fonts/EditorialNew-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Editorialnew";
+  src: url("/fonts/EditorialNew-Ultrabold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisseintl";
+  src: url("/fonts/SuisseIntl-Regular-WebM.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisseintl";
+  src: url("/fonts/SuisseIntl-Regular-WebXL.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
 
 @import "tailwindcss";
 
@@ -7,10 +61,10 @@
   --bg: #000000;
   --white: #FFFFFF;
   --gray-dim: #8E8E93;
-  --gray-border: rgba(255, 255, 255, 0.12);
+  --gray-border: rgba(255, 255, 255, 0.14);
   --gray-border-hover: rgba(255, 255, 255, 0.35);
-  --font-serif: "Newsreader", "Playfair Display", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-serif: "Editorialnew", Georgia, serif;
+  --font-sans: "Suisseintl", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 *,
@@ -58,12 +112,12 @@ body {
 
 /* Redis Agency Typography Utilities */
 .font-editorial {
-  font-family: var(--font-serif);
-  letter-spacing: -0.025em;
+  font-family: "Editorialnew", Georgia, serif;
+  letter-spacing: -0.02em;
 }
 
-.font-sans-swiss {
-  font-family: var(--font-sans);
+.font-suisse {
+  font-family: "Suisseintl", -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: -0.01em;
 }
 
@@ -72,17 +126,18 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  padding: 0.6rem 1.6rem;
+  border-radius: 40px;
+  padding: 8px 24px;
   font-family: var(--font-sans);
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   background-color: var(--white);
   color: var(--bg);
   border: 1px solid var(--white);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   text-decoration: none;
+  line-height: 1.2;
 }
 
 .redis-btn-pill:hover {
@@ -96,15 +151,15 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  padding: 0.55rem 1.4rem;
+  border-radius: 40px;
+  padding: 8px 22px;
   font-family: var(--font-sans);
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   background-color: transparent;
   color: var(--white);
   border: 1px solid var(--gray-border);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   text-decoration: none;
 }
@@ -123,16 +178,16 @@ body {
 .redis-marquee-carousel {
   display: flex;
   width: max-content;
-  animation: redisMarqueeTrack 28s linear infinite;
+  animation: redisMarqueeTrack 26s linear infinite;
 }
 
 .redis-marquee-carousel:hover {
   animation-play-state: paused;
 }
 
-/* Redis Agency Max Width Containers */
+/* Redis Agency Containers */
 .redis-container {
-  max-width: 680px;
+  max-width: 660px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

@@ -95,12 +95,12 @@ export default function Services({ isClone = false, onOpenContact }) {
               <div className="flex flex-col items-center md:items-start justify-start">
                 {pillar.isDevelopment ? (
                   <div className="flex flex-col items-center md:items-start gap-3">
-                    <p className="font-sans-swiss text-sm sm:text-base text-white/75 leading-relaxed">
+                    <p className="font-suisse text-sm sm:text-base text-white/75 leading-relaxed">
                       {pillar.desc}
                     </p>
                     <button
                       onClick={onOpenContact}
-                      className="font-sans-swiss text-xs sm:text-sm text-white underline underline-offset-4 hover:text-white/80 transition-colors"
+                      className="font-suisse text-xs sm:text-sm text-white underline underline-offset-4 hover:text-white/80 transition-colors"
                     >
                       Learn more →
                     </button>
@@ -110,7 +110,7 @@ export default function Services({ isClone = false, onOpenContact }) {
                     {pillar.items.map((item, itemIdx) => (
                       <li
                         key={itemIdx}
-                        className="flex items-start gap-3 font-sans-swiss text-sm sm:text-base text-white/75"
+                        className="flex items-start gap-3 font-suisse text-sm sm:text-base text-white/75"
                       >
                         <span className="text-white/40 select-none">—</span>
                         <span className="leading-snug">{item}</span>

@@ -95,7 +95,7 @@ export default function Cases({ isClone = false }) {
                   <h3 className="font-editorial text-2xl sm:text-4xl font-normal tracking-tight text-white transition-colors group-hover:text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-2 font-sans-swiss text-xs sm:text-sm text-white/70 leading-relaxed max-w-[480px]">
+                  <p className="mt-2 font-suisse text-xs sm:text-sm text-white/70 leading-relaxed max-w-[480px]">
                     {item.description}
                   </p>
                 </div>

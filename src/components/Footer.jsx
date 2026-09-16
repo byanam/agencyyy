@@ -41,14 +41,14 @@ export default function Footer({ onOpenContact }) {
           </a>
 
           <div className="mt-4 flex w-full justify-center text-center">
-            <span className="font-sans-swiss text-xs uppercase tracking-widest text-white/45">
+            <span className="font-suisse text-xs uppercase tracking-widest text-white/45">
               {copied ? "✓ Copied to clipboard" : "Click to copy email"}
             </span>
           </div>
         </motion.div>
 
         {/* Links Navigation matching Redis Agency */}
-        <div className="mt-20 sm:mt-28 flex flex-wrap items-center justify-center gap-6 sm:gap-10 font-sans-swiss text-xs sm:text-sm text-white/70">
+        <div className="mt-20 sm:mt-28 flex flex-wrap items-center justify-center gap-6 sm:gap-10 font-suisse text-xs sm:text-sm text-white/70">
           <a
             href="https://t.me/redisagency"
             target="_blank"
@@ -90,7 +90,7 @@ export default function Footer({ onOpenContact }) {
 
         {/* Copyright */}
         <div className="mt-16 sm:mt-20 border-t border-white/10 pt-8 w-full flex flex-col items-center justify-center text-center">
-          <p className="font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white/35">
+          <p className="font-suisse text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white/35">
             © 2026 INTERNET SITES · DESIGN SUPPORT FOR MAJOR BRANDS
           </p>
         </div>

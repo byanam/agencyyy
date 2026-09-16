@@ -15,7 +15,7 @@ export default function Navbar({ onOpenContact }) {
   }, []);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 flex w-full justify-between items-center px-4 py-4 sm:px-8 sm:py-6 font-sans-swiss select-none">
+    <header className="fixed left-0 right-0 top-0 z-50 flex w-full justify-between items-center px-4 py-4 sm:px-8 sm:py-6 font-suisse select-none">
       {/* Left Links: Cases, Services */}
       <div className="flex items-center gap-2 sm:gap-3">
         <button
