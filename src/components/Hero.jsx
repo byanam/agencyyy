@@ -47,7 +47,7 @@ export default function Hero({ onOpenContact }) {
           transition={{ duration: 0.8, ease, delay: 0.25 }}
         >
           <p className="text-swiss-body text-base sm:text-lg text-white/75 leading-relaxed">
-            Ultimate design partner for ambitious startups and worldwide brands.
+            The ideal design partner for ambitious startups and worldwide brands.
             Delivering thousands of projects — fast and always on brand.
           </p>
         </motion.div>
