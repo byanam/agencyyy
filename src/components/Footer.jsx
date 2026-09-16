@@ -15,7 +15,7 @@ export default function Footer({ onOpenContact }) {
   };
 
   return (
-    <footer className="relative w-full bg-black px-4 pt-40 pb-28 sm:pt-44 sm:pb-28 select-none flex flex-col items-center justify-center text-center">
+    <footer className="relative w-full bg-black px-4 pt-36 pb-24 sm:pt-44 sm:pb-28 select-none flex flex-col items-center justify-center text-center">
       <div className="container-redis-hero flex flex-col items-center justify-center text-center">
         <span className="mb-6 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
           Get In Touch
@@ -50,7 +50,7 @@ export default function Footer({ onOpenContact }) {
         </motion.div>
 
         {/* Links Navigation */}
-        <div className="mt-16 sm:mt-24 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm font-sans-swiss text-white/70">
+        <div className="mt-16 sm:mt-24 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-xs sm:text-sm font-sans-swiss text-white/70">
           <button onClick={onOpenContact} className="transition-colors hover:text-white">
             Contact
           </button>
