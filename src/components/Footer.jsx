@@ -156,9 +156,9 @@ export default function Footer() {
         </div>
 
         {/* Footer content */}
-        <footer className="relative overflow-hidden rounded-[24px] bg-[var(--footer-card)] px-4 pb-16 pt-8 text-white sm:px-8 md:pb-12 md:pt-12 md:rounded-[32px] lg:px-20 lg:pt-16">
+        <footer className="relative overflow-hidden rounded-[24px] bg-[var(--footer-card)] px-6 pb-16 pt-10 text-white sm:px-10 md:pb-14 md:pt-14 md:rounded-[32px] lg:px-16 lg:pt-16">
           <div className="relative mx-auto max-w-7xl">
-            <div className="flex flex-col items-start justify-between gap-12 pb-12 pt-4 pl-0 sm:pl-4 md:pl-16 lg:flex-row lg:gap-16 lg:pl-20">
+            <div className="flex flex-col items-start justify-between gap-12 pb-12 pt-4 lg:flex-row lg:gap-16">
               {/* Left Column: Brand & CTA */}
               <div className="flex max-w-sm flex-col items-start gap-6">
                 <a
