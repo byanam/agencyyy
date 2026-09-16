@@ -18,7 +18,7 @@ export default function Footer({ onOpenContact }) {
     <footer className="relative w-full bg-black px-4 pt-36 pb-24 sm:pt-44 sm:pb-28 select-none flex flex-col items-center justify-center text-center">
       <div className="container-redis-hero flex flex-col items-center justify-center text-center">
         <span className="mb-6 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
-          Get In Touch
+          Start A Project
         </span>
 
         {/* Big Editorial Email */}
