@@ -4,8 +4,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 0%;
-  --foreground: 0 0% 100%;
+  --redis-bg: #000000;
+  --redis-fg: #FFFFFF;
+  --redis-muted: #8E8E93;
+  --redis-border: rgba(255, 255, 255, 0.12);
+  --redis-border-hover: rgba(255, 255, 255, 0.35);
+  --redis-card-bg: #0D0E10;
+  --redis-font-serif: "Playfair Display", "Newsreader", Georgia, serif;
+  --redis-font-sans: "Plus Jakarta Sans", "Space Grotesk", system-ui, sans-serif;
 }
 
 *,
