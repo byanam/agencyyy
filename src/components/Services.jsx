@@ -38,7 +38,7 @@ const SERVICES_DATA = [
   {
     title: "Development",
     deliverables: [
-      "Fast, high-quality marketing websites built with no-code and modern code",
+      "Fast, high-quality marketing websites built with modern code",
       "Interactive 3D WebGL experiences and micro-interactions",
       "Full responsive optimization and accessibility compliance",
     ],
@@ -51,7 +51,7 @@ export default function Services({ isClone = false }) {
   return (
     <section
       id={isClone ? undefined : "services"}
-      className="relative w-full bg-black px-4 py-32 sm:py-44 select-none flex flex-col items-center justify-center text-center"
+      className="relative w-full bg-black px-4 py-36 sm:py-48 select-none flex flex-col items-center justify-center text-center"
       style={{ textAlign: "center" }}
     >
       <div className="container-redis-services flex flex-col items-center justify-center text-center">
