@@ -25,17 +25,17 @@ export default function ProjectShowcase() {
           height={900}
           loading="lazy"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-gradient-to-br from-black/45 via-black/10 to-black/45"
         />
 
-        {/* Floating Quote Badge (Top Left) */}
-        <div className="absolute left-3 top-3 max-w-[min(88%,30rem)] sm:left-6 sm:top-6 md:left-8 md:top-8">
+        {/* Floating Quote Badge (Centered Horizontally) */}
+        <div className="absolute inset-x-0 top-6 flex flex-col items-center px-4 sm:top-8 md:top-10">
           <motion.div
-            className="relative rounded-2xl bg-white px-4 py-3.5 text-black sm:px-6 sm:py-5 shadow-lg"
+            className="relative w-full max-w-[min(92%,32rem)] rounded-2xl bg-white px-5 py-4 text-center text-black sm:px-7 sm:py-5 shadow-xl"
             initial={{ opacity: 0, y: -14, scale: 0.96 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.4 }}
@@ -61,7 +61,7 @@ export default function ProjectShowcase() {
             {/* Speech bubble tail */}
             <span
               aria-hidden="true"
-              className="absolute -bottom-1.5 left-7 h-4 w-4 rotate-45 rounded-[3px] bg-white"
+              className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-4 w-4 rotate-45 rounded-[3px] bg-white"
             />
           </motion.div>
 
