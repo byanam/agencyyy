@@ -72,7 +72,7 @@ export default function FeaturedProjects({ isClone = false }) {
         </motion.div>
 
         {/* Case Cards Stack - Contained Width, Zero Glow, Refined Typography */}
-        <div className="flex w-full flex-col items-center justify-center gap-24 sm:gap-36">
+        <div className="flex w-full flex-col items-center justify-center gap-20 sm:gap-32">
           {CASES.map((project, index) => {
             const isHovered = hoveredId === project.id;
             return (
@@ -104,7 +104,7 @@ export default function FeaturedProjects({ isClone = false }) {
                   </div>
 
                   {/* Editorial Text Content Underneath */}
-                  <div className="mt-6 flex flex-col items-center justify-center text-center px-2 max-w-[580px]">
+                  <div className="mt-6 flex flex-col items-center justify-center text-center px-2 max-w-[540px]">
                     <h3 className="font-editorial text-2xl sm:text-3xl font-medium tracking-tight text-white group-hover:text-white transition-colors">
                       {project.title}
                     </h3>
