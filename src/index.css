@@ -194,9 +194,6 @@ section, footer, main, article, h1, h2, h3, h4, p {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
-@media (max-width: 640px) {
-  .btn-redis-pill {
-    padding: 0.55rem 1.4rem;
-    font-size: 0.8rem;
-  }
+.transition-redis {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
