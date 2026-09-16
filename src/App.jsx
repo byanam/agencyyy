@@ -3,6 +3,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useLenis } from "./hooks/useLenis";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import Marquee from "./components/Marquee";
 import FeaturedProjects from "./components/FeaturedProjects";
 import ProcessStack from "./components/ProcessStack";
 import Services from "./components/Services";
@@ -14,6 +15,7 @@ function PageBody({ isClone = false, onOpenContact }) {
   return (
     <>
       <Hero onOpenContact={onOpenContact} />
+      <Marquee />
       <FeaturedProjects isClone={isClone} />
       <div id={isClone ? undefined : "process"}>
         <ProcessStack />
@@ -35,26 +37,20 @@ function AppContent() {
   const handleCloseContact = () => setContactOpen(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-black text-white selection:bg-white selection:text-black">
       {/* Top Floating Pill Navigation */}
       <Navbar onOpenContact={handleOpenContact} />
 
-      {/* Global Slide-In Contact Drawer */}
+      {/* Slide-In Contact Drawer */}
       <ContactDrawer isOpen={contactOpen} onClose={handleCloseContact} />
 
-      {/* ── Continuous Infinite Scroll Loop Container (Redis Agency mechanics) ── */}
+      {/* Continuous Infinite Scroll Loop Container (Redis Agency Mechanics) */}
       <main data-loop-scroll="main" className="relative w-full">
-        {/* Primary Page Wrap */}
         <div ref={wrapRef} data-loop-scroll="wrap" className="relative w-full">
           <PageBody onOpenContact={handleOpenContact} />
         </div>
 
-        {/* Secondary Page Wrap (Visual Loop Clone for continuous flow) */}
-        <div
-          data-loop-scroll="wrap"
-          aria-hidden="true"
-          className="relative w-full"
-        >
+        <div data-loop-scroll="wrap" aria-hidden="true" className="relative w-full">
           <PageBody isClone={true} onOpenContact={handleOpenContact} />
         </div>
       </main>
