@@ -24,7 +24,7 @@ export default function ProcessStack() {
           transition={{ duration: 0.7, ease }}
         >
           <span className="mb-3 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
-            Methodology
+            Execution Framework
           </span>
           <h2
             className="text-editorial-section text-white text-center"
