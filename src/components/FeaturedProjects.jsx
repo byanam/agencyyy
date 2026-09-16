@@ -293,17 +293,21 @@ export default function FeaturedProjects() {
     <section
       id="work"
       aria-labelledby="featured-projects-heading"
-      className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground sm:px-6 md:px-8 lg:px-12"
-      style={{
-        paddingTop: "clamp(64px, 8vw, 132px)",
-        paddingBottom: "clamp(64px, 8vw, 132px)",
-      }}
+      className="relative flex min-h-screen w-full flex-col justify-center bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground sm:px-6 md:px-8 lg:px-12 py-16 sm:py-24 md:py-28"
     >
-      {/* Centered container with perfectly equal margins on both left and right */}
-      <div className="mx-auto w-full max-w-[1200px]">
-        {/* Editorial 2-column grid */}
-        <div className="grid grid-cols-1 items-start gap-y-16 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-28 xl:gap-x-24">
-          {/* Header Block: Placed in Column 2, Row 1 on desktop */}
+      {/* Centered container with perfectly equal margins horizontally and vertically */}
+      <div className="mx-auto my-auto w-full max-w-[1200px]">
+        {/* Balanced 2-column grid */}
+        <div className="grid grid-cols-1 items-center gap-y-14 sm:gap-y-20 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-20 xl:gap-x-24">
+          {/* Row 1, Column 1: Project 0 (Nest Studio) */}
+          <ProjectCard
+            project={PROJECTS[0]}
+            index={0}
+            column="left"
+            className="flex flex-col items-center lg:col-start-1 lg:row-start-1 lg:items-end"
+          />
+
+          {/* Row 1, Column 2: Header Block */}
           <div className="flex flex-col items-center text-center lg:col-start-2 lg:row-start-1 lg:items-start lg:text-left">
             <div className="w-full max-w-[440px]">
               <motion.div
@@ -322,7 +326,7 @@ export default function FeaturedProjects() {
                   id="featured-projects-heading"
                   className="text-foreground transition-colors duration-300 group-hover:text-muted-foreground"
                   style={{
-                    fontSize: "clamp(2.1rem, 3.8vw, 4.2rem)",
+                    fontSize: "clamp(2rem, 3.6vw, 4rem)",
                     lineHeight: 1.05,
                     letterSpacing: "-0.04em",
                     fontWeight: 600,
@@ -365,28 +369,20 @@ export default function FeaturedProjects() {
             </div>
           </div>
 
-          {/* Project 0: Column 1, Row 1 & 2 */}
-          <ProjectCard
-            project={PROJECTS[0]}
-            index={0}
-            column="left"
-            className="flex flex-col items-center lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:items-end"
-          />
-
-          {/* Project 1: Column 2, Row 2 (staggered down with top margin) */}
-          <ProjectCard
-            project={PROJECTS[1]}
-            index={1}
-            column="right"
-            className="flex flex-col items-center lg:col-start-2 lg:row-start-2 lg:items-start lg:mt-[clamp(80px,10vw,160px)]"
-          />
-
-          {/* Project 2: Column 1, Row 3 */}
+          {/* Row 2, Column 1: Project 2 (Notes 101) */}
           <ProjectCard
             project={PROJECTS[2]}
             index={2}
             column="left"
-            className="flex flex-col items-center lg:col-start-1 lg:row-start-3 lg:items-end"
+            className="flex flex-col items-center lg:col-start-1 lg:row-start-2 lg:items-end"
+          />
+
+          {/* Row 2, Column 2: Project 1 (PlayStation Store UI) */}
+          <ProjectCard
+            project={PROJECTS[1]}
+            index={1}
+            column="right"
+            className="flex flex-col items-center lg:col-start-2 lg:row-start-2 lg:items-start"
           />
         </div>
       </div>
