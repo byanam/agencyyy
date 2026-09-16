@@ -13,4 +13,11 @@ export const FEATURED_CASES = [
     tagline: "Immersive 3D web application",
     year: "2025",
   },
+  {
+    id: "locals-nomads",
+    client: "Locals Nomads",
+    title: "Locals Nomads Cultural Identity",
+    tagline: "Vibrant visual identity & digital experience",
+    year: "2024",
+  },
 ];
