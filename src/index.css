@@ -163,3 +163,16 @@ section, footer, main, article, h1, h2, h3, h4, p {
   border-color: #FFFFFF;
   transform: translateY(-1px);
 }
+
+.divider-redis {
+  border-top: 1px solid var(--redis-border);
+}
+
+.card-redis-border {
+  border: 1px solid var(--redis-border);
+  transition: border-color 0.3s ease;
+}
+
+.card-redis-border:hover {
+  border-color: var(--redis-border-hover);
+}
