@@ -35,7 +35,7 @@ export default function Navbar({ onOpenContact }) {
           onClick={() => scrollToTarget(0)}
           className="font-editorial text-sm sm:text-base font-medium tracking-tight text-white hover:text-white/80 transition-colors"
         >
-          Byanam®
+          Byanam® Agency
         </button>
 
         <span className="h-3 w-px bg-white/20" />
