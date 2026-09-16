@@ -61,40 +61,6 @@ const PROJECTS = [
 const ease = [0.16, 1, 0.3, 1];
 const springConfig = { stiffness: 420, damping: 26 };
 
-// Custom embossed glyph for each folder
-function FolderGlyph({ id }) {
-  if (id === 1) {
-    // Web Layout / Wireframe glyph for Nest Studio
-    return (
-      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <rect width="18" height="18" x="3" y="3" rx="2" />
-        <path d="M3 9h18" />
-        <path d="M9 21V9" />
-      </svg>
-    );
-  }
-  if (id === 2) {
-    // Gamepad / Storefront glyph for PlayStation UI
-    return (
-      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <line x1="6" x2="10" y1="12" y2="12" />
-        <line x1="8" x2="8" y1="10" y2="14" />
-        <line x1="15" x2="15.01" y1="13" y2="13" />
-        <line x1="18" x2="18.01" y1="11" y2="11" />
-        <rect width="20" height="12" x="2" y="6" rx="6" />
-      </svg>
-    );
-  }
-  // Code / Document glyph for Notes 101
-  return (
-    <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-      <path d="m16 18 6-6-6-6" />
-      <path d="m8 6-6 6 6 6" />
-      <path d="m14.5 4-5 16" />
-    </svg>
-  );
-}
-
 function ProjectCard({ project, index, column, className = "", style }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hasFinePointer, setHasFinePointer] = useState(false);
@@ -154,13 +120,13 @@ function ProjectCard({ project, index, column, className = "", style }) {
         rel="noopener noreferrer"
         className="group block"
       >
-        {/* ── Outer 3D Folder Canvas with perspective ── */}
+        {/* ── Outer 3D Folder Canvas (Compact Size) ── */}
         <div
           ref={cardRef}
           onMouseEnter={handleMouseEnter}
           onMouseMove={hasFinePointer ? handleMouseMove : undefined}
           onMouseLeave={() => setIsHovered(false)}
-          className="relative mb-6 aspect-[4/3] w-full select-none pt-4 lg:cursor-none"
+          className="relative mb-5 aspect-[16/11] w-full max-w-[440px] select-none pt-3 lg:cursor-none"
           style={{ perspective: 1200 }}
         >
           {/* 1. BACK FOLDER BASE (MacBook Folder Silhouette with Tab) */}
@@ -189,7 +155,7 @@ function ProjectCard({ project, index, column, className = "", style }) {
                 stroke="rgba(255,255,255,0.18)"
                 strokeWidth="1.5"
               />
-              {/* Subtle top rim highlight line */}
+              {/* Top rim highlight line */}
               <path
                 d="M 38 15 L 176 15 C 190 15, 198 23, 208 33 L 222 47 C 232 57, 244 61, 260 61 L 468 61"
                 fill="none"
@@ -199,55 +165,34 @@ function ProjectCard({ project, index, column, className = "", style }) {
             </svg>
           </div>
 
-          {/* 2. THE IMAGE WINDOW (The File that pops out of the folder on hover!) */}
+          {/* 2. THE IMAGE (Clean Project Screenshot that pops out on hover) */}
           <motion.div
-            className="absolute inset-x-5 sm:inset-x-8 bottom-6 top-8 z-10 overflow-hidden rounded-xl bg-[#141416] border border-white/20 shadow-2xl transition-shadow"
+            className="absolute inset-x-4 sm:inset-x-6 bottom-4 top-5 z-10 overflow-hidden rounded-xl bg-black border border-white/20 shadow-2xl transition-shadow"
             initial={false}
             animate={
               isHovered
                 ? {
-                    y: -58,
+                    y: -46,
                     scale: 1.03,
                     rotate: -1,
-                    boxShadow: "0 35px 60px -15px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.25)",
+                    boxShadow: "0 28px 50px -12px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.25)",
                   }
                 : {
                     y: 0,
                     scale: 1,
                     rotate: 0,
-                    boxShadow: "0 18px 30px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.15)",
+                    boxShadow: "0 14px 25px -8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.15)",
                   }
             }
             transition={{ type: "spring", stiffness: 320, damping: 24, mass: 0.8 }}
           >
-            {/* macOS Window Header Bar */}
-            <div className="flex h-7 sm:h-8 w-full items-center justify-between border-b border-white/10 bg-[#1e1e24] px-3">
-              {/* Traffic light window controls */}
-              <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F]" />
-              </div>
-              {/* Title / Domain pill */}
-              <span className="font-mono text-[10px] text-white/60 tracking-wider">
-                {project.client.toLowerCase().replace(/\s+/g, "")}.byanam.dev
-              </span>
-              {/* Category tag */}
-              <span className="rounded bg-white/10 px-1.5 py-0.5 text-[9px] font-semibold text-white/80">
-                {project.tags[0]}
-              </span>
-            </div>
-
-            {/* High-res project screenshot */}
-            <div className="relative h-[calc(100%-28px)] sm:h-[calc(100%-32px)] w-full overflow-hidden bg-black">
-              <img
-                src={project.image}
-                alt={project.title}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
-            </div>
+            <img
+              src={project.image}
+              alt={project.title}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
           </motion.div>
 
           {/* 3. FRONT FOLDER FLAP (Hinges open forward in 3D on hover) */}
@@ -298,24 +243,11 @@ function ProjectCard({ project, index, column, className = "", style }) {
                 />
               </svg>
 
-              {/* Embossed Folder Glyph in Center */}
-              <div className="absolute inset-0 flex items-center justify-center -translate-y-2">
-                <motion.div
-                  animate={isHovered ? { scale: 1.1, opacity: 0.9 } : { scale: 1, opacity: 0.5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <FolderGlyph id={project.id} />
-                </motion.div>
-              </div>
-
-              {/* Front Flap Bottom Info Bar */}
-              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-4 sm:p-6 text-white">
-                <div className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-sky-300" />
-                  <span className="text-xs sm:text-sm font-bold tracking-tight text-white/95">
-                    {project.client}
-                  </span>
-                </div>
+              {/* Front Flap Bottom Info Bar (Clean without extra icons) */}
+              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-3.5 sm:p-5 text-white">
+                <span className="text-xs sm:text-sm font-bold tracking-tight text-white/95">
+                  {project.client}
+                </span>
                 <span className="rounded-full bg-black/30 px-2.5 py-0.5 font-mono text-[10px] font-medium tracking-widest text-sky-200 backdrop-blur-sm">
                   {project.year}
                 </span>
@@ -343,12 +275,12 @@ function ProjectCard({ project, index, column, className = "", style }) {
         </div>
 
         {/* Title underneath the folder */}
-        <div className="flex items-center justify-between gap-3 px-1">
+        <div className="flex w-full max-w-[440px] items-center justify-between gap-3 px-1">
           <h3 className="text-base font-medium leading-snug text-foreground transition-colors group-hover:text-muted-foreground sm:text-lg">
             {project.title}
           </h3>
           <span className="shrink-0 text-xs font-semibold text-muted-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-sm">
-            Open folder ↗
+            Open ↗
           </span>
         </div>
       </a>
