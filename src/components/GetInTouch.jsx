@@ -73,7 +73,7 @@ export default function GetInTouch() {
 
           {/* Heading */}
           <h2 className="text-[clamp(2.75rem,10.5vw,10.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.045em] text-foreground">
-            {["Tell us what", "you're building"].map((line) => (
+            {["Tell me what", "website you're building"].map((line) => (
               <motion.span
                 key={line}
                 className="block"
@@ -111,7 +111,9 @@ export default function GetInTouch() {
             transition={{ duration: 0.6, ease }}
           >
             <a
-              href="mailto:hello@whycreatives.in"
+              href="https://github.com/byanam"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group inline-flex select-none items-center justify-center gap-3 rounded-full border-2 border-foreground px-6 py-3.5 text-sm font-bold uppercase tracking-[0.04em] leading-none text-black shadow-[0_10px_30px_-10px_rgba(0,0,0,0.35)] transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-[0.99] motion-reduce:transform-none sm:gap-4 sm:px-9 sm:py-5 sm:text-lg"
               style={{ backgroundColor: YELLOW_ACCENT }}
             >

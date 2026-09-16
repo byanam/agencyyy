@@ -75,11 +75,11 @@ export default function Navbar() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="group flex shrink-0 items-center gap-2.5 select-none"
-              aria-label="WhyCreatives home"
+              aria-label="byanam home"
             >
               <img
                 src="/logo.png"
-                alt="WhyCreatives logo"
+                alt="byanam logo"
                 width={36}
                 height={36}
                 className="h-7 w-7 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 motion-reduce:transform-none dark:invert md:h-8 md:w-8"
@@ -88,7 +88,7 @@ export default function Navbar() {
                 }}
               />
               <span className="text-2xl md:text-3xl font-black tracking-tighter text-black transition-colors duration-300 dark:text-white">
-                WhyCreatives.
+                byanam.
               </span>
             </a>
           </div>

@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
-const MARQUEE_TEXT = "Let's make something worth watching.";
+const MARQUEE_TEXT = "Let's build a website worth remembering.";
 
 function MarqueeRow({ reverse = false, duration = 28, running = true }) {
   return (

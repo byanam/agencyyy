@@ -1,53 +1,39 @@
 import { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 
-// Lucide SVG Icons matching WhyCreatives reference
-function ClapperboardIcon({ className, strokeWidth = 2.25 }) {
+function CodeIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" />
-      <path d="m6.2 5.3 3.1 3.9" />
-      <path d="m12.4 3.4 3.1 4" />
-      <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
     </svg>
   );
 }
 
-function SparklesIcon({ className, strokeWidth = 2.25 }) {
+function LayoutIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
-      <path d="M20 3v4" />
-      <path d="M22 5h-4" />
-      <path d="M4 17v2" />
-      <path d="M5 18H3" />
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <line x1="3" x2="21" y1="9" y2="9" />
+      <line x1="9" x2="9" y1="21" y2="9" />
     </svg>
   );
 }
 
-function PaletteIcon({ className, strokeWidth = 2.25 }) {
+function MonitorIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
-      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
-      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
-      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
-      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+      <rect width="20" height="14" x="2" y="3" rx="2" />
+      <line x1="8" x2="16" y1="21" y2="21" />
+      <line x1="12" x2="12" y1="17" y2="21" />
     </svg>
   );
 }
 
-function FilmIcon({ className, strokeWidth = 2.25 }) {
+function ZapIcon({ className, strokeWidth = 2.25 }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="18" x="3" y="3" rx="2" />
-      <path d="M7 3v18" />
-      <path d="M3 7.5h4" />
-      <path d="M3 12h18" />
-      <path d="M3 16.5h4" />
-      <path d="M17 3v18" />
-      <path d="M17 7.5h4" />
-      <path d="M17 16.5h4" />
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
     </svg>
   );
 }
@@ -125,22 +111,22 @@ function AnimatedArrow({ className = "h-3.5 w-3.5" }) {
 }
 
 const SERVICES = [
-  { label: "Web Development", Icon: GlobeIcon },
-  { label: "App Development", Icon: SmartphoneIcon },
-  { label: "Brand Identity", Icon: PenToolIcon },
-  { label: "Performance Ads", Icon: TrendingUpIcon },
-  { label: "SEO", Icon: SearchIcon },
-  { label: "Video Editing", Icon: ClapperboardIcon },
-  { label: "Motion Design", Icon: SparklesIcon },
-  { label: "Colour Grading", Icon: PaletteIcon },
-  { label: "Short-Form Reels", Icon: FilmIcon },
+  { label: "Responsive Websites", Icon: GlobeIcon },
+  { label: "Web Applications", Icon: CodeIcon },
+  { label: "Interactive Landing Pages", Icon: MonitorIcon },
+  { label: "UI / UX Design", Icon: LayoutIcon },
+  { label: "Speed & Performance", Icon: ZapIcon },
+  { label: "Creative Development", Icon: PenToolIcon },
+  { label: "SEO & Optimization", Icon: SearchIcon },
+  { label: "Mobile-First Design", Icon: SmartphoneIcon },
+  { label: "Conversion Optimization", Icon: TrendingUpIcon },
 ];
 
 const HEADLINE_LINES = [
   "An independent studio",
-  "in India crafting video, motion",
-  "design, websites, apps and",
-  "brands built to grow.",
+  "crafting bespoke websites,",
+  "interactive digital products &",
+  "high-speed web experiences.",
 ];
 
 const ease = [0.16, 1, 0.3, 1];
@@ -289,7 +275,7 @@ export default function AboutStrip() {
               href="#about"
               className="group inline-flex select-none items-center justify-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-bold leading-none text-black transition-all duration-300 ease-out hover:opacity-85 active:scale-[0.98] motion-reduce:transform-none"
             >
-              <span>About WhyCreatives</span>
+              <span>About byanam</span>
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/10 transition-all duration-300 ease-out group-hover:scale-110 group-hover:bg-black/20 motion-reduce:transform-none">
                 <AnimatedArrow className="h-3.5 w-3.5 text-black" />
               </span>

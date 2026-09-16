@@ -20,7 +20,7 @@ export default function ProjectShowcase() {
         {/* Background Team Collaboration Image */}
         <img
           src="/team-collab.webp"
-          alt="The WhyCreatives team working together on a client project"
+          alt="Designing and engineering web projects"
           width={1600}
           height={900}
           loading="lazy"
@@ -56,7 +56,7 @@ export default function ProjectShowcase() {
                 <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
                 <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
               </svg>
-              One team from first idea to launch day
+              From first wireframe to pixel-perfect website launch
             </p>
             {/* Speech bubble tail */}
             <span
@@ -82,9 +82,9 @@ export default function ProjectShowcase() {
               className="h-8 w-8 shrink-0 rounded-full object-cover sm:h-9 sm:w-9"
             />
             <span className="leading-tight">
-              <span className="block text-xs font-bold sm:text-sm">WhyCreatives Studio</span>
+              <span className="block text-xs font-bold sm:text-sm">byanam · Anam Razzaque</span>
               <span className="block text-[10px] text-black/50 sm:text-xs">
-                Creative, product & growth team
+                Website designer & creative developer
               </span>
             </span>
           </motion.figcaption>
@@ -123,7 +123,7 @@ export default function ProjectShowcase() {
               href="#work"
               className="group inline-flex select-none items-center justify-center gap-2 rounded-full bg-white py-2.5 pl-4 pr-2 text-[11px] font-bold leading-none text-black transition-colors duration-300 hover:bg-white/85 active:scale-[0.98] sm:text-xs"
             >
-              <span>See client work</span>
+              <span>See website projects</span>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/15 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none">
                 <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M7 17 17 7M7 7h10v10" />
@@ -134,7 +134,7 @@ export default function ProjectShowcase() {
               href="#about"
               className="group inline-flex select-none items-center justify-center gap-2 rounded-full bg-black/85 py-2.5 pl-4 pr-2 text-[11px] font-bold leading-none text-white transition-colors duration-300 hover:bg-black active:scale-[0.98] sm:text-xs"
             >
-              <span>About WhyCreatives</span>
+              <span>About byanam</span>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none">
                 <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M7 17 17 7M7 7h10v10" />

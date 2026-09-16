@@ -3,34 +3,34 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 const SERVICES_LIST = [
   {
-    title: "Video & Motion",
-    blurb: "Editing, colour, sound, titles and motion graphics.",
-    href: "#work",
-    image: "/video-gear.webp",
-  },
-  {
-    title: "Websites",
-    blurb: "Fast, responsive sites built to convert.",
+    title: "Interactive Websites",
+    blurb: "Bespoke sites with fluid tactile mechanics & kinetic micro-interactions.",
     href: "#work",
     image: "/project-nth.webp",
   },
   {
-    title: "App Development",
-    blurb: "iOS, Android and web apps built to last.",
+    title: "Web Applications",
+    blurb: "Modern, reactive web apps with robust state & intuitive UX.",
     href: "#work",
     image: "/whycreatives-app.webp",
   },
   {
-    title: "Brand Identity",
-    blurb: "Visual identity, end to end.",
+    title: "Creative Development",
+    blurb: "Translating bold designs into high-performance browser code.",
     href: "#work",
     image: "/whycreatives-brand.webp",
   },
   {
-    title: "Performance Ads",
-    blurb: "Campaigns measured against revenue.",
+    title: "Speed & Performance",
+    blurb: "Sub-second load times, smooth scrolling & pristine Core Web Vitals.",
     href: "#work",
     image: "/creative-office.webp",
+  },
+  {
+    title: "Full-Stack Web",
+    blurb: "Frontend finesse paired with scalable backend APIs and Firebase.",
+    href: "#work",
+    image: "/video-gear.webp",
   },
 ];
 
@@ -168,7 +168,7 @@ export default function Services() {
               transition={{ duration: 0.6, ease, delay: 0.2 }}
             >
               <p className="hidden max-w-sm text-[13px] leading-relaxed text-white/55 sm:block lg:text-sm">
-                Professional creative services to elevate your brand and grow your business.
+                Bespoke web development and interactive design to bring your digital presence to life.
               </p>
               <a
                 href="#services"

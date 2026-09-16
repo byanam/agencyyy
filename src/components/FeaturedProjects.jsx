@@ -4,55 +4,55 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 const PROJECTS = [
   {
     id: 1,
-    year: "2024",
-    client: "WhyCreatives Branding",
-    title: "Minimalist brand identity, positioning & creative direction",
+    year: "2025",
+    client: "Nest Studio",
+    title: "High-impact neo-brutalist landing page with bespoke tactile physics",
     image: "/whycreatives-brand.webp",
-    tags: ["Branding", "Strategy"],
-    href: "#work",
+    tags: ["Interactive Web", "Landing Page"],
+    href: "https://byanam.github.io/nest/",
     stage: {
       tone: "light",
       phrases: [
-        { words: ["Brand", "identity"], color: "#4F46E5" },
-        { words: ["Clear", "positioning"], color: "#DB2777" },
-        { words: ["Creative", "direction"], color: "#EA580C" },
-        { words: ["One", "clear", "voice"], color: "#111111" },
+        { words: ["Tactile", "physics"], color: "#4F46E5" },
+        { words: ["Fluid", "scroll"], color: "#DB2777" },
+        { words: ["Neo-brutalist", "UI"], color: "#EA580C" },
+        { words: ["Awwwards", "grade"], color: "#111111" },
       ],
     },
   },
   {
     id: 2,
-    year: "2024",
-    client: "Web, Apps & Search",
-    title: "Custom web & mobile apps, built to be found",
+    year: "2025",
+    client: "PlayStation Store UI",
+    title: "Next-generation game storefront UI with interactive 3D carousels & cart",
     image: "/whycreatives-app.webp",
-    tags: ["Web", "Apps", "SEO"],
-    href: "#services",
+    tags: ["Web App", "Storefront UI"],
+    href: "https://byanam.github.io/PlayStation-Store-UI/",
     stage: {
       tone: "dark",
       phrases: [
-        { words: ["Web", "and", "apps"], color: "#67E8F9" },
-        { words: ["Built", "to", "rank"], color: "#BEF264" },
-        { words: ["Grows", "with", "you"], color: "#F9A8D4" },
-        { words: ["Secure", "by", "design"], color: "#FFFFFF" },
+        { words: ["Interactive", "3D"], color: "#67E8F9" },
+        { words: ["Dynamic", "cart"], color: "#BEF264" },
+        { words: ["Web", "Audio"], color: "#F9A8D4" },
+        { words: ["Next-gen", "UI"], color: "#FFFFFF" },
       ],
     },
   },
   {
     id: 3,
     year: "2024",
-    client: "WhyCreatives UGC",
-    title: "UGC reels, viral scriptwriting & creator marketing",
+    client: "Notes 101 Web App",
+    title: "Full-stack note-taking platform built with an IDE & Photoshop aesthetic",
     image: "/whycreatives-ugc.webp",
-    tags: ["UGC Reels", "Social"],
-    href: "#work",
+    tags: ["Web App", "Firebase"],
+    href: "https://notes--101.web.app",
     stage: {
       tone: "accent",
       phrases: [
-        { words: ["UGC", "reels"], color: "#141414" },
-        { words: ["Hooks", "that", "hold"], color: "#3B1002" },
-        { words: ["Real", "product", "stories"], color: "#0C2E22" },
-        { words: ["Made", "to", "convert"], color: "#141414" },
+        { words: ["IDE", "design"], color: "#141414" },
+        { words: ["Realtime", "sync"], color: "#3B1002" },
+        { words: ["Clean", "architecture"], color: "#0C2E22" },
+        { words: ["Bespoke", "tools"], color: "#141414" },
       ],
     },
   },
@@ -250,7 +250,7 @@ export default function FeaturedProjects() {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.65, ease, delay: 0.2 }}
           >
-            Brand, video, web and apps handled by one team — built so the work scales up as your business does, instead of being rebuilt.
+            Bespoke web experiences, interactive landing pages, and web apps — engineered with obsessive attention to fluid motion, tactile feedback, and clean code.
           </motion.p>
         </div>
 

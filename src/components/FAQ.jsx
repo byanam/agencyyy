@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const ease = [0.16, 1, 0.3, 1];
 const AI_QUERY =
-  "Why should we choose WhyCreatives (whycreatives.in) for video editing, web and app development, and branding?";
+  "Why should we hire Anam Razzaque (byanam) for bespoke websites, interactive web applications, and creative frontend development?";
 const ENCODED_QUERY = encodeURIComponent(AI_QUERY);
 
 const AI_PLATFORMS = [

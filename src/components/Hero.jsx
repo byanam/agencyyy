@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 
-const HERO_LINES = ["One stop solution for", "all creative needs", "and goals"];
+const HERO_LINES = ["Crafting bespoke sites &", "high-performance web", "experiences"];
 const ease = [0.16, 1, 0.3, 1];
 
 const R = (n) => Math.round(n * 100) / 100;
@@ -9,7 +9,7 @@ const arc = (r, sweep, x, y) =>
   `A ${R(r)} ${R(r)} 0 0 ${sweep} ${R(x)} ${R(y)}`;
 
 /**
- * Exact geometric SVG clip-path builder matching WhyCreatives showreel container.
+ * Exact geometric SVG clip-path builder matching container.
  */
 function buildClipPath(w, h, corners, r, s, i = 0) {
   const lastBottom = corners[corners.length - 1].bottom;
@@ -215,7 +215,7 @@ export default function Hero() {
           className="relative w-full aspect-[9/16] md:aspect-video"
           style={{ "--panel-w": "calc(100vw - 24px)" }}
         >
-          {/* ── Outer Showreel Panel with Cloudflare stream iframe video ── */}
+          {/* ── Outer Showreel Panel with ambient backdrop ── */}
           <div
             className="absolute inset-0 overflow-hidden bg-[#161616] dark:bg-[#202020]"
             style={{
@@ -224,7 +224,7 @@ export default function Hero() {
               borderRadius: clipPath ? undefined : "clamp(20px, 2.6vw, 34px)",
             }}
           >
-            {/* Subtle elegant ambient backdrop without video */}
+            {/* Subtle elegant ambient backdrop */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#1f1f24] via-[#141416] to-[#0d0d0f]" />
             <div
               className="absolute inset-0 opacity-[0.05]"
@@ -241,7 +241,7 @@ export default function Hero() {
             ref={textGroupRef}
             className="absolute left-0 top-0 z-10 flex flex-col items-start [--pad-l:12px] [--pad-r:16px] md:left-[min(7vw,104px)] md:[--pad-l:clamp(20px,2.2vw,34px)] md:[--pad-r:clamp(20px,2vw,30px)]"
           >
-            {/* Brand label: WhyCreatives */}
+            {/* Brand label: Anam Razzaque */}
             <div
               ref={labelRef}
               className="w-fit"
@@ -260,7 +260,7 @@ export default function Hero() {
               >
                 <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-black dark:bg-white" />
                 <span className="whitespace-nowrap text-[12px] font-medium leading-none text-black sm:text-[13px] lg:text-[15px] dark:text-white">
-                  WhyCreatives
+                  Anam Razzaque
                 </span>
               </motion.span>
             </div>
