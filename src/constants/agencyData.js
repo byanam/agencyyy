@@ -6,4 +6,11 @@ export const AGENCY_INFO = {
   location: "New Delhi / Remote",
   email: "anamrazzaque.work@gmail.com",
   tagline: "Design support for ambitious brands and corporations",
+  socials: {
+    telegram: "https://t.me/redisagency",
+    behance: "https://www.behance.net",
+    dribbble: "https://dribbble.com",
+    linkedin: "https://linkedin.com",
+    instagram: "https://instagram.com",
+  },
 };
