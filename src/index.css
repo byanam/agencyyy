@@ -194,6 +194,7 @@ section, footer, main, article, h1, h2, h3, h4, p {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
-button, a {
-  touch-action: manipulation;
+section {
+  position: relative;
+  z-index: 1;
 }
