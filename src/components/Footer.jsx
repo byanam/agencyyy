@@ -15,7 +15,7 @@ export default function Footer({ onOpenContact }) {
   };
 
   return (
-    <footer className="relative w-full bg-black px-4 pt-36 pb-24 sm:pt-44 sm:pb-28 select-none flex flex-col items-center justify-center text-center">
+    <footer className="relative w-full bg-black px-4 pt-40 pb-28 sm:pt-44 sm:pb-28 select-none flex flex-col items-center justify-center text-center">
       <div className="container-redis-hero flex flex-col items-center justify-center text-center">
         <span className="mb-6 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
           Get In Touch
@@ -71,7 +71,7 @@ export default function Footer({ onOpenContact }) {
         {/* Bottom Credits Bar */}
         <div className="mt-20 sm:mt-28 border-t border-white/10 pt-8 w-full flex flex-col items-center justify-center text-center">
           <p className="font-sans-swiss text-xs uppercase tracking-[0.2em] text-white/40">
-            © 2026 BYANAM® DESIGN STUDIO · ALL RIGHTS RESERVED
+            © 2026 BYANAM DESIGN STUDIO · ALL RIGHTS RESERVED
           </p>
         </div>
       </div>
