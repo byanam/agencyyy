@@ -54,7 +54,7 @@ export default function Hero({ onOpenContact }) {
 
         {/* Action Buttons: Get in Touch & View Cases */}
         <motion.div
-          className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
+          className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-5"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease, delay: 0.35 }}
@@ -66,7 +66,7 @@ export default function Hero({ onOpenContact }) {
             onClick={() => scrollToTarget("#work")}
             className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-2.5 font-sans-swiss text-sm font-medium text-white transition-all hover:border-white hover:bg-white/10"
           >
-            View Cases ↓
+            Explore Cases ↓
           </button>
         </motion.div>
       </div>
