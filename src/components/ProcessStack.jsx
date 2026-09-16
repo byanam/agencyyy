@@ -14,7 +14,7 @@ export default function ProcessStack() {
   const [activeStep, setActiveStep] = useState(null);
 
   return (
-    <section className="relative w-full bg-black px-4 py-32 sm:py-44 text-center select-none flex flex-col items-center justify-center">
+    <section className="relative w-full bg-black px-4 py-36 sm:py-48 text-center select-none flex flex-col items-center justify-center">
       <div className="container-redis-cases flex flex-col items-center justify-center text-center">
         <motion.div
           className="mb-16 sm:mb-24 flex flex-col items-center justify-center text-center w-full"
@@ -24,7 +24,7 @@ export default function ProcessStack() {
           transition={{ duration: 0.7, ease }}
         >
           <span className="mb-3 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
-            Execution Framework
+            Methodology
           </span>
           <h2
             className="text-editorial-section text-white text-center"
