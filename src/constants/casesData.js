@@ -20,4 +20,11 @@ export const FEATURED_CASES = [
     tagline: "Vibrant visual identity & digital experience",
     year: "2024",
   },
+  {
+    id: "sakharov",
+    client: "Sakharov Foundation",
+    title: "Sakharov Space Museum",
+    tagline: "Virtual museum & webflow interactive space",
+    year: "2024",
+  },
 ];
