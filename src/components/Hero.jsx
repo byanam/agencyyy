@@ -5,7 +5,7 @@ const ease = [0.16, 1, 0.3, 1];
 
 export default function Hero({ onOpenContact }) {
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black px-4 pt-32 pb-36 sm:pt-36 sm:pb-44 text-center select-none">
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black px-4 pt-28 pb-32 sm:pt-36 sm:pb-44 text-center select-none">
       <div className="container-redis-hero flex flex-col items-center justify-center text-center">
         {/* Subtitle Pill / Tagline */}
         <motion.div
@@ -66,7 +66,7 @@ export default function Hero({ onOpenContact }) {
             onClick={() => scrollToTarget("#work")}
             className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-2.5 font-sans-swiss text-sm font-medium text-white transition-all hover:border-white hover:bg-white/10"
           >
-            Explore Cases ↓
+            View Cases ↓
           </button>
         </motion.div>
       </div>
