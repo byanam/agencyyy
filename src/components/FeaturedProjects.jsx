@@ -61,7 +61,7 @@ const PROJECTS = [
 const ease = [0.16, 1, 0.3, 1];
 const springConfig = { stiffness: 420, damping: 26 };
 
-function ProjectCard({ project, index, column, className = "", style }) {
+function ProjectCard({ project, index, className = "", style }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hasFinePointer, setHasFinePointer] = useState(false);
   const cardRef = useRef(null);
@@ -99,34 +99,31 @@ function ProjectCard({ project, index, column, className = "", style }) {
     }
   };
 
-  const initialX = column === "right" ? 40 : -40;
-
   return (
     <motion.article
-      className={className}
+      className={`flex w-full flex-col items-center ${className}`}
       style={style}
-      initial={{ opacity: 0, y: 36, x: initialX }}
-      whileInView={{ opacity: 1, y: 0, x: 0 }}
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
       transition={{
         opacity: { duration: 0.5, ease },
-        x: { duration: 0.85, ease },
-        y: { duration: 0.85, ease },
+        y: { duration: 0.8, ease },
       }}
     >
       <a
         href={project.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="group block"
+        className="group block w-full max-w-[520px]"
       >
-        {/* ── Outer 3D Folder Canvas (Compact Size) ── */}
+        {/* ── Outer 3D Folder Canvas (Centered) ── */}
         <div
           ref={cardRef}
           onMouseEnter={handleMouseEnter}
           onMouseMove={hasFinePointer ? handleMouseMove : undefined}
           onMouseLeave={() => setIsHovered(false)}
-          className="relative mb-5 aspect-[16/11] w-full max-w-[440px] select-none pt-3 lg:cursor-none"
+          className="relative mb-5 aspect-[16/11] w-full select-none pt-3 lg:cursor-none"
           style={{ perspective: 1200 }}
         >
           {/* 1. BACK FOLDER BASE (MacBook Folder Silhouette with Tab) */}
@@ -172,7 +169,7 @@ function ProjectCard({ project, index, column, className = "", style }) {
             animate={
               isHovered
                 ? {
-                    y: -46,
+                    y: -50,
                     scale: 1.03,
                     rotate: -1,
                     boxShadow: "0 28px 50px -12px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.25)",
@@ -275,7 +272,7 @@ function ProjectCard({ project, index, column, className = "", style }) {
         </div>
 
         {/* Title underneath the folder */}
-        <div className="flex w-full max-w-[440px] items-center justify-between gap-3 px-1">
+        <div className="flex w-full items-center justify-between gap-3 px-1">
           <h3 className="text-base font-medium leading-snug text-foreground transition-colors group-hover:text-muted-foreground sm:text-lg">
             {project.title}
           </h3>
@@ -293,97 +290,79 @@ export default function FeaturedProjects() {
     <section
       id="work"
       aria-labelledby="featured-projects-heading"
-      className="relative flex min-h-screen w-full flex-col justify-center bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground sm:px-6 md:px-8 lg:px-12 py-16 sm:py-24 md:py-28"
+      className="w-full bg-background px-4 font-['Schibsted_Grotesk',sans-serif] text-foreground sm:px-6 md:px-8 py-20 sm:py-28"
     >
-      {/* Centered container with perfectly equal margins horizontally and vertically */}
-      <div className="mx-auto my-auto w-full max-w-[1200px]">
-        {/* Balanced 2-column grid */}
-        <div className="grid grid-cols-1 items-center gap-y-14 sm:gap-y-20 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-20 xl:gap-x-24">
-          {/* Row 1, Column 1: Project 0 (Nest Studio) */}
-          <ProjectCard
-            project={PROJECTS[0]}
-            index={0}
-            column="left"
-            className="flex flex-col items-center lg:col-start-1 lg:row-start-1 lg:items-end"
-          />
+      {/* Centered Main Column */}
+      <div className="mx-auto flex w-full max-w-[580px] flex-col items-center">
+        {/* Centered Header Block */}
+        <div className="mb-14 sm:mb-20 flex flex-col items-center text-center">
+          <motion.div
+            className="mb-4 flex items-center justify-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+            initial={{ opacity: 0, y: -8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.55, ease }}
+          >
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
+            Selected work
+          </motion.div>
 
-          {/* Row 1, Column 2: Header Block */}
-          <div className="flex flex-col items-center text-center lg:col-start-2 lg:row-start-1 lg:items-start lg:text-left">
-            <div className="w-full max-w-[440px]">
-              <motion.div
-                className="mb-4 flex items-center justify-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground lg:justify-start"
-                initial={{ opacity: 0, x: -8 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.55, ease }}
-              >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
-                Selected work
-              </motion.div>
-
-              <a href="#work" className="group inline-block">
-                <h2
-                  id="featured-projects-heading"
-                  className="text-foreground transition-colors duration-300 group-hover:text-muted-foreground"
-                  style={{
-                    fontSize: "clamp(2rem, 3.6vw, 4rem)",
-                    lineHeight: 1.05,
-                    letterSpacing: "-0.04em",
-                    fontWeight: 600,
-                  }}
+          <a href="#work" className="group inline-block">
+            <h2
+              id="featured-projects-heading"
+              className="text-foreground transition-colors duration-300 group-hover:text-muted-foreground"
+              style={{
+                fontSize: "clamp(2.2rem, 4.4vw, 4.4rem)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.04em",
+                fontWeight: 600,
+              }}
+            >
+              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
+                <motion.span
+                  className="inline-block"
+                  initial={{ y: "118%" }}
+                  whileInView={{ y: "0%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.85, ease }}
                 >
-                  <span className="block overflow-hidden" style={{ paddingBottom: "0.14em", marginBottom: "-0.14em" }}>
-                    <motion.span
-                      className="inline-block"
-                      initial={{ y: "118%" }}
-                      whileInView={{ y: "0%" }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.85, ease }}
-                    >
-                      Design in the
-                    </motion.span>
-                  </span>
-                  <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
-                    <motion.span
-                      className="inline-block"
-                      initial={{ y: "118%" }}
-                      whileInView={{ y: "0%" }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.85, ease, delay: 0.09 }}
-                    >
-                      real world ↗
-                    </motion.span>
-                  </span>
-                </h2>
-              </a>
+                  Design in the
+                </motion.span>
+              </span>
+              <span className="block overflow-hidden" style={{ paddingBottom: "0.14em" }}>
+                <motion.span
+                  className="inline-block"
+                  initial={{ y: "118%" }}
+                  whileInView={{ y: "0%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.85, ease, delay: 0.09 }}
+                >
+                  real world ↗
+                </motion.span>
+              </span>
+            </h2>
+          </a>
 
-              <motion.p
-                className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.65, ease, delay: 0.2 }}
-              >
-                Bespoke web experiences, interactive landing pages, and web apps — engineered with obsessive attention to fluid motion, tactile feedback, and clean code.
-              </motion.p>
-            </div>
-          </div>
+          <motion.p
+            className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.65, ease, delay: 0.2 }}
+          >
+            Bespoke web experiences, interactive landing pages, and web apps — engineered with obsessive attention to fluid motion, tactile feedback, and clean code.
+          </motion.p>
+        </div>
 
-          {/* Row 2, Column 1: Project 2 (Notes 101) */}
-          <ProjectCard
-            project={PROJECTS[2]}
-            index={2}
-            column="left"
-            className="flex flex-col items-center lg:col-start-1 lg:row-start-2 lg:items-end"
-          />
-
-          {/* Row 2, Column 2: Project 1 (PlayStation Store UI) */}
-          <ProjectCard
-            project={PROJECTS[1]}
-            index={1}
-            column="right"
-            className="flex flex-col items-center lg:col-start-2 lg:row-start-2 lg:items-start"
-          />
+        {/* 3 Folders Centered Vertically */}
+        <div className="flex w-full flex-col items-center gap-16 sm:gap-24">
+          {PROJECTS.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+            />
+          ))}
         </div>
       </div>
     </section>
