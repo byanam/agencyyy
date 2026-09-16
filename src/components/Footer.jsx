@@ -18,7 +18,7 @@ export default function Footer({ onOpenContact }) {
     <footer className="relative w-full bg-black px-4 pt-36 pb-24 sm:pt-44 sm:pb-28 select-none flex flex-col items-center justify-center text-center">
       <div className="container-redis-hero flex flex-col items-center justify-center text-center">
         <span className="mb-6 font-sans-swiss text-[11px] sm:text-xs uppercase tracking-[0.25em] text-white/50">
-          Start A Project
+          Get In Touch
         </span>
 
         {/* Big Editorial Email */}
@@ -44,7 +44,7 @@ export default function Footer({ onOpenContact }) {
 
           <div className="mt-4 flex w-full justify-center text-center">
             <span className="font-sans-swiss text-xs uppercase tracking-widest text-white/50">
-              {copied ? "✓ Copied to clipboard" : "Click to copy email"}
+              {copied ? "✓ Copied to clipboard" : "Click anywhere to copy"}
             </span>
           </div>
         </motion.div>
