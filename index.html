@@ -56,14 +56,16 @@ html, body {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
+  overflow: visible !important;
 }
 
 .Rediska-module__rS3Q1G__hn-rediska__wrap {
   aspect-ratio: 1 / 1;
-  width: 38vw !important;
-  min-width: 360px !important;
-  max-width: 580px !important;
+  width: 44vw !important;
+  min-width: 400px !important;
+  max-width: 660px !important;
   position: relative;
+  overflow: visible !important;
   will-change: transform;
 }
 
@@ -71,6 +73,14 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+@media (max-width: 991px) {
+  .Rediska-module__rS3Q1G__hn-rediska__wrap {
+    width: 60vw !important;
+    min-width: 320px !important;
+    max-width: 500px !important;
+  }
 }
 
 /* Botanical leaves container - layered ON TOP of the pen (z-index: 25) */
@@ -173,6 +183,7 @@ html, body {
     loopScroll.resume();
     setTimeout(function() {
       preloader.style.display = 'none';
+      if (typeof resizePenCanvas === 'function') resizePenCanvas();
     }, 600);
   }
 
@@ -191,9 +202,9 @@ html, body {
   if (canvas && typeof THREE !== 'undefined') {
     scene = new THREE.Scene();
 
-    // Closer camera distance (6.0 instead of 8.8) to make the pen significantly bigger
-    camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-    camera.position.set(0, 0, 6.2);
+    // Luxury product perspective: 38 deg FOV, Z = 9.2 with dynamic aspect fit
+    camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+    camera.position.set(0, 0, 9.2);
 
     renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -224,9 +235,17 @@ html, body {
 
     function resizePenCanvas() {
       if (!canvas) return;
-      var w = canvas.clientWidth || 420;
-      var h = canvas.clientHeight || 420;
-      camera.aspect = w / h;
+      var rect = canvas.getBoundingClientRect();
+      var w = rect.width || canvas.clientWidth || 480;
+      var h = rect.height || canvas.clientHeight || 480;
+      if (w <= 0 || h <= 0) {
+        w = 480;
+        h = 480;
+      }
+      var aspect = w / h;
+      camera.aspect = aspect;
+      var minAspect = Math.min(aspect, 1.0);
+      camera.position.z = 9.2 / minAspect;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
     }
@@ -251,6 +270,10 @@ html, body {
 
     // --- Master 3D Fountain Pen Assembly (22 authentic components) ---
     penGroup = new THREE.Group();
+    var penBody = new THREE.Group();
+    // Offset penBody along Y by -0.42 so pen is centered exactly at (0,0,0) in penGroup
+    penBody.position.y = -0.42;
+    penGroup.add(penBody);
 
     // High-end PBR materials with clearcoat and metallic radiance
     var lacquerMat = new THREE.MeshPhysicalMaterial({
@@ -292,7 +315,7 @@ html, body {
       new THREE.Vector2(0.245, 0.9)
     ];
     var barrel = new THREE.Mesh(new THREE.LatheGeometry(barrelPoints, 40), lacquerMat);
-    penGroup.add(barrel);
+    penBody.add(barrel);
 
     // 2. Tail Finial (Polished Gold Stud)
     var tailFinialPoints = [
@@ -303,30 +326,30 @@ html, body {
       new THREE.Vector2(0.192, -3.12)
     ];
     var tailFinial = new THREE.Mesh(new THREE.LatheGeometry(tailFinialPoints, 40), goldMat);
-    penGroup.add(tailFinial);
+    penBody.add(tailFinial);
 
     // 3. Tail Gold Accent Ring
     var tailRing = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.08, 40), goldMat);
     tailRing.position.y = -3.05;
-    penGroup.add(tailRing);
+    penBody.add(tailRing);
 
     // 4. Center Master Triple Band
     var mainBand = new THREE.Mesh(new THREE.CylinderGeometry(0.262, 0.262, 0.22, 40), goldMat);
     mainBand.position.y = 1.05;
-    penGroup.add(mainBand);
+    penBody.add(mainBand);
 
     var bandTop = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.256, 0.04, 40), silverMat);
     bandTop.position.y = 1.20;
-    penGroup.add(bandTop);
+    penBody.add(bandTop);
 
     var bandBottom = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.256, 0.04, 40), silverMat);
     bandBottom.position.y = 0.90;
-    penGroup.add(bandBottom);
+    penBody.add(bandBottom);
 
     // 5. Threading Ring (Metal screw threads where cap screws on)
     var threadRing = new THREE.Mesh(new THREE.CylinderGeometry(0.238, 0.238, 0.18, 40), silverMat);
     threadRing.position.y = 1.34;
-    penGroup.add(threadRing);
+    penBody.add(threadRing);
 
     // 6. Ergonomic Hourglass Finger Grip Section
     var gripPoints = [
@@ -337,12 +360,12 @@ html, body {
       new THREE.Vector2(0.185, 2.75)
     ];
     var grip = new THREE.Mesh(new THREE.LatheGeometry(gripPoints, 40), lacquerMat);
-    penGroup.add(grip);
+    penBody.add(grip);
 
     // 7. Front Collar Ring (Gold)
     var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.192, 0.188, 0.12, 40), goldMat);
     collar.position.y = 2.81;
-    penGroup.add(collar);
+    penBody.add(collar);
 
     // 8. Stamped Fountain Pen Gold Nib
     var nibShape = new THREE.Shape();
@@ -368,17 +391,17 @@ html, body {
     var nib = new THREE.Mesh(nibGeo, goldMat);
     nib.position.set(0, 3.56, 0.01);
     nib.rotation.x = -0.04;
-    penGroup.add(nib);
+    penBody.add(nib);
 
     // Center Slit on Nib
     var slit = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.88, 0.035), new THREE.MeshBasicMaterial({ color: 0x000000 }));
     slit.position.set(0, 3.98, 0.01);
-    penGroup.add(slit);
+    penBody.add(slit);
 
     // Iridium Writing Tipping Ball
     var tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.032, 16, 16), silverMat);
     tippingBall.position.set(0, 4.29, 0.01);
-    penGroup.add(tippingBall);
+    penBody.add(tippingBall);
 
     // Two-tone Rhodium Silver Inlay Shield on Nib Face
     var shieldShape = new THREE.Shape();
@@ -389,18 +412,18 @@ html, body {
     shieldShape.closePath();
     var silverShield = new THREE.Mesh(new THREE.ShapeGeometry(shieldShape), silverMat);
     silverShield.position.set(0, 3.50, 0.03);
-    penGroup.add(silverShield);
+    penBody.add(silverShield);
 
     // 9. Ink Feed (Black ribbed underside)
     var feed = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.85, 20), feedMat);
     feed.position.set(0, 3.32, -0.07);
-    penGroup.add(feed);
+    penBody.add(feed);
 
     // Feed Horizontal Fins / Gills
     for (var fIdx = 0; fIdx < 6; fIdx++) {
       var fin = new THREE.Mesh(new THREE.CylinderGeometry(0.135 - fIdx * 0.004, 0.135 - fIdx * 0.004, 0.02, 20), feedMat);
       fin.position.set(0, 3.05 + fIdx * 0.08, -0.07);
-      penGroup.add(fin);
+      penBody.add(fin);
     }
 
     // 10. Sculpted Gold Pocket Clip with Teardrop Ball Tip
@@ -412,14 +435,14 @@ html, body {
       new THREE.Vector3(0, -1.35, 0.26)
     ]);
     var clip = new THREE.Mesh(new THREE.TubeGeometry(clipCurve, 32, 0.038, 12, false), goldMat);
-    penGroup.add(clip);
+    penBody.add(clip);
 
     var clipBall = new THREE.Mesh(new THREE.SphereGeometry(0.065, 20, 20), goldMat);
     clipBall.position.set(0, -1.35, 0.28);
-    penGroup.add(clipBall);
+    penBody.add(clipBall);
 
-    // Center pen at center of gravity
-    penGroup.position.y = -0.3;
+    // Scale penGroup cleanly so it fits inside camera frustum with safety margin
+    penGroup.scale.set(0.68, 0.68, 0.68);
     scene.add(penGroup);
 
     // Smooth continuous 60fps render loop
@@ -446,10 +469,10 @@ html, body {
     targetRotX = 0.35 + Math.sin(progress * 0.002) * 0.35;
     targetRotZ = Math.cos(progress * 0.002) * 0.25;
 
-    // Lissajous curve trajectory - exact same movement
+    // Lissajous curve trajectory - exact same movement, safely framed within screen bounds
     if (rotateWrap) {
       var vw = window.innerWidth;
-      var s = 0.32 * vw;
+      var s = Math.min(0.26 * vw, Math.max(140, vw * 0.5 - 260));
       var r_a = progress / 9000;
       var x = s * Math.sin(2 * r_a * Math.PI);
       var y = (s / 3.5) * Math.sin(2 * r_a * Math.PI) * Math.cos(2 * r_a * Math.PI);
