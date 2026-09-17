@@ -73,7 +73,7 @@ html, body {
   display: block;
 }
 
-/* Botanical elements parallax container */
+/* Botanical elements static container - leaves strictly motionless on left & right */
 .BotvaParallax-module__iIfVja__botva {
   position: fixed !important;
   top: 0 !important;
@@ -82,6 +82,13 @@ html, body {
   height: 100vh !important;
   pointer-events: none !important;
   z-index: 5 !important;
+  overflow: hidden !important;
+}
+
+.BotvaParallax-module__iIfVja__botva [class*="botva__img"] {
+  transform: none !important;
+  will-change: auto !important;
+  transition: none !important;
 }
 
 /* Preloader styles */
@@ -215,21 +222,15 @@ html, body {
     }
   }
 
-  // === 4. Botva Botanical Parallax ===
-  var botvaImgs = document.querySelectorAll('[class*="botva__img"]');
-  var botvaFactors = [-0.07, 0.05, -0.04, 0.06, -0.05, 0.04, -0.06, 0.05];
-
-  function updateBotva(pos) {
-    for (var i = 0; i < botvaImgs.length; i++) {
-      var f = botvaFactors[i % botvaFactors.length];
-      botvaImgs[i].style.transform = 'translate3d(0, ' + (pos * f) + 'px, 0)';
-    }
+  // === 4. Static Botanical Leaves (No motion on scroll) ===
+  var botvaImgs = document.querySelectorAll('[class*=botva__img]');
+  for (var i = 0; i < botvaImgs.length; i++) {
+    botvaImgs[i].style.transform = 'none';
   }
 
   // Hook LoopScroll per-frame updates
   loopScroll.onUpdate = function(progress, pos) {
     updateRediska(progress, pos);
-    updateBotva(pos);
   };
 
   // === 5. Interactive Popup Modal ("Get in touch") ===
