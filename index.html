@@ -44,7 +44,7 @@ html, body {
   overflow: visible !important;
 }
 
-/* Rediska mascot floating across screen */
+/* Rediska / 3D Pen container - layered INSIDE / behind the leaves */
 .Rediska-module__rS3Q1G__hn-rediska {
   position: fixed !important;
   top: 0 !important;
@@ -52,17 +52,17 @@ html, body {
   width: 100vw !important;
   height: 100vh !important;
   pointer-events: none !important;
-  z-index: 20 !important;
+  z-index: 10 !important; /* Lower than leaves (25) so pen is inside the leaves */
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
 }
 
 .Rediska-module__rS3Q1G__hn-rediska__wrap {
-  aspect-ratio: 915 / 880;
-  width: 26vw;
-  min-width: 240px;
-  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  width: 38vw !important;
+  min-width: 360px !important;
+  max-width: 580px !important;
   position: relative;
   will-change: transform;
 }
@@ -73,7 +73,7 @@ html, body {
   display: block;
 }
 
-/* Botanical elements static container - leaves strictly motionless on left & right */
+/* Botanical leaves container - layered ON TOP of the pen (z-index: 25) */
 .BotvaParallax-module__iIfVja__botva {
   position: fixed !important;
   top: 0 !important;
@@ -81,7 +81,7 @@ html, body {
   width: 100vw !important;
   height: 100vh !important;
   pointer-events: none !important;
-  z-index: 5 !important;
+  z-index: 25 !important; /* Higher than pen (10) so leaves overlap the pen */
   overflow: hidden !important;
 }
 
@@ -179,27 +179,53 @@ html, body {
   setTimeout(dismissPreloader, 1600);
   setTimeout(dismissPreloader, 2200);
 
-  // === 3. 3D Luxury Pen Model (WebGL / Three.js) with Identical Movements ===
+  // === 3. Highly Detailed, Photorealistic 3D Luxury Fountain Pen Model ===
   var canvas = document.querySelector('[data-rediska="sprite"]');
   var rotateWrap = document.querySelector('[data-rediska="rotate"]');
 
   var scene, camera, renderer, penGroup;
   var targetRotY = 0, currentRotY = 0;
-  var targetRotX = 0.3, currentRotX = 0.3;
+  var targetRotX = 0.35, currentRotX = 0.35;
   var targetRotZ = 0, currentRotZ = 0;
 
   if (canvas && typeof THREE !== 'undefined') {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(38, 360 / 346, 0.1, 100);
-    camera.position.set(0, 0, 8.8);
+
+    // Closer camera distance (6.0 instead of 8.8) to make the pen significantly bigger
+    camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+    camera.position.set(0, 0, 6.2);
 
     renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
+    // Studio Environment for photorealistic specular reflection
+    try {
+      var envCanvas = document.createElement('canvas');
+      envCanvas.width = 512;
+      envCanvas.height = 256;
+      var envCtx = envCanvas.getContext('2d');
+      var grad = envCtx.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.25, '#8899aa');
+      grad.addColorStop(0.5, '#121418');
+      grad.addColorStop(0.75, '#3a3024');
+      grad.addColorStop(1, '#08080a');
+      envCtx.fillStyle = grad;
+      envCtx.fillRect(0, 0, 512, 256);
+
+      envCtx.fillStyle = '#ffffff';
+      envCtx.fillRect(80, 20, 90, 190);
+      envCtx.fillRect(320, 30, 70, 170);
+
+      var envTexture = new THREE.CanvasTexture(envCanvas);
+      envTexture.mapping = THREE.EquirectangularReflectionMapping;
+      scene.environment = envTexture;
+    } catch(e) {}
+
     function resizePenCanvas() {
       if (!canvas) return;
-      var w = canvas.clientWidth || 360;
-      var h = canvas.clientHeight || 346;
+      var w = canvas.clientWidth || 420;
+      var h = canvas.clientHeight || 420;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
@@ -208,93 +234,202 @@ html, body {
     window.addEventListener('resize', resizePenCanvas);
 
     // Studio Lighting
-    var ambLight = new THREE.AmbientLight(0xffffff, 1.2);
+    var ambLight = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambLight);
 
-    var keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-    keyLight.position.set(5, 7, 5);
+    var keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    keyLight.position.set(5, 8, 6);
     scene.add(keyLight);
 
-    var fillLight = new THREE.DirectionalLight(0x77bbee, 1.3);
-    fillLight.position.set(-5, 2, -3);
+    var fillLight = new THREE.DirectionalLight(0x88bbff, 1.6);
+    fillLight.position.set(-6, 3, -4);
     scene.add(fillLight);
 
-    var rimLight = new THREE.DirectionalLight(0xffdf99, 1.5);
-    rimLight.position.set(3, -4, 4);
+    var rimLight = new THREE.DirectionalLight(0xffdf88, 1.8);
+    rimLight.position.set(3, -5, 5);
     scene.add(rimLight);
 
-    // Pen Geometry & Materials
+    // --- Master 3D Fountain Pen Assembly (22 authentic components) ---
     penGroup = new THREE.Group();
 
-    var darkMat = new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.18, metalness: 0.88 });
-    var goldMat = new THREE.MeshStandardMaterial({ color: 0xdeb841, roughness: 0.12, metalness: 0.95 });
-    var silverMat = new THREE.MeshStandardMaterial({ color: 0xf0f3f6, roughness: 0.08, metalness: 0.98 });
-    var feedMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.7 });
+    // High-end PBR materials with clearcoat and metallic radiance
+    var lacquerMat = new THREE.MeshPhysicalMaterial({
+      color: 0x0c0d10,
+      roughness: 0.1,
+      metalness: 0.15,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.05,
+      reflectivity: 0.95
+    });
 
-    // Barrel
-    var barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 3.4, 32), darkMat);
-    barrel.position.y = -0.2;
+    var goldMat = new THREE.MeshStandardMaterial({
+      color: 0xf5d061,
+      roughness: 0.09,
+      metalness: 0.96
+    });
+
+    var silverMat = new THREE.MeshStandardMaterial({
+      color: 0xe6eef4,
+      roughness: 0.07,
+      metalness: 0.98
+    });
+
+    var feedMat = new THREE.MeshStandardMaterial({
+      color: 0x080808,
+      roughness: 0.85,
+      metalness: 0.05
+    });
+
+    // 1. Contoured Barrel (Lathe geometry for organic luxury pen shape)
+    var barrelPoints = [
+      new THREE.Vector2(0.001, -3.4),
+      new THREE.Vector2(0.12, -3.35),
+      new THREE.Vector2(0.19, -3.2),
+      new THREE.Vector2(0.20, -3.0),
+      new THREE.Vector2(0.23, -2.0),
+      new THREE.Vector2(0.25, -0.8),
+      new THREE.Vector2(0.25, 0.4),
+      new THREE.Vector2(0.245, 0.9)
+    ];
+    var barrel = new THREE.Mesh(new THREE.LatheGeometry(barrelPoints, 40), lacquerMat);
     penGroup.add(barrel);
 
-    // Tail Finial
-    var finial = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.12, 0.3, 32), goldMat);
-    finial.position.y = -2.05;
-    penGroup.add(finial);
+    // 2. Tail Finial (Polished Gold Stud)
+    var tailFinialPoints = [
+      new THREE.Vector2(0.001, -3.48),
+      new THREE.Vector2(0.10, -3.45),
+      new THREE.Vector2(0.15, -3.38),
+      new THREE.Vector2(0.192, -3.22),
+      new THREE.Vector2(0.192, -3.12)
+    ];
+    var tailFinial = new THREE.Mesh(new THREE.LatheGeometry(tailFinialPoints, 40), goldMat);
+    penGroup.add(tailFinial);
 
-    // Center Accent Bands
-    var centerBand1 = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.14, 32), goldMat);
-    centerBand1.position.y = 1.57;
-    penGroup.add(centerBand1);
+    // 3. Tail Gold Accent Ring
+    var tailRing = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.08, 40), goldMat);
+    tailRing.position.y = -3.05;
+    penGroup.add(tailRing);
 
-    var centerBand2 = new THREE.Mesh(new THREE.CylinderGeometry(0.226, 0.226, 0.04, 32), silverMat);
-    centerBand2.position.y = 1.46;
-    penGroup.add(centerBand2);
+    // 4. Center Master Triple Band
+    var mainBand = new THREE.Mesh(new THREE.CylinderGeometry(0.262, 0.262, 0.22, 40), goldMat);
+    mainBand.position.y = 1.05;
+    penGroup.add(mainBand);
 
-    // Grip Section
-    var grip = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.13, 1.2, 32), darkMat);
-    grip.position.y = 2.24;
+    var bandTop = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.256, 0.04, 40), silverMat);
+    bandTop.position.y = 1.20;
+    penGroup.add(bandTop);
+
+    var bandBottom = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.256, 0.04, 40), silverMat);
+    bandBottom.position.y = 0.90;
+    penGroup.add(bandBottom);
+
+    // 5. Threading Ring (Metal screw threads where cap screws on)
+    var threadRing = new THREE.Mesh(new THREE.CylinderGeometry(0.238, 0.238, 0.18, 40), silverMat);
+    threadRing.position.y = 1.34;
+    penGroup.add(threadRing);
+
+    // 6. Ergonomic Hourglass Finger Grip Section
+    var gripPoints = [
+      new THREE.Vector2(0.235, 1.43),
+      new THREE.Vector2(0.21, 1.7),
+      new THREE.Vector2(0.175, 2.1),
+      new THREE.Vector2(0.17, 2.5),
+      new THREE.Vector2(0.185, 2.75)
+    ];
+    var grip = new THREE.Mesh(new THREE.LatheGeometry(gripPoints, 40), lacquerMat);
     penGroup.add(grip);
 
-    // Collar
-    var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.135, 0.08, 32), goldMat);
-    collar.position.y = 2.88;
+    // 7. Front Collar Ring (Gold)
+    var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.192, 0.188, 0.12, 40), goldMat);
+    collar.position.y = 2.81;
     penGroup.add(collar);
 
-    // Nib
+    // 8. Stamped Fountain Pen Gold Nib
     var nibShape = new THREE.Shape();
     nibShape.moveTo(0, 0);
-    nibShape.lineTo(0.11, 0);
-    nibShape.bezierCurveTo(0.11, 0.35, 0.07, 0.75, 0, 1.05);
-    nibShape.bezierCurveTo(-0.07, 0.75, -0.11, 0.35, -0.11, 0);
+    nibShape.lineTo(0.155, 0);
+    nibShape.bezierCurveTo(0.165, 0.45, 0.12, 0.95, 0, 1.45);
+    nibShape.bezierCurveTo(-0.12, 0.95, -0.165, 0.45, -0.155, 0);
     nibShape.closePath();
-    var nibGeo = new THREE.ExtrudeGeometry(nibShape, { depth: 0.02, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.01, bevelThickness: 0.01 });
+
+    var holePath = new THREE.Path();
+    holePath.absarc(0, 0.55, 0.035, 0, Math.PI * 2, true);
+    nibShape.holes.push(holePath);
+
+    var nibGeo = new THREE.ExtrudeGeometry(nibShape, {
+      depth: 0.025,
+      bevelEnabled: true,
+      bevelSegments: 4,
+      steps: 1,
+      bevelSize: 0.015,
+      bevelThickness: 0.015
+    });
     nibGeo.center();
     var nib = new THREE.Mesh(nibGeo, goldMat);
-    nib.position.y = 3.46;
+    nib.position.set(0, 3.56, 0.01);
+    nib.rotation.x = -0.04;
     penGroup.add(nib);
 
-    // Clip
+    // Center Slit on Nib
+    var slit = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.88, 0.035), new THREE.MeshBasicMaterial({ color: 0x000000 }));
+    slit.position.set(0, 3.98, 0.01);
+    penGroup.add(slit);
+
+    // Iridium Writing Tipping Ball
+    var tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.032, 16, 16), silverMat);
+    tippingBall.position.set(0, 4.29, 0.01);
+    penGroup.add(tippingBall);
+
+    // Two-tone Rhodium Silver Inlay Shield on Nib Face
+    var shieldShape = new THREE.Shape();
+    shieldShape.moveTo(0, 0.15);
+    shieldShape.lineTo(0.09, 0.15);
+    shieldShape.bezierCurveTo(0.095, 0.4, 0.07, 0.75, 0, 1.05);
+    shieldShape.bezierCurveTo(-0.07, 0.75, -0.095, 0.4, -0.09, 0.15);
+    shieldShape.closePath();
+    var silverShield = new THREE.Mesh(new THREE.ShapeGeometry(shieldShape), silverMat);
+    silverShield.position.set(0, 3.50, 0.03);
+    penGroup.add(silverShield);
+
+    // 9. Ink Feed (Black ribbed underside)
+    var feed = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.85, 20), feedMat);
+    feed.position.set(0, 3.32, -0.07);
+    penGroup.add(feed);
+
+    // Feed Horizontal Fins / Gills
+    for (var fIdx = 0; fIdx < 6; fIdx++) {
+      var fin = new THREE.Mesh(new THREE.CylinderGeometry(0.135 - fIdx * 0.004, 0.135 - fIdx * 0.004, 0.02, 20), feedMat);
+      fin.position.set(0, 3.05 + fIdx * 0.08, -0.07);
+      penGroup.add(fin);
+    }
+
+    // 10. Sculpted Gold Pocket Clip with Teardrop Ball Tip
     var clipCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 1.5, 0.24),
-      new THREE.Vector3(0, 1.2, 0.33),
-      new THREE.Vector3(0, 0.2, 0.30),
-      new THREE.Vector3(0, 0.0, 0.24)
+      new THREE.Vector3(0, 1.05, 0.28),
+      new THREE.Vector3(0, 0.75, 0.42),
+      new THREE.Vector3(0, -0.6, 0.38),
+      new THREE.Vector3(0, -1.2, 0.32),
+      new THREE.Vector3(0, -1.35, 0.26)
     ]);
-    var clipGeo = new THREE.TubeGeometry(clipCurve, 20, 0.032, 8, false);
-    var clip = new THREE.Mesh(clipGeo, goldMat);
+    var clip = new THREE.Mesh(new THREE.TubeGeometry(clipCurve, 32, 0.038, 12, false), goldMat);
     penGroup.add(clip);
 
-    penGroup.position.y = -0.5;
+    var clipBall = new THREE.Mesh(new THREE.SphereGeometry(0.065, 20, 20), goldMat);
+    clipBall.position.set(0, -1.35, 0.28);
+    penGroup.add(clipBall);
+
+    // Center pen at center of gravity
+    penGroup.position.y = -0.3;
     scene.add(penGroup);
 
-    // Continuous 60fps render loop
+    // Smooth continuous 60fps render loop
     function animatePen() {
       requestAnimationFrame(animatePen);
       currentRotY += (targetRotY - currentRotY) * 0.08;
       currentRotX += (targetRotX - currentRotX) * 0.08;
       currentRotZ += (targetRotZ - currentRotZ) * 0.08;
 
-      // Subtle idle spin
+      // Gentle continuous idle spin
       targetRotY += 0.003;
 
       penGroup.rotation.y = currentRotY;
