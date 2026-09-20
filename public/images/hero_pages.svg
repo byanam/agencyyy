@@ -60,23 +60,53 @@
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_10_219"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_10_219" result="shape"/>
 </filter>
+<linearGradient id="paint0_linear_10_219" x1="867.657" y1="0" x2="867.657" y2="369.187" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="0.649038" stop-color="#000000"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
+<linearGradient id="paint1_linear_10_219" x1="828.367" y1="108.683" x2="828.367" y2="477.87" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="0.649038" stop-color="#000000"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
+<linearGradient id="paint2_linear_10_219" x1="328.281" y1="32.0039" x2="328.281" y2="401.191" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="0.649038" stop-color="#000000"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
+<linearGradient id="paint3_linear_10_219" x1="500.435" y1="48.2089" x2="500.435" y2="417.396" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="0.649038" stop-color="#000000"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
+<linearGradient id="paint4_linear_10_219" x1="301.303" y1="84.8334" x2="301.303" y2="454.02" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="0.649038" stop-color="#000000"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
+<linearGradient id="paint5_linear_10_219" x1="461.214" y1="9.69228" x2="461.214" y2="378.879" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="0.649038" stop-color="#000000"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
 </defs>
 <g filter="url(#filter0_d_10_219)">
-<rect x="599.357" width="536.598" height="240" transform="rotate(10.1404 599.357 0)" fill="#D9D9D9"/>
+<rect x="599.357" width="536.598" height="369.187" transform="rotate(10.1404 599.357 0)" fill="url(#paint0_linear_10_219)"/>
 </g>
 <g filter="url(#filter1_d_10_219)">
-<rect x="560.068" y="108.683" width="536.598" height="240" transform="rotate(-8.43147 560.068 108.683)" fill="#D9D9D9"/>
+<rect x="560.068" y="108.683" width="536.598" height="369.187" transform="rotate(-8.43147 560.068 108.683)" fill="url(#paint1_linear_10_219)"/>
 </g>
 <g filter="url(#filter2_d_10_219)">
-<rect x="59.9822" y="32.0039" width="536.598" height="240" transform="rotate(8.7217 59.9822 32.0039)" fill="#D9D9D9"/>
+<rect x="59.9822" y="32.0039" width="536.598" height="369.187" transform="rotate(8.7217 59.9822 32.0039)" fill="url(#paint2_linear_10_219)"/>
 </g>
 <g filter="url(#filter3_d_10_219)">
-<rect x="232.136" y="48.2089" width="536.598" height="240" transform="rotate(-1.76088 232.136 48.2089)" fill="#D9D9D9"/>
+<rect x="232.136" y="48.2089" width="536.598" height="369.187" transform="rotate(-1.76088 232.136 48.2089)" fill="url(#paint3_linear_10_219)"/>
 </g>
 <g filter="url(#filter4_d_10_219)">
-<rect x="33.004" y="84.8334" width="536.598" height="240" transform="rotate(-9.09632 33.004 84.8334)" fill="#D9D9D9"/>
+<rect x="33.004" y="84.8334" width="536.598" height="369.187" transform="rotate(-9.09632 33.004 84.8334)" fill="url(#paint4_linear_10_219)"/>
 </g>
 <g filter="url(#filter5_d_10_219)">
-<rect x="192.915" y="9.69228" width="536.598" height="240" transform="rotate(6.78295 192.915 9.69228)" fill="#D9D9D9"/>
+<rect x="192.915" y="9.69228" width="536.598" height="369.187" transform="rotate(6.78295 192.915 9.69228)" fill="url(#paint5_linear_10_219)"/>
 </g>
 </svg>
