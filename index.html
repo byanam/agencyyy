@@ -280,9 +280,28 @@
       position: fixed !important;
       inset: 0 !important;
       overflow: hidden !important;
-      z-index: 12 !important;
+      z-index: 2 !important;
       width: 100% !important;
       height: 100% !important;
+    }
+
+    .figma-hero-logo-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      pointer-events: none !important;
+      z-index: 15 !important;
+      overflow: hidden !important;
+    }
+
+    .figma-hero-logo-overlay-img {
+      position: absolute !important;
+      display: none;
+      pointer-events: none !important;
+      object-fit: contain !important;
+      will-change: transform, top, left, width, height;
     }
 
     .LoopScroll-module__5wuzDq__loop-container {
@@ -790,6 +809,9 @@
       <div data-rediska="container" class="Rediska-module__rS3Q1G__hn-rediska">
         <div data-rediska="rotate" class="Rediska-module__rS3Q1G__hn-rediska__wrap"><canvas data-rediska="sprite"
             class="Rediska-module__rS3Q1G__hn-rediska__sprite"></canvas></div>
+      </div>
+      <div id="figma-hero-logo-overlay" class="figma-hero-logo-overlay" aria-hidden="true">
+        <img src="/images/anam_logo.svg" alt="" class="figma-hero-logo-overlay-img" />
       </div>
       <div class="BotvaParallax-module__iIfVja__botva" data-parallax-scroll="container">
         <div class="BotvaParallax-module__iIfVja__botva__wrap"><img
@@ -2531,20 +2553,28 @@
         }
         window.__heroPenBlend = heroBlend;
 
-        // Dynamic stacking: Keep pen beneath the hero pages element when in/near hero
-        var allPages = document.querySelectorAll('.figma-hero-pages-wrap');
-        var isPagesInView = (heroBlend > 0.001);
-        for (var p = 0; p < allPages.length; p++) {
-          var pr = allPages[p].getBoundingClientRect();
-          if (pr.bottom > -20 && pr.top < vh + 20) {
-            isPagesInView = true;
-            break;
+        // Stacking: Pen (z-index: 10) is above the pages element (in mainContainer z-index: 2).
+        // Sync hero logo overlay (z-index: 15) so the pen remains below the logo.
+        var overlayLogoImg = document.querySelector('.figma-hero-logo-overlay-img');
+        if (overlayLogoImg) {
+          var allLogoImgs = document.querySelectorAll('.figma-hero-logo-img');
+          var activeLogoRect = null;
+          for (var l = 0; l < allLogoImgs.length; l++) {
+            var lr = allLogoImgs[l].getBoundingClientRect();
+            if (lr.bottom > -100 && lr.top < vh + 100) {
+              activeLogoRect = lr;
+              break;
+            }
           }
-        }
-
-        var mainContainer = document.querySelector('.LoopScroll-module__5wuzDq__main-container');
-        if (mainContainer) {
-          mainContainer.style.setProperty('z-index', isPagesInView ? '12' : '2', 'important');
+          if (activeLogoRect) {
+            overlayLogoImg.style.display = 'block';
+            overlayLogoImg.style.top = activeLogoRect.top + 'px';
+            overlayLogoImg.style.left = activeLogoRect.left + 'px';
+            overlayLogoImg.style.width = activeLogoRect.width + 'px';
+            overlayLogoImg.style.height = activeLogoRect.height + 'px';
+          } else {
+            overlayLogoImg.style.display = 'none';
+          }
         }
 
         // 1. Natural Lissajous trajectory and hover rotations
