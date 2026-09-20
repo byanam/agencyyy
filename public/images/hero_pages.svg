@@ -63,10 +63,10 @@
 
 <linearGradient id="bottom_dark_grad" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0" stop-color="#000000" stop-opacity="0"/>
-  <stop offset="0.22" stop-color="#000000" stop-opacity="0"/>
-  <stop offset="0.42" stop-color="#000000" stop-opacity="0.35"/>
-  <stop offset="0.60" stop-color="#000000" stop-opacity="0.8"/>
-  <stop offset="0.72" stop-color="#000000" stop-opacity="1"/>
+  <stop offset="0.18" stop-color="#000000" stop-opacity="0"/>
+  <stop offset="0.38" stop-color="#000000" stop-opacity="0.35"/>
+  <stop offset="0.55" stop-color="#000000" stop-opacity="0.8"/>
+  <stop offset="0.65" stop-color="#000000" stop-opacity="1"/>
   <stop offset="1" stop-color="#000000" stop-opacity="1"/>
 </linearGradient>
 <clipPath id="clip_page_0"><rect width="536.598" height="369.187" rx="6" ry="6"/></clipPath>
