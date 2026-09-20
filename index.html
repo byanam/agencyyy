@@ -118,21 +118,24 @@
 
     /* LEVEL 4: Lead & Body Copy */
     .u-p-large,
-    .u-p-big {
-      font-family: var(--font-body) !important;
-      font-size: clamp(16px, 1.3vw, 20px) !important;
-      line-height: 1.35 !important;
-      letter-spacing: var(--tracking-snug) !important;
-      color: rgba(255, 255, 255, 0.75) !important;
-    }
-
+    .u-p-big,
     p,
     .u-p-normal {
       font-family: var(--font-body) !important;
-      font-size: 15px !important;
-      line-height: 1.45 !important;
+      font-size: 20px !important;
+      line-height: 1.4 !important;
       letter-spacing: var(--tracking-normal) !important;
-      color: rgba(255, 255, 255, 0.65) !important;
+      color: rgba(255, 255, 255, 0.70) !important;
+    }
+
+    @media (max-width: 991px) {
+      .u-p-large,
+      .u-p-big,
+      p,
+      .u-p-normal {
+        font-size: 16px !important;
+        line-height: 1.4 !important;
+      }
     }
 
     /* LEVEL 5: Microcopy, Descriptions, Badges, Tags */
