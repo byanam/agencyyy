@@ -218,71 +218,25 @@
       z-index: 5 !important;
     }
 
-    .figma-hero-pages-progressive-blur {
-      position: absolute !important;
-      inset: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      pointer-events: none !important;
-      z-index: 5 !important;
-      overflow: hidden !important;
-    }
-
-    .figma-blur-step {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      max-height: 620px !important;
-      object-fit: contain !important;
-      display: block !important;
-      pointer-events: none !important;
-      transform: translateZ(0);
-      will-change: filter;
-    }
-
-    .figma-blur-step-1 {
-      filter: blur(5px) !important;
-      -webkit-filter: blur(5px) !important;
-      mask-image: linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.5) 60%, black 80%, transparent 100%) !important;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.5) 60%, black 80%, transparent 100%) !important;
-    }
-
-    .figma-blur-step-2 {
-      filter: blur(12px) !important;
-      -webkit-filter: blur(12px) !important;
-      mask-image: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(0, 0, 0, 0.6) 75%, black 90%, black 100%) !important;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(0, 0, 0, 0.6) 75%, black 90%, black 100%) !important;
-    }
-
-    .figma-blur-step-3 {
-      filter: blur(24px) !important;
-      -webkit-filter: blur(24px) !important;
-      mask-image: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(0, 0, 0, 0.7) 85%, black 100%) !important;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(0, 0, 0, 0.7) 85%, black 100%) !important;
-    }
-
-    .figma-hero-pages-bottom-mist {
+    .figma-hero-pages-blur {
       position: absolute !important;
       bottom: -15px !important;
       left: 0 !important;
       right: 0 !important;
-      height: 180px !important;
+      height: 160px !important;
       pointer-events: none !important;
       z-index: 6 !important;
-      backdrop-filter: blur(12px) !important;
-      -webkit-backdrop-filter: blur(12px) !important;
-      mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 40%, black 80%, transparent 100%) !important;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 40%, black 80%, transparent 100%) !important;
-      background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.25) 35%, rgba(0, 0, 0, 0.85) 85%, transparent 100%) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+      mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 40%, black 80%, transparent 100%) !important;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 40%, black 80%, transparent 100%) !important;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 0.85) 80%, transparent 100%) !important;
     }
 
     @media (max-width: 1024px) {
       .figma-hero-s1 {
         padding-top: 110px !important;
       }
-
       .figma-stat-text {
         font-size: clamp(22px, 3.2vw, 36px) !important;
       }
@@ -292,32 +246,26 @@
       .figma-hero-s1 {
         padding-top: 90px !important;
       }
-
       .figma-hero-top-row {
         flex-direction: column !important;
         align-items: center !important;
         gap: 36px !important;
       }
-
       .figma-hero-logo-wrap {
         max-width: 100% !important;
         justify-content: center !important;
       }
-
       .figma-hero-pen-slot {
         display: none !important;
       }
-
       .figma-hero-social-proof {
         max-width: 100% !important;
         height: auto !important;
         gap: 24px !important;
       }
-
       .figma-stat-text {
         font-size: 28px !important;
       }
-
       .figma-hero-pages-wrap {
         margin-top: 20px !important;
       }
@@ -918,12 +866,7 @@
                 </div>
                 <div class="figma-hero-pages-wrap">
                   <img src="/images/hero_pages.svg" alt="Pages" class="figma-hero-pages-img" />
-                  <div class="figma-hero-pages-progressive-blur">
-                    <img src="/images/hero_pages.svg" alt="" aria-hidden="true" class="figma-blur-step figma-blur-step-1" />
-                    <img src="/images/hero_pages.svg" alt="" aria-hidden="true" class="figma-blur-step figma-blur-step-2" />
-                    <img src="/images/hero_pages.svg" alt="" aria-hidden="true" class="figma-blur-step figma-blur-step-3" />
-                  </div>
-                  <div class="figma-hero-pages-bottom-mist"></div>
+                  <div class="figma-hero-pages-blur"></div>
                 </div>
                 <div class="HeroImages-module__EQIjHW__s1__img-wrap"><img loading="lazy"
                     src="/images/67446b8761145d75854e9abc_img-30.svg" alt="Decorative"
@@ -1001,8 +944,7 @@
                       <div
                         class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
                         <img src="/other/69329d87969fac1c2dc9dbbb_young-yandex-cover.avif" loading="eager"
-                          alt="Cover image of Young &amp; Yandex project" />
-                      </div>
+                          alt="Cover image of Young &amp; Yandex project" /></div>
                       <div class="CaseCard-module__iyTA2W__case-card__content">
                         <div class="CaseCard-module__iyTA2W__case-card__content-h">
                           <h3 class="u-h3">Young &amp; Yandex</h3>
@@ -1018,8 +960,7 @@
                       <div
                         class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
                         <img src="/other/69329d6e8056ca903d91edbc_yandex-cup-cover.avif" loading="eager"
-                          alt="Cover image of Yandex Cup project" />
-                      </div>
+                          alt="Cover image of Yandex Cup project" /></div>
                       <div class="CaseCard-module__iyTA2W__case-card__content">
                         <div class="CaseCard-module__iyTA2W__case-card__content-h">
                           <h3 class="u-h3">Yandex Cup</h3>
@@ -1035,8 +976,7 @@
                       <div
                         class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
                         <img src="/images/locals-nomads-cover.webp" loading="eager"
-                          alt="Cover image of Locals Nomads project" />
-                      </div>
+                          alt="Cover image of Locals Nomads project" /></div>
                       <div class="CaseCard-module__iyTA2W__case-card__content">
                         <div class="CaseCard-module__iyTA2W__case-card__content-h">
                           <h3 class="u-h3">Locals Nomads</h3>
@@ -1051,8 +991,7 @@
                       <div
                         class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
                         <img src="/images/sakharov-space-cover.webp" loading="eager"
-                          alt="Cover image of Sakharov Space project" />
-                      </div>
+                          alt="Cover image of Sakharov Space project" /></div>
                       <div class="CaseCard-module__iyTA2W__case-card__content">
                         <div class="CaseCard-module__iyTA2W__case-card__content-h">
                           <h3 class="u-h3">Sakharov Space</h3>
@@ -2559,8 +2498,8 @@
         var vh = window.innerHeight;
 
         // 0. Hero Pen Docking Detection & Upright Position (Full Circle Looping Support)
-        var wrapHeight = (loopScroll && loopScroll.state && loopScroll.state.wrapHeight) ||
-          (document.querySelector('[data-loop-scroll="wrap"]') ? document.querySelector('[data-loop-scroll="wrap"]').offsetHeight : 0) || 8000;
+        var wrapHeight = (loopScroll && loopScroll.state && loopScroll.state.wrapHeight) || 
+                         (document.querySelector('[data-loop-scroll="wrap"]') ? document.querySelector('[data-loop-scroll="wrap"]').offsetHeight : 0) || 8000;
         var curPos = Math.abs(pos || 0);
         var modPos = curPos % wrapHeight;
         var distFromHero = Math.min(modPos, wrapHeight - modPos);
