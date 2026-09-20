@@ -220,6 +220,9 @@ html, body {
   var targetRotZ = 0, currentRotZ = 0;
   var currentUnderlineBlend = 0;
   var currentWriteT = 0;
+  var isWritingMode = false;
+  var writingLockedRotY = 0;
+  var rotYOffset = 0;
   var tipWorldPos = null, tipNDC = null;
 
   if (canvas && typeof THREE !== 'undefined') {
@@ -473,8 +476,10 @@ html, body {
       currentRotX += (targetRotX - currentRotX) * 0.08;
       currentRotZ += (targetRotZ - currentRotZ) * 0.08;
 
-      // Gentle continuous idle spin (paused smoothly during handwriting)
-      targetRotY += 0.003 * (1 - currentUnderlineBlend);
+      // Gentle continuous idle spin ONLY in normal hover mode (completely paused when writing)
+      if (!isWritingMode && currentUnderlineBlend < 0.01) {
+        targetRotY += 0.003;
+      }
 
       penGroup.rotation.y = currentRotY;
       penGroup.rotation.x = currentRotX;
@@ -568,7 +573,7 @@ html, body {
     var normR = -14 + 26 * Math.sin(2 * r_a * Math.PI);
 
     var normRotX = 0.35 + Math.sin(progress * 0.002) * 0.35;
-    var normRotY = progress * 0.005;
+    var normRotY = progress * 0.005 + rotYOffset;
     var normRotZ = Math.cos(progress * 0.002) * 0.25;
 
     // 2. Detect Services section heading in viewport
@@ -611,6 +616,22 @@ html, body {
       }
     }
 
+    // State machine for entering / exiting writing mode without spin
+    if (targetBlend > 0.01) {
+      if (!isWritingMode) {
+        isWritingMode = true;
+        // Lock to the nearest angle where nib faces forward (multiple of 2*PI):
+        var diff = (0 - currentRotY) % (Math.PI * 2);
+        if (diff < -Math.PI) diff += Math.PI * 2;
+        if (diff > Math.PI) diff -= Math.PI * 2;
+        writingLockedRotY = currentRotY + diff;
+      }
+    } else if (targetBlend === 0 && isWritingMode) {
+      isWritingMode = false;
+      // Seamlessly sync hover rotation offset so there is no snap or spin on exit
+      rotYOffset = currentRotY - (progress * 0.005);
+    }
+
     currentUnderlineBlend += (targetBlend - currentUnderlineBlend) * 0.14;
     currentWriteT += (targetWriteT - currentWriteT) * 0.18;
     if (Math.abs(targetBlend - currentUnderlineBlend) < 0.001) currentUnderlineBlend = targetBlend;
@@ -651,7 +672,7 @@ html, body {
     // 4. Calculate Handwriting Screen Trajectory & Pen Tip Alignment
     var writeX = normX;
     var writeY = normY;
-    var writeR = -10;
+    var writeR = -12; // Static writing slant angle - NO oscillation, NO spinning
 
     if (b > 0.001 && targetPath) {
       var svgElem = targetPath.closest('svg');
@@ -665,7 +686,6 @@ html, body {
         var wrapW = wrapRect.width || 480;
         var wrapH = wrapRect.height || 480;
 
-        writeR = -10 + Math.sin(u * Math.PI * 2) * 2;
         var tipOffset = getPenTipScreenOffset(wrapW, wrapH, writeR);
 
         var desiredWrapCenterX = targetScreenX - tipOffset.x;
@@ -676,14 +696,20 @@ html, body {
       }
     }
 
-    // 5. Blend 3D Rotations and Screen Positioning smoothly
-    var targetWriteRotX = 0.44 + Math.sin(u * Math.PI) * 0.04;
-    var targetWriteRotY = 0.04;
-    var targetWriteRotZ = -0.38 + Math.sin(u * Math.PI * 2) * 0.03;
+    // 5. Blend 3D Rotations and Screen Positioning smoothly - ABSOLUTELY ZERO SPIN WHEN WRITING
+    var targetWriteRotX = 0.44; // Fixed writing tilt forward
+    var targetWriteRotY = writingLockedRotY; // Locked forward nib angle
+    var targetWriteRotZ = -0.36; // Fixed handwriting slant
 
-    targetRotX = normRotX * (1 - b) + targetWriteRotX * b;
-    targetRotY = normRotY * (1 - b) + targetWriteRotY * b;
-    targetRotZ = normRotZ * (1 - b) + targetWriteRotZ * b;
+    if (isWritingMode || b > 0.001) {
+      targetRotX = normRotX * (1 - b) + targetWriteRotX * b;
+      targetRotY = writingLockedRotY; // Completely locked, zero spin around Y
+      targetRotZ = normRotZ * (1 - b) + targetWriteRotZ * b;
+    } else {
+      targetRotX = normRotX;
+      targetRotY = normRotY;
+      targetRotZ = normRotZ;
+    }
 
     if (rotateWrap) {
       var finalX = normX * (1 - b) + writeX * b;
