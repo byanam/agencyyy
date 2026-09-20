@@ -103,22 +103,9 @@ html, body {
   will-change: stroke-dashoffset;
 }
 
-/* Botanical leaves container - layered ON TOP of the pen (z-index: 25) */
+/* Botanical leaves container - removed/hidden */
 .BotvaParallax-module__iIfVja__botva {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  pointer-events: none !important;
-  z-index: 25 !important; /* Higher than pen (10) so leaves overlap the pen */
-  overflow: hidden !important;
-}
-
-.BotvaParallax-module__iIfVja__botva [class*="botva__img"] {
-  transform: none !important;
-  will-change: auto !important;
-  transition: none !important;
+  display: none !important;
 }
 
 /* Preloader styles */
