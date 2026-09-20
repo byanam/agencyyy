@@ -685,8 +685,9 @@ html, body {
     // 2. Query and sort all topic lines in viewport
     var allLines = document.querySelectorAll('.service-topic-line');
     var visibleLines = [];
-    var startY = vh * 0.76;
-    var endY = vh * 0.52;
+    // Slower, more deliberate drawing span across scroll
+    var startY = vh * 0.86;
+    var endY = vh * 0.42;
 
     for (var i = 0; i < allLines.length; i++) {
       var lineElem = allLines[i];
@@ -710,7 +711,7 @@ html, body {
         var smoothP = targetP * targetP * (3 - 2 * targetP);
 
         var prevP = parseFloat(lineElem.getAttribute('data-progress') || '0');
-        var curP = prevP + (smoothP - prevP) * 0.2;
+        var curP = prevP + (smoothP - prevP) * 0.11;
         if (Math.abs(smoothP - curP) < 0.001) curP = smoothP;
         lineElem.setAttribute('data-progress', curP.toFixed(4));
         lineElem._deltaP = Math.abs(curP - prevP);
@@ -743,18 +744,18 @@ html, body {
       var firstLine = visibleLines[0];
       var lastLine = visibleLines[visibleLines.length - 1];
 
-      if (firstLine.top > startY && firstLine.top < 0.90 * vh) {
+      if (firstLine.top > startY && firstLine.top < 0.95 * vh) {
         // Playful swoop into first line start
-        var approach = (0.90 * vh - firstLine.top) / (0.90 * vh - startY);
+        var approach = (0.95 * vh - firstLine.top) / (0.95 * vh - startY);
         approach = Math.max(0, Math.min(1, approach));
         targetPenBlend = approach * approach * (3 - 2 * approach);
         targetScreenX = firstLine.left;
         targetScreenY = firstLine.top - Math.sin((1 - approach) * Math.PI * 0.5) * 30;
         dynamicWriteRotX = 0.35 + targetPenBlend * 0.09;
         dynamicWriteR = -12 + (1 - targetPenBlend) * 15;
-      } else if (lastLine.top < endY && lastLine.top > 0.30 * vh) {
+      } else if (lastLine.top < endY && lastLine.top > 0.22 * vh) {
         // Graceful lift off flourish after last line
-        var exitFrac = (endY - lastLine.top) / (endY - 0.30 * vh);
+        var exitFrac = (endY - lastLine.top) / (endY - 0.22 * vh);
         exitFrac = Math.max(0, Math.min(1, exitFrac));
         var smoothExit = exitFrac * exitFrac * (3 - 2 * exitFrac);
         targetPenBlend = 1 - smoothExit;
@@ -842,7 +843,7 @@ html, body {
       rotYOffset = currentRotY - (progress * 0.005);
     }
 
-    currentUnderlineBlend += (targetPenBlend - currentUnderlineBlend) * 0.16;
+    currentUnderlineBlend += (targetPenBlend - currentUnderlineBlend) * 0.11;
     var b = currentUnderlineBlend;
 
     // 6. Calculate handwriting screen trajectory and pen tip offset
