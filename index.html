@@ -104,13 +104,13 @@
     }
 
     /* =========================================================
-       FIGMA HERO SECTION (1:1 Match to Figma Node 9:106)
+       FIGMA HERO SECTION (Scaled Up for High-Impact Desktop)
        ========================================================= */
     .figma-hero-s1 {
       width: 100% !important;
-      max-width: 1280px !important;
+      max-width: 1600px !important;
       margin: 0 auto !important;
-      padding: clamp(100px, 12vw, 150px) clamp(16px, 4vw, 70px) 40px clamp(16px, 4vw, 70px) !important;
+      padding: clamp(100px, 10vw, 160px) clamp(20px, 4vw, 80px) 40px clamp(20px, 4vw, 80px) !important;
       box-sizing: border-box !important;
       display: flex !important;
       flex-direction: column !important;
@@ -125,15 +125,15 @@
       align-items: center !important;
       justify-content: space-between !important;
       width: 100% !important;
-      max-width: 1140px !important;
-      gap: clamp(16px, 3.5vw, 54px) !important;
+      max-width: 1480px !important;
+      gap: clamp(24px, 4vw, 68px) !important;
       position: relative !important;
       z-index: 2 !important;
     }
 
     .figma-hero-logo-wrap {
       flex: 1 1 58% !important;
-      max-width: 704px !important;
+      max-width: 900px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: flex-start !important;
@@ -142,16 +142,16 @@
     .figma-hero-logo-img {
       width: 100% !important;
       height: auto !important;
-      max-height: 403px !important;
+      max-height: 520px !important;
       object-fit: contain !important;
       display: block !important;
     }
 
     .figma-hero-pen-capsule {
-      width: clamp(28px, 3.125vw, 40px) !important;
-      min-width: 28px !important;
-      height: clamp(340px, 40.5vw, 518px) !important;
-      border-radius: 24px !important;
+      width: clamp(34px, 2.7vw, 48px) !important;
+      min-width: 34px !important;
+      height: clamp(420px, 38vw, 660px) !important;
+      border-radius: 28px !important;
       background: linear-gradient(180deg, #191919 0%, #232323 100%) !important;
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.4) !important;
       flex-shrink: 0 !important;
@@ -160,13 +160,13 @@
     }
 
     .figma-hero-social-proof {
-      flex: 1 1 25% !important;
-      max-width: 285px !important;
+      flex: 1 1 28% !important;
+      max-width: 380px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: space-between !important;
-      height: clamp(340px, 35vw, 440px) !important;
+      height: clamp(400px, 35vw, 560px) !important;
     }
 
     .figma-hero-stat-block {
@@ -176,9 +176,9 @@
 
     .figma-stat-text {
       font-family: 'Source Sans 3', sans-serif !important;
-      font-size: clamp(20px, 3.75vw, 48px) !important;
+      font-size: clamp(26px, 3.8vw, 62px) !important;
       font-weight: 400 !important;
-      line-height: 0.8 !important;
+      line-height: 0.82 !important;
       letter-spacing: -0.05em !important;
       color: #707070 !important;
       text-align: center !important;
@@ -189,7 +189,7 @@
 
     .figma-stat-divider {
       width: 100% !important;
-      max-width: 262px !important;
+      max-width: 340px !important;
       height: 1px !important;
       background-color: #707070 !important;
       margin: 0 auto !important;
@@ -197,11 +197,11 @@
 
     .figma-hero-pages-wrap {
       width: 100% !important;
-      max-width: 1140px !important;
+      max-width: 1480px !important;
       display: flex !important;
       justify-content: center !important;
       align-items: flex-start !important;
-      margin: -65px auto 0 auto !important;
+      margin: -85px auto 0 auto !important;
       position: relative !important;
       z-index: 3 !important;
       pointer-events: none !important;
@@ -210,14 +210,23 @@
     .figma-hero-pages-img {
       width: 100% !important;
       height: auto !important;
-      max-height: 487px !important;
+      max-height: 620px !important;
       object-fit: contain !important;
       display: block !important;
     }
 
+    @media (max-width: 1024px) {
+      .figma-hero-s1 {
+        padding-top: 110px !important;
+      }
+      .figma-stat-text {
+        font-size: clamp(22px, 3.2vw, 36px) !important;
+      }
+    }
+
     @media (max-width: 900px) {
       .figma-hero-s1 {
-        padding-top: 100px !important;
+        padding-top: 90px !important;
       }
       .figma-hero-top-row {
         flex-direction: column !important;
