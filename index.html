@@ -204,7 +204,7 @@
       align-items: flex-start !important;
       margin: -85px auto 0 auto !important;
       position: relative !important;
-      z-index: 3 !important;
+      z-index: 5 !important;
       pointer-events: none !important;
     }
 
@@ -214,6 +214,8 @@
       max-height: 620px !important;
       object-fit: contain !important;
       display: block !important;
+      position: relative !important;
+      z-index: 5 !important;
     }
 
     @media (max-width: 1024px) {
@@ -278,7 +280,7 @@
       position: fixed !important;
       inset: 0 !important;
       overflow: hidden !important;
-      z-index: 2 !important;
+      z-index: 12 !important;
       width: 100% !important;
       height: 100% !important;
     }
@@ -2528,6 +2530,22 @@
           }
         }
         window.__heroPenBlend = heroBlend;
+
+        // Dynamic stacking: Keep pen beneath the hero pages element when in/near hero
+        var allPages = document.querySelectorAll('.figma-hero-pages-wrap');
+        var isPagesInView = (heroBlend > 0.001);
+        for (var p = 0; p < allPages.length; p++) {
+          var pr = allPages[p].getBoundingClientRect();
+          if (pr.bottom > -20 && pr.top < vh + 20) {
+            isPagesInView = true;
+            break;
+          }
+        }
+
+        var mainContainer = document.querySelector('.LoopScroll-module__5wuzDq__main-container');
+        if (mainContainer) {
+          mainContainer.style.setProperty('z-index', isPagesInView ? '12' : '2', 'important');
+        }
 
         // 1. Natural Lissajous trajectory and hover rotations
         var s = Math.min(0.26 * vw, Math.max(140, vw * 0.5 - 260));
