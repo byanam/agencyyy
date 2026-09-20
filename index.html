@@ -2179,170 +2179,183 @@
         penBody.position.y = 0; // Intrinsically balanced around center of gravity (Y: -3.885 to +3.885)
         penGroup.add(penBody);
 
-        // High-end PBR materials with clearcoat and metallic radiance
-        var lacquerMat = new THREE.MeshPhysicalMaterial({
-          color: 0x0c0d10,
-          roughness: 0.1,
-          metalness: 0.15,
-          clearcoat: 1.0,
-          clearcoatRoughness: 0.05,
-          reflectivity: 0.95
+        // High-end PBR Materials for Authentic Technical Sketch Pen / Fineliner
+        var barrelMat = new THREE.MeshPhysicalMaterial({
+          color: 0x15171c,
+          roughness: 0.28,
+          metalness: 0.08,
+          clearcoat: 0.45,
+          clearcoatRoughness: 0.15,
+          reflectivity: 0.90
+        });
+
+        var gripMat = new THREE.MeshStandardMaterial({
+          color: 0x1a1d23,
+          roughness: 0.65,
+          metalness: 0.04
+        });
+
+        var chromeMat = new THREE.MeshStandardMaterial({
+          color: 0xdde6ed,
+          roughness: 0.10,
+          metalness: 0.98
         });
 
         var goldMat = new THREE.MeshStandardMaterial({
           color: 0xf5d061,
-          roughness: 0.09,
-          metalness: 0.96
+          roughness: 0.14,
+          metalness: 0.94
         });
 
-        var silverMat = new THREE.MeshStandardMaterial({
-          color: 0xe6eef4,
-          roughness: 0.07,
-          metalness: 0.98
+        var feltNibMat = new THREE.MeshStandardMaterial({
+          color: 0x050608,
+          roughness: 0.95,
+          metalness: 0.01
         });
 
-        var feedMat = new THREE.MeshStandardMaterial({
-          color: 0x080808,
-          roughness: 0.85,
-          metalness: 0.05
+        var inkAccentMat = new THREE.MeshStandardMaterial({
+          color: 0xf5d061,
+          roughness: 0.22,
+          metalness: 0.35
         });
 
-        // 1. Top Crown Finial (Polished Gold Stud at top of pen)
-        var topFinialPoints = [
-          new THREE.Vector2(0.001, 3.885),
-          new THREE.Vector2(0.10, 3.855),
-          new THREE.Vector2(0.15, 3.785),
-          new THREE.Vector2(0.192, 3.625),
-          new THREE.Vector2(0.192, 3.525)
+        // 1. Porous Fiber Felt Nib (Writing Point poised downward)
+        var nibPoints = [
+          new THREE.Vector2(0.001, -3.885),
+          new THREE.Vector2(0.024, -3.880),
+          new THREE.Vector2(0.042, -3.720),
+          new THREE.Vector2(0.054, -3.520),
+          new THREE.Vector2(0.001, -3.520)
         ];
-        var topFinial = new THREE.Mesh(new THREE.LatheGeometry(topFinialPoints, 40), goldMat);
-        penBody.add(topFinial);
+        var feltNib = new THREE.Mesh(new THREE.LatheGeometry(nibPoints, 32), feltNibMat);
+        penBody.add(feltNib);
 
-        // 2. Top Gold Accent Ring
-        var topRing = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.08, 40), goldMat);
-        topRing.position.y = 3.45;
-        penBody.add(topRing);
-
-        // 3. Contoured Piano Lacquer Barrel (Upper body)
-        var barrelPoints = [
-          new THREE.Vector2(0.19, 3.40),
-          new THREE.Vector2(0.20, 3.20),
-          new THREE.Vector2(0.23, 2.20),
-          new THREE.Vector2(0.25, 1.00),
-          new THREE.Vector2(0.25, -0.20),
-          new THREE.Vector2(0.245, -0.50),
-          new THREE.Vector2(0.001, -0.50)
-        ];
-        var barrel = new THREE.Mesh(new THREE.LatheGeometry(barrelPoints, 40), lacquerMat);
-        penBody.add(barrel);
-
-        // 4. Center Master Triple Band
-        var mainBand = new THREE.Mesh(new THREE.CylinderGeometry(0.262, 0.262, 0.22, 40), goldMat);
-        mainBand.position.y = -0.65;
-        penBody.add(mainBand);
-
-        var bandTop = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.256, 0.04, 40), silverMat);
-        bandTop.position.y = -0.50;
-        penBody.add(bandTop);
-
-        var bandBottom = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.256, 0.04, 40), silverMat);
-        bandBottom.position.y = -0.80;
-        penBody.add(bandBottom);
-
-        // 5. Threading Ring (Metal screw threads where cap screws on)
-        var threadRing = new THREE.Mesh(new THREE.CylinderGeometry(0.238, 0.238, 0.18, 40), silverMat);
-        threadRing.position.y = -0.94;
-        penBody.add(threadRing);
-
-        // 6. Ergonomic Hourglass Finger Grip Section (Leading down to nib)
-        var gripPoints = [
-          new THREE.Vector2(0.235, -1.03),
-          new THREE.Vector2(0.21, -1.30),
-          new THREE.Vector2(0.175, -1.70),
-          new THREE.Vector2(0.17, -2.10),
-          new THREE.Vector2(0.185, -2.35)
-        ];
-        var grip = new THREE.Mesh(new THREE.LatheGeometry(gripPoints, 40), lacquerMat);
-        penBody.add(grip);
-
-        // 7. Front Collar Ring (Gold)
-        var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.188, 0.192, 0.12, 40), goldMat);
-        collar.position.y = -2.41;
-        penBody.add(collar);
-
-        // 8. Stamped Fountain Pen Gold Nib (Poised downwards)
-        var nibShape = new THREE.Shape();
-        nibShape.moveTo(0, 0);
-        nibShape.lineTo(0.155, 0);
-        nibShape.bezierCurveTo(0.165, -0.45, 0.12, -0.95, 0, -1.45);
-        nibShape.bezierCurveTo(-0.12, -0.95, -0.165, -0.45, -0.155, 0);
-        nibShape.closePath();
-
-        var holePath = new THREE.Path();
-        holePath.absarc(0, -0.55, 0.035, 0, Math.PI * 2, true);
-        nibShape.holes.push(holePath);
-
-        var nibGeo = new THREE.ExtrudeGeometry(nibShape, {
-          depth: 0.025,
-          bevelEnabled: true,
-          bevelSegments: 4,
-          steps: 1,
-          bevelSize: 0.015,
-          bevelThickness: 0.015
-        });
-        nibGeo.center();
-        var nib = new THREE.Mesh(nibGeo, goldMat);
-        nib.position.set(0, -3.16, 0.01);
-        nib.rotation.x = 0.04;
-        penBody.add(nib);
-
-        // Center Slit on Nib
-        var slit = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.88, 0.035), new THREE.MeshBasicMaterial({ color: 0x000000 }));
-        slit.position.set(0, -3.58, 0.01);
-        penBody.add(slit);
-
-        // Iridium Writing Tipping Ball (Pointing downward)
-        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.032, 16, 16), silverMat);
+        // Writing Apex Tipping Ball (exact reference for canvas underline tracking)
+        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.024, 16, 16), feltNibMat);
         tippingBall.position.set(0, -3.885, 0.01);
         penBody.add(tippingBall);
 
-        // Two-tone Rhodium Silver Inlay Shield on Nib Face
-        var shieldShape = new THREE.Shape();
-        shieldShape.moveTo(0, -0.15);
-        shieldShape.lineTo(0.09, -0.15);
-        shieldShape.bezierCurveTo(0.095, -0.4, 0.07, -0.75, 0, -1.05);
-        shieldShape.bezierCurveTo(-0.07, -0.75, -0.095, -0.4, -0.09, -0.15);
-        shieldShape.closePath();
-        var silverShield = new THREE.Mesh(new THREE.ShapeGeometry(shieldShape), silverMat);
-        silverShield.position.set(0, -3.10, 0.03);
-        penBody.add(silverShield);
+        // 2. Long Stainless Steel Needle Guide Sleeve (The signature fineliner feature)
+        var needleTube = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.062, 0.77, 32), chromeMat);
+        needleTube.position.y = -3.135;
+        penBody.add(needleTube);
 
-        // 9. Ink Feed (Black ribbed underside on back)
-        var feed = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.85, 20), feedMat);
-        feed.position.set(0, -2.92, -0.07);
-        penBody.add(feed);
+        var needleCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.082, 0.068, 0.08, 32), chromeMat);
+        needleCollar.position.y = -2.74;
+        penBody.add(needleCollar);
 
-        // Feed Horizontal Fins / Gills
-        for (var fIdx = 0; fIdx < 6; fIdx++) {
-          var fin = new THREE.Mesh(new THREE.CylinderGeometry(0.135 - fIdx * 0.004, 0.135 - fIdx * 0.004, 0.02, 20), feedMat);
-          fin.position.set(0, -2.65 - fIdx * 0.08, -0.07);
-          penBody.add(fin);
+        // 3. Tapered Front Nose Cone / Nozzle Section
+        var conePoints = [
+          new THREE.Vector2(0.082, -2.70),
+          new THREE.Vector2(0.125, -2.50),
+          new THREE.Vector2(0.170, -2.25),
+          new THREE.Vector2(0.205, -1.95),
+          new THREE.Vector2(0.001, -1.95)
+        ];
+        var noseCone = new THREE.Mesh(new THREE.LatheGeometry(conePoints, 36), barrelMat);
+        penBody.add(noseCone);
+
+        var coneRing = new THREE.Mesh(new THREE.CylinderGeometry(0.210, 0.210, 0.04, 36), goldMat);
+        coneRing.position.y = -1.94;
+        penBody.add(coneRing);
+
+        // 4. Fluted Ergonomic Finger Grip Section (with tactile longitudinal ribs)
+        var gripPoints = [
+          new THREE.Vector2(0.208, -1.92),
+          new THREE.Vector2(0.218, -1.65),
+          new THREE.Vector2(0.228, -1.25),
+          new THREE.Vector2(0.235, -0.85),
+          new THREE.Vector2(0.240, -0.65),
+          new THREE.Vector2(0.001, -0.65)
+        ];
+        var gripSection = new THREE.Mesh(new THREE.LatheGeometry(gripPoints, 36), gripMat);
+        penBody.add(gripSection);
+
+        for (var rIdx = 0; rIdx < 12; rIdx++) {
+          var angle = (rIdx / 12) * Math.PI * 2;
+          var rib = new THREE.Mesh(new THREE.BoxGeometry(0.012, 1.05, 0.015), barrelMat);
+          var ribR = 0.222;
+          rib.position.set(Math.cos(angle) * ribR, -1.30, Math.sin(angle) * ribR);
+          rib.rotation.y = -angle;
+          penBody.add(rib);
         }
 
-        // 10. Sculpted Gold Pocket Clip with Teardrop Ball Tip (on upper barrel)
+        // Grip Transition Rings (Dual Gold & Chrome)
+        var gripBandGold = new THREE.Mesh(new THREE.CylinderGeometry(0.248, 0.248, 0.08, 36), goldMat);
+        gripBandGold.position.y = -0.61;
+        penBody.add(gripBandGold);
+
+        var gripBandChrome = new THREE.Mesh(new THREE.CylinderGeometry(0.244, 0.244, 0.06, 36), chromeMat);
+        gripBandChrome.position.y = -0.54;
+        penBody.add(gripBandChrome);
+
+        // 5. Main Cylindrical Pen Barrel with Precision Graphics & Accent Bands
+        var barrelBody = new THREE.Mesh(new THREE.CylinderGeometry(0.246, 0.246, 2.96, 40), barrelMat);
+        barrelBody.position.y = 0.97;
+        penBody.add(barrelBody);
+
+        var pinstripe1 = new THREE.Mesh(new THREE.CylinderGeometry(0.249, 0.249, 0.03, 40), goldMat);
+        pinstripe1.position.y = 0.20;
+        penBody.add(pinstripe1);
+
+        var midBand = new THREE.Mesh(new THREE.CylinderGeometry(0.252, 0.252, 0.16, 40), goldMat);
+        midBand.position.y = 0.35;
+        penBody.add(midBand);
+
+        var pinstripe2 = new THREE.Mesh(new THREE.CylinderGeometry(0.249, 0.249, 0.03, 40), chromeMat);
+        pinstripe2.position.y = 0.50;
+        penBody.add(pinstripe2);
+
+        var specRing = new THREE.Mesh(new THREE.CylinderGeometry(0.249, 0.249, 0.10, 40), inkAccentMat);
+        specRing.position.y = 1.95;
+        penBody.add(specRing);
+
+        // 6. Rear Posted Cap & Tail Assembly
+        var capJoint = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.252, 0.12, 40), goldMat);
+        capJoint.position.y = 2.51;
+        penBody.add(capJoint);
+
+        var capBody = new THREE.Mesh(new THREE.CylinderGeometry(0.258, 0.256, 0.95, 40), barrelMat);
+        capBody.position.y = 3.045;
+        penBody.add(capBody);
+
+        var tailIndicator = new THREE.Mesh(new THREE.CylinderGeometry(0.260, 0.260, 0.15, 40), inkAccentMat);
+        tailIndicator.position.y = 3.595;
+        penBody.add(tailIndicator);
+
+        var tailPlugPoints = [
+          new THREE.Vector2(0.260, 3.67),
+          new THREE.Vector2(0.255, 3.76),
+          new THREE.Vector2(0.210, 3.84),
+          new THREE.Vector2(0.120, 3.885),
+          new THREE.Vector2(0.040, 3.875),
+          new THREE.Vector2(0.001, 3.865)
+        ];
+        var tailPlug = new THREE.Mesh(new THREE.LatheGeometry(tailPlugPoints, 40), barrelMat);
+        penBody.add(tailPlug);
+
+        var tailDot = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 16), inkAccentMat);
+        tailDot.position.set(0, 3.875, 0);
+        penBody.add(tailDot);
+
+        // 7. Precision Spring Steel Pocket Clip
+        var clipRing = new THREE.Mesh(new THREE.CylinderGeometry(0.268, 0.268, 0.10, 40), chromeMat);
+        clipRing.position.y = 3.52;
+        penBody.add(clipRing);
+
         var clipCurve = new THREE.CatmullRomCurve3([
-          new THREE.Vector3(0, 3.40, 0.26),
-          new THREE.Vector3(0, 3.25, 0.38),
-          new THREE.Vector3(0, 2.40, 0.42),
-          new THREE.Vector3(0, 1.50, 0.36),
-          new THREE.Vector3(0, 1.10, 0.28)
+          new THREE.Vector3(0, 3.52, 0.268),
+          new THREE.Vector3(0, 3.48, 0.355),
+          new THREE.Vector3(0, 2.75, 0.365),
+          new THREE.Vector3(0, 2.30, 0.335),
+          new THREE.Vector3(0, 2.12, 0.278)
         ]);
-        var clip = new THREE.Mesh(new THREE.TubeGeometry(clipCurve, 32, 0.038, 12, false), goldMat);
+        var clip = new THREE.Mesh(new THREE.TubeGeometry(clipCurve, 32, 0.028, 12, false), chromeMat);
         penBody.add(clip);
 
-        var clipBall = new THREE.Mesh(new THREE.SphereGeometry(0.065, 20, 20), goldMat);
-        clipBall.position.set(0, 1.10, 0.28);
-        penBody.add(clipBall);
+        var clipTip = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 16), chromeMat);
+        clipTip.position.set(0, 2.12, 0.285);
+        penBody.add(clipTip);
 
         // Scale penGroup cleanly so it fits inside camera frustum with safety margin
         penGroup.scale.set(0.68, 0.68, 0.68);
