@@ -685,14 +685,12 @@ html, body {
     // 2. Query and sort all topic lines in viewport
     var allLines = document.querySelectorAll('.service-topic-line');
     var visibleLines = [];
-    // Slower, more deliberate drawing span across scroll
-    var startY = vh * 0.86;
-    var endY = vh * 0.42;
+    var refY = vh * 0.68;
 
     for (var i = 0; i < allLines.length; i++) {
       var lineElem = allLines[i];
       var r = lineElem.getBoundingClientRect();
-      if (r.width > 0 && r.top > -vh && r.top < 2 * vh) {
+      if (r.width > 0 && r.top > -vh * 0.8 && r.top < vh * 1.8) {
         visibleLines.push({
           elem: lineElem,
           top: r.top,
@@ -701,20 +699,163 @@ html, body {
           width: r.width
         });
       }
+    }
 
-      // Update line visual drawing progress with fluid momentum
-      var fill = lineElem.querySelector('.service-topic-line-fill');
-      var glow = lineElem.querySelector('.service-topic-line-glow');
+    visibleLines.sort(function(a, b) { return a.top - b.top; });
+
+    // 3. Sequential Line Lifecycle & Explicit Right-to-Left Flight Motion
+    var targetScreenX = normX + (vw * 0.5);
+    var targetScreenY = normY + (vh * 0.5);
+    var targetPenBlend = 0;
+    var dynamicWriteRotX = 0.44;
+    var dynamicWriteRotZ = -0.36;
+    var dynamicWriteR = -12;
+    var activeHeadingElem = null;
+
+    var N = visibleLines.length;
+    var lineProgresses = new Array(N).fill(0);
+
+    if (N > 0) {
+      var firstLine = visibleLines[0];
+      var lastLine = visibleLines[N - 1];
+
+      if (firstLine.top > refY) {
+        // Approaching first line: swoop down to left start of Line 0
+        var approachSpan = 0.25 * vh;
+        if (firstLine.top <= refY + approachSpan) {
+          var approach = (refY + approachSpan - firstLine.top) / approachSpan;
+          approach = Math.max(0, Math.min(1, approach));
+          targetPenBlend = approach * approach * (3 - 2 * approach);
+          targetScreenX = firstLine.left;
+          targetScreenY = firstLine.top - Math.sin((1 - approach) * Math.PI * 0.5) * 40;
+          dynamicWriteRotX = 0.35 + targetPenBlend * 0.09;
+          dynamicWriteR = -12 + (1 - targetPenBlend) * 15;
+        }
+      } else {
+        // Lines 0 to N-2
+        var matched = false;
+        for (var k = 0; k < N - 1; k++) {
+          var curLine = visibleLines[k];
+          var nextLine = visibleLines[k + 1];
+
+          if (curLine.top <= refY && nextLine.top > refY) {
+            var D = nextLine.top - curLine.top;
+            if (D <= 0) D = 180;
+            var t = (refY - curLine.top) / D;
+            t = Math.max(0, Math.min(1, t));
+
+            // Mark lines before k as fully drawn
+            for (var j = 0; j < k; j++) lineProgresses[j] = 1.0;
+
+            if (t <= 0.60) {
+              // PHASE A: DRAW LINE k (LEFT -> RIGHT)
+              var u = t / 0.60;
+              lineProgresses[k] = u;
+
+              var organicYWave = Math.sin(u * Math.PI * 8) * 1.8;
+              targetScreenX = curLine.left + u * curLine.width;
+              targetScreenY = curLine.top + organicYWave;
+              targetPenBlend = 1;
+
+              dynamicWriteRotX = 0.44 + Math.sin(u * Math.PI * 4) * 0.04;
+              dynamicWriteRotZ = -0.36 + Math.sin(u * Math.PI * 2) * 0.05;
+              dynamicWriteR = -12 + Math.sin(u * Math.PI * 3) * 3;
+
+              if (u > 0.02 && u < 0.98) {
+                spawnInkParticles(targetScreenX, targetScreenY, 1.2);
+              }
+
+              var topicContainer = curLine.elem.closest('.page-module__ZDaQEq__s4__services > div') || curLine.elem.nextElementSibling;
+              if (topicContainer) {
+                activeHeadingElem = topicContainer.querySelector('.TextColumn-module__OsnSpW__text-column__h h3');
+              }
+            } else {
+              // PHASE B: FLIGHT BETWEEN LINES (RIGHT -> LEFT)
+              // Line k is 100% drawn; Line k+1 has NOT started (0%)
+              lineProgresses[k] = 1.0;
+
+              var r = (t - 0.60) / 0.40;
+              r = Math.max(0, Math.min(1, r));
+              var smoothR = r * r * (3 - 2 * r);
+
+              // Continuous, uninterrupted glide from right of curLine to left of nextLine
+              targetScreenX = curLine.right + smoothR * (nextLine.left - curLine.right);
+              var arcLift = Math.sin(r * Math.PI) * 46;
+              targetScreenY = curLine.top + smoothR * (nextLine.top - curLine.top) - arcLift;
+              targetPenBlend = 1;
+
+              // Graceful air tilt and twirl in flight
+              dynamicWriteRotX = 0.44 - Math.sin(r * Math.PI) * 0.22;
+              dynamicWriteRotZ = -0.36 + Math.sin(r * Math.PI) * 0.35;
+              dynamicWriteR = -12 + Math.sin(r * Math.PI) * 20;
+            }
+
+            matched = true;
+            break;
+          }
+        }
+
+        if (!matched && lastLine.top <= refY) {
+          // Final line k = N - 1
+          for (var j = 0; j < N - 1; j++) lineProgresses[j] = 1.0;
+
+          var prevLine = N >= 2 ? visibleLines[N - 2] : null;
+          var D_last = prevLine ? (lastLine.top - prevLine.top) : 220;
+          if (D_last <= 0) D_last = 220;
+
+          var t_last = (refY - lastLine.top) / (0.60 * D_last);
+          if (t_last <= 1.0) {
+            // Drawing the final line (LEFT -> RIGHT)
+            var u_last = Math.max(0, Math.min(1, t_last));
+            lineProgresses[N - 1] = u_last;
+
+            var organicYWave = Math.sin(u_last * Math.PI * 8) * 1.8;
+            targetScreenX = lastLine.left + u_last * lastLine.width;
+            targetScreenY = lastLine.top + organicYWave;
+            targetPenBlend = 1;
+
+            dynamicWriteRotX = 0.44 + Math.sin(u_last * Math.PI * 4) * 0.04;
+            dynamicWriteRotZ = -0.36 + Math.sin(u_last * Math.PI * 2) * 0.05;
+            dynamicWriteR = -12 + Math.sin(u_last * Math.PI * 3) * 3;
+
+            if (u_last > 0.02 && u_last < 0.98) {
+              spawnInkParticles(targetScreenX, targetScreenY, 1.2);
+            }
+
+            var topicContainer = lastLine.elem.closest('.page-module__ZDaQEq__s4__services > div') || lastLine.elem.nextElementSibling;
+            if (topicContainer) {
+              activeHeadingElem = topicContainer.querySelector('.TextColumn-module__OsnSpW__text-column__h h3');
+            }
+          } else {
+            // Final line 100% drawn; gracefully exit into orbit
+            lineProgresses[N - 1] = 1.0;
+            var exitSpan = 0.35 * vh;
+            var exitFrac = (refY - 0.60 * D_last - lastLine.top) / exitSpan;
+            exitFrac = Math.max(0, Math.min(1, exitFrac));
+            var smoothExit = exitFrac * exitFrac * (3 - 2 * exitFrac);
+
+            targetPenBlend = 1 - smoothExit;
+            targetScreenX = lastLine.right;
+            targetScreenY = lastLine.top - Math.sin(smoothExit * Math.PI * 0.5) * 50;
+            dynamicWriteRotX = 0.44 - smoothExit * 0.15;
+            dynamicWriteRotZ = -0.36 + smoothExit * 0.25;
+            dynamicWriteR = -12 + smoothExit * 18;
+          }
+        }
+      }
+    }
+
+    // 4. Update visual line drawing in DOM using calculated sequential progresses
+    for (var i = 0; i < visibleLines.length; i++) {
+      var item = visibleLines[i];
+      var targetProg = lineProgresses[i] || 0;
+      var fill = item.elem.querySelector('.service-topic-line-fill');
+      var glow = item.elem.querySelector('.service-topic-line-glow');
       if (fill) {
-        var frac = (startY - r.top) / (startY - endY);
-        var targetP = Math.max(0, Math.min(1, frac));
-        var smoothP = targetP * targetP * (3 - 2 * targetP);
-
-        var prevP = parseFloat(lineElem.getAttribute('data-progress') || '0');
-        var curP = prevP + (smoothP - prevP) * 0.11;
-        if (Math.abs(smoothP - curP) < 0.001) curP = smoothP;
-        lineElem.setAttribute('data-progress', curP.toFixed(4));
-        lineElem._deltaP = Math.abs(curP - prevP);
+        var prevP = parseFloat(item.elem.getAttribute('data-progress') || '0');
+        var curP = prevP + (targetProg - prevP) * 0.22;
+        if (Math.abs(targetProg - curP) < 0.001) curP = targetProg;
+        item.elem.setAttribute('data-progress', curP.toFixed(4));
 
         fill.style.transform = 'scaleX(' + curP.toFixed(4) + ')';
         if (curP >= 0.99) {
@@ -729,96 +870,7 @@ html, body {
       }
     }
 
-    visibleLines.sort(function(a, b) { return a.top - b.top; });
-
-    // 3. Determine active pen target with playful calligraphic dynamics
-    var targetScreenX = normX + (vw * 0.5);
-    var targetScreenY = normY + (vh * 0.5);
-    var targetPenBlend = 0;
-    var dynamicWriteRotX = 0.44;
-    var dynamicWriteRotZ = -0.36;
-    var dynamicWriteR = -12;
-    var activeHeadingElem = null;
-
-    if (visibleLines.length > 0) {
-      var firstLine = visibleLines[0];
-      var lastLine = visibleLines[visibleLines.length - 1];
-
-      if (firstLine.top > startY && firstLine.top < 0.95 * vh) {
-        // Playful swoop into first line start
-        var approach = (0.95 * vh - firstLine.top) / (0.95 * vh - startY);
-        approach = Math.max(0, Math.min(1, approach));
-        targetPenBlend = approach * approach * (3 - 2 * approach);
-        targetScreenX = firstLine.left;
-        targetScreenY = firstLine.top - Math.sin((1 - approach) * Math.PI * 0.5) * 30;
-        dynamicWriteRotX = 0.35 + targetPenBlend * 0.09;
-        dynamicWriteR = -12 + (1 - targetPenBlend) * 15;
-      } else if (lastLine.top < endY && lastLine.top > 0.22 * vh) {
-        // Graceful lift off flourish after last line
-        var exitFrac = (endY - lastLine.top) / (endY - 0.22 * vh);
-        exitFrac = Math.max(0, Math.min(1, exitFrac));
-        var smoothExit = exitFrac * exitFrac * (3 - 2 * exitFrac);
-        targetPenBlend = 1 - smoothExit;
-        targetScreenX = lastLine.right;
-        targetScreenY = lastLine.top - Math.sin(smoothExit * Math.PI * 0.5) * 45;
-        dynamicWriteRotX = 0.44 - smoothExit * 0.15;
-        dynamicWriteRotZ = -0.36 + smoothExit * 0.25;
-        dynamicWriteR = -12 + smoothExit * 18;
-      } else {
-        // Find which line is actively drawing, or which gap between lines
-        for (var k = 0; k < visibleLines.length; k++) {
-          var curLine = visibleLines[k];
-          if (curLine.top >= endY && curLine.top <= startY) {
-            var u = (startY - curLine.top) / (startY - endY);
-            u = Math.max(0, Math.min(1, u));
-
-            // Dynamic calligraphic gestures:
-            // 1. Subtle rhythmic organic cursive wave on Y (2px)
-            var organicYWave = Math.sin(u * Math.PI * 8) * 1.8;
-            targetScreenX = curLine.left + u * curLine.width;
-            targetScreenY = curLine.top + organicYWave;
-            targetPenBlend = 1;
-
-            // 2. Dynamic nib pressure tilt & angle variation
-            dynamicWriteRotX = 0.44 + Math.sin(u * Math.PI * 4) * 0.04;
-            dynamicWriteRotZ = -0.36 + Math.sin(u * Math.PI * 2) * 0.05;
-            dynamicWriteR = -12 + Math.sin(u * Math.PI * 3) * 3;
-
-            // 3. Emit glowing golden ink particles at the nib tip
-            if (u > 0.02 && u < 0.98) {
-              spawnInkParticles(targetScreenX, targetScreenY, (curLine.elem._deltaP || 0.01) * 30);
-            }
-
-            // 4. Identify topic heading to illuminate
-            var topicContainer = curLine.elem.closest('.page-module__ZDaQEq__s4__services > div') || curLine.elem.nextElementSibling;
-            if (topicContainer) {
-              activeHeadingElem = topicContainer.querySelector('.TextColumn-module__OsnSpW__text-column__h h3');
-            }
-            break;
-          } else if (curLine.top < endY && k + 1 < visibleLines.length && visibleLines[k + 1].top > startY) {
-            var nextLine = visibleLines[k + 1];
-            var gap = (endY - curLine.top) + (nextLine.top - startY);
-            var gapFrac = gap > 0 ? (endY - curLine.top) / gap : 0.5;
-            gapFrac = Math.max(0, Math.min(1, gapFrac));
-            var smoothGap = gapFrac * gapFrac * (3 - 2 * gapFrac);
-
-            // Playful flourish & pen lift between lines
-            var gapWave = Math.sin(smoothGap * Math.PI);
-            targetScreenX = curLine.right + smoothGap * (nextLine.left - curLine.right);
-            targetScreenY = curLine.top + smoothGap * (nextLine.top - curLine.top) - gapWave * 38;
-            targetPenBlend = 1;
-
-            // Playful air pirouette / tilt in flight
-            dynamicWriteRotX = 0.44 - gapWave * 0.20;
-            dynamicWriteRotZ = -0.36 + gapWave * 0.32;
-            dynamicWriteR = -12 + gapWave * 16;
-            break;
-          }
-        }
-      }
-    }
-
-    // 4. Update topic headings active highlight
+    // 5. Update topic headings active highlight
     var allTopicHeadings = document.querySelectorAll('.TextColumn-module__OsnSpW__text-column__h h3');
     for (var hIdx = 0; hIdx < allTopicHeadings.length; hIdx++) {
       var hElem = allTopicHeadings[hIdx];
@@ -829,7 +881,7 @@ html, body {
       }
     }
 
-    // 5. Smoothly blend pen into writing mode and lock rotation
+    // 6. Smoothly blend pen into writing mode and lock rotation
     if (targetPenBlend > 0.01) {
       if (!isWritingMode) {
         isWritingMode = true;
@@ -843,10 +895,10 @@ html, body {
       rotYOffset = currentRotY - (progress * 0.005);
     }
 
-    currentUnderlineBlend += (targetPenBlend - currentUnderlineBlend) * 0.11;
+    currentUnderlineBlend += (targetPenBlend - currentUnderlineBlend) * 0.16;
     var b = currentUnderlineBlend;
 
-    // 6. Calculate handwriting screen trajectory and pen tip offset
+    // 7. Calculate handwriting screen trajectory and pen tip offset
     var writeX = normX;
     var writeY = normY;
     var writeR = dynamicWriteR;
@@ -864,7 +916,7 @@ html, body {
       writeY = desiredWrapCenterY - (vh * 0.5);
     }
 
-    // 7. Blend 3D rotations with dynamic calligraphy responsiveness
+    // 8. Blend 3D rotations with dynamic calligraphy responsiveness
     if (isWritingMode || b > 0.001) {
       targetRotX = normRotX * (1 - b) + dynamicWriteRotX * b;
       targetRotY = writingLockedRotY;
@@ -882,7 +934,7 @@ html, body {
       rotateWrap.style.transform = 'translate3d(' + finalX.toFixed(2) + 'px, ' + finalY.toFixed(2) + 'px, 0px) rotate(' + finalR.toFixed(2) + 'deg)';
     }
 
-    // 8. Render ink particles
+    // 9. Render ink particles
     renderParticles();
   }
 
