@@ -2259,189 +2259,297 @@
         rimLight.position.set(3, -5, 5);
         scene.add(rimLight);
 
-        // --- Master 3D Fountain Pen Assembly (22 authentic components) - Oriented Right-Side-Up (Nib Down) ---
+        // --- Master 3D Model: Albus Dumbledore's Elder Wand (Screen-Accurate 1:1 Replica) ---
+        // Canon length: 15 inches (proportional span: Y: +3.885 to -3.885), oriented tip-downward
         penGroup = new THREE.Group();
         var penBody = new THREE.Group();
-        penBody.position.y = 0; // Intrinsically balanced around center of gravity (Y: -3.885 to +3.885)
+        penBody.position.y = 0; // Intrinsically balanced around center of gravity
         penGroup.add(penBody);
 
-        // High-end PBR Materials for Authentic Technical Sketch Pen / Fineliner
-        var barrelMat = new THREE.MeshPhysicalMaterial({
-          color: 0x15171c,
-          roughness: 0.28,
-          metalness: 0.08,
-          clearcoat: 0.45,
-          clearcoatRoughness: 0.15,
+        // 1. PBR Materials for Ancient Elder Wood, Aged Bone Runes, and Magical Core
+        var elderWoodMat = new THREE.MeshPhysicalMaterial({
+          color: 0x241d18, // Deep weathered elder wood with ash and charcoal undertones
+          roughness: 0.56,
+          metalness: 0.05,
+          clearcoat: 0.28,
+          clearcoatRoughness: 0.38,
+          reflectivity: 0.85
+        });
+
+        var elderBerryMat = new THREE.MeshPhysicalMaterial({
+          color: 0x2c221a, // Slightly warmer wood tone on the raised elderberry clusters
+          roughness: 0.48,
+          metalness: 0.04,
+          clearcoat: 0.35,
+          clearcoatRoughness: 0.30,
           reflectivity: 0.90
         });
 
-        var gripMat = new THREE.MeshStandardMaterial({
-          color: 0x1a1d23,
-          roughness: 0.65,
-          metalness: 0.04
+        var elderCollarMat = new THREE.MeshStandardMaterial({
+          color: 0x1a1410, // Dark carved wood collars & crevices
+          roughness: 0.68,
+          metalness: 0.03
         });
 
-        var chromeMat = new THREE.MeshStandardMaterial({
-          color: 0xdde6ed,
-          roughness: 0.10,
-          metalness: 0.98
+        // Procedural High-Resolution Aged Bone / Ivory Rune Band Texture
+        var runeTexture = (function () {
+          var rCanvas = document.createElement('canvas');
+          rCanvas.width = 1024;
+          rCanvas.height = 256;
+          var rCtx = rCanvas.getContext('2d');
+
+          // Aged bone/ivory vertical gradient with subtle organic wear
+          var bgGrad = rCtx.createLinearGradient(0, 0, 0, 256);
+          bgGrad.addColorStop(0.00, '#3a2e24'); // weathered top edge
+          bgGrad.addColorStop(0.08, '#b8a98b'); // aged patina
+          bgGrad.addColorStop(0.22, '#e2d7c0'); // warm bone ivory
+          bgGrad.addColorStop(0.50, '#ece3cf'); // highlight bone core
+          bgGrad.addColorStop(0.78, '#ded3bc'); // aged ivory
+          bgGrad.addColorStop(0.92, '#b3a384'); // lower patina
+          bgGrad.addColorStop(1.00, '#352920'); // weathered bottom edge
+          rCtx.fillStyle = bgGrad;
+          rCtx.fillRect(0, 0, 1024, 256);
+
+          // Subtle bone grain and micro-pores
+          rCtx.fillStyle = 'rgba(50, 38, 26, 0.045)';
+          for (var i = 0; i < 480; i++) {
+            var gx = (i * 137.5) % 1024;
+            var gy = (i * 73.1) % 256;
+            rCtx.fillRect(gx, gy, 2 + (i % 5), 8 + (i % 24));
+          }
+
+          // Authentic Ancient Runes (Elder Futhark / Anglo-Saxon magical glyphs)
+          var runes = [
+            'ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ',
+            'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ',
+            'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ'
+          ];
+          rCtx.textAlign = 'center';
+          rCtx.textBaseline = 'middle';
+          rCtx.font = 'bold 88px serif, sans-serif';
+
+          var stepX = 1024 / runes.length;
+          for (var r = 0; r < runes.length; r++) {
+            var rx = stepX * r + stepX * 0.5;
+            var ry = 128;
+
+            // Carved depth highlight (bottom bevel)
+            rCtx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+            rCtx.fillText(runes[r], rx + 1.2, ry + 1.8);
+
+            // Deep engraved inner shadow
+            rCtx.fillStyle = '#0a0806';
+            rCtx.fillText(runes[r], rx, ry);
+
+            // Weathered dark charcoal rune ink
+            rCtx.fillStyle = '#1c1612';
+            rCtx.fillText(runes[r], rx - 0.5, ry - 0.5);
+          }
+
+          // Top & bottom engraved border lines
+          rCtx.strokeStyle = 'rgba(45, 34, 25, 0.7)';
+          rCtx.lineWidth = 4;
+          rCtx.beginPath();
+          rCtx.moveTo(0, 18);
+          rCtx.lineTo(1024, 18);
+          rCtx.moveTo(0, 238);
+          rCtx.lineTo(1024, 238);
+          rCtx.stroke();
+
+          var tex = new THREE.CanvasTexture(rCanvas);
+          tex.wrapS = THREE.RepeatWrapping;
+          tex.wrapT = THREE.ClampToEdgeWrapping;
+          return tex;
+        })();
+
+        var runeBoneMat = new THREE.MeshPhysicalMaterial({
+          map: runeTexture,
+          roughness: 0.34,
+          metalness: 0.02,
+          clearcoat: 0.35,
+          clearcoatRoughness: 0.20,
+          reflectivity: 0.88
         });
 
-        var goldMat = new THREE.MeshStandardMaterial({
-          color: 0xf5d061,
-          roughness: 0.14,
-          metalness: 0.94
+        var wandTipMagicalMat = new THREE.MeshStandardMaterial({
+          color: 0xffe89e,
+          emissive: 0xffc740,
+          emissiveIntensity: 0.65,
+          roughness: 0.25
         });
 
-        var feltNibMat = new THREE.MeshStandardMaterial({
-          color: 0x050608,
-          roughness: 0.95,
-          metalness: 0.01
-        });
-
-        var inkAccentMat = new THREE.MeshStandardMaterial({
-          color: 0xf5d061,
-          roughness: 0.22,
-          metalness: 0.35
-        });
-
-        // 1. Porous Fiber Felt Nib (Writing Point poised downward)
-        var nibPoints = [
-          new THREE.Vector2(0.001, -3.885),
-          new THREE.Vector2(0.024, -3.880),
-          new THREE.Vector2(0.042, -3.720),
-          new THREE.Vector2(0.054, -3.520),
-          new THREE.Vector2(0.001, -3.520)
+        // 2. The Pommel / Butt End (Y: +3.60 to +3.885)
+        var pommelPoints = [
+          new THREE.Vector2(0.060, 3.885), // Indented socket center
+          new THREE.Vector2(0.140, 3.875), // Rim of socket
+          new THREE.Vector2(0.232, 3.830), // Bulbous top swelling
+          new THREE.Vector2(0.255, 3.750), // Maximum pommel diameter
+          new THREE.Vector2(0.240, 3.680), // Lower pommel curve
+          new THREE.Vector2(0.218, 3.610), // Neck to handle
+          new THREE.Vector2(0.218, 3.600)
         ];
-        var feltNib = new THREE.Mesh(new THREE.LatheGeometry(nibPoints, 32), feltNibMat);
-        penBody.add(feltNib);
+        var pommel = new THREE.Mesh(new THREE.LatheGeometry(pommelPoints, 36), elderWoodMat);
+        penBody.add(pommel);
 
-        // Writing Apex Tipping Ball (exact reference for canvas underline tracking)
-        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.024, 16, 16), feltNibMat);
+        // 3. Upper Handle Grip (Y: +3.28 to +3.60)
+        var upperHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.218, 0.226, 0.32, 36), elderWoodMat);
+        upperHandle.position.y = 3.44;
+        penBody.add(upperHandle);
+
+        // Upper Rune Collar
+        var upperCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.238, 0.238, 0.035, 36), elderCollarMat);
+        upperCollar.position.y = 3.265;
+        penBody.add(upperCollar);
+
+        // 4. The Iconic White Bone Rune Band (Y: +2.75 to +3.25)
+        var runeBand = new THREE.Mesh(new THREE.CylinderGeometry(0.230, 0.230, 0.49, 48), runeBoneMat);
+        runeBand.position.y = 3.00;
+        penBody.add(runeBand);
+
+        // Lower Rune Collar
+        var lowerCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.238, 0.238, 0.035, 36), elderCollarMat);
+        lowerCollar.position.y = 2.735;
+        penBody.add(lowerCollar);
+
+        // 5. Lower Handle Grip (Y: +2.36 to +2.72)
+        var lowerHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.225, 0.205, 0.36, 36), elderWoodMat);
+        lowerHandle.position.y = 2.54;
+        penBody.add(lowerHandle);
+
+        // Longitudinal Grip Ribs (8 organic elder wood knurls)
+        for (var gIdx = 0; gIdx < 8; gIdx++) {
+          var gAngle = (gIdx / 8) * Math.PI * 2;
+          var gRib = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.34, 0.016), elderBerryMat);
+          var gR = 0.210;
+          gRib.position.set(Math.cos(gAngle) * gR, 2.54, Math.sin(gAngle) * gR);
+          gRib.rotation.y = -gAngle;
+          penBody.add(gRib);
+        }
+
+        // Handle Transition Collar (Y: +2.18 to +2.36)
+        var transCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.222, 0.18, 36), elderCollarMat);
+        transCollar.position.y = 2.27;
+        penBody.add(transCollar);
+
+        // 6. The 6 Iconic Elderberry Nodes & Tapering Shaft Segments
+        var elderNodesConfig = [
+          {
+            cy: 1.80, coreR: 0.205,
+            rings: [
+              { y: 1.87, count: 7, r: 0.218, br: 0.072 },
+              { y: 1.80, count: 8, r: 0.232, br: 0.080 },
+              { y: 1.73, count: 7, r: 0.218, br: 0.072 }
+            ]
+          },
+          {
+            cy: 0.95, coreR: 0.180,
+            rings: [
+              { y: 1.00, count: 6, r: 0.190, br: 0.062 },
+              { y: 0.95, count: 7, r: 0.205, br: 0.068 },
+              { y: 0.89, count: 5, r: 0.190, br: 0.062 }
+            ]
+          },
+          {
+            cy: 0.10, coreR: 0.155,
+            rings: [
+              { y: 0.15, count: 5, r: 0.165, br: 0.054 },
+              { y: 0.10, count: 6, r: 0.178, br: 0.058 },
+              { y: 0.04, count: 5, r: 0.165, br: 0.054 }
+            ]
+          },
+          {
+            cy: -0.75, coreR: 0.132,
+            rings: [
+              { y: -0.71, count: 4, r: 0.142, br: 0.046 },
+              { y: -0.75, count: 6, r: 0.152, br: 0.050 },
+              { y: -0.79, count: 4, r: 0.142, br: 0.046 }
+            ]
+          },
+          {
+            cy: -1.60, coreR: 0.110,
+            rings: [
+              { y: -1.57, count: 4, r: 0.118, br: 0.038 },
+              { y: -1.60, count: 5, r: 0.126, br: 0.042 },
+              { y: -1.63, count: 3, r: 0.118, br: 0.038 }
+            ]
+          },
+          {
+            cy: -2.45, coreR: 0.086,
+            rings: [
+              { y: -2.42, count: 3, r: 0.092, br: 0.032 },
+              { y: -2.45, count: 4, r: 0.098, br: 0.035 },
+              { y: -2.48, count: 3, r: 0.092, br: 0.032 }
+            ]
+          }
+        ];
+
+        // Build each of the 6 Elderberry Nodes
+        for (var n = 0; n < elderNodesConfig.length; n++) {
+          var nodeCfg = elderNodesConfig[n];
+
+          // Central core sphere for the node swelling
+          var coreSphere = new THREE.Mesh(new THREE.SphereGeometry(nodeCfg.coreR, 24, 24), elderBerryMat);
+          coreSphere.position.y = nodeCfg.cy;
+          coreSphere.scale.set(1.0, 1.15, 1.0);
+          penBody.add(coreSphere);
+
+          // Clustered elderberry drupelets/bumps in staggered tiers
+          for (var rg = 0; rg < nodeCfg.rings.length; rg++) {
+            var ring = nodeCfg.rings[rg];
+            var ringCount = ring.count;
+            var offsetPhase = (rg * 0.45);
+
+            for (var b = 0; b < ringCount; b++) {
+              var angle = ((b / ringCount) * Math.PI * 2) + offsetPhase;
+              var bMesh = new THREE.Mesh(new THREE.SphereGeometry(ring.br, 14, 14), elderBerryMat);
+              var bRad = ring.r;
+              bMesh.position.set(Math.cos(angle) * bRad, ring.y, Math.sin(angle) * bRad);
+              bMesh.scale.set(1.0, 0.92, 1.0);
+              penBody.add(bMesh);
+            }
+          }
+        }
+
+        // Tapered Shaft Segments between the Nodes
+        var shaftSegments = [
+          { topY: 2.18, botY: 1.95, topR: 0.222, botR: 0.205 }, // Collar to Node 1
+          { topY: 1.65, botY: 1.10, topR: 0.188, botR: 0.165 }, // Node 1 to Node 2
+          { topY: 0.82, botY: 0.25, topR: 0.160, botR: 0.142 }, // Node 2 to Node 3
+          { topY: -0.05, botY: -0.62, topR: 0.138, botR: 0.120 }, // Node 3 to Node 4
+          { topY: -0.88, botY: -1.48, topR: 0.115, botR: 0.098 }, // Node 4 to Node 5
+          { topY: -1.72, botY: -2.35, topR: 0.094, botR: 0.078 }  // Node 5 to Node 6
+        ];
+
+        for (var sIdx = 0; sIdx < shaftSegments.length; sIdx++) {
+          var seg = shaftSegments[sIdx];
+          var sLen = seg.topY - seg.botY;
+          var sMidY = (seg.topY + seg.botY) * 0.5;
+          var sMesh = new THREE.Mesh(new THREE.CylinderGeometry(seg.topR, seg.botR, sLen, 32), elderWoodMat);
+          sMesh.position.y = sMidY;
+          penBody.add(sMesh);
+        }
+
+        // 7. Slender Tapered Tip (Y: -2.53 down to -3.86)
+        var tipPoints = [
+          new THREE.Vector2(0.026, -3.860),
+          new THREE.Vector2(0.035, -3.700),
+          new THREE.Vector2(0.046, -3.400),
+          new THREE.Vector2(0.058, -3.000),
+          new THREE.Vector2(0.068, -2.700),
+          new THREE.Vector2(0.078, -2.530),
+          new THREE.Vector2(0.001, -2.530)
+        ];
+        var wandTipShaft = new THREE.Mesh(new THREE.LatheGeometry(tipPoints, 32), elderWoodMat);
+        penBody.add(wandTipShaft);
+
+        // 8. Tipping Ball / Magical Apex (Exact tracking reference for canvas underline & golden sparks)
+        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.026, 16, 16), wandTipMagicalMat);
         tippingBall.position.set(0, -3.885, 0.01);
         penBody.add(tippingBall);
 
-        // 2. Long Stainless Steel Needle Guide Sleeve (The signature fineliner feature)
-        var needleTube = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.062, 0.77, 32), chromeMat);
-        needleTube.position.y = -3.135;
-        penBody.add(needleTube);
-
-        var needleCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.082, 0.068, 0.08, 32), chromeMat);
-        needleCollar.position.y = -2.74;
-        penBody.add(needleCollar);
-
-        // 3. Tapered Front Nose Cone / Nozzle Section
-        var conePoints = [
-          new THREE.Vector2(0.082, -2.70),
-          new THREE.Vector2(0.125, -2.50),
-          new THREE.Vector2(0.170, -2.25),
-          new THREE.Vector2(0.205, -1.95),
-          new THREE.Vector2(0.001, -1.95)
-        ];
-        var noseCone = new THREE.Mesh(new THREE.LatheGeometry(conePoints, 36), barrelMat);
-        penBody.add(noseCone);
-
-        var coneRing = new THREE.Mesh(new THREE.CylinderGeometry(0.210, 0.210, 0.04, 36), goldMat);
-        coneRing.position.y = -1.94;
-        penBody.add(coneRing);
-
-        // 4. Fluted Ergonomic Finger Grip Section (with tactile longitudinal ribs)
-        var gripPoints = [
-          new THREE.Vector2(0.208, -1.92),
-          new THREE.Vector2(0.218, -1.65),
-          new THREE.Vector2(0.228, -1.25),
-          new THREE.Vector2(0.235, -0.85),
-          new THREE.Vector2(0.240, -0.65),
-          new THREE.Vector2(0.001, -0.65)
-        ];
-        var gripSection = new THREE.Mesh(new THREE.LatheGeometry(gripPoints, 36), gripMat);
-        penBody.add(gripSection);
-
-        for (var rIdx = 0; rIdx < 12; rIdx++) {
-          var angle = (rIdx / 12) * Math.PI * 2;
-          var rib = new THREE.Mesh(new THREE.BoxGeometry(0.012, 1.05, 0.015), barrelMat);
-          var ribR = 0.222;
-          rib.position.set(Math.cos(angle) * ribR, -1.30, Math.sin(angle) * ribR);
-          rib.rotation.y = -angle;
-          penBody.add(rib);
-        }
-
-        // Grip Transition Rings (Dual Gold & Chrome)
-        var gripBandGold = new THREE.Mesh(new THREE.CylinderGeometry(0.248, 0.248, 0.08, 36), goldMat);
-        gripBandGold.position.y = -0.61;
-        penBody.add(gripBandGold);
-
-        var gripBandChrome = new THREE.Mesh(new THREE.CylinderGeometry(0.244, 0.244, 0.06, 36), chromeMat);
-        gripBandChrome.position.y = -0.54;
-        penBody.add(gripBandChrome);
-
-        // 5. Main Cylindrical Pen Barrel with Precision Graphics & Accent Bands
-        var barrelBody = new THREE.Mesh(new THREE.CylinderGeometry(0.246, 0.246, 2.96, 40), barrelMat);
-        barrelBody.position.y = 0.97;
-        penBody.add(barrelBody);
-
-        var pinstripe1 = new THREE.Mesh(new THREE.CylinderGeometry(0.249, 0.249, 0.03, 40), goldMat);
-        pinstripe1.position.y = 0.20;
-        penBody.add(pinstripe1);
-
-        var midBand = new THREE.Mesh(new THREE.CylinderGeometry(0.252, 0.252, 0.16, 40), goldMat);
-        midBand.position.y = 0.35;
-        penBody.add(midBand);
-
-        var pinstripe2 = new THREE.Mesh(new THREE.CylinderGeometry(0.249, 0.249, 0.03, 40), chromeMat);
-        pinstripe2.position.y = 0.50;
-        penBody.add(pinstripe2);
-
-        var specRing = new THREE.Mesh(new THREE.CylinderGeometry(0.249, 0.249, 0.10, 40), inkAccentMat);
-        specRing.position.y = 1.95;
-        penBody.add(specRing);
-
-        // 6. Rear Posted Cap & Tail Assembly
-        var capJoint = new THREE.Mesh(new THREE.CylinderGeometry(0.256, 0.252, 0.12, 40), goldMat);
-        capJoint.position.y = 2.51;
-        penBody.add(capJoint);
-
-        var capBody = new THREE.Mesh(new THREE.CylinderGeometry(0.258, 0.256, 0.95, 40), barrelMat);
-        capBody.position.y = 3.045;
-        penBody.add(capBody);
-
-        var tailIndicator = new THREE.Mesh(new THREE.CylinderGeometry(0.260, 0.260, 0.15, 40), inkAccentMat);
-        tailIndicator.position.y = 3.595;
-        penBody.add(tailIndicator);
-
-        var tailPlugPoints = [
-          new THREE.Vector2(0.260, 3.67),
-          new THREE.Vector2(0.255, 3.76),
-          new THREE.Vector2(0.210, 3.84),
-          new THREE.Vector2(0.120, 3.885),
-          new THREE.Vector2(0.040, 3.875),
-          new THREE.Vector2(0.001, 3.865)
-        ];
-        var tailPlug = new THREE.Mesh(new THREE.LatheGeometry(tailPlugPoints, 40), barrelMat);
-        penBody.add(tailPlug);
-
-        var tailDot = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 16), inkAccentMat);
-        tailDot.position.set(0, 3.875, 0);
-        penBody.add(tailDot);
-
-        // 7. Precision Spring Steel Pocket Clip
-        var clipRing = new THREE.Mesh(new THREE.CylinderGeometry(0.268, 0.268, 0.10, 40), chromeMat);
-        clipRing.position.y = 3.52;
-        penBody.add(clipRing);
-
-        var clipCurve = new THREE.CatmullRomCurve3([
-          new THREE.Vector3(0, 3.52, 0.268),
-          new THREE.Vector3(0, 3.48, 0.355),
-          new THREE.Vector3(0, 2.75, 0.365),
-          new THREE.Vector3(0, 2.30, 0.335),
-          new THREE.Vector3(0, 2.12, 0.278)
-        ]);
-        var clip = new THREE.Mesh(new THREE.TubeGeometry(clipCurve, 32, 0.028, 12, false), chromeMat);
-        penBody.add(clip);
-
-        var clipTip = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 16), chromeMat);
-        clipTip.position.set(0, 2.12, 0.285);
-        penBody.add(clipTip);
+        var magicCore = new THREE.Mesh(new THREE.SphereGeometry(0.014, 12, 12), new THREE.MeshBasicMaterial({ color: 0xfff6d4 }));
+        magicCore.position.set(0, -3.885, 0.01);
+        penBody.add(magicCore);
 
         // Scale penGroup cleanly so it fits inside camera frustum with safety margin
         penGroup.scale.set(0.68, 0.68, 0.68);
