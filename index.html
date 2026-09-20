@@ -2479,8 +2479,30 @@
         var vw = window.innerWidth;
         var vh = window.innerHeight;
 
-        // 0. Hero Pen Docking Detection & Upright Position
-        var slotElem = document.getElementById('hero-pen-slot');
+        // 0. Hero Pen Docking Detection & Upright Position (Full Circle Looping Support)
+        var wrapHeight = (loopScroll && loopScroll.state && loopScroll.state.wrapHeight) || 
+                         (document.querySelector('[data-loop-scroll="wrap"]') ? document.querySelector('[data-loop-scroll="wrap"]').offsetHeight : 0) || 8000;
+        var curPos = Math.abs(pos || 0);
+        var modPos = curPos % wrapHeight;
+        var distFromHero = Math.min(modPos, wrapHeight - modPos);
+
+        var allSlots = document.querySelectorAll('.figma-hero-pen-slot');
+        var bestSlotRect = null;
+        var minSlotDist = Infinity;
+
+        for (var sIdx = 0; sIdx < allSlots.length; sIdx++) {
+          var sElem = allSlots[sIdx];
+          var sRect = sElem.getBoundingClientRect();
+          if (sRect.height > 0) {
+            var cY = sRect.top + sRect.height * 0.5;
+            var dist = Math.abs(cY - (vh * 0.5));
+            if (dist < minSlotDist) {
+              minSlotDist = dist;
+              bestSlotRect = sRect;
+            }
+          }
+        }
+
         var heroTargetX = 0;
         var heroTargetY = 0;
         var heroTargetR = 0;
@@ -2489,20 +2511,20 @@
         var heroTargetRotZ = 0;
         var heroBlend = 0;
 
-        if (slotElem && window.innerWidth > 900) {
-          var slotRect = slotElem.getBoundingClientRect();
-          if (slotRect.height > 0 && slotRect.bottom > -vh && slotRect.top < vh * 2) {
-            var slotCenterX = slotRect.left + slotRect.width * 0.5;
-            var slotCenterY = slotRect.top + slotRect.height * 0.5;
-            heroTargetX = slotCenterX - (vw * 0.5);
-            heroTargetY = slotCenterY - (vh * 0.5);
+        if (bestSlotRect && window.innerWidth > 900) {
+          var slotCenterX = bestSlotRect.left + bestSlotRect.width * 0.5;
+          var slotCenterY = bestSlotRect.top + bestSlotRect.height * 0.5;
+          heroTargetX = slotCenterX - (vw * 0.5);
+          heroTargetY = slotCenterY - (vh * 0.5);
 
-            var scrollDist = Math.abs(progress || 0);
-            var releaseSpan = 450;
-            if (scrollDist < releaseSpan) {
-              var hRatio = 1 - (scrollDist / releaseSpan);
-              heroBlend = hRatio * hRatio * (3 - 2 * hRatio);
-            }
+          // Find nearest front-facing angle to currentRotY (closest multiple of 2π)
+          var nearestZeroY = Math.round(currentRotY / (Math.PI * 2)) * (Math.PI * 2);
+          heroTargetRotY = nearestZeroY;
+
+          var releaseSpan = 450;
+          if (distFromHero < releaseSpan) {
+            var hRatio = 1 - (distFromHero / releaseSpan);
+            heroBlend = hRatio * hRatio * (3 - 2 * hRatio);
           }
         }
         window.__heroPenBlend = heroBlend;
@@ -2758,6 +2780,7 @@
           targetRotX = heroTargetRotX * hb + normRotX * (1 - hb);
           targetRotY = heroTargetRotY * hb + normRotY * (1 - hb);
           targetRotZ = heroTargetRotZ * hb + normRotZ * (1 - hb);
+          rotYOffset = currentRotY - (progress * 0.005);
         } else if (isWritingMode || b > 0.001) {
           targetRotX = normRotX * (1 - b) + dynamicWriteRotX * b;
           targetRotY = writingLockedRotY;
