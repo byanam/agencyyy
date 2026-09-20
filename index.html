@@ -581,62 +581,174 @@ html, body {
     };
   }
 
-  function updatePenMotion(progress, pos) {
+  // === 4. Services Topic Dividing Lines & Synchronized 3D Pen Handwriting Motion ===
+  function updateServiceTopicLinesAndPen(progress, pos) {
     var vw = window.innerWidth;
     var vh = window.innerHeight;
 
-    // Default Lissajous trajectory and 3D hover rotations
+    // 1. Natural Lissajous trajectory and hover rotations (used when not writing)
     var s = Math.min(0.26 * vw, Math.max(140, vw * 0.5 - 260));
     var r_a = progress / 9000;
     var normX = s * Math.sin(2 * r_a * Math.PI);
     var normY = (s / 3.5) * Math.sin(2 * r_a * Math.PI) * Math.cos(2 * r_a * Math.PI);
     var normR = -14 + 26 * Math.sin(2 * r_a * Math.PI);
 
-    targetRotX = 0.35 + Math.sin(progress * 0.002) * 0.35;
-    targetRotY = progress * 0.005 + rotYOffset;
-    targetRotZ = Math.cos(progress * 0.002) * 0.25;
+    var normRotX = 0.35 + Math.sin(progress * 0.002) * 0.35;
+    var normRotY = progress * 0.005 + rotYOffset;
+    var normRotZ = Math.cos(progress * 0.002) * 0.25;
+
+    // 2. Query and sort all topic lines in viewport
+    var allLines = document.querySelectorAll('.service-topic-line');
+    var visibleLines = [];
+    var startY = vh * 0.76;
+    var endY = vh * 0.52;
+
+    for (var i = 0; i < allLines.length; i++) {
+      var lineElem = allLines[i];
+      var r = lineElem.getBoundingClientRect();
+      if (r.width > 0 && r.top > -vh && r.top < 2 * vh) {
+        visibleLines.push({
+          elem: lineElem,
+          top: r.top,
+          left: r.left,
+          right: r.right,
+          width: r.width
+        });
+      }
+
+      // Update line visual drawing progress
+      var fill = lineElem.querySelector('.service-topic-line-fill');
+      var glow = lineElem.querySelector('.service-topic-line-glow');
+      if (fill) {
+        var frac = (startY - r.top) / (startY - endY);
+        var targetP = Math.max(0, Math.min(1, frac));
+        var smoothP = targetP * targetP * (3 - 2 * targetP);
+
+        var curP = parseFloat(lineElem.getAttribute('data-progress') || '0');
+        curP += (smoothP - curP) * 0.2;
+        if (Math.abs(smoothP - curP) < 0.001) curP = smoothP;
+        lineElem.setAttribute('data-progress', curP.toFixed(4));
+
+        fill.style.transform = 'scaleX(' + curP.toFixed(4) + ')';
+        if (curP >= 0.99) {
+          fill.style.background = '#333333';
+        } else {
+          fill.style.background = 'linear-gradient(90deg, #333333 0%, #555555 calc(100% - 35px), #ffffff calc(100% - 2px), #f5d061 100%)';
+        }
+
+        if (glow) {
+          glow.style.opacity = (curP > 0.01 && curP < 0.98) ? '1' : '0';
+        }
+      }
+    }
+
+    visibleLines.sort(function(a, b) { return a.top - b.top; });
+
+    // 3. Determine active pen target across topic lines
+    var targetScreenX = normX + (vw * 0.5);
+    var targetScreenY = normY + (vh * 0.5);
+    var targetPenBlend = 0;
+
+    if (visibleLines.length > 0) {
+      var firstLine = visibleLines[0];
+      var lastLine = visibleLines[visibleLines.length - 1];
+
+      if (firstLine.top > startY && firstLine.top < 0.90 * vh) {
+        // Swoop in towards first line start
+        var approach = (0.90 * vh - firstLine.top) / (0.90 * vh - startY);
+        approach = Math.max(0, Math.min(1, approach));
+        targetPenBlend = approach * approach * (3 - 2 * approach);
+        targetScreenX = firstLine.left;
+        targetScreenY = firstLine.top;
+      } else if (lastLine.top < endY && lastLine.top > 0.30 * vh) {
+        // Lift off after last line
+        var exitFrac = (endY - lastLine.top) / (endY - 0.30 * vh);
+        exitFrac = Math.max(0, Math.min(1, exitFrac));
+        var smoothExit = exitFrac * exitFrac * (3 - 2 * exitFrac);
+        targetPenBlend = 1 - smoothExit;
+        targetScreenX = lastLine.right;
+        targetScreenY = lastLine.top - Math.sin(smoothExit * Math.PI * 0.5) * 40;
+      } else {
+        // Find which line is actively drawing, or which gap between lines
+        for (var k = 0; k < visibleLines.length; k++) {
+          var curLine = visibleLines[k];
+          if (curLine.top >= endY && curLine.top <= startY) {
+            var u = (startY - curLine.top) / (startY - endY);
+            u = Math.max(0, Math.min(1, u));
+            targetScreenX = curLine.left + u * curLine.width;
+            targetScreenY = curLine.top;
+            targetPenBlend = 1;
+            break;
+          } else if (curLine.top < endY && k + 1 < visibleLines.length && visibleLines[k + 1].top > startY) {
+            var nextLine = visibleLines[k + 1];
+            var gap = (endY - curLine.top) + (nextLine.top - startY);
+            var gapFrac = gap > 0 ? (endY - curLine.top) / gap : 0.5;
+            gapFrac = Math.max(0, Math.min(1, gapFrac));
+            var smoothGap = gapFrac * gapFrac * (3 - 2 * gapFrac);
+            targetScreenX = curLine.right + smoothGap * (nextLine.left - curLine.right);
+            targetScreenY = curLine.top + smoothGap * (nextLine.top - curLine.top) - Math.sin(smoothGap * Math.PI) * 28;
+            targetPenBlend = 1;
+            break;
+          }
+        }
+      }
+    }
+
+    // 4. Smoothly blend pen into writing mode and lock rotation
+    if (targetPenBlend > 0.01) {
+      if (!isWritingMode) {
+        isWritingMode = true;
+        var diff = (0 - currentRotY) % (Math.PI * 2);
+        if (diff < -Math.PI) diff += Math.PI * 2;
+        if (diff > Math.PI) diff -= Math.PI * 2;
+        writingLockedRotY = currentRotY + diff;
+      }
+    } else if (targetPenBlend === 0 && isWritingMode) {
+      isWritingMode = false;
+      rotYOffset = currentRotY - (progress * 0.005);
+    }
+
+    currentUnderlineBlend += (targetPenBlend - currentUnderlineBlend) * 0.16;
+    var b = currentUnderlineBlend;
+
+    // 5. Calculate handwriting screen trajectory and pen tip offset
+    var writeX = normX;
+    var writeY = normY;
+    var writeR = -12; // Static handwriting slant
+
+    if (b > 0.001) {
+      var wrapRect = rotateWrap ? rotateWrap.getBoundingClientRect() : { width: 480, height: 480 };
+      var wrapW = wrapRect.width || 480;
+      var wrapH = wrapRect.height || 480;
+
+      var tipOffset = getPenTipScreenOffset(wrapW, wrapH, writeR);
+      var desiredWrapCenterX = targetScreenX - tipOffset.x;
+      var desiredWrapCenterY = targetScreenY - tipOffset.y;
+
+      writeX = desiredWrapCenterX - (vw * 0.5);
+      writeY = desiredWrapCenterY - (vh * 0.5);
+    }
+
+    // 6. Blend 3D rotations smoothly
+    var targetWriteRotX = 0.44; // Forward tilt
+    var targetWriteRotY = writingLockedRotY; // Locked forward nib angle
+    var targetWriteRotZ = -0.36; // Handwriting slant
+
+    if (isWritingMode || b > 0.001) {
+      targetRotX = normRotX * (1 - b) + targetWriteRotX * b;
+      targetRotY = writingLockedRotY;
+      targetRotZ = normRotZ * (1 - b) + targetWriteRotZ * b;
+    } else {
+      targetRotX = normRotX;
+      targetRotY = normRotY;
+      targetRotZ = normRotZ;
+    }
 
     if (rotateWrap) {
-      rotateWrap.style.transform = 'translate3d(' + normX.toFixed(2) + 'px, ' + normY.toFixed(2) + 'px, 0px) rotate(' + normR.toFixed(2) + 'deg)';
-    }
-  }
-
-  // === 4. Services Topic Dividing Lines Animation (Left-to-Right Draw) ===
-  function updateServiceTopicLines() {
-    var vh = window.innerHeight;
-    var lines = document.querySelectorAll('.service-topic-line');
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i];
-      var fill = line.querySelector('.service-topic-line-fill');
-      var glow = line.querySelector('.service-topic-line-glow');
-      if (!fill) continue;
-
-      var rect = line.getBoundingClientRect();
-      // Animate left-to-right as each topic comes into view:
-      // Starts drawing when line enters at 85% vh, fully drawn at 48% vh
-      var startY = vh * 0.85;
-      var endY = vh * 0.48;
-      var frac = (startY - rect.top) / (startY - endY);
-      var targetP = Math.max(0, Math.min(1, frac));
-
-      // Smooth cubic easing (smoothstep)
-      var smoothP = targetP * targetP * (3 - 2 * targetP);
-
-      var curP = parseFloat(line.getAttribute('data-progress') || '0');
-      curP += (smoothP - curP) * 0.16;
-      if (Math.abs(smoothP - curP) < 0.001) curP = smoothP;
-      line.setAttribute('data-progress', curP.toFixed(4));
-
-      fill.style.transform = 'scaleX(' + curP.toFixed(4) + ')';
-      if (curP >= 0.99) {
-        fill.style.background = '#333333';
-      } else {
-        fill.style.background = 'linear-gradient(90deg, #333333 0%, #555555 calc(100% - 35px), #ffffff calc(100% - 2px), #f5d061 100%)';
-      }
-
-      if (glow) {
-        glow.style.opacity = (curP > 0.01 && curP < 0.98) ? '1' : '0';
-      }
+      var finalX = normX * (1 - b) + writeX * b;
+      var finalY = normY * (1 - b) + writeY * b;
+      var finalR = normR * (1 - b) + writeR * b;
+      rotateWrap.style.transform = 'translate3d(' + finalX.toFixed(2) + 'px, ' + finalY.toFixed(2) + 'px, 0px) rotate(' + finalR.toFixed(2) + 'deg)';
     }
   }
 
@@ -648,8 +760,7 @@ html, body {
 
   // Hook LoopScroll per-frame updates
   loopScroll.onUpdate = function(progress, pos) {
-    updatePenMotion(progress, pos);
-    updateServiceTopicLines();
+    updateServiceTopicLinesAndPen(progress, pos);
   };
 
   // === 5. Interactive Popup Modal ("Get in touch") ===
