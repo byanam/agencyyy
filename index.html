@@ -237,12 +237,29 @@
       justify-content: flex-start !important;
     }
 
-    .figma-hero-logo-img {
+    .figma-hero-logo-img,
+    .figma-hero-logo-svg {
       width: 100% !important;
       height: auto !important;
       max-height: 520px !important;
       object-fit: contain !important;
       display: block !important;
+    }
+
+    /* Anam Wordmark Spell Transformation (Wizarding Antique Gold, No AI Neon) */
+    .anam-word-letters path {
+      transition: fill 0.65s cubic-bezier(0.22, 1, 0.36, 1), filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .figma-hero-logo-wrap.is-spell-cast .anam-word-letters path,
+    .figma-hero-logo-overlay.is-spell-cast .anam-word-letters path {
+      fill: url(#anamSpellGradient) !important;
+      filter: drop-shadow(0 2px 10px rgba(197, 160, 89, 0.65)) drop-shadow(0 0 24px rgba(232, 200, 114, 0.40));
+    }
+    .figma-hero-logo-overlay.is-spell-cast .anam-word-letters path {
+      fill: url(#anamSpellGradientOverlay) !important;
+    }
+    .agency-word-letters path {
+      fill: #D8D8D8 !important;
     }
 
     .figma-hero-pen-slot {
@@ -771,7 +788,6 @@
       border-color: var(--color-gold-antique);
       color: var(--color-parchment);
       box-shadow: none !important;
-    }
       transform: translateX(4px);
     }
   </style>
@@ -932,7 +948,30 @@
             class="Rediska-module__rS3Q1G__hn-rediska__sprite"></canvas></div>
       </div>
       <div id="figma-hero-logo-overlay" class="figma-hero-logo-overlay" aria-hidden="true">
-        <img src="/images/anam_logo.svg" alt="" class="figma-hero-logo-overlay-img" />
+        <svg width="704" height="403" viewBox="0 0 704 403" fill="none" xmlns="http://www.w3.org/2000/svg" class="figma-hero-logo-overlay-img figma-hero-logo-svg">
+          <defs>
+            <linearGradient id="anamSpellGradientOverlay" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fff4d0" />
+              <stop offset="35%" stop-color="#f5d061" />
+              <stop offset="70%" stop-color="#c5a059" />
+              <stop offset="100%" stop-color="#8f6e2b" />
+            </linearGradient>
+          </defs>
+          <g class="anam-word-letters">
+            <path d="M0.183664 219.533L67.8897 0H114.281L181.987 219.533H154.716L137.79 164.023H44.3806L27.4541 219.533H0.183664ZM50.9632 140.188H130.894L93.2794 15.9946H88.8911L50.9632 140.188Z" fill="#D8D8D8"/>
+            <path d="M181.323 219.533V66.1735H205.459V92.2039H209.847C213.191 84.8861 218.833 78.3001 226.774 72.4459C234.924 66.3826 246.835 63.351 262.508 63.351C274.001 63.351 284.241 65.7554 293.226 70.5642C302.421 75.373 309.735 82.4817 315.168 91.8903C320.601 101.299 323.318 112.903 323.318 126.702V219.533H298.555V128.584C298.555 113.321 294.689 102.24 286.957 95.3401C279.434 88.4405 269.195 84.9907 256.239 84.9907C241.402 84.9907 229.282 89.7995 219.878 99.4171C210.683 109.035 206.086 123.357 206.086 142.383V219.533H181.323Z" fill="#D8D8D8"/>
+            <path d="M386.097 223.924C375.439 223.924 365.722 222.042 356.945 218.279C348.169 214.515 341.273 209.079 336.258 201.97C331.242 194.862 328.735 186.185 328.735 175.94C328.735 165.486 331.242 156.914 336.258 150.223C341.273 143.324 348.169 138.201 356.945 134.856C365.722 131.302 375.544 129.525 386.41 129.525H438.13V118.234C438.13 107.362 434.891 98.7899 428.413 92.5175C422.144 86.2451 412.74 83.109 400.202 83.109C387.873 83.109 378.26 86.1406 371.364 92.2039C364.468 98.0581 359.767 106.003 357.259 116.039L334.063 108.512C336.571 99.9398 340.541 92.2039 345.975 85.3043C351.408 78.1956 358.617 72.5505 367.603 68.3689C376.798 63.9782 387.768 61.7829 400.516 61.7829C420.159 61.7829 435.413 66.9053 446.28 77.1502C457.146 87.186 462.579 101.403 462.579 119.802V189.112C462.579 195.384 465.505 198.521 471.356 198.521H485.461V219.533H463.833C456.937 219.533 451.4 217.651 447.22 213.888C443.041 209.915 440.951 204.688 440.951 198.207V196.639H437.19C434.891 200.611 431.756 204.793 427.786 209.184C424.025 213.365 418.8 216.815 412.113 219.533C405.426 222.46 396.754 223.924 386.097 223.924ZM388.918 202.598C403.546 202.598 415.352 198.312 424.338 189.739C433.533 180.958 438.13 168.727 438.13 153.046V149.596H387.35C377.529 149.596 369.379 151.791 362.901 156.182C356.632 160.364 353.497 166.741 353.497 175.313C353.497 183.885 356.736 190.576 363.215 195.384C369.902 200.193 378.469 202.598 388.918 202.598Z" fill="#D8D8D8"/>
+            <path d="M484.896 219.533V66.1735H509.032V85.3043H513.42C516.346 79.8682 521.152 74.8503 527.839 70.2506C534.526 65.6508 543.93 63.351 556.05 63.351C567.961 63.351 577.574 65.9645 584.888 71.1915C592.41 76.4184 597.844 82.7953 601.187 90.3222H605.576C609.128 82.7953 614.457 76.4184 621.562 71.1915C628.876 65.9645 639.011 63.351 651.967 63.351C662.206 63.351 671.192 65.4418 678.924 69.6234C686.656 73.8049 692.716 79.8682 697.104 87.8132C701.701 95.5492 704 104.853 704 115.725V219.533H679.237V117.921C679.237 107.676 676.207 99.6262 670.147 93.772C664.296 87.7087 656.042 84.6771 645.384 84.6771C634.1 84.6771 624.801 88.3359 617.487 95.6537C610.382 102.971 606.829 113.53 606.829 127.329V219.533H582.066V117.921C582.066 107.676 579.036 99.6262 572.976 93.772C567.125 87.7087 558.871 84.6771 548.213 84.6771C536.929 84.6771 527.63 88.3359 520.316 95.6537C513.211 102.971 509.659 113.53 509.659 127.329V219.533H484.896Z" fill="#D8D8D8"/>
+          </g>
+          <g class="agency-word-letters">
+            <path d="M0 403L67.706 183.467H114.097L181.803 403H154.533L137.606 347.49H44.197L27.2705 403H0ZM50.7795 323.655H130.71L93.0958 199.461H88.7074L50.7795 323.655Z" fill="#D8D8D8"/>
+            <path d="M129.885 266.212V264.105C129.885 256.377 131.44 249.753 134.549 244.234C137.659 238.714 141.872 234.449 147.188 231.438C152.504 228.427 158.322 226.922 164.641 226.922C172.364 226.922 178.282 228.427 182.395 231.438C186.608 234.348 189.717 237.61 191.723 241.223H193.83V229.029H205.114V319.803C205.114 323.818 204.011 326.979 201.804 329.287C199.597 331.595 196.387 332.749 192.175 332.749H142.223V322.212H189.015C192.024 322.212 193.529 320.706 193.529 317.696V289.696H191.422C190.219 291.904 188.513 294.061 186.307 296.169C184.1 298.276 181.241 300.033 177.731 301.438C174.22 302.742 169.857 303.395 164.641 303.395C158.322 303.395 152.504 301.889 147.188 298.879C141.872 295.868 137.659 291.603 134.549 286.083C131.44 280.463 129.885 273.839 129.885 266.212ZM167.8 292.857C175.424 292.857 181.592 290.449 186.307 285.631C191.121 280.814 193.529 274.191 193.529 265.76V264.556C193.529 256.026 191.121 249.402 186.307 244.685C181.592 239.868 175.424 237.46 167.8 237.46C160.278 237.46 154.059 239.868 149.144 244.685C144.329 249.402 141.922 256.026 141.922 264.556V265.76C141.922 274.191 144.329 280.814 149.144 285.631C154.059 290.449 160.278 292.857 167.8 292.857Z" fill="#D8D8D8"/>
+            <path d="M253.201 304.75C245.778 304.75 239.258 303.194 233.641 300.083C228.024 296.871 223.661 292.406 220.551 286.685C217.442 280.965 215.887 274.341 215.887 266.814V265.008C215.887 257.381 217.442 250.707 220.551 244.986C223.661 239.266 227.974 234.85 233.491 231.739C239.007 228.528 245.327 226.922 252.448 226.922C259.369 226.922 265.488 228.427 270.804 231.438C276.12 234.348 280.283 238.563 283.292 244.083C286.301 249.603 287.806 256.076 287.806 263.502V268.922H227.773C228.074 276.85 230.632 283.072 235.447 287.588C240.261 292.004 246.279 294.212 253.501 294.212C259.821 294.212 264.685 292.757 268.096 289.846C271.506 286.936 274.114 283.474 275.92 279.459L286.151 284.427C284.646 287.538 282.54 290.649 279.832 293.76C277.224 296.871 273.763 299.481 269.45 301.588C265.237 303.696 259.821 304.75 253.201 304.75ZM227.924 259.137H275.769C275.368 252.313 273.011 246.994 268.698 243.18C264.485 239.366 259.068 237.46 252.448 237.46C245.728 237.46 240.211 239.366 235.898 243.18C231.585 246.994 228.927 252.313 227.924 259.137Z" fill="#D8D8D8"/>
+            <path d="M298.006 302.642V229.029H309.592V241.524H311.698C313.303 238.011 316.011 234.85 319.823 232.04C323.735 229.13 329.452 227.675 336.975 227.675C342.492 227.675 347.407 228.829 351.72 231.137C356.133 233.445 359.644 236.857 362.252 241.374C364.86 245.89 366.164 251.459 366.164 258.083V302.642H354.278V258.986C354.278 251.66 352.422 246.341 348.711 243.029C345.1 239.718 340.185 238.062 333.966 238.062C326.844 238.062 321.026 240.37 316.513 244.986C312.099 249.603 309.893 256.477 309.893 265.61V302.642H298.006Z" fill="#D8D8D8"/>
+            <path d="M413.6 304.75C406.479 304.75 400.059 303.244 394.342 300.233C388.725 297.122 384.261 292.707 380.951 286.986C377.741 281.266 376.136 274.492 376.136 266.664V265.008C376.136 257.08 377.741 250.305 380.951 244.685C384.261 238.965 388.725 234.599 394.342 231.589C400.059 228.477 406.479 226.922 413.6 226.922C420.622 226.922 426.59 228.227 431.505 230.836C436.52 233.445 440.432 236.908 443.241 241.223C446.149 245.538 448.005 250.155 448.807 255.072L437.222 257.481C436.721 253.868 435.517 250.556 433.611 247.546C431.806 244.535 429.248 242.126 425.938 240.32C422.628 238.513 418.565 237.61 413.751 237.61C408.836 237.61 404.422 238.714 400.51 240.922C396.699 243.13 393.64 246.291 391.333 250.406C389.126 254.52 388.022 259.438 388.022 265.158V266.513C388.022 272.234 389.126 277.151 391.333 281.266C393.64 285.38 396.699 288.542 400.51 290.75C404.422 292.958 408.836 294.061 413.751 294.061C421.073 294.061 426.64 292.155 430.452 288.341C434.363 284.527 436.771 279.811 437.674 274.191L449.409 276.75C448.306 281.567 446.3 286.133 443.391 290.449C440.482 294.764 436.52 298.226 431.505 300.836C426.59 303.445 420.622 304.75 413.6 304.75Z" fill="#D8D8D8"/>
+            <path d="M468.014 332.749V322.212H510.142C513.051 322.212 514.506 320.706 514.506 317.696V290.9H512.399C511.396 293.008 509.842 295.115 507.735 297.223C505.729 299.23 503.071 300.886 499.761 302.19C496.451 303.395 492.288 303.997 487.273 303.997C481.957 303.997 477.042 302.843 472.528 300.535C468.115 298.226 464.604 294.814 461.996 290.298C459.488 285.782 458.235 280.262 458.235 273.739V229.029H470.121V272.836C470.121 280.061 471.926 285.33 475.537 288.642C479.249 291.954 484.214 293.61 490.433 293.61C497.454 293.61 503.221 291.302 507.735 286.685C512.249 282.069 514.506 275.194 514.506 266.062V229.029H526.392V319.803C526.392 323.818 525.238 326.979 522.931 329.287C520.725 331.595 517.465 332.749 513.152 332.749H468.014Z" fill="#D8D8D8"/>
+          </g>
+        </svg>
       </div>
       <div class="BotvaParallax-module__iIfVja__botva" data-parallax-scroll="container">
         <div class="BotvaParallax-module__iIfVja__botva__wrap"><img
@@ -975,7 +1014,30 @@
               <div class="page-module__ZDaQEq__s1 figma-hero-s1">
                 <div class="figma-hero-top-row">
                   <div class="figma-hero-logo-wrap">
-                    <img src="/images/anam_logo.svg" alt="Anam Agency" class="figma-hero-logo-img" />
+                    <svg width="704" height="403" viewBox="0 0 704 403" fill="none" xmlns="http://www.w3.org/2000/svg" class="figma-hero-logo-img figma-hero-logo-svg">
+                      <defs>
+                        <linearGradient id="anamSpellGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#fff4d0" />
+                          <stop offset="35%" stop-color="#f5d061" />
+                          <stop offset="70%" stop-color="#c5a059" />
+                          <stop offset="100%" stop-color="#8f6e2b" />
+                        </linearGradient>
+                      </defs>
+                      <g class="anam-word-letters">
+                        <path d="M0.183664 219.533L67.8897 0H114.281L181.987 219.533H154.716L137.79 164.023H44.3806L27.4541 219.533H0.183664ZM50.9632 140.188H130.894L93.2794 15.9946H88.8911L50.9632 140.188Z" fill="#D8D8D8"/>
+                        <path d="M181.323 219.533V66.1735H205.459V92.2039H209.847C213.191 84.8861 218.833 78.3001 226.774 72.4459C234.924 66.3826 246.835 63.351 262.508 63.351C274.001 63.351 284.241 65.7554 293.226 70.5642C302.421 75.373 309.735 82.4817 315.168 91.8903C320.601 101.299 323.318 112.903 323.318 126.702V219.533H298.555V128.584C298.555 113.321 294.689 102.24 286.957 95.3401C279.434 88.4405 269.195 84.9907 256.239 84.9907C241.402 84.9907 229.282 89.7995 219.878 99.4171C210.683 109.035 206.086 123.357 206.086 142.383V219.533H181.323Z" fill="#D8D8D8"/>
+                        <path d="M386.097 223.924C375.439 223.924 365.722 222.042 356.945 218.279C348.169 214.515 341.273 209.079 336.258 201.97C331.242 194.862 328.735 186.185 328.735 175.94C328.735 165.486 331.242 156.914 336.258 150.223C341.273 143.324 348.169 138.201 356.945 134.856C365.722 131.302 375.544 129.525 386.41 129.525H438.13V118.234C438.13 107.362 434.891 98.7899 428.413 92.5175C422.144 86.2451 412.74 83.109 400.202 83.109C387.873 83.109 378.26 86.1406 371.364 92.2039C364.468 98.0581 359.767 106.003 357.259 116.039L334.063 108.512C336.571 99.9398 340.541 92.2039 345.975 85.3043C351.408 78.1956 358.617 72.5505 367.603 68.3689C376.798 63.9782 387.768 61.7829 400.516 61.7829C420.159 61.7829 435.413 66.9053 446.28 77.1502C457.146 87.186 462.579 101.403 462.579 119.802V189.112C462.579 195.384 465.505 198.521 471.356 198.521H485.461V219.533H463.833C456.937 219.533 451.4 217.651 447.22 213.888C443.041 209.915 440.951 204.688 440.951 198.207V196.639H437.19C434.891 200.611 431.756 204.793 427.786 209.184C424.025 213.365 418.8 216.815 412.113 219.533C405.426 222.46 396.754 223.924 386.097 223.924ZM388.918 202.598C403.546 202.598 415.352 198.312 424.338 189.739C433.533 180.958 438.13 168.727 438.13 153.046V149.596H387.35C377.529 149.596 369.379 151.791 362.901 156.182C356.632 160.364 353.497 166.741 353.497 175.313C353.497 183.885 356.736 190.576 363.215 195.384C369.902 200.193 378.469 202.598 388.918 202.598Z" fill="#D8D8D8"/>
+                        <path d="M484.896 219.533V66.1735H509.032V85.3043H513.42C516.346 79.8682 521.152 74.8503 527.839 70.2506C534.526 65.6508 543.93 63.351 556.05 63.351C567.961 63.351 577.574 65.9645 584.888 71.1915C592.41 76.4184 597.844 82.7953 601.187 90.3222H605.576C609.128 82.7953 614.457 76.4184 621.562 71.1915C628.876 65.9645 639.011 63.351 651.967 63.351C662.206 63.351 671.192 65.4418 678.924 69.6234C686.656 73.8049 692.716 79.8682 697.104 87.8132C701.701 95.5492 704 104.853 704 115.725V219.533H679.237V117.921C679.237 107.676 676.207 99.6262 670.147 93.772C664.296 87.7087 656.042 84.6771 645.384 84.6771C634.1 84.6771 624.801 88.3359 617.487 95.6537C610.382 102.971 606.829 113.53 606.829 127.329V219.533H582.066V117.921C582.066 107.676 579.036 99.6262 572.976 93.772C567.125 87.7087 558.871 84.6771 548.213 84.6771C536.929 84.6771 527.63 88.3359 520.316 95.6537C513.211 102.971 509.659 113.53 509.659 127.329V219.533H484.896Z" fill="#D8D8D8"/>
+                      </g>
+                      <g class="agency-word-letters">
+                        <path d="M0 403L67.706 183.467H114.097L181.803 403H154.533L137.606 347.49H44.197L27.2705 403H0ZM50.7795 323.655H130.71L93.0958 199.461H88.7074L50.7795 323.655Z" fill="#D8D8D8"/>
+                        <path d="M129.885 266.212V264.105C129.885 256.377 131.44 249.753 134.549 244.234C137.659 238.714 141.872 234.449 147.188 231.438C152.504 228.427 158.322 226.922 164.641 226.922C172.364 226.922 178.282 228.427 182.395 231.438C186.608 234.348 189.717 237.61 191.723 241.223H193.83V229.029H205.114V319.803C205.114 323.818 204.011 326.979 201.804 329.287C199.597 331.595 196.387 332.749 192.175 332.749H142.223V322.212H189.015C192.024 322.212 193.529 320.706 193.529 317.696V289.696H191.422C190.219 291.904 188.513 294.061 186.307 296.169C184.1 298.276 181.241 300.033 177.731 301.438C174.22 302.742 169.857 303.395 164.641 303.395C158.322 303.395 152.504 301.889 147.188 298.879C141.872 295.868 137.659 291.603 134.549 286.083C131.44 280.463 129.885 273.839 129.885 266.212ZM167.8 292.857C175.424 292.857 181.592 290.449 186.307 285.631C191.121 280.814 193.529 274.191 193.529 265.76V264.556C193.529 256.026 191.121 249.402 186.307 244.685C181.592 239.868 175.424 237.46 167.8 237.46C160.278 237.46 154.059 239.868 149.144 244.685C144.329 249.402 141.922 256.026 141.922 264.556V265.76C141.922 274.191 144.329 280.814 149.144 285.631C154.059 290.449 160.278 292.857 167.8 292.857Z" fill="#D8D8D8"/>
+                        <path d="M253.201 304.75C245.778 304.75 239.258 303.194 233.641 300.083C228.024 296.871 223.661 292.406 220.551 286.685C217.442 280.965 215.887 274.341 215.887 266.814V265.008C215.887 257.381 217.442 250.707 220.551 244.986C223.661 239.266 227.974 234.85 233.491 231.739C239.007 228.528 245.327 226.922 252.448 226.922C259.369 226.922 265.488 228.427 270.804 231.438C276.12 234.348 280.283 238.563 283.292 244.083C286.301 249.603 287.806 256.076 287.806 263.502V268.922H227.773C228.074 276.85 230.632 283.072 235.447 287.588C240.261 292.004 246.279 294.212 253.501 294.212C259.821 294.212 264.685 292.757 268.096 289.846C271.506 286.936 274.114 283.474 275.92 279.459L286.151 284.427C284.646 287.538 282.54 290.649 279.832 293.76C277.224 296.871 273.763 299.481 269.45 301.588C265.237 303.696 259.821 304.75 253.201 304.75ZM227.924 259.137H275.769C275.368 252.313 273.011 246.994 268.698 243.18C264.485 239.366 259.068 237.46 252.448 237.46C245.728 237.46 240.211 239.366 235.898 243.18C231.585 246.994 228.927 252.313 227.924 259.137Z" fill="#D8D8D8"/>
+                        <path d="M298.006 302.642V229.029H309.592V241.524H311.698C313.303 238.011 316.011 234.85 319.823 232.04C323.735 229.13 329.452 227.675 336.975 227.675C342.492 227.675 347.407 228.829 351.72 231.137C356.133 233.445 359.644 236.857 362.252 241.374C364.86 245.89 366.164 251.459 366.164 258.083V302.642H354.278V258.986C354.278 251.66 352.422 246.341 348.711 243.029C345.1 239.718 340.185 238.062 333.966 238.062C326.844 238.062 321.026 240.37 316.513 244.986C312.099 249.603 309.893 256.477 309.893 265.61V302.642H298.006Z" fill="#D8D8D8"/>
+                        <path d="M413.6 304.75C406.479 304.75 400.059 303.244 394.342 300.233C388.725 297.122 384.261 292.707 380.951 286.986C377.741 281.266 376.136 274.492 376.136 266.664V265.008C376.136 257.08 377.741 250.305 380.951 244.685C384.261 238.965 388.725 234.599 394.342 231.589C400.059 228.477 406.479 226.922 413.6 226.922C420.622 226.922 426.59 228.227 431.505 230.836C436.52 233.445 440.432 236.908 443.241 241.223C446.149 245.538 448.005 250.155 448.807 255.072L437.222 257.481C436.721 253.868 435.517 250.556 433.611 247.546C431.806 244.535 429.248 242.126 425.938 240.32C422.628 238.513 418.565 237.61 413.751 237.61C408.836 237.61 404.422 238.714 400.51 240.922C396.699 243.13 393.64 246.291 391.333 250.406C389.126 254.52 388.022 259.438 388.022 265.158V266.513C388.022 272.234 389.126 277.151 391.333 281.266C393.64 285.38 396.699 288.542 400.51 290.75C404.422 292.958 408.836 294.061 413.751 294.061C421.073 294.061 426.64 292.155 430.452 288.341C434.363 284.527 436.771 279.811 437.674 274.191L449.409 276.75C448.306 281.567 446.3 286.133 443.391 290.449C440.482 294.764 436.52 298.226 431.505 300.836C426.59 303.445 420.622 304.75 413.6 304.75Z" fill="#D8D8D8"/>
+                        <path d="M468.014 332.749V322.212H510.142C513.051 322.212 514.506 320.706 514.506 317.696V290.9H512.399C511.396 293.008 509.842 295.115 507.735 297.223C505.729 299.23 503.071 300.886 499.761 302.19C496.451 303.395 492.288 303.997 487.273 303.997C481.957 303.997 477.042 302.843 472.528 300.535C468.115 298.226 464.604 294.814 461.996 290.298C459.488 285.782 458.235 280.262 458.235 273.739V229.029H470.121V272.836C470.121 280.061 471.926 285.33 475.537 288.642C479.249 291.954 484.214 293.61 490.433 293.61C497.454 293.61 503.221 291.302 507.735 286.685C512.249 282.069 514.506 275.194 514.506 266.062V229.029H526.392V319.803C526.392 323.818 525.238 326.979 522.931 329.287C520.725 331.595 517.465 332.749 513.152 332.749H468.014Z" fill="#D8D8D8"/>
+                      </g>
+                    </svg>
                   </div>
                   <div class="figma-hero-pen-slot" id="hero-pen-slot"></div>
                   <div class="figma-hero-social-proof">
@@ -2337,20 +2399,20 @@
         resizePenCanvas();
         window.addEventListener('resize', resizePenCanvas);
 
-        // Calibrated Studio Lighting (Dark, authentic wood tones without over-bright glare)
-        var ambLight = new THREE.AmbientLight(0xffeedd, 0.85);
+        // Calibrated Cinematic Wizarding Lighting (Deep shadows, authentic dark elder wood, golden rim)
+        var ambLight = new THREE.AmbientLight(0x281d16, 0.35);
         scene.add(ambLight);
 
-        var keyLight = new THREE.DirectionalLight(0xffeedd, 1.35);
-        keyLight.position.set(5, 8, 6);
+        var keyLight = new THREE.DirectionalLight(0xfff6e6, 1.70);
+        keyLight.position.set(4, 7, 5);
         scene.add(keyLight);
 
-        var fillLight = new THREE.DirectionalLight(0x8899aa, 0.65);
-        fillLight.position.set(-6, 3, -4);
+        var fillLight = new THREE.DirectionalLight(0x402b1d, 0.50);
+        fillLight.position.set(-5, 2, -3);
         scene.add(fillLight);
 
-        var rimLight = new THREE.DirectionalLight(0xddaa66, 0.85);
-        rimLight.position.set(3, -5, 5);
+        var rimLight = new THREE.DirectionalLight(0xd4af37, 1.25);
+        rimLight.position.set(2.5, -4, 4);
         scene.add(rimLight);
 
         // --- Master 3D Model: Albus Dumbledore's Elder Wand (1:1 Screen-Accurate Replica) ---
@@ -2360,178 +2422,244 @@
         penBody.position.y = 0; // Intrinsically balanced around center of gravity
         penGroup.add(penBody);
 
-        // 1. Procedural Concave Dimple Textures (Depressed craters hollowed INTO the wood)
+        // 1. Procedural Concave Dimple Textures (True physical hollows via Normal Mapping)
         var dimpleTextures = (function () {
-          var width = 1024, height = 512;
+          var width = 512, height = 256;
 
-          // A. Diffuse Canvas (Dark aged wood with deeply shadowed concave crater pits)
+          // A. Normal Map (True concave depressions where normal vectors slope into each crater)
+          var nCanvas = document.createElement('canvas');
+          nCanvas.width = width;
+          nCanvas.height = height;
+          var nCtx = nCanvas.getContext('2d');
+          var nImgData = nCtx.createImageData(width, height);
+          var nData = nImgData.data;
+
+          // B. Diffuse Canvas (Rich aged elder wood with deep crevice shadows in craters)
           var dCanvas = document.createElement('canvas');
           dCanvas.width = width;
           dCanvas.height = height;
           var dCtx = dCanvas.getContext('2d');
-          dCtx.fillStyle = '#22150d';
-          dCtx.fillRect(0, 0, width, height);
+          var dImgData = dCtx.createImageData(width, height);
+          var dData = dImgData.data;
 
-          // Subtle organic wood grain
-          dCtx.fillStyle = 'rgba(15, 8, 4, 0.3)';
-          for (var i = 0; i < 240; i++) {
-            var gx = (i * 137.5) % width;
-            dCtx.fillRect(gx, 0, 1 + (i % 3), height);
-          }
-
-          // B. Bump Map Canvas: White/Gray = surface rim, Deep Black = hollowed depression
-          var bCanvas = document.createElement('canvas');
-          bCanvas.width = width;
-          bCanvas.height = height;
-          var bCtx = bCanvas.getContext('2d');
-          bCtx.fillStyle = '#a8a8a8';
-          bCtx.fillRect(0, 0, width, height);
-
-          // C. Roughness Map: Matte inside pits, subtle satin sheen on worn rims
+          // C. Roughness Map (Matte rough hollows, satin worn outer wood)
           var rCanvas = document.createElement('canvas');
           rCanvas.width = width;
           rCanvas.height = height;
           var rCtx = rCanvas.getContext('2d');
-          rCtx.fillStyle = '#606060';
-          rCtx.fillRect(0, 0, width, height);
+          var rImgData = rCtx.createImageData(width, height);
+          var rData = rImgData.data;
 
-          // Interlocking grid of concave dimple craters
-          var rows = 18, cols = 36;
+          // Initialize base maps:
+          // Normal neutral: (128, 128, 255)
+          // Diffuse base: #24140b (36, 20, 11) with fine grain
+          // Roughness: ~122 (0.48)
+          for (var i = 0; i < width * height; i++) {
+            var idx = i * 4;
+            var x = i % width;
+            var grain = ((x * 37) % 19 < 3) ? -8 : (((x * 53) % 17 < 2) ? 6 : 0);
+
+            nData[idx] = 128;
+            nData[idx + 1] = 128;
+            nData[idx + 2] = 255;
+            nData[idx + 3] = 255;
+
+            dData[idx] = Math.max(12, Math.min(255, 36 + grain));
+            dData[idx + 1] = Math.max(8, Math.min(255, 20 + Math.round(grain * 0.6)));
+            dData[idx + 2] = Math.max(5, Math.min(255, 11 + Math.round(grain * 0.4)));
+            dData[idx + 3] = 255;
+
+            rData[idx] = 122;
+            rData[idx + 1] = 122;
+            rData[idx + 2] = 122;
+            rData[idx + 3] = 255;
+          }
+
+          // Pre-seeded organic distribution of concave craters across UV space
+          var rows = 12, cols = 26;
           var dx = width / cols, dy = height / rows;
-          var craterR = Math.min(dx, dy) * 0.44;
+          var craters = [];
 
-          for (var row = 0; row < rows; row++) {
-            var cy = (row + 0.5) * dy;
-            var xOffset = (row % 2 === 0) ? 0 : (dx * 0.5);
-
-            for (var col = 0; col < cols; col++) {
-              var cx = col * dx + xOffset;
-
-              // Diffuse: deep dark shadow in hollow center, warm wood on rim
-              var dGrad = dCtx.createRadialGradient(cx, cy, 0, cx, cy, craterR);
-              dGrad.addColorStop(0.00, '#090402'); // deep crevice shadow
-              dGrad.addColorStop(0.60, '#150c07');
-              dGrad.addColorStop(0.85, '#2c1a10');
-              dGrad.addColorStop(0.96, '#3c2517'); // slightly lighter ridge
-              dGrad.addColorStop(1.00, '#22150d'); // surface blend
-              dCtx.fillStyle = dGrad;
-              dCtx.beginPath();
-              dCtx.arc(cx, cy, craterR, 0, Math.PI * 2);
-              dCtx.fill();
-
-              // Bump: center is black (depression), rim is raised
-              var bGrad = bCtx.createRadialGradient(cx, cy, 0, cx, cy, craterR);
-              bGrad.addColorStop(0.00, '#000000'); // deep depression
-              bGrad.addColorStop(0.50, '#252525');
-              bGrad.addColorStop(0.80, '#707070');
-              bGrad.addColorStop(0.94, '#d8d8d8'); // raised rim edge
-              bGrad.addColorStop(1.00, '#a8a8a8'); // surface height
-              bCtx.fillStyle = bGrad;
-              bCtx.beginPath();
-              bCtx.arc(cx, cy, craterR, 0, Math.PI * 2);
-              bCtx.fill();
-
-              // Roughness: matte hollow, smoother rim
-              var rGrad = rCtx.createRadialGradient(cx, cy, 0, cx, cy, craterR);
-              rGrad.addColorStop(0.0, '#999999');
-              rGrad.addColorStop(0.85, '#484848');
-              rGrad.addColorStop(1.0, '#606060');
-              rCtx.fillStyle = rGrad;
-              rCtx.beginPath();
-              rCtx.arc(cx, cy, craterR, 0, Math.PI * 2);
-              rCtx.fill();
+          for (var r = 0; r < rows; r++) {
+            var rowOffset = (r % 2 === 0) ? 0 : (dx * 0.5);
+            for (var c = 0; c < cols; c++) {
+              var jx = ((c * 17 + r * 31) % 13 - 6) * 0.85;
+              var jy = ((c * 23 + r * 19) % 11 - 5) * 0.75;
+              var cx = (c * dx + rowOffset + jx + width) % width;
+              var cy = Math.max(8, Math.min(height - 8, r * dy + dy * 0.5 + jy));
+              var radVar = ((c * 29 + r * 41) % 7) - 3;
+              var radius = Math.min(dx, dy) * 0.44 + radVar;
+              craters.push({ cx: cx, cy: cy, radius: radius });
             }
           }
+
+          // Carve each concave crater into the maps
+          for (var ci = 0; ci < craters.length; ci++) {
+            var cr = craters[ci];
+            var cx = cr.cx, cy = cr.cy, radius = cr.radius;
+            var minX = Math.floor(cx - radius * 1.15);
+            var maxX = Math.ceil(cx + radius * 1.15);
+            var minY = Math.max(0, Math.floor(cy - radius * 1.15));
+            var maxY = Math.min(height - 1, Math.ceil(cy + radius * 1.15));
+
+            for (var py = minY; py <= maxY; py++) {
+              for (var px = minX; px <= maxX; px++) {
+                var wrapX = ((px % width) + width) % width;
+                var distSq = (px - cx) * (px - cx) + (py - cy) * (py - cy);
+                var rSq = radius * radius;
+
+                if (distSq < rSq * 1.35) {
+                  var dist = Math.sqrt(distSq);
+                  var t = dist / radius;
+                  var pIdx = (py * width + wrapX) * 4;
+
+                  if (t <= 1.0) {
+                    // INSIDE CRATER: Inward-pointing concave normals
+                    var uX = (px - cx) / (dist || 1);
+                    var uY = (py - cy) / (dist || 1);
+                    var slope = Math.sin(t * Math.PI) * 0.95;
+
+                    var nx = -uX * slope;
+                    var ny = -uY * slope;
+                    var nz = Math.sqrt(Math.max(0.08, 1.0 - nx * nx - ny * ny));
+
+                    nData[pIdx] = Math.round((nx * 0.5 + 0.5) * 255);
+                    nData[pIdx + 1] = Math.round((ny * 0.5 + 0.5) * 255);
+                    nData[pIdx + 2] = Math.round((nz * 0.5 + 0.5) * 255);
+
+                    // Diffuse: deep dark crevice shadow
+                    var shadow = 0.20 + 0.80 * Math.pow(t, 1.35);
+                    dData[pIdx] = Math.round(dData[pIdx] * shadow);
+                    dData[pIdx + 1] = Math.round(dData[pIdx + 1] * shadow);
+                    dData[pIdx + 2] = Math.round(dData[pIdx + 2] * shadow);
+
+                    // Roughness: matte hollow
+                    var rough = Math.round(125 + (1 - t) * 90);
+                    rData[pIdx] = rough;
+                    rData[pIdx + 1] = rough;
+                    rData[pIdx + 2] = rough;
+                  } else {
+                    // CRATER RIM: Subtle worn wood highlight ridge
+                    var rimFrac = (t - 1.0) / 0.16;
+                    if (rimFrac <= 1.0) {
+                      var uX = (px - cx) / dist;
+                      var uY = (py - cy) / dist;
+                      var rimSlope = (1.0 - rimFrac) * 0.35;
+                      var nx = uX * rimSlope;
+                      var ny = uY * rimSlope;
+                      var nz = Math.sqrt(Math.max(0.1, 1.0 - nx * nx - ny * ny));
+
+                      nData[pIdx] = Math.round((nx * 0.5 + 0.5) * 255);
+                      nData[pIdx + 1] = Math.round((ny * 0.5 + 0.5) * 255);
+                      nData[pIdx + 2] = Math.round((nz * 0.5 + 0.5) * 255);
+
+                      var rimGleam = (1.0 - rimFrac) * 18;
+                      dData[pIdx] = Math.min(255, dData[pIdx] + Math.round(rimGleam * 1.2));
+                      dData[pIdx + 1] = Math.min(255, dData[pIdx + 1] + Math.round(rimGleam * 0.7));
+                      dData[pIdx + 2] = Math.min(255, dData[pIdx + 2] + Math.round(rimGleam * 0.4));
+
+                      var rimRough = Math.max(75, Math.round(122 - (1.0 - rimFrac) * 38));
+                      rData[pIdx] = rimRough;
+                      rData[pIdx + 1] = rimRough;
+                      rData[pIdx + 2] = rimRough;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          nCtx.putImageData(nImgData, 0, 0);
+          dCtx.putImageData(dImgData, 0, 0);
+          rCtx.putImageData(rImgData, 0, 0);
+
+          var nTex = new THREE.CanvasTexture(nCanvas);
+          nTex.wrapS = THREE.RepeatWrapping;
+          nTex.wrapT = THREE.RepeatWrapping;
 
           var dTex = new THREE.CanvasTexture(dCanvas);
           dTex.wrapS = THREE.RepeatWrapping;
           dTex.wrapT = THREE.RepeatWrapping;
 
-          var bTex = new THREE.CanvasTexture(bCanvas);
-          bTex.wrapS = THREE.RepeatWrapping;
-          bTex.wrapT = THREE.RepeatWrapping;
-
           var rTex = new THREE.CanvasTexture(rCanvas);
           rTex.wrapS = THREE.RepeatWrapping;
           rTex.wrapT = THREE.RepeatWrapping;
 
-          return { diffuse: dTex, bump: bTex, roughness: rTex };
+          return { normal: nTex, diffuse: dTex, roughness: rTex };
         })();
 
-        // 2. Procedural Rune Band Texture (Aged bone/brass with exact black runes from reference)
+        // 2. Procedural Rune Band Texture (Aged bone/ivory with carved runes from reference)
         var runeTexture = (function () {
           var rCanvas = document.createElement('canvas');
           rCanvas.width = 512;
           rCanvas.height = 128;
           var rCtx = rCanvas.getContext('2d');
 
-          // Aged bone/brass gradient
+          // Aged bone/ivory gradient
           var bg = rCtx.createLinearGradient(0, 0, 0, 128);
-          bg.addColorStop(0.00, '#3a2b1b'); // dark top rim
-          bg.addColorStop(0.12, '#b29c66');
-          bg.addColorStop(0.50, '#cbb884'); // bone/brass center
-          bg.addColorStop(0.88, '#ab9660');
-          bg.addColorStop(1.00, '#322314'); // dark bottom rim
+          bg.addColorStop(0.00, '#3e2d1c'); // dark top rim
+          bg.addColorStop(0.12, '#c8b788');
+          bg.addColorStop(0.50, '#dfd4b0'); // aged bone/ivory center
+          bg.addColorStop(0.88, '#baa878');
+          bg.addColorStop(1.00, '#362516'); // dark bottom rim
           rCtx.fillStyle = bg;
           rCtx.fillRect(0, 0, 512, 128);
 
-          // Authentic black carved runes matching the reference photo
-          rCtx.strokeStyle = '#100b06';
-          rCtx.fillStyle = '#100b06';
-          rCtx.lineWidth = 4.5;
+          // Subtle bone grain
+          rCtx.fillStyle = 'rgba(70, 50, 30, 0.08)';
+          for (var i = 0; i < 60; i++) {
+            var gx = (i * 89) % 512;
+            rCtx.fillRect(gx, 0, 1, 128);
+          }
+
+          // Carved black runes matching reference photo
+          rCtx.strokeStyle = '#110904';
+          rCtx.fillStyle = '#110904';
+          rCtx.lineWidth = 4.8;
           rCtx.lineCap = 'round';
           rCtx.lineJoin = 'round';
 
-          // Sequence of 4 distinct runes repeated around circumference
           var runeCount = 4;
           var step = 512 / runeCount;
           for (var i = 0; i < runeCount; i++) {
             var ox = i * step;
 
-            // Rune 1: 'R' with dot
+            // Rune 1: 'Ϙ' circle-stave with center dot
             rCtx.beginPath();
-            rCtx.moveTo(ox + 20, 24);
-            rCtx.lineTo(ox + 20, 104);
-            rCtx.moveTo(ox + 20, 24);
-            rCtx.bezierCurveTo(ox + 48, 24, ox + 48, 64, ox + 20, 64);
-            rCtx.moveTo(ox + 26, 64);
-            rCtx.lineTo(ox + 46, 104);
+            rCtx.moveTo(ox + 22, 24);
+            rCtx.lineTo(ox + 22, 104);
+            rCtx.moveTo(ox + 22, 24);
+            rCtx.bezierCurveTo(ox + 50, 24, ox + 50, 64, ox + 22, 64);
             rCtx.stroke();
             rCtx.beginPath();
-            rCtx.arc(ox + 34, 44, 3, 0, Math.PI * 2);
+            rCtx.arc(ox + 35, 44, 3.2, 0, Math.PI * 2);
             rCtx.fill();
 
-            // Rune 2: Vertical stave with crossbars (comb/stave rune)
+            // Rune 2: Horizontal chevron / arrowhead '<'
+            rCtx.beginPath();
+            rCtx.moveTo(ox + 94, 36);
+            rCtx.lineTo(ox + 66, 64);
+            rCtx.lineTo(ox + 94, 92);
+            rCtx.stroke();
+
+            // Rune 3: Vertical stave with 5 horizontal comb tines
             rCtx.beginPath();
             rCtx.moveTo(ox + 60, 24);
             rCtx.lineTo(ox + 60, 104);
-            rCtx.moveTo(ox + 52, 40);
-            rCtx.lineTo(ox + 68, 40);
-            rCtx.moveTo(ox + 50, 56);
-            rCtx.lineTo(ox + 70, 56);
-            rCtx.moveTo(ox + 52, 72);
-            rCtx.lineTo(ox + 68, 72);
-            rCtx.moveTo(ox + 54, 88);
-            rCtx.lineTo(ox + 66, 88);
+            rCtx.moveTo(ox + 52, 38); rCtx.lineTo(ox + 70, 38);
+            rCtx.moveTo(ox + 50, 52); rCtx.lineTo(ox + 72, 52);
+            rCtx.moveTo(ox + 50, 64); rCtx.lineTo(ox + 72, 64);
+            rCtx.moveTo(ox + 52, 76); rCtx.lineTo(ox + 70, 76);
+            rCtx.moveTo(ox + 54, 90); rCtx.lineTo(ox + 68, 90);
             rCtx.stroke();
 
-            // Rune 3: Chevron / triangle
-            rCtx.beginPath();
-            rCtx.moveTo(ox + 82, 34);
-            rCtx.lineTo(ox + 100, 64);
-            rCtx.lineTo(ox + 82, 94);
-            rCtx.stroke();
-
-            // Rune 4: Vertical bar with diagonal ticks
+            // Rune 4: Vertical stave with diagonal ticks
             rCtx.beginPath();
             rCtx.moveTo(ox + 114, 24);
             rCtx.lineTo(ox + 114, 104);
-            rCtx.moveTo(ox + 106, 44);
-            rCtx.lineTo(ox + 114, 36);
-            rCtx.moveTo(ox + 114, 54);
-            rCtx.lineTo(ox + 122, 62);
-            rCtx.moveTo(ox + 106, 78);
-            rCtx.lineTo(ox + 114, 70);
+            rCtx.moveTo(ox + 106, 44); rCtx.lineTo(ox + 114, 36);
+            rCtx.moveTo(ox + 114, 54); rCtx.lineTo(ox + 122, 62);
+            rCtx.moveTo(ox + 106, 78); rCtx.lineTo(ox + 114, 70);
             rCtx.stroke();
           }
 
@@ -2541,48 +2669,43 @@
           return tex;
         })();
 
-        // 3. Materials
-        // A. Dimpled Elder Wood (for the bulbs & grip with concave craters)
+        // 3. PBR Materials
         var dimpleWoodMat = new THREE.MeshStandardMaterial({
           map: dimpleTextures.diffuse,
-          bumpMap: dimpleTextures.bump,
-          bumpScale: 0.16,
+          normalMap: dimpleTextures.normal,
           roughnessMap: dimpleTextures.roughness,
-          roughness: 0.62,
+          roughness: 0.55,
+          metalness: 0.05
+        });
+
+        var smoothWoodMat = new THREE.MeshStandardMaterial({
+          color: 0x26160e,
+          roughness: 0.48,
           metalness: 0.04
         });
 
-        // B. Smooth Elder Wood (for the tapering shafts between bulbs)
-        var smoothWoodMat = new THREE.MeshStandardMaterial({
-          color: 0x24160e,
-          roughness: 0.52,
-          metalness: 0.03
-        });
-
-        // C. Rune Band Material
         var runeBandMat = new THREE.MeshStandardMaterial({
           map: runeTexture,
-          roughness: 0.38,
-          metalness: 0.12
+          roughness: 0.35,
+          metalness: 0.10
         });
 
-        // D. Dark Carved Wood Collars
         var darkCollarMat = new THREE.MeshStandardMaterial({
-          color: 0x140c08,
+          color: 0x100905,
           roughness: 0.70,
           metalness: 0.02
         });
 
         // 4. Geometry Assembly: 1:1 Screen-Accurate Replica from Reference Photo
-        // A. Flared Pommel Base (Bottom trumpet foot with carved vertical flutes)
+        // A. Flared Pommel Base
         var pommelPoints = [
-          new THREE.Vector2(0.040, 3.885), // Indented socket center
-          new THREE.Vector2(0.240, 3.885), // Flat flared foot rim
-          new THREE.Vector2(0.265, 3.865), // Outer rim
-          new THREE.Vector2(0.215, 3.820), // Inward curve of trumpet flare
-          new THREE.Vector2(0.135, 3.750), // Narrow waist
-          new THREE.Vector2(0.130, 3.720), // Neck before first bulb
-          new THREE.Vector2(0.155, 3.650)  // Transition to first bulb
+          new THREE.Vector2(0.040, 3.885),
+          new THREE.Vector2(0.245, 3.885),
+          new THREE.Vector2(0.270, 3.860),
+          new THREE.Vector2(0.220, 3.810),
+          new THREE.Vector2(0.140, 3.730),
+          new THREE.Vector2(0.135, 3.690),
+          new THREE.Vector2(0.160, 3.640)
         ];
         var pommel = new THREE.Mesh(new THREE.LatheGeometry(pommelPoints, 36), smoothWoodMat);
         penBody.add(pommel);
@@ -2598,129 +2721,129 @@
           penBody.add(flute);
         }
 
-        // B. Bulb 1 (Butt Bulb, dimpled oval right above flared base)
+        // B. Bulb 1 (Butt Bulb, dimpled rounded bead)
         var bulb1Points = [
-          new THREE.Vector2(0.155, 3.65),
-          new THREE.Vector2(0.200, 3.58),
-          new THREE.Vector2(0.222, 3.50), // Max radius
-          new THREE.Vector2(0.195, 3.42),
-          new THREE.Vector2(0.150, 3.35)
+          new THREE.Vector2(0.160, 3.64),
+          new THREE.Vector2(0.208, 3.57),
+          new THREE.Vector2(0.228, 3.49),
+          new THREE.Vector2(0.200, 3.41),
+          new THREE.Vector2(0.155, 3.35)
         ];
         var bulb1 = new THREE.Mesh(new THREE.LatheGeometry(bulb1Points, 36), dimpleWoodMat);
         penBody.add(bulb1);
 
-        // C. Neck between Bulb 1 and Main Handle Barrel
-        var neck = new THREE.Mesh(new THREE.CylinderGeometry(0.150, 0.165, 0.25, 36), dimpleWoodMat);
-        neck.position.y = 3.225;
-        penBody.add(neck);
+        // C. Grip Shaft (Between Bulb 1 and Bulb 2 - dimpled in photo)
+        var gripShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.155, 0.170, 0.25, 36), dimpleWoodMat);
+        gripShaft.position.y = 3.225;
+        penBody.add(gripShaft);
 
-        // D. Bulb 2: Main Handle Barrel (The largest elongated cylindrical bulb)
+        // D. Bulb 2: Main Handle Barrel (Distinctive asymmetric flared shoulder at base)
         var barrelPoints = [
-          new THREE.Vector2(0.165, 3.10),
-          new THREE.Vector2(0.235, 3.02),
-          new THREE.Vector2(0.272, 2.85), // Main barrel swelling
-          new THREE.Vector2(0.275, 2.65), // Cylindrical midsection
+          new THREE.Vector2(0.170, 3.10),
+          new THREE.Vector2(0.245, 3.03),
+          new THREE.Vector2(0.285, 2.92),
+          new THREE.Vector2(0.280, 2.70),
           new THREE.Vector2(0.265, 2.48),
-          new THREE.Vector2(0.225, 2.38),
-          new THREE.Vector2(0.195, 2.30)
+          new THREE.Vector2(0.225, 2.36),
+          new THREE.Vector2(0.185, 2.26)
         ];
         var mainBarrel = new THREE.Mesh(new THREE.LatheGeometry(barrelPoints, 40), dimpleWoodMat);
         penBody.add(mainBarrel);
 
-        // E. Tapered shaft section leading to Rune Band
-        var shaftToRune = new THREE.Mesh(new THREE.CylinderGeometry(0.195, 0.165, 0.35, 36), dimpleWoodMat);
-        shaftToRune.position.y = 2.125;
+        // E. Tapered neck leading to Rune Band
+        var shaftToRune = new THREE.Mesh(new THREE.CylinderGeometry(0.185, 0.168, 0.28, 36), dimpleWoodMat);
+        shaftToRune.position.y = 2.12;
         penBody.add(shaftToRune);
 
-        // Upper collar above Rune Band
-        var rCollarTop = new THREE.Mesh(new THREE.CylinderGeometry(0.175, 0.175, 0.025, 36), darkCollarMat);
-        rCollarTop.position.y = 1.96;
+        // Upper dark collar
+        var rCollarTop = new THREE.Mesh(new THREE.CylinderGeometry(0.176, 0.176, 0.035, 36), darkCollarMat);
+        rCollarTop.position.y = 1.965;
         penBody.add(rCollarTop);
 
-        // F. The Rune Band (Narrow aged bone/brass band with carved runes)
-        var runeBand = new THREE.Mesh(new THREE.CylinderGeometry(0.168, 0.168, 0.15, 36), runeBandMat);
+        // F. Rune Band
+        var runeBand = new THREE.Mesh(new THREE.CylinderGeometry(0.170, 0.170, 0.145, 36), runeBandMat);
         runeBand.position.y = 1.875;
         penBody.add(runeBand);
 
-        // Lower collar below Rune Band
-        var rCollarBot = new THREE.Mesh(new THREE.CylinderGeometry(0.175, 0.175, 0.025, 36), darkCollarMat);
-        rCollarBot.position.y = 1.79;
+        // Lower dark collar
+        var rCollarBot = new THREE.Mesh(new THREE.CylinderGeometry(0.176, 0.176, 0.035, 36), darkCollarMat);
+        rCollarBot.position.y = 1.785;
         penBody.add(rCollarBot);
 
         // G. Bulb 3 (Dimpled node directly above Rune Band)
         var bulb3Points = [
-          new THREE.Vector2(0.165, 1.80),
-          new THREE.Vector2(0.205, 1.70),
-          new THREE.Vector2(0.215, 1.62), // Max radius
-          new THREE.Vector2(0.185, 1.52),
-          new THREE.Vector2(0.150, 1.45)
+          new THREE.Vector2(0.165, 1.77),
+          new THREE.Vector2(0.210, 1.68),
+          new THREE.Vector2(0.222, 1.60),
+          new THREE.Vector2(0.190, 1.50),
+          new THREE.Vector2(0.148, 1.44)
         ];
         var bulb3 = new THREE.Mesh(new THREE.LatheGeometry(bulb3Points, 36), dimpleWoodMat);
         penBody.add(bulb3);
 
-        // H. Shaft 1 (Smooth tapered elder wood from Bulb 3 to Bulb 4)
-        var shaft1 = new THREE.Mesh(new THREE.CylinderGeometry(0.150, 0.130, 0.70, 32), smoothWoodMat);
-        shaft1.position.y = 1.10;
+        // H. Shaft 1 (Smooth tapered elder wood)
+        var shaft1 = new THREE.Mesh(new THREE.CylinderGeometry(0.148, 0.128, 0.70, 36), smoothWoodMat);
+        shaft1.position.y = 1.09;
         penBody.add(shaft1);
 
         // I. Bulb 4 (Dimpled node 2)
         var bulb4Points = [
-          new THREE.Vector2(0.130, 0.75),
-          new THREE.Vector2(0.168, 0.65),
-          new THREE.Vector2(0.182, 0.58), // Max radius
+          new THREE.Vector2(0.128, 0.74),
+          new THREE.Vector2(0.170, 0.65),
+          new THREE.Vector2(0.185, 0.58),
           new THREE.Vector2(0.155, 0.50),
-          new THREE.Vector2(0.120, 0.45)
+          new THREE.Vector2(0.118, 0.44)
         ];
         var bulb4 = new THREE.Mesh(new THREE.LatheGeometry(bulb4Points, 36), dimpleWoodMat);
         penBody.add(bulb4);
 
-        // J. Shaft 2 (Smooth tapered elder wood from Bulb 4 to Bulb 5)
-        var shaft2 = new THREE.Mesh(new THREE.CylinderGeometry(0.120, 0.100, 0.85, 32), smoothWoodMat);
-        shaft2.position.y = 0.025;
+        // J. Shaft 2 (Smooth tapered elder wood)
+        var shaft2 = new THREE.Mesh(new THREE.CylinderGeometry(0.118, 0.098, 0.84, 36), smoothWoodMat);
+        shaft2.position.y = 0.02;
         penBody.add(shaft2);
 
         // K. Bulb 5 (Dimpled node 3)
         var bulb5Points = [
-          new THREE.Vector2(0.100, -0.40),
+          new THREE.Vector2(0.098, -0.40),
           new THREE.Vector2(0.138, -0.48),
-          new THREE.Vector2(0.150, -0.53), // Max radius
-          new THREE.Vector2(0.128, -0.59),
-          new THREE.Vector2(0.095, -0.65)
+          new THREE.Vector2(0.152, -0.54),
+          new THREE.Vector2(0.128, -0.60),
+          new THREE.Vector2(0.092, -0.66)
         ];
         var bulb5 = new THREE.Mesh(new THREE.LatheGeometry(bulb5Points, 36), dimpleWoodMat);
         penBody.add(bulb5);
 
-        // L. Shaft 3 (Long tapered elder wood from Bulb 5 to Bulb 6)
-        var shaft3 = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.075, 1.10, 32), smoothWoodMat);
+        // L. Shaft 3 (Long slender tapered elder wood)
+        var shaft3 = new THREE.Mesh(new THREE.CylinderGeometry(0.092, 0.072, 1.08, 36), smoothWoodMat);
         shaft3.position.y = -1.20;
         penBody.add(shaft3);
 
         // M. Bulb 6 (Small dimpled node near tip)
         var bulb6Points = [
-          new THREE.Vector2(0.075, -1.75),
-          new THREE.Vector2(0.102, -1.82),
-          new THREE.Vector2(0.112, -1.86), // Max radius
+          new THREE.Vector2(0.072, -1.74),
+          new THREE.Vector2(0.104, -1.82),
+          new THREE.Vector2(0.112, -1.86),
           new THREE.Vector2(0.095, -1.90),
-          new THREE.Vector2(0.070, -1.95)
+          new THREE.Vector2(0.068, -1.96)
         ];
-        var bulb6 = new THREE.Mesh(new THREE.LatheGeometry(bulb6Points, 32), dimpleWoodMat);
+        var bulb6 = new THREE.Mesh(new THREE.LatheGeometry(bulb6Points, 36), dimpleWoodMat);
         penBody.add(bulb6);
 
-        // N. Slender Tapered Tip (Smooth, organic elder wood tapering to the tip)
+        // N. Slender Tapered Tip
         var tipPoints = [
-          new THREE.Vector2(0.030, -3.880),
-          new THREE.Vector2(0.038, -3.650),
-          new THREE.Vector2(0.048, -3.200),
-          new THREE.Vector2(0.058, -2.700),
-          new THREE.Vector2(0.066, -2.250),
-          new THREE.Vector2(0.070, -1.950),
-          new THREE.Vector2(0.001, -1.950)
+          new THREE.Vector2(0.028, -3.880),
+          new THREE.Vector2(0.035, -3.650),
+          new THREE.Vector2(0.045, -3.200),
+          new THREE.Vector2(0.054, -2.700),
+          new THREE.Vector2(0.062, -2.250),
+          new THREE.Vector2(0.068, -1.960),
+          new THREE.Vector2(0.001, -1.960)
         ];
-        var tipShaft = new THREE.Mesh(new THREE.LatheGeometry(tipPoints, 32), smoothWoodMat);
+        var tipShaft = new THREE.Mesh(new THREE.LatheGeometry(tipPoints, 36), smoothWoodMat);
         penBody.add(tipShaft);
 
-        // O. Tipping Ball (Exact tracking anchor for canvas underline & golden sparks)
-        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.030, 16, 16), smoothWoodMat);
+        // O. Tipping Ball (Anchor point for particle emitters & spell strike)
+        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.028, 16, 16), smoothWoodMat);
         tippingBall.position.set(0, -3.885, 0.01);
         penBody.add(tippingBall);
 
@@ -2820,10 +2943,11 @@
         };
       }
 
-      // === 4. Golden Ink Particles Engine & Dynamic Calligraphy Physics ===
+      // === 4. Golden Ink & Magical Spell Particles Engine ===
       var particleCanvas = document.getElementById('pen-particles-canvas');
       var pCtx = particleCanvas ? particleCanvas.getContext('2d') : null;
       var particles = [];
+      var spellBeams = [];
 
       function resizeParticleCanvas() {
         if (particleCanvas) {
@@ -2833,6 +2957,83 @@
       }
       window.addEventListener('resize', resizeParticleCanvas);
       resizeParticleCanvas();
+
+      function spawnSpellBeam(fromX, fromY, toX, toY) {
+        if (!pCtx || !particleCanvas) return;
+        var dx = toX - fromX;
+        var dy = toY - fromY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist === 0) return;
+
+        if (spellBeams.length < 3) {
+          spellBeams.push({
+            fromX: fromX,
+            fromY: fromY,
+            toX: toX,
+            toY: toY,
+            alpha: 1.0,
+            width: Math.random() * 2.5 + 2.0,
+            jitter: (Math.random() - 0.5) * 22
+          });
+        }
+
+        // Golden sparks traveling along beam
+        if (particles.length < 80) {
+          for (var i = 0; i < 2; i++) {
+            var t = Math.random();
+            particles.push({
+              x: fromX + dx * t + (Math.random() - 0.5) * 16,
+              y: fromY + dy * t + (Math.random() - 0.5) * 16,
+              vx: (Math.random() - 0.5) * 2.5,
+              vy: (Math.random() - 0.5) * 2.5 - 0.5,
+              size: Math.random() * 2.4 + 1.2,
+              alpha: 1,
+              color: Math.random() > 0.4 ? '#c5a059' : '#fff4d0',
+              decay: Math.random() * 0.04 + 0.03
+            });
+          }
+        }
+      }
+
+      function spawnSpellImpact(x, y) {
+        if (particles.length > 80) return;
+        for (var i = 0; i < 3; i++) {
+          var angle = Math.random() * Math.PI * 2;
+          var spd = Math.random() * 3.5 + 1.2;
+          particles.push({
+            x: x + (Math.random() - 0.5) * 20,
+            y: y + (Math.random() - 0.5) * 16,
+            vx: Math.cos(angle) * spd,
+            vy: Math.sin(angle) * spd - 0.8,
+            size: Math.random() * 3.2 + 1.4,
+            alpha: 1,
+            color: Math.random() > 0.3 ? '#f5d061' : '#ede4d3',
+            decay: Math.random() * 0.035 + 0.02
+          });
+        }
+      }
+
+      function getAnamTargetPoint() {
+        var anamGroup = document.querySelector('.figma-hero-logo-wrap .anam-word-letters') || document.querySelector('.anam-word-letters');
+        if (anamGroup && anamGroup.getBoundingClientRect) {
+          var r = anamGroup.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) {
+            return {
+              x: r.left + r.width * 0.52,
+              y: r.top + r.height * 0.48
+            };
+          }
+        }
+        var logoWrap = document.querySelector('.figma-hero-logo-wrap');
+        if (logoWrap) {
+          var lr = logoWrap.getBoundingClientRect();
+          return {
+            x: lr.left + lr.width * 0.5,
+            y: lr.top + lr.height * 0.28
+          };
+        }
+        return { x: window.innerWidth * 0.35, y: window.innerHeight * 0.45 };
+      }
 
       function spawnInkParticles(x, y, intensity) {
         if (particles.length > 70) return;
@@ -2856,6 +3057,31 @@
       function renderParticles() {
         if (!pCtx || !particleCanvas) return;
         pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+        // 1. Render crackling spell beams (arc from wand tip to ANAM)
+        for (var bIdx = spellBeams.length - 1; bIdx >= 0; bIdx--) {
+          var b = spellBeams[bIdx];
+          b.alpha -= 0.12;
+          if (b.alpha <= 0) {
+            spellBeams.splice(bIdx, 1);
+            continue;
+          }
+          pCtx.save();
+          pCtx.globalAlpha = Math.max(0, b.alpha);
+          pCtx.strokeStyle = '#fff2c2';
+          pCtx.shadowColor = '#c5a059';
+          pCtx.shadowBlur = 12;
+          pCtx.lineWidth = b.width;
+          pCtx.beginPath();
+          pCtx.moveTo(b.fromX, b.fromY);
+          var midX = (b.fromX + b.toX) * 0.5 + b.jitter;
+          var midY = (b.fromY + b.toY) * 0.5 + b.jitter * 0.5;
+          pCtx.quadraticCurveTo(midX, midY, b.toX, b.toY);
+          pCtx.stroke();
+          pCtx.restore();
+        }
+
+        // 2. Render particles
         for (var i = particles.length - 1; i >= 0; i--) {
           var p = particles[i];
           p.x += p.vx;
@@ -2929,6 +3155,65 @@
             var hRatio = 1 - (distFromHero / releaseSpan);
             heroBlend = hRatio * hRatio * (3 - 2 * hRatio);
           }
+
+          // === SPELL-CASTING GESTURE & ANAM WORDMARK TRANSFORMATION ===
+          // Reset spell when scrolled back to the very top
+          if (distFromHero < 15) {
+            var heroLogoWrap = document.querySelector('.figma-hero-logo-wrap');
+            var heroLogoOverlay = document.getElementById('figma-hero-logo-overlay');
+            if (heroLogoWrap) heroLogoWrap.classList.remove('is-spell-cast');
+            if (heroLogoOverlay) heroLogoOverlay.classList.remove('is-spell-cast');
+          }
+
+          // Phase 1: Lift & Windup ("Unseen Hand Grips & Elevates Wand")
+          if (distFromHero > 0 && distFromHero <= 130) {
+            var p1 = distFromHero / 130;
+            var ease1 = p1 * p1 * (3 - 2 * p1);
+            heroTargetX += 45 * ease1;
+            heroTargetY -= 70 * ease1;
+            heroTargetRotX = 0.55 * ease1;
+            heroTargetRotZ = -0.35 * ease1;
+            heroTargetR = -28 * ease1;
+          }
+          // Phase 2: Spell Casting Strike ("Aim Tip at ANAM & Cast Spell")
+          else if (distFromHero > 130 && distFromHero <= 290) {
+            var p2 = (distFromHero - 130) / 160;
+            var ease2 = p2 * p2 * (3 - 2 * p2);
+
+            var targetPt = getAnamTargetPoint();
+            var wrapRect = rotateWrap ? rotateWrap.getBoundingClientRect() : { width: 480, height: 480 };
+
+            heroTargetX = 45 + (targetPt.x + 120 - (vw * 0.5) - 45) * ease2;
+            heroTargetY = -70 + (targetPt.y - 20 - (vh * 0.5) + 70) * ease2;
+
+            heroTargetRotX = 0.55 + 0.30 * ease2;
+            heroTargetRotZ = -0.35 - 0.25 * ease2;
+            heroTargetR = -28 - 22 * ease2;
+
+            var tipOff = getPenTipScreenOffset(wrapRect.width, wrapRect.height, heroTargetR);
+            var tipX = (vw * 0.5 + heroTargetX) + tipOff.x;
+            var tipY = (vh * 0.5 + heroTargetY) + tipOff.y;
+
+            spawnSpellBeam(tipX, tipY, targetPt.x, targetPt.y);
+
+            if (distFromHero >= 190) {
+              spawnSpellImpact(targetPt.x, targetPt.y);
+              var heroLogoWrap = document.querySelector('.figma-hero-logo-wrap');
+              var heroLogoOverlay = document.getElementById('figma-hero-logo-overlay');
+              if (heroLogoWrap) heroLogoWrap.classList.add('is-spell-cast');
+              if (heroLogoOverlay) heroLogoOverlay.classList.add('is-spell-cast');
+            }
+          }
+          // Phase 3: Transition smoothly from spell strike into service flight
+          else if (distFromHero > 290 && distFromHero < releaseSpan) {
+            var p3 = (distFromHero - 290) / (releaseSpan - 290);
+            var ease3 = p3 * p3 * (3 - 2 * p3);
+            heroTargetX += (1 - ease3) * 60;
+            heroTargetY += (1 - ease3) * 40;
+            heroTargetRotX = (1 - ease3) * 0.45;
+            heroTargetRotZ = (1 - ease3) * -0.30;
+            heroTargetR = (1 - ease3) * -25;
+          }
         }
         window.__heroPenBlend = heroBlend;
 
@@ -2936,7 +3221,7 @@
         // Sync hero logo overlay (z-index: 15) so the pen remains below the logo.
         var overlayLogoImg = document.querySelector('.figma-hero-logo-overlay-img');
         if (overlayLogoImg) {
-          var allLogoImgs = document.querySelectorAll('.figma-hero-logo-img');
+          var allLogoImgs = document.querySelectorAll('.figma-hero-logo-img, .figma-hero-logo-svg');
           var activeLogoRect = null;
           for (var l = 0; l < allLogoImgs.length; l++) {
             var lr = allLogoImgs[l].getBoundingClientRect();
@@ -3056,20 +3341,18 @@
                   }
                 } else {
                   // PHASE B: FLIGHT BETWEEN LINES (RIGHT -> LEFT)
-                  // Line k is 100% drawn; Line k+1 has NOT started (0%)
                   lineProgresses[k] = 1.0;
 
                   var r = (t - 0.60) / 0.40;
                   r = Math.max(0, Math.min(1, r));
                   var smoothR = r * r * (3 - 2 * r);
 
-                  // Continuous, uninterrupted glide from right of curLine to left of nextLine
+                  // Continuous glide from right of curLine to left of nextLine
                   targetScreenX = curLine.right + smoothR * (nextLine.left - curLine.right);
                   var arcLift = Math.sin(r * Math.PI) * 46;
                   targetScreenY = curLine.top + smoothR * (nextLine.top - curLine.top) - arcLift;
                   targetPenBlend = 1;
 
-                  // Graceful air tilt and twirl in flight
                   dynamicWriteRotX = 0.44 - Math.sin(r * Math.PI) * 0.22;
                   dynamicWriteRotZ = -0.36 + Math.sin(r * Math.PI) * 0.35;
                   dynamicWriteR = -12 + Math.sin(r * Math.PI) * 20;
