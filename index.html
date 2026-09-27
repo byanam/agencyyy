@@ -771,18 +771,19 @@
     }
 
     /* =========================================================
-       BRAND LOGO CAROUSEL — BLAND TRANSPARENT BACKGROUND, EXPANDED SCALE & GRAYED-OUT LOGOS (GOLD -> WHITE -> GRAY)
+       BRAND LOGO CAROUSEL — CONTINUOUS BACKGROUND RUNNER (ALL GRAYED OUT, NO HOVER PAUSE)
        ========================================================= */
     .page-module__ZDaQEq__s2 {
       width: 100% !important;
       padding: clamp(50px, 6vw, 100px) 0 !important;
       margin: 15px 0 !important;
       position: relative !important;
-      z-index: 10 !important;
+      z-index: 5 !important;
       overflow: hidden !important;
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
+      pointer-events: none !important; /* Runs purely as ambient background */
     }
 
     .Carousel-module__nu5vFW__carousel {
@@ -795,6 +796,7 @@
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
+      pointer-events: none !important;
       /* Edge alpha dissolve only at screen margins */
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
       mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
@@ -811,10 +813,7 @@
       align-items: center !important;
       background: transparent !important;
       animation: Carousel-module__nu5vFW__carouselMarquee 42s linear infinite !important;
-    }
-
-    .Carousel-module__nu5vFW__carousel:hover .Carousel-module__nu5vFW__carousel__track {
-      animation-play-state: paused !important;
+      pointer-events: none !important;
     }
 
     .Carousel-module__nu5vFW__carousel__inner {
@@ -823,9 +822,10 @@
       flex-shrink: 0 !important;
       width: max-content !important;
       background: transparent !important;
+      pointer-events: none !important;
     }
 
-    /* Way bigger logo items with muted, grayed-out / lowered opacity against bland page background */
+    /* Way bigger logo items — completely grayed-out and continuous */
     .Carousel-module__nu5vFW__carousel__item {
       aspect-ratio: auto !important;
       flex-shrink: 0 !important;
@@ -838,17 +838,12 @@
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
-      opacity: 0.28 !important; /* Grayed-out / lowered opacity */
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
-      cursor: pointer !important;
+      opacity: 0.22 !important; /* Low opacity / grayed-out */
+      pointer-events: none !important;
+      cursor: default !important;
     }
 
-    .Carousel-module__nu5vFW__carousel__item:hover {
-      opacity: 0.85 !important;
-      transform: scale(1.06) !important;
-    }
-
-    /* Dramatically scaled up SVG vector artwork with NO drop-shadows or background artifacts */
+    /* Scaled up SVG vector artwork — completely grayed out, 100% non-colored */
     .Carousel-module__nu5vFW__carousel__item-image {
       object-fit: contain !important;
       width: 100% !important;
@@ -857,36 +852,8 @@
       max-height: none !important;
       background: transparent !important;
       transform: scale(2.7) !important;
-      transition: filter 0.45s ease, transform 0.45s ease !important;
-    }
-
-    /* Seamless progression of brand colors from Gold to White to Gray (Clean, crisp, no shadows) */
-    /* 1. Gold Phase (ozon-fresh, x5, lavka) */
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 1) .Carousel-module__nu5vFW__carousel__item-image,
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 2) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(76%) sepia(50%) saturate(750%) hue-rotate(5deg) brightness(98%) contrast(92%) !important;
-    }
-
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 3) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(82%) sepia(35%) saturate(550%) hue-rotate(8deg) brightness(100%) contrast(94%) !important;
-    }
-
-    /* 2. White Phase (phizer, bayer, amway, metro) */
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 4) .Carousel-module__nu5vFW__carousel__item-image,
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 5) .Carousel-module__nu5vFW__carousel__item-image,
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 6) .Carousel-module__nu5vFW__carousel__item-image,
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 7) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(1) !important;
-    }
-
-    /* 3. Gray Phase (yango, kuper, otello) */
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 8) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(70%) !important;
-    }
-
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 9) .Carousel-module__nu5vFW__carousel__item-image,
-    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 10) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(52%) !important;
+      filter: grayscale(100%) brightness(0.65) contrast(1) !important; /* All grayed out, absolutely no color */
+      pointer-events: none !important;
     }
 
     @media (max-width: 991px) {
