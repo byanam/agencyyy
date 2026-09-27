@@ -771,35 +771,40 @@
     }
 
     /* =========================================================
-       BRAND LOGO CAROUSEL — CONTINUOUS BACKGROUND RUNNER (ALL GRAYED OUT, NO HOVER PAUSE)
+       BRAND LOGO CAROUSEL — GIGANTIC BACKGROUND WATERMARK WITH "CASES" CENTERED ON TOP
        ========================================================= */
     .page-module__ZDaQEq__s2 {
       width: 100% !important;
-      padding: clamp(50px, 6vw, 100px) 0 !important;
-      margin: 15px 0 !important;
+      min-height: clamp(320px, 32vw, 500px) !important;
+      margin: clamp(50px, 6vw, 100px) 0 clamp(20px, 3vw, 50px) 0 !important;
+      padding: 0 !important;
       position: relative !important;
       z-index: 5 !important;
       overflow: hidden !important;
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
-      pointer-events: none !important; /* Runs purely as ambient background */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
 
     .Carousel-module__nu5vFW__carousel {
       width: 100% !important;
+      height: 100% !important;
       overflow: hidden !important;
-      position: relative !important;
+      position: absolute !important;
+      inset: 0 !important;
       display: flex !important;
       align-items: center !important;
-      padding: clamp(35px, 4vw, 70px) 0 !important;
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
       pointer-events: none !important;
+      z-index: 1 !important;
       /* Edge alpha dissolve only at screen margins */
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
-      mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%) !important;
+      mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%) !important;
     }
 
     .Carousel-module__nu5vFW__carousel::after {
@@ -825,25 +830,25 @@
       pointer-events: none !important;
     }
 
-    /* Way bigger logo items — completely grayed-out and continuous */
+    /* Even bigger logo items — gigantic background watermark presence */
     .Carousel-module__nu5vFW__carousel__item {
       aspect-ratio: auto !important;
       flex-shrink: 0 !important;
-      width: clamp(340px, 28vw, 500px) !important;
-      height: clamp(140px, 14vw, 220px) !important;
-      margin-right: clamp(60px, 6vw, 110px) !important;
+      width: clamp(440px, 38vw, 680px) !important;
+      height: clamp(220px, 22vw, 360px) !important;
+      margin-right: clamp(80px, 8vw, 160px) !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
-      opacity: 0.22 !important; /* Low opacity / grayed-out */
+      opacity: 0.16 !important; /* Low watermark opacity so it acts as subtle background backdrop */
       pointer-events: none !important;
       cursor: default !important;
     }
 
-    /* Scaled up SVG vector artwork — completely grayed out, 100% non-colored */
+    /* Even bigger scaled up SVG vector artwork — completely grayed out, 100% non-colored */
     .Carousel-module__nu5vFW__carousel__item-image {
       object-fit: contain !important;
       width: 100% !important;
@@ -851,25 +856,51 @@
       max-width: none !important;
       max-height: none !important;
       background: transparent !important;
-      transform: scale(2.7) !important;
+      transform: scale(3.6) !important; /* Truly gigantic vector scale */
       filter: grayscale(100%) brightness(0.65) contrast(1) !important; /* All grayed out, absolutely no color */
       pointer-events: none !important;
     }
 
+    /* "CASES" Heading — Perfectly Centered in Middle on Top of Background Logos */
+    .cases-carousel-heading-wrap {
+      position: relative !important;
+      z-index: 10 !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      pointer-events: auto !important;
+    }
+
+    .cases-carousel-heading-wrap .u-h2-big {
+      font-size: clamp(68px, 8.5vw, 135px) !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.04em !important;
+      color: #FFFFFF !important;
+      text-transform: none !important;
+      line-height: 1 !important;
+      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 0, 0, 0.95) !important;
+      margin: 0 !important;
+      padding: 0 20px !important;
+    }
+
     @media (max-width: 991px) {
       .page-module__ZDaQEq__s2 {
-        padding: 40px 0 !important;
-      }
-      .Carousel-module__nu5vFW__carousel {
-        padding: 24px 0 !important;
+        min-height: 220px !important;
+        margin: 30px 0 10px 0 !important;
       }
       .Carousel-module__nu5vFW__carousel__item {
-        width: 260px !important;
-        height: 110px !important;
+        width: 280px !important;
+        height: 130px !important;
         margin-right: 40px !important;
       }
       .Carousel-module__nu5vFW__carousel__item-image {
-        transform: scale(2.2) !important;
+        transform: scale(2.6) !important;
+      }
+      .cases-carousel-heading-wrap .u-h2-big {
+        font-size: clamp(48px, 12vw, 76px) !important;
       }
     }
   </style>
@@ -1163,12 +1194,12 @@
                     </div>
                   </div>
                 </div>
+                <div class="BlockButton-module__44lcOa__block-button__h-wrap cases-carousel-heading-wrap">
+                  <h2 class="u-h2-big">Cases</h2>
+                </div>
               </div>
               <div
                 class="BlockButton-module__44lcOa__block-button BlockButton-module__44lcOa__block-button--margin-bottom">
-                <div class="BlockButton-module__44lcOa__block-button__h-wrap">
-                  <h2 class="u-h2-big">Cases</h2>
-                </div>
                 <div class="BlockButton-module__44lcOa__block-button__sec">
                   <div class="page-module__ZDaQEq__s3__cases"><a class="CaseCard-module__iyTA2W__case-card"
                       href="#contact">
