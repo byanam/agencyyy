@@ -771,7 +771,7 @@
     }
 
     /* =========================================================
-       BRAND LOGO CAROUSEL — EXPANDED SCALE, LOWER OPACITY & GOLD-TO-WHITE-TO-GRAY TRANSITION
+       BRAND LOGO CAROUSEL — BLAND TRANSPARENT BACKGROUND, EXPANDED SCALE & GRAYED-OUT LOGOS (GOLD -> WHITE -> GRAY)
        ========================================================= */
     .page-module__ZDaQEq__s2 {
       width: 100% !important;
@@ -780,6 +780,9 @@
       position: relative !important;
       z-index: 10 !important;
       overflow: hidden !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
     }
 
     .Carousel-module__nu5vFW__carousel {
@@ -790,31 +793,23 @@
       align-items: center !important;
       padding: clamp(35px, 4vw, 70px) 0 !important;
       background: transparent !important;
-      /* Edge alpha dissolve */
+      border: none !important;
+      box-shadow: none !important;
+      /* Edge alpha dissolve only at screen margins */
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
       mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
     }
 
-    /* Ambient atmospheric color wash from Gold -> White -> Gray across the carousel */
     .Carousel-module__nu5vFW__carousel::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, 
-        rgba(212, 175, 55, 0.20) 0%, 
-        rgba(225, 195, 110, 0.10) 25%, 
-        rgba(255, 255, 255, 0.12) 50%, 
-        rgba(175, 175, 185, 0.10) 75%, 
-        rgba(130, 130, 140, 0.20) 100%
-      );
-      pointer-events: none;
-      z-index: 4;
+      display: none !important;
+      content: none !important;
     }
 
     .Carousel-module__nu5vFW__carousel__track {
       width: max-content !important;
       display: flex !important;
       align-items: center !important;
+      background: transparent !important;
       animation: Carousel-module__nu5vFW__carouselMarquee 42s linear infinite !important;
     }
 
@@ -827,9 +822,10 @@
       align-items: center !important;
       flex-shrink: 0 !important;
       width: max-content !important;
+      background: transparent !important;
     }
 
-    /* Way bigger logo items with lowered, refined luxury editorial opacity */
+    /* Way bigger logo items with muted, grayed-out / lowered opacity against bland page background */
     .Carousel-module__nu5vFW__carousel__item {
       aspect-ratio: auto !important;
       flex-shrink: 0 !important;
@@ -839,36 +835,40 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      opacity: 0.22 !important; /* Low, elegant opacity as requested */
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      opacity: 0.28 !important; /* Grayed-out / lowered opacity */
       transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
       cursor: pointer !important;
     }
 
     .Carousel-module__nu5vFW__carousel__item:hover {
-      opacity: 0.88 !important;
+      opacity: 0.85 !important;
       transform: scale(1.06) !important;
     }
 
-    /* Dramatically scaled up SVG vector artwork */
+    /* Dramatically scaled up SVG vector artwork with NO drop-shadows or background artifacts */
     .Carousel-module__nu5vFW__carousel__item-image {
       object-fit: contain !important;
       width: 100% !important;
       height: 100% !important;
       max-width: none !important;
       max-height: none !important;
-      transform: scale(2.7) !important; /* Scaled up to bold, prominent brand mark presence */
+      background: transparent !important;
+      transform: scale(2.7) !important;
       transition: filter 0.45s ease, transform 0.45s ease !important;
     }
 
-    /* Seamless progression of brand colors from Gold to White to Gray */
+    /* Seamless progression of brand colors from Gold to White to Gray (Clean, crisp, no shadows) */
     /* 1. Gold Phase (ozon-fresh, x5, lavka) */
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 1) .Carousel-module__nu5vFW__carousel__item-image,
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 2) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(76%) sepia(50%) saturate(750%) hue-rotate(5deg) brightness(98%) contrast(92%) drop-shadow(0 0 16px rgba(212, 175, 55, 0.35)) !important;
+      filter: brightness(0) invert(76%) sepia(50%) saturate(750%) hue-rotate(5deg) brightness(98%) contrast(92%) !important;
     }
 
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 3) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(82%) sepia(35%) saturate(550%) hue-rotate(8deg) brightness(100%) contrast(94%) drop-shadow(0 0 14px rgba(225, 195, 110, 0.3)) !important;
+      filter: brightness(0) invert(82%) sepia(35%) saturate(550%) hue-rotate(8deg) brightness(100%) contrast(94%) !important;
     }
 
     /* 2. White Phase (phizer, bayer, amway, metro) */
@@ -876,17 +876,17 @@
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 5) .Carousel-module__nu5vFW__carousel__item-image,
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 6) .Carousel-module__nu5vFW__carousel__item-image,
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 7) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(1) contrast(1.15) drop-shadow(0 0 16px rgba(255, 255, 255, 0.35)) !important;
+      filter: brightness(1) !important;
     }
 
     /* 3. Gray Phase (yango, kuper, otello) */
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 8) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(70%) drop-shadow(0 0 12px rgba(175, 175, 185, 0.2)) !important;
+      filter: brightness(0) invert(70%) !important;
     }
 
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 9) .Carousel-module__nu5vFW__carousel__item-image,
     .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 10) .Carousel-module__nu5vFW__carousel__item-image {
-      filter: brightness(0) invert(52%) drop-shadow(0 0 10px rgba(130, 130, 140, 0.18)) !important;
+      filter: brightness(0) invert(52%) !important;
     }
 
     @media (max-width: 991px) {
