@@ -29,27 +29,24 @@
   <link rel="preload" href="/images/sakharov-space-cover.webp" as="image" />
   <link rel="preload" href="/fonts/SuisseIntl-Regular-WebM.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="/images/67446b8761145d75854e9ae3_Redis-main-logo.png" as="image" />
-  <title>Redis Agency — design support for major brands | Redis Agency</title>
+  <title>byanam — Digital Product &amp; Web Experience Agency</title>
   <meta name="description"
-    content="The ideal design partner for brands and corporations. Redis® Agency consists of five boutiques and a design factory with over 35 employees, including multidisciplinary art directors and managers, all under one roof." />
+    content="Designing high-converting digital products, interactive brand systems, and scalable web platforms for high-growth B2B, SaaS, and modern enterprises." />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://redis.agency/en" />
-  <link rel="alternate" hrefLang="x-default" href="https://redis.agency" />
-  <link rel="alternate" hrefLang="ru" href="https://redis.agency" />
-  <link rel="alternate" hrefLang="en" href="https://redis.agency/en" />
-  <meta property="og:title" content="Redis Agency — design support for major brands" />
+  <link rel="canonical" href="https://byanam.github.io/" />
+  <meta property="og:title" content="byanam — High-Performance Digital Design &amp; Web Engineering" />
   <meta property="og:description"
-    content="The ideal design partner for brands and corporations. Redis® Agency consists of five boutiques and a design factory with over 35 employees, including multidisciplinary art directors and managers, all under one roof." />
-  <meta property="og:url" content="https://redis.agency/en" />
+    content="Designing high-converting digital products, interactive brand systems, and scalable web platforms for high-growth B2B, SaaS, and modern enterprises." />
+  <meta property="og:url" content="https://byanam.github.io/" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Redis Agency — design support for major brands" />
+  <meta name="twitter:title" content="byanam — High-Performance Digital Design &amp; Web Engineering" />
   <meta name="twitter:description"
-    content="The ideal design partner for brands and corporations. Redis® Agency consists of five boutiques and a design factory with over 35 employees, including multidisciplinary art directors and managers, all under one roof." />
+    content="Designing high-converting digital products, interactive brand systems, and scalable web platforms for high-growth B2B, SaaS, and modern enterprises." />
   <link rel="icon" href="/favicon.ico?favicon.650258a0.ico" sizes="256x256" type="image/x-icon" />
   <script
-    type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://redis.agency/#organization","name":"Redis Agency","url":"https://redis.agency","description":"Redis Agency — дизайн-партнёр для брендов и корпораций: стратегия, айдентика, digital и дизайн-поддержка. Команда из 35+ человек, бутики и «дизайн-завод» под одной крышей; работа с крупными брендами в России и за рубежом.","logo":{"@type":"ImageObject","url":"https://redis.agency/images/67446b8761145d75854e9a60_team.webp"},"sameAs":["https://t.me/redisagency","https://dribbble.com/redis_agency","https://www.behance.net/Redis_CA"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer service","email":"hello@redis.agency"},{"@type":"ContactPoint","contactType":"HR","email":"join@redis.agency"}]},{"@type":"WebSite","@id":"https://redis.agency/#website","url":"https://redis.agency","name":"Redis Agency","description":"Redis Agency — дизайн-партнёр для брендов и корпораций: стратегия, айдентика, digital и дизайн-поддержка. Команда из 35+ человек, бутики и «дизайн-завод» под одной крышей; работа с крупными брендами в России и за рубежом.","inLanguage":"ru-RU","publisher":{"@id":"https://redis.agency/#organization"}}]}</script>
+    type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://byanam.github.io/#organization","name":"byanam Agency","url":"https://byanam.github.io/","description":"High-performance digital design agency engineering next-generation websites, UI/UX systems, and web applications.","sameAs":["https://github.com/byanam"],"contactPoint":[{"@type":"ContactPoint","contactType":"client inquiries","email":"hello@byanam.design"}]},{"@type":"WebSite","@id":"https://byanam.github.io/#website","url":"https://byanam.github.io/","name":"byanam Agency","description":"High-performance digital design agency engineering next-generation websites, UI/UX systems, and web applications.","inLanguage":"en-US","publisher":{"@id":"https://byanam.github.io/#organization"}}]}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -772,6 +769,142 @@
       box-shadow: none !important;
       transform: translateX(4px);
     }
+
+    /* =========================================================
+       BRAND LOGO CAROUSEL — EXPANDED SCALE, LOWER OPACITY & GOLD-TO-WHITE-TO-GRAY TRANSITION
+       ========================================================= */
+    .page-module__ZDaQEq__s2 {
+      width: 100% !important;
+      padding: clamp(50px, 6vw, 100px) 0 !important;
+      margin: 15px 0 !important;
+      position: relative !important;
+      z-index: 10 !important;
+      overflow: hidden !important;
+    }
+
+    .Carousel-module__nu5vFW__carousel {
+      width: 100% !important;
+      overflow: hidden !important;
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+      padding: clamp(35px, 4vw, 70px) 0 !important;
+      background: transparent !important;
+      /* Edge alpha dissolve */
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+      mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+    }
+
+    /* Ambient atmospheric color wash from Gold -> White -> Gray across the carousel */
+    .Carousel-module__nu5vFW__carousel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, 
+        rgba(212, 175, 55, 0.20) 0%, 
+        rgba(225, 195, 110, 0.10) 25%, 
+        rgba(255, 255, 255, 0.12) 50%, 
+        rgba(175, 175, 185, 0.10) 75%, 
+        rgba(130, 130, 140, 0.20) 100%
+      );
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .Carousel-module__nu5vFW__carousel__track {
+      width: max-content !important;
+      display: flex !important;
+      align-items: center !important;
+      animation: Carousel-module__nu5vFW__carouselMarquee 42s linear infinite !important;
+    }
+
+    .Carousel-module__nu5vFW__carousel:hover .Carousel-module__nu5vFW__carousel__track {
+      animation-play-state: paused !important;
+    }
+
+    .Carousel-module__nu5vFW__carousel__inner {
+      display: flex !important;
+      align-items: center !important;
+      flex-shrink: 0 !important;
+      width: max-content !important;
+    }
+
+    /* Way bigger logo items with lowered, refined luxury editorial opacity */
+    .Carousel-module__nu5vFW__carousel__item {
+      aspect-ratio: auto !important;
+      flex-shrink: 0 !important;
+      width: clamp(340px, 28vw, 500px) !important;
+      height: clamp(140px, 14vw, 220px) !important;
+      margin-right: clamp(60px, 6vw, 110px) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      opacity: 0.22 !important; /* Low, elegant opacity as requested */
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      cursor: pointer !important;
+    }
+
+    .Carousel-module__nu5vFW__carousel__item:hover {
+      opacity: 0.88 !important;
+      transform: scale(1.06) !important;
+    }
+
+    /* Dramatically scaled up SVG vector artwork */
+    .Carousel-module__nu5vFW__carousel__item-image {
+      object-fit: contain !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      transform: scale(2.7) !important; /* Scaled up to bold, prominent brand mark presence */
+      transition: filter 0.45s ease, transform 0.45s ease !important;
+    }
+
+    /* Seamless progression of brand colors from Gold to White to Gray */
+    /* 1. Gold Phase (ozon-fresh, x5, lavka) */
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 1) .Carousel-module__nu5vFW__carousel__item-image,
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 2) .Carousel-module__nu5vFW__carousel__item-image {
+      filter: brightness(0) invert(76%) sepia(50%) saturate(750%) hue-rotate(5deg) brightness(98%) contrast(92%) drop-shadow(0 0 16px rgba(212, 175, 55, 0.35)) !important;
+    }
+
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 3) .Carousel-module__nu5vFW__carousel__item-image {
+      filter: brightness(0) invert(82%) sepia(35%) saturate(550%) hue-rotate(8deg) brightness(100%) contrast(94%) drop-shadow(0 0 14px rgba(225, 195, 110, 0.3)) !important;
+    }
+
+    /* 2. White Phase (phizer, bayer, amway, metro) */
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 4) .Carousel-module__nu5vFW__carousel__item-image,
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 5) .Carousel-module__nu5vFW__carousel__item-image,
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 6) .Carousel-module__nu5vFW__carousel__item-image,
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 7) .Carousel-module__nu5vFW__carousel__item-image {
+      filter: brightness(1) contrast(1.15) drop-shadow(0 0 16px rgba(255, 255, 255, 0.35)) !important;
+    }
+
+    /* 3. Gray Phase (yango, kuper, otello) */
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 8) .Carousel-module__nu5vFW__carousel__item-image {
+      filter: brightness(0) invert(70%) drop-shadow(0 0 12px rgba(175, 175, 185, 0.2)) !important;
+    }
+
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 9) .Carousel-module__nu5vFW__carousel__item-image,
+    .Carousel-module__nu5vFW__carousel__item:nth-child(10n + 10) .Carousel-module__nu5vFW__carousel__item-image {
+      filter: brightness(0) invert(52%) drop-shadow(0 0 10px rgba(130, 130, 140, 0.18)) !important;
+    }
+
+    @media (max-width: 991px) {
+      .page-module__ZDaQEq__s2 {
+        padding: 40px 0 !important;
+      }
+      .Carousel-module__nu5vFW__carousel {
+        padding: 24px 0 !important;
+      }
+      .Carousel-module__nu5vFW__carousel__item {
+        width: 260px !important;
+        height: 110px !important;
+        margin-right: 40px !important;
+      }
+      .Carousel-module__nu5vFW__carousel__item-image {
+        transform: scale(2.2) !important;
+      }
+    }
   </style>
   <script src="/three.min.js"></script>
 </head>
@@ -805,7 +938,7 @@
         </svg></a>
       <div id="w-node-_925956f8-6977-bb95-19a3-0ab18d67ce1f-8d67ce14" class="Header-module__D5nTzG__links">
         <div data-popup="open" data-w-id="925956f8-6977-bb95-19a3-0ab18d67ce20" class="Header-module__D5nTzG__link">
-          <div class="u-p-normal">Send an Owl</div>
+          <div class="u-p-normal">Start a Project</div>
         </div>
         <div class="Header-module__D5nTzG__locales">
           <div role="list" class="Header-module__D5nTzG__list">
@@ -867,7 +1000,7 @@
             </svg></div>
         </div>
         <div id="w-node-abffb06b-8917-28c0-a2f5-648a9df309ca-8d67ce14" class="Header-module__D5nTzG__s1_wrap">
-          <div>REDIS</div>
+          <div>BYANAM</div>
         </div>
         <div id="w-node-_84063b4c-dbdc-56f6-1c42-308e7715fc90-8d67ce14" class="Header-module__D5nTzG__locales">
           <div role="list" class="Header-module__D5nTzG__list">
@@ -890,7 +1023,7 @@
       <div class="Header-module__D5nTzG__s3">
         <div class="Header-module__D5nTzG__s3-wrap"></div><a data-popup="open"
           data-w-id="925956f8-6977-bb95-19a3-0ab18d67ce44" href="#" class="Header-module__D5nTzG__link">
-          <div class="u-p-normal">Send an Owl</div>
+          <div class="u-p-normal">Start a Project</div>
         </a>
       </div>
     </div>
@@ -900,7 +1033,7 @@
       <div class="Preloader-module__Zghlvq__preloader">
         <div class="Preloader-module__Zghlvq__preloader__line"
           style="clip-path:inset(0 0 0% 0);opacity:1;transition:none"><span
-            style="font-size:1px;line-height:1;color:var(--white);user-select:none;pointer-events:none">Redis
+            style="font-size:1px;line-height:1;color:var(--white);user-select:none;pointer-events:none">byanam
             Agency</span></div>
         <div class="Preloader-module__Zghlvq__preloader__logo"
           style="top:50%;left:50%;transform:translate(-50%, -50%) scale(3);transition:none"><svg width="100%"
@@ -922,7 +1055,7 @@
               fill="white"></path>
           </svg></div>
         <p class="Preloader-module__Zghlvq__preloader__slogan" style="opacity:0;transition:opacity 0.4s ease">
-          дизайн-поддержка крупных брендов</p>
+          Digital Design &amp; Web Engineering</p>
         <div class="Preloader-module__Zghlvq__preloader__bg"></div>
       </div>
       <div data-rediska="container" class="Rediska-module__rS3Q1G__hn-rediska">
@@ -990,15 +1123,15 @@
                   <div class="figma-hero-pen-slot" id="hero-pen-slot"></div>
                   <div class="figma-hero-social-proof">
                     <div class="figma-hero-stat-block">
-                      <p class="figma-stat-text">Scaled Over 30<br />Companies</p>
+                      <p class="figma-stat-text">30+ Brands<br />Scaled</p>
                     </div>
                     <div class="figma-stat-divider"></div>
                     <div class="figma-hero-stat-block">
-                      <p class="figma-stat-text">Have Had A<br />Turnover Of 50+</p>
+                      <p class="figma-stat-text">50+ Shipped<br />Projects</p>
                     </div>
                     <div class="figma-stat-divider"></div>
                     <div class="figma-hero-stat-block">
-                      <p class="figma-stat-text">Helped Grow<br />10 Cr</p>
+                      <p class="figma-stat-text">10 Cr+ Client<br />Growth</p>
                     </div>
                   </div>
                 </div>
@@ -1007,12 +1140,10 @@
                 </div>
                 <div class="TextHeadingBlock-module__jHEe_W__s1__text-wrap">
                   <div class="TextHeadingBlock-module__jHEe_W__s1__sec-1">
-                    <h2 class="TextHeadingBlock-module__jHEe_W__title-big">Crafting high-converting websites &amp; SEO
-                      for B2B, SaaS, and startups</h2>
+                    <h2 class="TextHeadingBlock-module__jHEe_W__title-big">Building high-impact digital experiences &amp; scalable web platforms for ambitious brands</h2>
                   </div>
                   <div class="TextHeadingBlock-module__jHEe_W__s1__sec-2">
-                    <p class="u-p-big">For over 17 years, we’ve been helping marketing, HR, and brand teams deliver
-                      thousands of projects — fast and always on brand.</p>
+                    <p class="u-p-big">Partnering with high-growth SaaS, modern B2B leaders, and visionary startups to engineer digital products and websites that captivate, convert, and scale.</p>
                   </div>
                 </div>
               </div>
@@ -1177,18 +1308,18 @@
                             <div class="service-drawer-cards">
                               <div class="service-drawer-card">
                                 <div class="service-card-tag">Visual Exploration</div>
-                                <div class="service-card-title">Aesthetic Direction &amp; Style Guides</div>
+                                <div class="service-card-title">Aesthetic Direction &amp; Style Systems</div>
                                 <p class="service-card-desc">Establishing an unmistakable visual language that resonates
-                                  with your target audience and separates you from competitors.</p>
+                                  with your target audience and sets you apart in competitive markets.</p>
                               </div>
                               <div class="service-drawer-card">
                                 <div class="service-card-tag">Inspiration Architecture</div>
                                 <div class="service-card-title">Curated Moodboards &amp; Palettes</div>
                                 <p class="service-card-desc">Curating moodboards, textures, and bespoke visual
-                                  references to guide the entire digital design trajectory.</p>
+                                  references to guide the entire digital product trajectory.</p>
                               </div>
                             </div>
-                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Send an Owl &rarr;</a></div>
+                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Start a Project &rarr;</a></div>
                           </div>
                         </div>
                       </div>
@@ -1250,7 +1381,7 @@
                                   journeys before high-fidelity visual styling begins.</p>
                               </div>
                             </div>
-                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Send an Owl &rarr;</a></div>
+                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Start a Project &rarr;</a></div>
                           </div>
                         </div>
                       </div>
@@ -1260,11 +1391,11 @@
                         <div class="service-topic-line-glow"></div>
                       </div>
                     </div>
-                    <div id="design" class="service-topic-container" data-topic-name="UI &amp; Website Design">
+                    <div id="design" class="service-topic-container" data-topic-name="UI &amp; Digital Product Design">
                       <div class="TextColumn-module__OsnSpW__text-column">
                         <div class="TextColumn-module__OsnSpW__text-column__h service-topic-header-interactive"
                           data-topic="design">
-                          <h3 class="u-times-small">UI &amp; Bespoke Website Design</h3><span
+                          <h3 class="u-times-small">UI &amp; Digital Product Design</h3><span
                             class="service-topic-toggle-btn">+</span>
                         </div>
                         <ul class="TextColumn-module__OsnSpW__text-column__ul">
@@ -1272,8 +1403,8 @@
                             <div>
                               <p class="u-p-normal">—</p>
                             </div>
-                            <p class="u-p-normal">Pixel-perfect, modern UI design crafted for B2B, SaaS &amp; ambitious
-                              startups</p>
+                            <p class="u-p-normal">Pixel-perfect, modern UI design built for high-growth B2B, SaaS &amp; ambitious
+                              enterprises</p>
                           </li>
                           <li class="TextColumn-module__OsnSpW__text-column__li">
                             <div>
@@ -1293,7 +1424,7 @@
                         <div class="service-topic-drawer">
                           <div class="service-drawer-inner">
                             <div class="service-drawer-header"><span class="service-drawer-badge">Phase 03 ·
-                                High-Fidelity Craft</span>
+                                High-Fidelity Design</span>
                               <div class="service-drawer-tags"><span class="service-drawer-tag">UI Design</span><span
                                   class="service-drawer-tag">Design Systems</span><span
                                   class="service-drawer-tag">Micro-Interactions</span><span
@@ -1301,10 +1432,10 @@
                             </div>
                             <div class="service-drawer-cards">
                               <div class="service-drawer-card">
-                                <div class="service-card-tag">Bespoke Visual Excellence</div>
+                                <div class="service-card-tag">Interface Design</div>
                                 <div class="service-card-title">Award-Caliber Digital Interfaces</div>
-                                <p class="service-card-desc">Crafting stunning, high-converting interfaces with sleek
-                                  typography, harmonious palettes, and world-class polish.</p>
+                                <p class="service-card-desc">Designing high-converting, scalable interfaces with crisp
+                                  typography, harmonious palettes, and executive precision.</p>
                               </div>
                               <div class="service-drawer-card">
                                 <div class="service-card-tag">Design System Architecture</div>
@@ -1313,7 +1444,7 @@
                                   comprehensive style guides ready for seamless engineering.</p>
                               </div>
                             </div>
-                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Send an Owl &rarr;</a></div>
+                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Start a Project &rarr;</a></div>
                           </div>
                         </div>
                       </div>
@@ -1369,13 +1500,13 @@
                                   zero-jank digital storytelling that captivates every visitor.</p>
                               </div>
                               <div class="service-drawer-card">
-                                <div class="service-card-tag">Marketing Hubs</div>
-                                <div class="service-card-title">Webflow &amp; Headless CMS Builds</div>
+                                <div class="service-card-tag">Marketing Platforms</div>
+                                <div class="service-card-title">Modern CMS &amp; Headless Builds</div>
                                 <p class="service-card-desc">Lightning-fast, easily maintainable marketing platforms
                                   empowering your team to publish and scale without developer friction.</p>
                               </div>
                             </div>
-                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Send an Owl &rarr;</a></div>
+                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Start a Project &rarr;</a></div>
                           </div>
                         </div>
                       </div>
@@ -1412,7 +1543,7 @@
                               <p class="u-p-normal">—</p>
                             </div>
                             <p class="u-p-normal">99.99% uptime reliability, automated CI/CD pipelines &amp;
-                              zero-downtime releases</p>
+                            zero-downtime releases</p>
                           </li>
                         </ul>
                         <div class="service-topic-drawer">
@@ -1438,7 +1569,7 @@
                                   rollbacks, automated previews, and zero service interruption.</p>
                               </div>
                             </div>
-                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Send an Owl &rarr;</a></div>
+                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Start a Project &rarr;</a></div>
                           </div>
                         </div>
                       </div>
@@ -1501,7 +1632,7 @@
                                   search engine algorithms reward with top search placement.</p>
                               </div>
                             </div>
-                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Send an Owl &rarr;</a></div>
+                            <div class="service-drawer-footer"><a href="#contact" class="service-drawer-cta">Start a Project &rarr;</a></div>
                           </div>
                         </div>
                       </div>
@@ -1515,7 +1646,7 @@
                 </div>
                 <div class="BlockButton-module__44lcOa__block-button__btn">
                   <div class="Button-module__SBF53G__button-link"><button type="button" data-popup="open">
-                      <div class="u-p-normal">Send an Owl</div>
+                      <div class="u-p-normal">Start a Project</div>
                     </button></div>
                 </div>
               </div>
@@ -2150,9 +2281,9 @@
                 </div>
               </div>
             </div>
-            <div id="hello" class="Footer-module__JGhRua__footer"><a href="mailto:hello@redis.agency"
+            <div id="hello" class="Footer-module__JGhRua__footer"><a href="mailto:hello@byanam.design"
                 class="Footer-module__JGhRua__cta">
-                <div class="u-h1">hello@redis<br />.agency</div>
+                <div class="u-h1">hello@byanam<br />.design</div>
               </a>
               <div class="Footer-module__JGhRua__intro-s">
                 <div class="Footer-module__JGhRua__intro-s-top">
@@ -2175,13 +2306,13 @@
                     <div class="Footer-module__JGhRua__footer-f1-col1">
                       <div class="u-p-normal">Careers:</div><button type="button"
                         class="Footer-module__JGhRua__footer-f-link">
-                        <div class="u-p-normal copy-text">join@redis.agency</div>
+                        <div class="u-p-normal copy-text">join@byanam.design</div>
                       </button>
                     </div>
                     <div class="Footer-module__JGhRua__footer-f1-col2">
                       <div class="u-p-normal">Contacts:</div><button type="button"
                         class="Footer-module__JGhRua__footer-f-link">
-                        <div class="u-p-normal copy-text">hello@redis.agency</div>
+                        <div class="u-p-normal copy-text">hello@byanam.design</div>
                       </button>
                     </div>
                   </div>
@@ -2193,7 +2324,7 @@
                     <div class="u-p-normal">Privacy Policy</div>
                   </a>
                   <div class="Footer-module__JGhRua__end-s-p">
-                    <div class="u-p-normal">© 2026 Redis Agency</div>
+                    <div class="u-p-normal">© 2026 byanam Agency</div>
                   </div>
                 </div>
               </div>
