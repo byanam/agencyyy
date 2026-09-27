@@ -53,22 +53,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Geist:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
     rel="stylesheet">
   <style id="redis-custom-fixes">
-    /* === Unified Typography Hierarchy & Spacing System (Wizarding Editorial Prestige) === */
+    /* === Unified Typography Hierarchy & Spacing System (Modern Executive Neo-Grotesque) === */
     :root {
-      --font-display: 'Cinzel', serif;
-      --font-editorial: 'EB Garamond', Georgia, serif;
-      --font-body: 'Geist', 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
-      --color-parchment: #ede4d3;
-      --color-parchment-dim: #c5baa6;
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-editorial: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --color-parchment: #f4f4f6;
+      --color-parchment-dim: #a1a1aa;
       --color-gold-antique: #c5a059;
       --color-gold-deep: #8f6e2b;
       --bg: #0d0b0a;
-      --tracking-tight: 0.01em;
-      --tracking-snug: 0.02em;
-      --tracking-normal: 0em;
+      --tracking-display: -0.035em;
+      --tracking-heading: -0.025em;
+      --tracking-subheading: -0.015em;
+      --tracking-body: -0.011em;
+      --tracking-normal: -0.011em;
     }
 
     html,
@@ -81,6 +83,8 @@
     button {
       font-family: var(--font-body) !important;
       letter-spacing: var(--tracking-normal);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* LEVEL 1: Major Display & Section Headings */
@@ -91,9 +95,9 @@
     .TextHeadingBlock-module__jHEe_W__title-big {
       font-family: var(--font-display) !important;
       font-size: clamp(32px, 4.2vw, 64px) !important;
-      font-weight: 600 !important;
-      line-height: 1.05 !important;
-      letter-spacing: 0.02em !important;
+      font-weight: 700 !important;
+      line-height: 1.08 !important;
+      letter-spacing: var(--tracking-display) !important;
       color: var(--color-parchment) !important;
     }
 
@@ -107,9 +111,9 @@
     .CaseCard-module__iyTA2W__case-card__content-h h3 {
       font-family: var(--font-display) !important;
       font-size: clamp(20px, 2.2vw, 32px) !important;
-      font-weight: 500 !important;
-      line-height: 1.15 !important;
-      letter-spacing: 0.03em !important;
+      font-weight: 600 !important;
+      line-height: 1.2 !important;
+      letter-spacing: var(--tracking-heading) !important;
       color: var(--color-parchment) !important;
     }
 
@@ -120,8 +124,8 @@
       font-family: var(--font-display) !important;
       font-size: 15px !important;
       font-weight: 600 !important;
-      line-height: 1.3 !important;
-      letter-spacing: 0.04em !important;
+      line-height: 1.35 !important;
+      letter-spacing: var(--tracking-subheading) !important;
       color: var(--color-parchment) !important;
     }
 
@@ -131,10 +135,11 @@
     p,
     .u-p-normal {
       font-family: var(--font-body) !important;
-      font-size: 20px !important;
-      line-height: 1.45 !important;
-      letter-spacing: var(--tracking-normal) !important;
-      color: rgba(237, 228, 211, 0.72) !important;
+      font-size: 19px !important;
+      font-weight: 400 !important;
+      line-height: 1.55 !important;
+      letter-spacing: var(--tracking-body) !important;
+      color: rgba(244, 244, 246, 0.76) !important;
     }
 
     @media (max-width: 991px) {
@@ -144,7 +149,7 @@
       p,
       .u-p-normal {
         font-size: 16px !important;
-        line-height: 1.45 !important;
+        line-height: 1.5 !important;
       }
     }
 
@@ -154,16 +159,19 @@
     .service-card-desc {
       font-family: var(--font-body) !important;
       font-size: 13px !important;
-      line-height: 1.5 !important;
-      letter-spacing: var(--tracking-normal) !important;
-      color: rgba(237, 228, 211, 0.6) !important;
+      font-weight: 400 !important;
+      line-height: 1.55 !important;
+      letter-spacing: var(--tracking-body) !important;
+      color: rgba(244, 244, 246, 0.62) !important;
     }
 
     /* Clean Unboxed Tags & Editorial Markers (NO LABEL BOXES) */
     .service-card-tag {
-      font-family: var(--font-editorial) !important;
-      font-style: italic !important;
-      font-size: 13px !important;
+      font-family: var(--font-display) !important;
+      font-style: normal !important;
+      font-weight: 600 !important;
+      font-size: 12px !important;
+      letter-spacing: 0.02em !important;
       color: var(--color-gold-antique) !important;
       background: transparent !important;
       border: none !important;
@@ -174,7 +182,8 @@
     .service-drawer-badge {
       font-family: var(--font-display) !important;
       font-size: 11px !important;
-      letter-spacing: 0.1em !important;
+      letter-spacing: 0.08em !important;
+      font-weight: 700 !important;
       text-transform: uppercase !important;
       color: var(--color-gold-antique) !important;
       background: transparent !important;
@@ -183,14 +192,15 @@
     }
 
     .service-drawer-tag {
-      font-family: var(--font-editorial) !important;
-      font-style: italic !important;
-      font-size: 13px !important;
+      font-family: var(--font-body) !important;
+      font-style: normal !important;
+      font-weight: 500 !important;
+      font-size: 12.5px !important;
       color: var(--color-parchment-dim) !important;
       background: transparent !important;
       border: none !important;
       padding: 0 !important;
-      letter-spacing: 0.02em !important;
+      letter-spacing: 0.01em !important;
     }
 
     .service-drawer-tag:not(:last-child)::after {
@@ -282,9 +292,9 @@
     .figma-stat-text {
       font-family: var(--font-display) !important;
       font-size: clamp(24px, 3.4vw, 56px) !important;
-      font-weight: 500 !important;
+      font-weight: 700 !important;
       line-height: 0.95 !important;
-      letter-spacing: 0.03em !important;
+      letter-spacing: var(--tracking-display) !important;
       color: #9c9080 !important;
       text-align: center !important;
       margin: 0 !important;
@@ -697,12 +707,13 @@
     }
 
     .service-card-tag {
-      font-family: var(--font-editorial);
-      font-style: italic;
-      font-size: 13px;
+      font-family: var(--font-display);
+      font-style: normal;
+      font-size: 12px;
+      letter-spacing: 0.02em;
       color: var(--color-gold-antique);
       margin-bottom: 4px;
-      font-weight: 400;
+      font-weight: 600;
       background: transparent;
       border: none;
       padding: 0;
@@ -715,14 +726,16 @@
       font-weight: 600;
       color: var(--color-parchment);
       margin-bottom: 6px;
-      line-height: 1.3;
-      letter-spacing: 0.02em;
+      line-height: 1.35;
+      letter-spacing: -0.015em;
     }
 
     .service-card-desc {
-      font-size: 12px;
-      color: rgba(237, 228, 211, 0.65);
-      line-height: 1.5;
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      color: rgba(244, 244, 246, 0.68);
+      line-height: 1.55;
+      letter-spacing: -0.01em;
       margin: 0;
     }
 
@@ -744,8 +757,8 @@
       color: var(--color-gold-antique);
       font-family: var(--font-display);
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-weight: 700;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       text-decoration: none;
       box-shadow: none !important;
