@@ -830,34 +830,36 @@
       pointer-events: none !important;
     }
 
-    /* Even bigger logo items — gigantic background watermark presence */
+    /* Cleanly spaced, prominent background watermark logo items */
     .Carousel-module__nu5vFW__carousel__item {
       aspect-ratio: auto !important;
       flex-shrink: 0 !important;
-      width: clamp(440px, 38vw, 680px) !important;
-      height: clamp(220px, 22vw, 360px) !important;
-      margin-right: clamp(80px, 8vw, 160px) !important;
+      flex-grow: 0 !important;
+      width: clamp(260px, 22vw, 380px) !important;
+      height: clamp(120px, 12vw, 180px) !important;
+      margin-right: clamp(80px, 7vw, 140px) !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
-      opacity: 0.16 !important; /* Low watermark opacity so it acts as subtle background backdrop */
+      opacity: 0.18 !important; /* Elegant watermark presence */
       pointer-events: none !important;
       cursor: default !important;
+      overflow: visible !important;
     }
 
-    /* Even bigger scaled up SVG vector artwork — completely grayed out, 100% non-colored */
+    /* Crisp SVG vector artwork — completely grayed out, perfectly contained with NO overlap */
     .Carousel-module__nu5vFW__carousel__item-image {
       object-fit: contain !important;
       width: 100% !important;
       height: 100% !important;
-      max-width: none !important;
-      max-height: none !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
       background: transparent !important;
-      transform: scale(3.6) !important; /* Truly gigantic vector scale */
-      filter: grayscale(100%) brightness(0.65) contrast(1) !important; /* All grayed out, absolutely no color */
+      transform: scale(1.35) !important; /* Scaled moderately to fill viewBox without spilling into neighbors */
+      filter: grayscale(100%) brightness(0.65) contrast(1) !important; /* Clean grayed out */
       pointer-events: none !important;
     }
 
@@ -892,12 +894,12 @@
         margin: 30px 0 10px 0 !important;
       }
       .Carousel-module__nu5vFW__carousel__item {
-        width: 280px !important;
-        height: 130px !important;
+        width: 180px !important;
+        height: 80px !important;
         margin-right: 40px !important;
       }
       .Carousel-module__nu5vFW__carousel__item-image {
-        transform: scale(2.6) !important;
+        transform: scale(1.2) !important;
       }
       .cases-carousel-heading-wrap .u-h2-big {
         font-size: clamp(48px, 12vw, 76px) !important;
