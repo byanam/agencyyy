@@ -771,12 +771,51 @@
     }
 
     /* =========================================================
-       BRAND LOGO CAROUSEL — GIGANTIC BACKGROUND WATERMARK WITH "CASES" CENTERED ON TOP
+       SHOWCASE SECTION — DEEP MIDNIGHT NAVY GRADIENT TRANSITION
+       ========================================================= */
+    .showcase-navy-section {
+      width: 100% !important;
+      position: relative !important;
+      z-index: 5 !important;
+      box-sizing: border-box !important;
+      /* Seamless gradient transition: Pitch Black (#0d0b0a) -> Deep Midnight Navy (#0B1122 -> #0F172A) -> Pitch Black (#0d0b0a) */
+      background: linear-gradient(
+        180deg,
+        #0d0b0a 0%,
+        #0a0e1c 140px,
+        #0b1226 240px,
+        #0f172a 400px,
+        #0f172a calc(100% - 320px),
+        #0b1226 calc(100% - 200px),
+        #0a0e1c calc(100% - 100px),
+        #0d0b0a 100%
+      ) !important;
+      padding: clamp(50px, 6vw, 100px) 0 clamp(80px, 9vw, 140px) 0 !important;
+      overflow: visible !important;
+    }
+
+    /* Ambient atmospheric radial glow in deep sapphire/navy behind watermark heading */
+    .showcase-navy-section::before {
+      content: "" !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 100% !important;
+      max-width: 1500px !important;
+      height: 850px !important;
+      background: radial-gradient(ellipse 80% 50% at 50% 18%, rgba(28, 56, 115, 0.45) 0%, transparent 75%) !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+    }
+
+    /* =========================================================
+       BRAND LOGO CAROUSEL — GIGANTIC BACKGROUND WATERMARK WITH HEADING CENTERED ON TOP
        ========================================================= */
     .page-module__ZDaQEq__s2 {
       width: 100% !important;
       min-height: clamp(320px, 32vw, 500px) !important;
-      margin: clamp(50px, 6vw, 100px) 0 clamp(20px, 3vw, 50px) 0 !important;
+      margin: 0 0 clamp(20px, 3vw, 50px) 0 !important;
       padding: 0 !important;
       position: relative !important;
       z-index: 5 !important;
@@ -1040,7 +1079,7 @@
       font-family: var(--font-body) !important;
       font-size: clamp(17.5px, 1.4vw, 22px) !important;
       line-height: 1.62 !important;
-      color: #505054 !important; /* A little more grayed-out secondary detail text */
+      color: #7A879E !important; /* Elegant grayed-out secondary detail text tuned for midnight navy */
       margin: 0 !important;
       transition: none !important;
     }
@@ -1319,7 +1358,9 @@
                   </div>
                 </div>
               </div>
-              <div id="works" class="page-module__ZDaQEq__s2">
+              <!-- Showcase Section with Midnight Navy Ambient Transition -->
+              <section id="works" class="showcase-navy-section">
+                <div class="page-module__ZDaQEq__s2">
                 <div class="Carousel-module__nu5vFW__carousel">
                   <div class="Carousel-module__nu5vFW__carousel__track">
                     <div class="Carousel-module__nu5vFW__carousel__inner">
@@ -1424,6 +1465,7 @@
                     </a></div>
                 </div>
               </div>
+            </section>
               <div id="services" class="BlockButton-module__44lcOa__block-button">
                 <div class="BlockButton-module__44lcOa__block-button__h-wrap">
                   <h2 class="u-h2-big">Services</h2>
