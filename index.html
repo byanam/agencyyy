@@ -1013,7 +1013,9 @@
     }
 
     .CaseCard-module__iyTA2W__case-card__content-h h3,
-    .CaseCard-module__iyTA2W__case-card__content-h .u-h3 {
+    .CaseCard-module__iyTA2W__case-card__content-h .u-h3,
+    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__content-h h3,
+    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__content-h .u-h3 {
       font-family: var(--font-display) !important;
       font-size: clamp(34px, 3.4vw, 52px) !important;
       font-weight: 700 !important;
@@ -1021,11 +1023,7 @@
       color: #FFFFFF !important;
       margin: 0 !important;
       line-height: 1.12 !important;
-      transition: color 0.3s ease !important;
-    }
-
-    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__content-h h3 {
-      color: var(--color-gold-antique, #d4af37) !important;
+      transition: none !important;
     }
 
     .CaseCard-module__iyTA2W__case-card__content-text {
@@ -1039,7 +1037,7 @@
       font-family: var(--font-body) !important;
       font-size: clamp(17.5px, 1.4vw, 22px) !important;
       line-height: 1.62 !important;
-      color: rgba(255, 255, 255, 0.76) !important;
+      color: #8E8E93 !important; /* Grayed-out detail text */
       margin: 0 !important;
     }
 
