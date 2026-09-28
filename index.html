@@ -905,6 +905,171 @@
         font-size: clamp(48px, 12vw, 76px) !important;
       }
     }
+
+    /* =========================================================
+       CASES SECTION — HORIZONTAL ROW LAYOUT (IMAGE LEFT, CONTENT RIGHT)
+       ========================================================= */
+    .BlockButton-module__44lcOa__block-button--margin-bottom {
+      width: 100% !important;
+      margin-bottom: clamp(60px, 8vw, 120px) !important;
+    }
+
+    .BlockButton-module__44lcOa__block-button__sec {
+      width: 100% !important;
+      max-width: 1240px !important;
+      margin: 0 auto !important;
+      padding: 0 clamp(20px, 3.5vw, 48px) !important;
+      box-sizing: border-box !important;
+    }
+
+    .page-module__ZDaQEq__s3__cases {
+      width: 100% !important;
+      max-width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: clamp(40px, 5vw, 72px) !important;
+      margin: 0 auto !important;
+    }
+
+    /* Individual Case Card: Horizontal Line by Line */
+    .CaseCard-module__iyTA2W__case-card {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: clamp(28px, 4vw, 64px) !important;
+      width: 100% !important;
+      text-decoration: none !important;
+      padding: clamp(20px, 2.5vw, 36px) !important;
+      border-radius: 28px !important;
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 1px solid rgba(255, 255, 255, 0.07) !important;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      box-sizing: border-box !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card:hover {
+      background: rgba(255, 255, 255, 0.045) !important;
+      border-color: rgba(212, 175, 55, 0.35) !important;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    /* Left Side: Image of Website */
+    .CaseCard-module__iyTA2W__case-card__img,
+    .CaseCard-module__iyTA2W__case-card__img_large {
+      flex: 0 0 54% !important;
+      width: 54% !important;
+      height: clamp(260px, 25vw, 400px) !important;
+      border-radius: 20px !important;
+      overflow: hidden !important;
+      position: relative !important;
+      background: #141416 !important;
+      margin: 0 !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card__img img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center top !important;
+      display: block !important;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__img img {
+      transform: scale(1.04) !important;
+    }
+
+    /* Right Side: Title & Description */
+    .CaseCard-module__iyTA2W__case-card__content {
+      flex: 1 1 46% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: center !important;
+      text-align: left !important;
+      gap: clamp(14px, 1.4vw, 22px) !important;
+      padding: clamp(10px, 1.5vw, 24px) 0 !important;
+      margin: 0 !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card__content-h {
+      text-align: left !important;
+      width: 100% !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card__content-h h3,
+    .CaseCard-module__iyTA2W__case-card__content-h .u-h3 {
+      font-family: var(--font-display) !important;
+      font-size: clamp(28px, 2.6vw, 42px) !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.03em !important;
+      color: #FFFFFF !important;
+      margin: 0 !important;
+      line-height: 1.15 !important;
+      transition: color 0.3s ease !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__content-h h3 {
+      color: var(--color-gold-antique, #d4af37) !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card__content-text {
+      text-align: left !important;
+      max-width: 520px !important;
+      width: 100% !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card__content-text p,
+    .CaseCard-module__iyTA2W__case-card__content-text .u-p-normal {
+      font-family: var(--font-body) !important;
+      font-size: clamp(15px, 1.15vw, 17.5px) !important;
+      line-height: 1.6 !important;
+      color: rgba(255, 255, 255, 0.72) !important;
+      margin: 0 !important;
+    }
+
+    /* "Explore Project" Micro-CTA */
+    .CaseCard-module__iyTA2W__case-card__content::after {
+      content: 'Explore Project →';
+      font-family: var(--font-display) !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      color: var(--color-gold-antique, #d4af37) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      margin-top: 8px !important;
+      transition: transform 0.3s ease, color 0.3s ease !important;
+    }
+
+    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__content::after {
+      transform: translateX(6px) !important;
+      color: #FFFFFF !important;
+    }
+
+    /* Mobile / Tablet Responsive Fallback */
+    @media (max-width: 860px) {
+      .CaseCard-module__iyTA2W__case-card {
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 18px !important;
+      }
+      .CaseCard-module__iyTA2W__case-card__img,
+      .CaseCard-module__iyTA2W__case-card__img_large {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        height: clamp(210px, 52vw, 300px) !important;
+      }
+      .CaseCard-module__iyTA2W__case-card__content {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        padding: 4px 0 8px 0 !important;
+      }
+    }
   </style>
   <script src="/three.min.js"></script>
 </head>
