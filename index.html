@@ -907,11 +907,13 @@
     }
 
     /* =========================================================
-       CASES SECTION — HORIZONTAL ROW LAYOUT (IMAGE LEFT, CONTENT RIGHT)
+       CASES SECTION — CLEAN HORIZONTAL ROW LAYOUT (PURE BLACK BACKGROUND, NO BOXES/LABELS)
        ========================================================= */
     .BlockButton-module__44lcOa__block-button--margin-bottom {
       width: 100% !important;
       margin-bottom: clamp(60px, 8vw, 120px) !important;
+      background: transparent !important;
+      border: none !important;
     }
 
     .BlockButton-module__44lcOa__block-button__sec {
@@ -920,6 +922,8 @@
       margin: 0 auto !important;
       padding: 0 clamp(20px, 3.5vw, 48px) !important;
       box-sizing: border-box !important;
+      background: transparent !important;
+      border: none !important;
     }
 
     .page-module__ZDaQEq__s3__cases {
@@ -927,44 +931,50 @@
       max-width: 100% !important;
       display: flex !important;
       flex-direction: column !important;
-      gap: clamp(40px, 5vw, 72px) !important;
+      gap: clamp(50px, 6vw, 90px) !important;
       margin: 0 auto !important;
+      background: transparent !important;
+      border: none !important;
     }
 
-    /* Individual Case Card: Horizontal Line by Line */
+    /* Individual Case Row: Picture on Left, Title & Details on Right. NO card box, NO border, pure black background */
     .CaseCard-module__iyTA2W__case-card {
       display: flex !important;
       flex-direction: row !important;
       align-items: center !important;
       justify-content: space-between !important;
-      gap: clamp(28px, 4vw, 64px) !important;
+      gap: clamp(32px, 4.5vw, 72px) !important;
       width: 100% !important;
       text-decoration: none !important;
-      padding: clamp(20px, 2.5vw, 36px) !important;
-      border-radius: 28px !important;
-      background: rgba(255, 255, 255, 0.02) !important;
-      border: 1px solid rgba(255, 255, 255, 0.07) !important;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      transform: none !important;
       box-sizing: border-box !important;
     }
 
     .CaseCard-module__iyTA2W__case-card:hover {
-      background: rgba(255, 255, 255, 0.045) !important;
-      border-color: rgba(212, 175, 55, 0.35) !important;
-      transform: translateY(-4px) !important;
-      box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.8) !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      transform: none !important;
     }
 
-    /* Left Side: Image of Website */
+    /* Left Side: Image of the website */
     .CaseCard-module__iyTA2W__case-card__img,
     .CaseCard-module__iyTA2W__case-card__img_large {
-      flex: 0 0 54% !important;
-      width: 54% !important;
-      height: clamp(260px, 25vw, 400px) !important;
-      border-radius: 20px !important;
+      flex: 0 0 55% !important;
+      width: 55% !important;
+      height: clamp(260px, 26vw, 420px) !important;
+      border-radius: 16px !important;
       overflow: hidden !important;
       position: relative !important;
-      background: #141416 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
       margin: 0 !important;
     }
 
@@ -974,24 +984,26 @@
       object-fit: cover !important;
       object-position: center top !important;
       display: block !important;
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      transition: transform 0.5s ease !important;
     }
 
     .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__img img {
-      transform: scale(1.04) !important;
+      transform: scale(1.03) !important;
     }
 
-    /* Right Side: Title & Description */
+    /* Right Side: Title and Details */
     .CaseCard-module__iyTA2W__case-card__content {
-      flex: 1 1 46% !important;
+      flex: 1 1 45% !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: flex-start !important;
       justify-content: center !important;
       text-align: left !important;
-      gap: clamp(14px, 1.4vw, 22px) !important;
-      padding: clamp(10px, 1.5vw, 24px) 0 !important;
+      gap: clamp(12px, 1.4vw, 18px) !important;
+      padding: 0 !important;
       margin: 0 !important;
+      background: transparent !important;
+      border: none !important;
     }
 
     .CaseCard-module__iyTA2W__case-card__content-h {
@@ -1002,7 +1014,7 @@
     .CaseCard-module__iyTA2W__case-card__content-h h3,
     .CaseCard-module__iyTA2W__case-card__content-h .u-h3 {
       font-family: var(--font-display) !important;
-      font-size: clamp(28px, 2.6vw, 42px) !important;
+      font-size: clamp(28px, 2.8vw, 44px) !important;
       font-weight: 700 !important;
       letter-spacing: -0.03em !important;
       color: #FFFFFF !important;
@@ -1026,29 +1038,14 @@
       font-family: var(--font-body) !important;
       font-size: clamp(15px, 1.15vw, 17.5px) !important;
       line-height: 1.6 !important;
-      color: rgba(255, 255, 255, 0.72) !important;
+      color: rgba(255, 255, 255, 0.7) !important;
       margin: 0 !important;
     }
 
-    /* "Explore Project" Micro-CTA */
+    /* Absolutely NO added tabs, labels, or micro-CTAs */
     .CaseCard-module__iyTA2W__case-card__content::after {
-      content: 'Explore Project →';
-      font-family: var(--font-display) !important;
-      font-size: 13px !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.08em !important;
-      text-transform: uppercase !important;
-      color: var(--color-gold-antique, #d4af37) !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 6px !important;
-      margin-top: 8px !important;
-      transition: transform 0.3s ease, color 0.3s ease !important;
-    }
-
-    .CaseCard-module__iyTA2W__case-card:hover .CaseCard-module__iyTA2W__case-card__content::after {
-      transform: translateX(6px) !important;
-      color: #FFFFFF !important;
+      content: none !important;
+      display: none !important;
     }
 
     /* Mobile / Tablet Responsive Fallback */
@@ -1056,7 +1053,7 @@
       .CaseCard-module__iyTA2W__case-card {
         flex-direction: column !important;
         gap: 20px !important;
-        padding: 18px !important;
+        padding: 0 !important;
       }
       .CaseCard-module__iyTA2W__case-card__img,
       .CaseCard-module__iyTA2W__case-card__img_large {
@@ -1067,7 +1064,7 @@
       .CaseCard-module__iyTA2W__case-card__content {
         width: 100% !important;
         flex: 0 0 100% !important;
-        padding: 4px 0 8px 0 !important;
+        padding: 0 !important;
       }
     }
   </style>
