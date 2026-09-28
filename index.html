@@ -1043,6 +1043,11 @@
       margin: 0 !important;
     }
 
+    /* Alternating Middle Case (Unbrief): Picture on Right, Title & Details on Left */
+    .page-module__ZDaQEq__s3__cases > .CaseCard-module__iyTA2W__case-card:nth-child(2) {
+      flex-direction: row-reverse !important;
+    }
+
     /* Absolutely NO added tabs, labels, or micro-CTAs */
     .CaseCard-module__iyTA2W__case-card__content::after {
       content: none !important;
@@ -1051,7 +1056,8 @@
 
     /* Mobile / Tablet Responsive Fallback */
     @media (max-width: 860px) {
-      .CaseCard-module__iyTA2W__case-card {
+      .CaseCard-module__iyTA2W__case-card,
+      .page-module__ZDaQEq__s3__cases > .CaseCard-module__iyTA2W__case-card:nth-child(2) {
         flex-direction: column !important;
         gap: 20px !important;
         padding: 0 !important;
