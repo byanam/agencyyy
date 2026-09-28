@@ -771,42 +771,22 @@
     }
 
     /* =========================================================
-       "SOME OF WHAT WE'VE BEEN MAKING" — DEEP MIDNIGHT NAVY GRADIENT TRANSITION
+       BRAND LOGO CAROUSEL — GIGANTIC BACKGROUND WATERMARK WITH "CASES" CENTERED ON TOP
        ========================================================= */
     .page-module__ZDaQEq__s2 {
       width: 100% !important;
-      min-height: clamp(420px, 42vw, 600px) !important;
-      margin: clamp(40px, 5vw, 80px) 0 clamp(60px, 7vw, 100px) 0 !important;
-      padding: clamp(60px, 7vw, 110px) 0 !important;
-      box-sizing: border-box !important;
+      min-height: clamp(320px, 32vw, 500px) !important;
+      margin: clamp(50px, 6vw, 100px) 0 clamp(20px, 3vw, 50px) 0 !important;
+      padding: 0 !important;
       position: relative !important;
       z-index: 5 !important;
       overflow: hidden !important;
-      /* Seamless transition: Pitch Black (#0d0b0a) -> Deep Midnight Navy (#091126 -> #101E42) -> Pitch Black (#0d0b0a) */
-      background: linear-gradient(
-        180deg,
-        #0d0b0a 0%,
-        #091126 15%,
-        #101e42 45%,
-        #101e42 55%,
-        #091126 85%,
-        #0d0b0a 100%
-      ) !important;
+      background: transparent !important;
       border: none !important;
       box-shadow: none !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-    }
-
-    /* Ambient atmospheric radial glow in deep sapphire/navy behind watermark heading */
-    .page-module__ZDaQEq__s2::before {
-      content: "" !important;
-      position: absolute !important;
-      inset: 0 !important;
-      background: radial-gradient(ellipse 75% 55% at 50% 50%, rgba(32, 68, 145, 0.48) 0%, transparent 75%) !important;
-      pointer-events: none !important;
-      z-index: 0 !important;
     }
 
     .Carousel-module__nu5vFW__carousel {
@@ -951,6 +931,10 @@
       box-sizing: border-box !important;
       background: transparent !important;
       border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
 
     .page-module__ZDaQEq__s3__cases {
@@ -1108,6 +1092,178 @@
         width: 100% !important;
         flex: 0 0 100% !important;
         padding: 0 !important;
+      }
+    }
+
+    /* =========================================================
+       SERVICES SECTION — PERFECTLY CENTERED & BALANCED LAYOUT
+       ========================================================= */
+    #services {
+      width: 100% !important;
+      max-width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: clamp(70px, 8vw, 130px) auto !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      clear: both !important;
+    }
+
+    #services .BlockButton-module__44lcOa__block-button__h-wrap {
+      width: 100% !important;
+      max-width: 1240px !important;
+      margin: 0 auto clamp(40px, 5vw, 65px) auto !important;
+      padding: 0 clamp(20px, 3.5vw, 48px) !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+
+    #services .BlockButton-module__44lcOa__block-button__h-wrap .u-h2-big {
+      font-family: var(--font-serif) !important;
+      font-size: clamp(48px, 6.5vw, 92px) !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.035em !important;
+      color: #FFFFFF !important;
+      text-align: center !important;
+      margin: 0 auto !important;
+      line-height: 1.05 !important;
+    }
+
+    #services .BlockButton-module__44lcOa__block-button__sec {
+      width: 100% !important;
+      max-width: 1240px !important;
+      margin: 0 auto !important;
+      padding: 0 clamp(20px, 3.5vw, 48px) !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    #services .page-module__ZDaQEq__s4__services {
+      width: 100% !important;
+      max-width: 1100px !important;
+      margin: 0 auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      justify-content: center !important;
+      gap: clamp(24px, 3vw, 42px) !important;
+      box-sizing: border-box !important;
+      padding: 0 !important;
+    }
+
+    #services .service-topic-container {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 auto !important;
+      box-sizing: border-box !important;
+    }
+
+    #services .service-topic-line {
+      width: 100% !important;
+      height: 2px !important;
+      position: relative !important;
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      margin: 0 auto !important;
+      box-sizing: border-box !important;
+    }
+
+    #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column {
+      width: 100% !important;
+      max-width: 100% !important;
+      display: grid !important;
+      grid-template-columns: minmax(280px, 1fr) minmax(280px, 1.2fr) !important;
+      gap: clamp(24px, 3.5vw, 56px) !important;
+      padding: clamp(20px, 2.5vw, 36px) 0 0 !important;
+      box-sizing: border-box !important;
+      align-items: start !important;
+      margin: 0 auto !important;
+    }
+
+    #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column__h {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+
+    #services .service-topic-header-interactive {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      width: 100% !important;
+    }
+
+    #services .service-topic-header-interactive .u-times-small {
+      font-size: clamp(22px, 2.2vw, 32px) !important;
+      line-height: 1.15 !important;
+      margin: 0 !important;
+      letter-spacing: -0.02em !important;
+      flex: 1 1 auto !important;
+    }
+
+    #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column__ul {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding-left: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: clamp(10px, 1.2vw, 16px) !important;
+      justify-content: center !important;
+      list-style: none !important;
+    }
+
+    #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column__li {
+      display: flex !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+      color: #727278 !important;
+    }
+
+    #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column__li p,
+    #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column__li .u-p-normal {
+      font-size: clamp(14.5px, 1.15vw, 17px) !important;
+      line-height: 1.55 !important;
+      color: #727278 !important;
+      margin: 0 !important;
+    }
+
+    #services .service-topic-drawer {
+      grid-column: 1 / -1 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    #services .BlockButton-module__44lcOa__block-button__btn {
+      width: 100% !important;
+      max-width: 1240px !important;
+      margin: clamp(48px, 6vw, 80px) auto 0 auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+
+    @media (max-width: 991px) {
+      #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        padding-top: 18px !important;
+      }
+
+      #services .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column__ul {
+        padding-left: 0 !important;
       }
     }
   </style>
