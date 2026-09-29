@@ -224,20 +224,21 @@
       z-index: 5 !important;
     }
 
-    /* Atmospheric Black Thunder Clouds at Top of Hero Section */
+    /* Atmospheric Black Thunder Clouds with Natural Curved Bend at Top & Bottom */
     .hero-clouds-wrap {
       position: absolute !important;
       top: 0 !important;
       left: 50% !important;
       transform: translateX(-50%) !important;
       width: 100vw !important;
-      height: clamp(450px, 50vw, 800px) !important;
-      max-height: 85vh !important;
+      height: clamp(520px, 55vw, 860px) !important;
+      max-height: 88vh !important;
       overflow: hidden !important;
       pointer-events: none !important;
       z-index: 0 !important;
-      -webkit-mask-image: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.95) 35%, rgba(0, 0, 0, 0.45) 68%, rgba(0, 0, 0, 0) 100%) !important;
-      mask-image: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.95) 35%, rgba(0, 0, 0, 0.45) 68%, rgba(0, 0, 0, 0) 100%) !important;
+      border-radius: clamp(32px, 4vw, 64px) clamp(32px, 4vw, 64px) 0 0 !important;
+      -webkit-mask-image: radial-gradient(ellipse 100% 58% at 50% 52%, #000000 20%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0.45) 66%, rgba(0, 0, 0, 0.08) 84%, transparent 100%) !important;
+      mask-image: radial-gradient(ellipse 100% 58% at 50% 52%, #000000 20%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0.45) 66%, rgba(0, 0, 0, 0.08) 84%, transparent 100%) !important;
     }
 
     .hero-clouds-img {
@@ -246,6 +247,7 @@
       object-fit: cover !important;
       object-position: center top !important;
       display: block !important;
+      border-radius: inherit !important;
       filter: brightness(0.85) contrast(1.15) !important;
     }
 
