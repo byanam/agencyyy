@@ -3705,7 +3705,7 @@
         }
       }
 
-      // === 5. Hero & Site-Wide Hogwarts Thunderstorm & Atmospheric Rain Engine with Real Physical Deflection & Umbrella Effect ===
+      // === 5. Hero Hogwarts Thunderstorm & Atmospheric Rain Engine ===
       function initHeroThunderstorm() {
         var rainCanvas = document.getElementById('site-rain-canvas');
         if (!rainCanvas) return;
@@ -3715,8 +3715,7 @@
         var rainW = 0, rainH = 0;
         var raindrops = [];
         var splashes = [];
-        var drips = [];
-        var totalDrops = window.innerWidth < 900 ? 115 : 190;
+        var totalDrops = window.innerWidth < 900 ? 95 : 160;
         var lightningLevel = 0;
         var lightningTarget = 0;
 
@@ -3730,8 +3729,8 @@
         window.addEventListener('resize', resizeRain);
         resizeRain();
 
-        // Build Multi-Depth Rain Drops
-        function createDrop(initialScatter) {
+        // Build Multi-Depth Rain Drops (Spawn in Cloud Layer at Top)
+        function createDrop(initialScatter, maxSpawnY) {
           var tierRand = Math.random();
           var tier = 1;
           var spd, len, thickness, baseAlpha;
@@ -3760,7 +3759,8 @@
           }
 
           var windAngle = 0.17 + (Math.random() - 0.5) * 0.04;
-          var y = initialScatter ? (Math.random() * (rainH + 60) - 30) : (Math.random() * 80 - 60);
+          var limitY = maxSpawnY || rainH;
+          var y = initialScatter ? (Math.random() * (limitY + 40) - 40) : (Math.random() * 80 - 60);
           var x = Math.random() * (rainW + 280) - 140;
 
           return {
@@ -3776,7 +3776,7 @@
         }
 
         for (var i = 0; i < totalDrops; i++) {
-          raindrops.push(createDrop(true));
+          raindrops.push(createDrop(true, 700));
         }
 
         // Stochastic Hogwarts Thunderstorm Lightning Strike Sequencer
@@ -3789,7 +3789,6 @@
           var posX = Math.round(Math.random() * 54 + 23);
           var posY = Math.round(Math.random() * 22 + 16);
 
-          // Update all lightning overlays in both original and cloned wraps
           var overlays = document.querySelectorAll('.hero-lightning-flash');
           for (var o = 0; o < overlays.length; o++) {
             overlays[o].style.setProperty('--lightning-x', posX + '%');
@@ -3798,7 +3797,7 @@
 
           var strikeType = Math.random();
           if (strikeType < 0.62) {
-            // The Iconic Harry Potter Double Strike
+            // Iconic Harry Potter Double Strike
             lightningTarget = Math.random() * 0.3 + 0.70;
             setTimeout(function () {
               lightningTarget = 0.15;
@@ -3834,7 +3833,7 @@
         }
 
         function scheduleNextLightning() {
-          var delay = Math.random() * 4200 + 3200; // 3.2s to 7.4s
+          var delay = Math.random() * 4200 + 3200;
           setTimeout(triggerLightningStrike, delay);
         }
 
@@ -3843,6 +3842,53 @@
         // 60fps Storm Render Loop
         function renderStorm() {
           requestAnimationFrame(renderStorm);
+
+          // Find active Hero section and corresponding tablet box
+          var heroes = document.querySelectorAll('.page-module__ZDaQEq__s1.figma-hero-s1');
+          var activeHero = null;
+          var activeHeroRect = null;
+
+          for (var h = 0; h < heroes.length; h++) {
+            var hr = heroes[h].getBoundingClientRect();
+            // Visible if hero is anywhere near screen
+            if (hr.bottom > -40 && hr.top < rainH + 40) {
+              activeHero = heroes[h];
+              activeHeroRect = hr;
+              break;
+            }
+          }
+
+          // If no hero section is on screen (user is in Services, Careers, Footer):
+          // Rain has stopped and completely disappeared into the darkness!
+          if (!activeHero || !activeHeroRect) {
+            rCtx.clearRect(0, 0, rainW, rainH);
+            return;
+          }
+
+          // Find tablet box corresponding to active hero
+          var activeBoxRect = null;
+          var parentWrap = activeHero.closest('[data-loop-scroll="wrap"]');
+          if (parentWrap) {
+            var activeBox = parentWrap.querySelector('.showcase-framed-box');
+            if (activeBox) {
+              activeBoxRect = activeBox.getBoundingClientRect();
+            }
+          }
+          if (!activeBoxRect) {
+            var allBoxes = document.querySelectorAll('.showcase-framed-box');
+            for (var b = 0; b < allBoxes.length; b++) {
+              var br = allBoxes[b].getBoundingClientRect();
+              if (br.top > activeHeroRect.top - 200 && br.top < activeHeroRect.bottom + 400) {
+                activeBoxRect = br;
+                break;
+              }
+            }
+          }
+
+          // The tablet threshold where rain hits, bounces off, and fades out into darkness
+          var tabletTop = activeBoxRect ? activeBoxRect.top : activeHeroRect.bottom;
+          var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.1);
+          var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
 
           // Smooth lerp lightning intensity
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
@@ -3862,195 +3908,79 @@
 
           var rainIllumination = lightningLevel * 0.65;
 
-          // Detect any visible showcase tablet boxes on screen (original + clone)
-          var showcaseBoxes = document.querySelectorAll('.showcase-framed-box');
-          var activeBoxes = [];
-          for (var b = 0; b < showcaseBoxes.length; b++) {
-            var rect = showcaseBoxes[b].getBoundingClientRect();
-            if (rect.bottom > -60 && rect.top < rainH + 60) {
-              activeBoxes.push(rect);
-            }
-          }
-
-          // Umbrella Drip Physics: water accumulated on the tablet frame occasionally drips from bottom rim/corners
-          for (var bIdx = 0; bIdx < activeBoxes.length; bIdx++) {
-            var bBox = activeBoxes[bIdx];
-            if (bBox.bottom >= 0 && bBox.bottom <= rainH && drips.length < 25 && Math.random() < 0.20) {
-              var dripX = Math.random() < 0.5 ?
-                (bBox.left + Math.random() * 32 + 6) :
-                (bBox.right - Math.random() * 32 - 6);
-              drips.push({
-                x: dripX,
-                y: bBox.bottom + 2,
-                vy: Math.random() * 1.0 + 1.2,
-                size: Math.random() * 0.5 + 1.3,
-                alpha: Math.random() * 0.25 + 0.60
-              });
-            }
-          }
-
           // Update & Render Raindrops
           for (var i = 0; i < raindrops.length; i++) {
             var d = raindrops[i];
-            var prevX = d.x;
             var prevY = d.y;
+            var prevX = d.x;
+
             var vx = Math.sin(d.windAngle) * d.spd;
             var vy = Math.cos(d.windAngle) * d.spd;
             d.x += vx;
             d.y += vy;
 
-            var collided = false;
+            // 1. Deflection & Bounce on the Tablet Top Rim
+            if (prevY <= tabletTop && d.y >= tabletTop) {
+              var tTop = (tabletTop - prevY) / (d.y - prevY);
+              var hitX = prevX + tTop * (d.x - prevX);
 
-            // Physical interaction with visible tablet boxes
-            for (var j = 0; j < activeBoxes.length; j++) {
-              var box = activeBoxes[j];
-              var tanTheta = Math.tan(d.windAngle);
-
-              // 1. TOP RIM COLLISION & UPWARD DEFLECTION
-              if (prevY <= box.top && d.y >= box.top) {
-                var tTop = (box.top - prevY) / (d.y - prevY);
-                var hitX = prevX + tTop * (d.x - prevX);
-                if (hitX >= box.left - 2 && hitX <= box.right + 2) {
-                  collided = true;
-                  // Upward deflection splashes bouncing off the top rim
-                  if (splashes.length < 75) {
-                    var count = d.tier === 2 ? 3 : (d.tier === 1 ? 2 : 1);
-                    for (var k = 0; k < count; k++) {
-                      splashes.push({
-                        x: hitX + (Math.random() - 0.5) * 4,
-                        y: box.top - Math.random() * 2,
-                        vx: vx * 0.35 + (Math.random() - 0.5) * 2.8,
-                        vy: -(Math.random() * 2.8 + 1.2), // bouncing upward
-                        size: Math.random() * 0.65 + 0.65,
-                        alpha: Math.min(0.85, d.baseAlpha * 1.8 + rainIllumination * 0.5),
-                        life: 1.0,
-                        decay: Math.random() * 0.08 + 0.08,
-                        gravity: 0.28
-                      });
-                    }
+              // If hitting the tablet top surface:
+              if (hitX >= tabletLeft - 4 && hitX <= tabletRight + 4) {
+                // Tactile micro-splashes bouncing upward off the top rim
+                if (splashes.length < 65) {
+                  var count = d.tier === 2 ? 3 : (d.tier === 1 ? 2 : 1);
+                  for (var k = 0; k < count; k++) {
+                    splashes.push({
+                      x: hitX + (Math.random() - 0.5) * 4,
+                      y: tabletTop - Math.random() * 2,
+                      vx: vx * 0.35 + (Math.random() - 0.5) * 2.8,
+                      vy: -(Math.random() * 2.8 + 1.2), // bouncing upward into the air
+                      size: Math.random() * 0.65 + 0.65,
+                      alpha: Math.min(0.85, d.baseAlpha * 1.8 + rainIllumination * 0.5),
+                      life: 1.0,
+                      decay: Math.random() * 0.08 + 0.08,
+                      gravity: 0.28
+                    });
                   }
-                  // Reset drop above screen
-                  d.y = Math.random() * 70 - 50;
-                  d.x = Math.random() * (rainW + 280) - 140;
-                  break;
                 }
               }
 
-              // 2. LEFT SIDE WALL COLLISION & OUTWARD DEFLECTION (Windward Lateral Impact)
-              if (prevX <= box.left && d.x >= box.left) {
-                var tLeft = (box.left - prevX) / (d.x - prevX);
-                var hitY = prevY + tLeft * (d.y - prevY);
-                if (hitY >= box.top && hitY <= box.bottom) {
-                  collided = true;
-                  // Lateral deflection spray bouncing off the left wall to the left!
-                  if (splashes.length < 75) {
-                    var countL = d.tier === 2 ? 3 : 2;
-                    for (var kL = 0; kL < countL; kL++) {
-                      splashes.push({
-                        x: box.left - Math.random() * 3,
-                        y: hitY + (Math.random() - 0.5) * 6,
-                        vx: -(Math.random() * 2.8 + 1.4), // bouncing leftward away from wall
-                        vy: (Math.random() - 0.3) * 2.2, // downward/outward spray
-                        size: Math.random() * 0.7 + 0.65,
-                        alpha: Math.min(0.85, d.baseAlpha * 1.8 + rainIllumination * 0.5),
-                        life: 1.0,
-                        decay: Math.random() * 0.09 + 0.08,
-                        gravity: 0.22
-                      });
-                    }
-                  }
-                  // Reset drop above screen
-                  d.y = Math.random() * 70 - 50;
-                  d.x = Math.random() * (rainW + 280) - 140;
-                  break;
-                }
-              }
-
-              // 3. RIGHT SIDE WALL COLLISION & OUTWARD DEFLECTION
-              if (prevX <= box.right + 4 && d.x >= box.right - 2 && d.y >= box.top && d.y <= box.bottom) {
-                if (Math.abs(d.x - box.right) < 6) {
-                  collided = true;
-                  // Lateral deflection spray bouncing off right wall to the right!
-                  if (splashes.length < 75) {
-                    for (var kR = 0; kR < 2; kR++) {
-                      splashes.push({
-                        x: box.right + Math.random() * 3,
-                        y: d.y + (Math.random() - 0.5) * 6,
-                        vx: +(Math.random() * 2.6 + 1.2), // bouncing rightward away from wall
-                        vy: (Math.random() - 0.3) * 2.2,
-                        size: Math.random() * 0.65 + 0.6,
-                        alpha: Math.min(0.8, d.baseAlpha * 1.8 + rainIllumination * 0.5),
-                        life: 1.0,
-                        decay: Math.random() * 0.09 + 0.08,
-                        gravity: 0.22
-                      });
-                    }
-                  }
-                  d.y = Math.random() * 70 - 50;
-                  d.x = Math.random() * (rainW + 280) - 140;
-                  break;
-                }
-              }
-
-              // 4. INSIDE TABLET INTERIOR: Completely excluded
-              if (d.x >= box.left && d.x <= box.right && d.y >= box.top && d.y <= box.bottom) {
-                collided = true;
-                d.y = Math.random() * 70 - 50;
-                d.x = Math.random() * (rainW + 280) - 140;
-                break;
-              }
-
-              // 5. UMBRELLA EFFECT (RAIN SHADOW) DIRECTLY UNDERNEATH TABLET
-              // Solid tablet blocks all rain hitting from above along wind angle theta
-              if (d.y > box.bottom) {
-                var shadowLeft = box.left + (d.y - box.top) * tanTheta;
-                var shadowRight = box.right + (d.y - box.top) * tanTheta;
-
-                // Inside the umbrella shadow cone -> 100% dry, no rain can exist!
-                if (d.x >= shadowLeft && d.x <= shadowRight) {
-                  collided = true;
-                  // Drop is blocked by the umbrella above; reset above screen outside shadow
-                  d.y = Math.random() * 70 - 50;
-                  d.x = Math.random() * (rainW + 280) - 140;
-                  break;
-                }
-              }
-            }
-
-            if (collided) {
+              // After hitting/reaching the tablet threshold, rain fades out and disappears into darkness!
+              // Respawn back at the storm clouds at the top of the hero
+              d.y = Math.random() * 70 - 50;
+              d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
-            // Reset when reaching bottom of screen or drifting off right
-            if (d.y > rainH + 15 || d.x > rainW + 90) {
-              if (d.tier >= 1 && splashes.length < 75 && Math.random() < 0.40) {
-                var count = d.tier === 2 ? 2 : 1;
-                for (var spK = 0; spK < count; spK++) {
-                  splashes.push({
-                    x: d.x,
-                    y: rainH - Math.random() * 4 - 2,
-                    vx: (Math.random() - 0.45) * 2.6 + Math.sin(d.windAngle) * 1.2,
-                    vy: -(Math.random() * 2.2 + 1.0),
-                    size: Math.random() * 0.65 + 0.65,
-                    alpha: Math.min(0.65, d.baseAlpha * 1.6 + rainIllumination * 0.4),
-                    life: 1.0,
-                    decay: Math.random() * 0.09 + 0.09,
-                    gravity: 0.28
-                  });
-                }
-              }
+            // If past tabletTop: never drawn, instantly reset! (Absolute cut-off into darkness)
+            if (d.y > tabletTop) {
+              d.y = Math.random() * 70 - 50;
+              d.x = Math.random() * (rainW + 280) - 140;
+              continue;
+            }
 
+            // Lateral Reset if drifting off right
+            if (d.x > rainW + 90) {
               d.y = Math.random() * 70 - 50;
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
-            var finalAlpha = d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46));
-            finalAlpha = Math.min(0.96, Math.max(0.04, finalAlpha));
+            // Fade out into darkness as drops approach the tablet section
+            var fadeZone = 200; // 200px fade transition into the dark
+            var distToTablet = tabletTop - d.y;
+            var darknessFade = 1.0;
+            if (distToTablet < fadeZone) {
+              // Smoothly taper opacity into the dark, maintaining visibility for the top bounce
+              darknessFade = Math.max(0.2, distToTablet / fadeZone);
+            }
+
+            var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46))) * darknessFade;
+            finalAlpha = Math.min(0.96, Math.max(0.02, finalAlpha));
 
             var tailX = d.x - Math.sin(d.windAngle) * d.len;
             var tailY = d.y - Math.cos(d.windAngle) * d.len;
 
-            // Stark pure white motion-blurred gradient streak
+            // Stark pure white motion-blurred gradient streak fading into the darkness
             var grad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
             grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
             grad.addColorStop(0.55, 'rgba(255, 255, 255, ' + (finalAlpha * 0.45).toFixed(3) + ')');
@@ -4064,12 +3994,12 @@
             rCtx.stroke();
           }
 
-          // Update & Render Micro-Splashes
+          // Update & Render Micro-Splashes on the top rim
           for (var s = splashes.length - 1; s >= 0; s--) {
             var sp = splashes[s];
             sp.x += sp.vx;
             sp.y += sp.vy;
-            sp.vy += sp.gravity || 0.28; // gravity
+            sp.vy += sp.gravity || 0.28;
             sp.life -= sp.decay;
             if (sp.life <= 0) {
               splashes.splice(s, 1);
@@ -4078,21 +4008,6 @@
             rCtx.fillStyle = 'rgba(255, 255, 255, ' + (sp.alpha * sp.life).toFixed(3) + ')';
             rCtx.beginPath();
             rCtx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
-            rCtx.fill();
-          }
-
-          // Update & Render Umbrella Drips (slow heavy water droplets dripping off bottom rim of tablet)
-          for (var dr = drips.length - 1; dr >= 0; dr--) {
-            var dp = drips[dr];
-            dp.y += dp.vy;
-            dp.vy += 0.22; // gravity accelerating downward
-            if (dp.y > rainH + 10) {
-              drips.splice(dr, 1);
-              continue;
-            }
-            rCtx.fillStyle = 'rgba(255, 255, 255, ' + dp.alpha.toFixed(3) + ')';
-            rCtx.beginPath();
-            rCtx.arc(dp.x, dp.y, dp.size, 0, Math.PI * 2);
             rCtx.fill();
           }
         }
