@@ -3716,8 +3716,13 @@
         var raindrops = [];
         var splashes = [];
         var ripples = [];
-        var cascades = [];
-        var waterVolume = 8.0; // Initialized with a light natural pool
+        var sideDroplets = []; // Droplets trickling down the left and right tablet edges
+        var fallingDrops = []; // Free-falling droplets detaching from the bottom of the tablet
+        var waterVolume = 0.0; // Starts at ZERO: collects realistically as rain falls!
+        var waterCapacity = 36.0; // Surface tension retention capacity: water accumulates before spilling!
+        var bottomAccumLeft = 0.0; // Water gathered at bottom-left corner
+        var bottomAccumRight = 0.0; // Water gathered at bottom-right corner
+        var sideSpawnTimer = 0;
         var animTime = 0;
         var prevHero = null;
         var prevHeroTop = null;
@@ -3734,6 +3739,58 @@
 
         window.addEventListener('resize', resizeRain);
         resizeRain();
+
+        // Photorealistic Water Droplet Renderer (Wednesday / Apple liquid CGI aesthetics)
+        function drawPhotorealisticWaterDrop(ctx, x, y, r, vy, alpha, isHanging, stretch) {
+          if (alpha <= 0.02 || r <= 0.4) return;
+          ctx.save();
+          ctx.translate(x, y);
+
+          var s = stretch || (isHanging ? (1.0 + Math.sin(animTime * 6.5) * 0.12) : Math.min(2.4, 1.0 + Math.max(0, vy) * 0.07));
+          ctx.scale(1.0, s);
+
+          // 1. Refractive Water Body (Teardrop path with surface tension curvature)
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, Math.PI, false);
+          ctx.quadraticCurveTo(-r * 0.88, -r * 0.9, 0, -r * (isHanging ? 1.7 : 1.45));
+          ctx.quadraticCurveTo(r * 0.88, -r * 0.9, r, 0);
+          ctx.closePath();
+
+          // Translucent liquid refraction gradient
+          var bodyGrad = ctx.createRadialGradient(-r * 0.25, -r * 0.25, r * 0.1, 0, 0, r * 1.35);
+          bodyGrad.addColorStop(0, 'rgba(235, 248, 255, ' + (alpha * 0.50).toFixed(3) + ')');
+          bodyGrad.addColorStop(0.5, 'rgba(175, 220, 255, ' + (alpha * 0.24).toFixed(3) + ')');
+          bodyGrad.addColorStop(0.85, 'rgba(120, 185, 240, ' + (alpha * 0.38).toFixed(3) + ')');
+          bodyGrad.addColorStop(1, 'rgba(215, 242, 255, ' + (alpha * 0.70).toFixed(3) + ')');
+          ctx.fillStyle = bodyGrad;
+          ctx.fill();
+
+          // Liquid meniscus edge refraction border
+          ctx.strokeStyle = 'rgba(230, 248, 255, ' + (alpha * 0.75).toFixed(3) + ')';
+          ctx.lineWidth = Math.max(0.65, r * 0.16);
+          ctx.stroke();
+
+          // 2. Bottom Internal Caustic Lens Glow
+          ctx.beginPath();
+          ctx.arc(0, r * 0.35, r * 0.58, 0.25 * Math.PI, 0.75 * Math.PI, false);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (alpha * 0.65).toFixed(3) + ')';
+          ctx.lineWidth = Math.max(0.7, r * 0.26);
+          ctx.stroke();
+
+          // 3. Primary Specular Glint (Top-left curved highlight reflecting sky)
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + (alpha * 0.95).toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.ellipse(-r * 0.32, -r * 0.36, r * 0.26, r * 0.18, -Math.PI / 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 4. Pin-point specular core dot
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(-r * 0.32, -r * 0.36, Math.max(0.5, r * 0.1), 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+        }
 
         // Build Multi-Depth Photorealistic Rain Drops
         function createDrop(initialScatter, maxSpawnY) {
@@ -3857,7 +3914,6 @@
 
           for (var h = 0; h < heroes.length; h++) {
             var hr = heroes[h].getBoundingClientRect();
-            // Visible if hero is anywhere near screen
             if (hr.bottom > -40 && hr.top < rainH + 40) {
               activeHero = heroes[h];
               activeHeroRect = hr;
@@ -3866,7 +3922,6 @@
           }
 
           // If no hero section is on screen (user is in Services, Careers, Footer):
-          // Rain has stopped and completely disappeared into the darkness!
           if (!activeHero || !activeHeroRect) {
             rCtx.clearRect(0, 0, rainW, rainH);
             prevHero = null;
@@ -3874,7 +3929,7 @@
             return;
           }
 
-          // Compensate for camera motion during upward scrolling so rain doesn't slow down
+          // Compensate for camera motion during upward scrolling so rain maintains terminal velocity
           var scrollDeltaY = 0;
           if (prevHero === activeHero && prevHeroTop !== null) {
             scrollDeltaY = activeHeroRect.top - prevHeroTop;
@@ -3883,9 +3938,17 @@
           prevHero = activeHero;
           prevHeroTop = activeHeroRect.top;
 
-          // When user scrolls UP, the hero moves DOWN in viewport (scrollDeltaY > 0).
-          // Boost falling speed so drops maintain terminal velocity and never appear to slow down!
           var scrollBoost = Math.max(0, scrollDeltaY);
+
+          // Synchronize droplets attached to tablet frame with scroll delta
+          if (scrollDeltaY !== 0) {
+            for (var sd = 0; sd < sideDroplets.length; sd++) {
+              sideDroplets[sd].y += scrollDeltaY;
+            }
+            for (var fd = 0; fd < fallingDrops.length; fd++) {
+              fallingDrops[fd].y += scrollDeltaY;
+            }
+          }
 
           // Find tablet box corresponding to active hero
           var activeBoxRect = null;
@@ -3907,10 +3970,11 @@
             }
           }
 
-          // The tablet threshold where rain hits, accumulates, and fades out into darkness
           var tabletTop = activeBoxRect ? activeBoxRect.top : activeHeroRect.bottom;
+          var tabletBottom = activeBoxRect ? activeBoxRect.bottom : (tabletTop + 600);
           var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.1);
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
+          var cornerR = Math.min(32, Math.max(20, (tabletRight - tabletLeft) * 0.025));
 
           // Smooth lerp lightning intensity
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
@@ -3931,8 +3995,8 @@
           var rainIllumination = lightningLevel * 0.65;
           animTime += 0.04;
 
-          // Subtle natural drainage/settling of collected water
-          waterVolume = Math.max(0, waterVolume - 0.012);
+          // Subtle natural drainage/settling of collected water (evaporation & settling)
+          waterVolume = Math.max(0, waterVolume - 0.006);
 
           // Update & Render Photorealistic Raindrops
           for (var i = 0; i < raindrops.length; i++) {
@@ -3940,7 +4004,6 @@
             var prevY = d.y;
             var prevX = d.x;
 
-            // Organic fluid aerodynamic flutter
             d.phase += 0.09;
             var microFlutter = Math.sin(d.phase) * 0.32;
 
@@ -3958,10 +4021,10 @@
 
               // If hitting the tablet top surface:
               if (hitX >= tabletLeft - 8 && hitX <= tabletRight + 8) {
-                // Add to collected water pool!
-                var dropVol = d.tier === 2 ? 0.40 : (d.tier === 1 ? 0.22 : 0.08);
+                // Deposit realistic droplet volume into the pool!
+                var dropVol = d.tier === 2 ? 0.28 : (d.tier === 1 ? 0.14 : 0.05);
                 waterVolume += dropVol;
-                if (waterVolume > 28.0) waterVolume = 28.0;
+                if (waterVolume > 55.0) waterVolume = 55.0;
 
                 // Spawn expanding water surface ripples in the pool
                 if (ripples.length < 45) {
@@ -3978,14 +4041,14 @@
                 }
 
                 // Tactile micro-splashes bouncing upward off the collected water
-                if (splashes.length < 60) {
+                if (splashes.length < 50) {
                   var count = d.tier === 2 ? 3 : (d.tier === 1 ? 2 : 1);
                   for (var k = 0; k < count; k++) {
                     splashes.push({
                       x: hitX + (Math.random() - 0.5) * 5,
                       y: tabletTop - Math.random() * 2,
                       vx: vx * 0.22 + (Math.random() - 0.5) * 2.6,
-                      vy: -(Math.random() * 3.0 + 1.2), // bouncing upward into the air
+                      vy: -(Math.random() * 3.0 + 1.2),
                       size: Math.random() * 0.65 + 0.65,
                       alpha: Math.min(0.92, d.baseAlpha * 1.9 + rainIllumination * 0.5),
                       life: 1.0,
@@ -3996,28 +4059,27 @@
                 }
               }
 
-              // After hitting/reaching the tablet threshold, rain fades out and disappears into darkness!
-              // Respawn back at the storm clouds at the top of the hero
+              // After reaching the tablet threshold, rain fades out into darkness and resets to top clouds
               d.y = Math.random() * 70 - 50;
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
-            // If past tabletTop: never drawn, instantly reset! (Absolute cut-off into darkness)
+            // Cut-off past tabletTop into darkness
             if (d.y > tabletTop) {
               d.y = Math.random() * 70 - 50;
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
-            // Lateral Reset if drifting off right
+            // Lateral Reset
             if (d.x > rainW + 90) {
               d.y = Math.random() * 70 - 50;
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
-            // Fade out into darkness as drops approach the tablet section
-            var fadeZone = 200; // 200px fade transition into the dark
+            // Smooth fade out into darkness as drops approach the tablet
+            var fadeZone = 200;
             var distToTablet = tabletTop - d.y;
             var darknessFade = 1.0;
             if (distToTablet < fadeZone) {
@@ -4062,145 +4124,16 @@
             rCtx.lineTo(d.x, d.y);
             rCtx.stroke();
 
-            // Leading tear-drop specular bead
+            // Photorealistic leading droplet bead
             if (d.tier >= 1 && finalAlpha > 0.12) {
-              var beadR = d.thickness * (d.tier === 2 ? 0.82 : 0.62);
-              rCtx.fillStyle = 'rgba(255, 255, 255, ' + coreAlpha.toFixed(3) + ')';
-              rCtx.beginPath();
-              rCtx.arc(d.x, d.y, beadR, 0, Math.PI * 2);
-              rCtx.fill();
+              drawPhotorealisticWaterDrop(rCtx, d.x, d.y, d.thickness * (d.tier === 2 ? 0.95 : 0.75), vy, coreAlpha, false, 1.25);
             }
           }
 
-          // Overflow Cascades Logic (When too much water collects, it spills off to left & right)
-          var cornerR = Math.min(32, Math.max(20, (tabletRight - tabletLeft) * 0.025));
-          var poolHeight = Math.min(6.0, (waterVolume / 14.0) * 4.8);
+          // 2. Water Collection & Pool Depth along Tablet Top Rim
+          var poolHeight = Math.min(5.5, (waterVolume / waterCapacity) * 4.8);
 
-          if (waterVolume > 14.0) {
-            var overflow = waterVolume - 14.0;
-            var spillIntensity = Math.min(1.0, overflow / 8.0);
-            waterVolume -= overflow * 0.045; // Excess water continuously drains into the waterfalls
-
-            var spawnCount = Math.floor(spillIntensity * 2.8 + Math.random());
-            for (var sc = 0; sc < spawnCount; sc++) {
-              // Left corner cascade particle
-              if (cascades.length < 80) {
-                cascades.push({
-                  x: tabletLeft + Math.random() * 8 + 2,
-                  y: tabletTop + Math.random() * 3,
-                  vx: -(Math.random() * 1.8 + 1.1), // pouring outward to the left
-                  vy: Math.random() * 1.8 + 2.0,
-                  size: Math.random() * 1.1 + 0.85,
-                  len: Math.random() * 14 + 10,
-                  alpha: Math.random() * 0.25 + 0.55,
-                  fallDist: 0,
-                  maxFall: Math.random() * 75 + 75, // 75-150px fall before dissolving into darkness
-                  gravity: 0.32
-                });
-              }
-              // Right corner cascade particle
-              if (cascades.length < 80) {
-                cascades.push({
-                  x: tabletRight - Math.random() * 8 - 2,
-                  y: tabletTop + Math.random() * 3,
-                  vx: +(Math.random() * 1.8 + 1.1), // pouring outward to the right
-                  vy: Math.random() * 1.8 + 2.0,
-                  size: Math.random() * 1.1 + 0.85,
-                  len: Math.random() * 14 + 10,
-                  alpha: Math.random() * 0.25 + 0.55,
-                  fallDist: 0,
-                  maxFall: Math.random() * 75 + 75,
-                  gravity: 0.32
-                });
-              }
-            }
-
-            // Cascading Waterfall Stream Rivulets pouring over the rounded corners
-            var streamAlpha = Math.min(0.85, spillIntensity * 0.65 + rainIllumination * 0.3);
-
-            rCtx.save();
-            // Left Stream Rivulet
-            var leftStreamGrad = rCtx.createLinearGradient(
-              tabletLeft + cornerR * 0.5, tabletTop,
-              tabletLeft - 14, tabletTop + 75
-            );
-            leftStreamGrad.addColorStop(0, 'rgba(255, 255, 255, ' + streamAlpha.toFixed(3) + ')');
-            leftStreamGrad.addColorStop(0.3, 'rgba(215, 240, 255, ' + (streamAlpha * 0.75).toFixed(3) + ')');
-            leftStreamGrad.addColorStop(0.7, 'rgba(180, 225, 255, ' + (streamAlpha * 0.35).toFixed(3) + ')');
-            leftStreamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-            rCtx.strokeStyle = leftStreamGrad;
-            rCtx.lineWidth = 2.2;
-            rCtx.lineCap = 'round';
-            rCtx.beginPath();
-            rCtx.moveTo(tabletLeft + cornerR * 0.6, tabletTop - poolHeight * 0.5);
-            var cpx1 = tabletLeft - 4;
-            var cpy1 = tabletTop + 6;
-            var endX1 = tabletLeft - 10 + Math.sin(animTime * 6.0) * 2;
-            var endY1 = tabletTop + 65;
-            rCtx.quadraticCurveTo(cpx1, cpy1, endX1, endY1);
-            rCtx.stroke();
-
-            // Right Stream Rivulet
-            var rightStreamGrad = rCtx.createLinearGradient(
-              tabletRight - cornerR * 0.5, tabletTop,
-              tabletRight + 14, tabletTop + 75
-            );
-            rightStreamGrad.addColorStop(0, 'rgba(255, 255, 255, ' + streamAlpha.toFixed(3) + ')');
-            rightStreamGrad.addColorStop(0.3, 'rgba(215, 240, 255, ' + (streamAlpha * 0.75).toFixed(3) + ')');
-            rightStreamGrad.addColorStop(0.7, 'rgba(180, 225, 255, ' + (streamAlpha * 0.35).toFixed(3) + ')');
-            rightStreamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-            rCtx.strokeStyle = rightStreamGrad;
-            rCtx.lineWidth = 2.2;
-            rCtx.lineCap = 'round';
-            rCtx.beginPath();
-            rCtx.moveTo(tabletRight - cornerR * 0.6, tabletTop - poolHeight * 0.5);
-            var cpx2 = tabletRight + 4;
-            var cpy2 = tabletTop + 6;
-            var endX2 = tabletRight + 10 + Math.sin(animTime * 6.0 + 1.5) * 2;
-            var endY2 = tabletTop + 65;
-            rCtx.quadraticCurveTo(cpx2, cpy2, endX2, endY2);
-            rCtx.stroke();
-            rCtx.restore();
-          }
-
-          // Update & Render Cascade Particles
-          for (var cIdx = cascades.length - 1; cIdx >= 0; cIdx--) {
-            var cp = cascades[cIdx];
-            cp.x += cp.vx;
-            cp.y += cp.vy;
-            cp.vy += cp.gravity;
-            cp.vx *= 0.985;
-            cp.fallDist += cp.vy;
-
-            if (cp.fallDist >= cp.maxFall || cp.y > rainH) {
-              cascades.splice(cIdx, 1);
-              continue;
-            }
-
-            var fadeRatio = Math.max(0, 1 - (cp.fallDist / cp.maxFall));
-            var curAlpha = cp.alpha * fadeRatio * (1.0 + rainIllumination * 0.5);
-            if (curAlpha < 0.02) continue;
-
-            var cTailX = cp.x - cp.vx * 1.8;
-            var cTailY = cp.y - cp.vy * 1.8;
-
-            rCtx.strokeStyle = 'rgba(220, 242, 255, ' + curAlpha.toFixed(3) + ')';
-            rCtx.lineWidth = cp.size;
-            rCtx.beginPath();
-            rCtx.moveTo(cTailX, cTailY);
-            rCtx.lineTo(cp.x, cp.y);
-            rCtx.stroke();
-
-            rCtx.fillStyle = 'rgba(255, 255, 255, ' + Math.min(0.95, curAlpha * 1.4).toFixed(3) + ')';
-            rCtx.beginPath();
-            rCtx.arc(cp.x, cp.y, cp.size * 0.72, 0, Math.PI * 2);
-            rCtx.fill();
-          }
-
-          // Render Collected Water Film along Tablet Top Rim
-          if (poolHeight > 0.35) {
+          if (poolHeight > 0.3) {
             var rimLeft = tabletLeft + cornerR * 0.6;
             var rimRight = tabletRight - cornerR * 0.6;
             var rimWidth = rimRight - rimLeft;
@@ -4218,7 +4151,7 @@
               rCtx.moveTo(rimLeft, tabletTop);
               var step = Math.max(12, rimWidth / 48);
               for (var wx = rimLeft; wx <= rimRight; wx += step) {
-                var wave = Math.sin(wx * 0.025 + animTime * 3.2) * 0.75 + Math.cos(wx * 0.06 - animTime * 2.1) * 0.4;
+                var wave = Math.sin(wx * 0.025 + animTime * 3.2) * 0.65 + Math.cos(wx * 0.06 - animTime * 2.1) * 0.35;
                 var curY = tabletTop - poolHeight + wave;
                 rCtx.lineTo(wx, curY);
               }
@@ -4231,7 +4164,7 @@
               rCtx.lineWidth = 1.1;
               rCtx.beginPath();
               for (var wx2 = rimLeft; wx2 <= rimRight; wx2 += step) {
-                var wave2 = Math.sin(wx2 * 0.025 + animTime * 3.2) * 0.75 + Math.cos(wx2 * 0.06 - animTime * 2.1) * 0.4;
+                var wave2 = Math.sin(wx2 * 0.025 + animTime * 3.2) * 0.65 + Math.cos(wx2 * 0.06 - animTime * 2.1) * 0.35;
                 var curY2 = tabletTop - poolHeight + wave2;
                 if (wx2 === rimLeft) rCtx.moveTo(wx2, curY2);
                 else rCtx.lineTo(wx2, curY2);
@@ -4241,7 +4174,7 @@
             }
           }
 
-          // Update & Render Surface Ripples in the Collected Water Pool
+          // Update & Render Surface Ripples in the Collected Pool
           for (var rpIdx = ripples.length - 1; rpIdx >= 0; rpIdx--) {
             var rp = ripples[rpIdx];
             rp.rx += rp.growth;
@@ -4281,6 +4214,161 @@
             rCtx.beginPath();
             rCtx.arc(sp.x, sp.y, sp.size * 0.6, 0, Math.PI * 2);
             rCtx.fill();
+          }
+
+          // 3. Overflow Physics: Only when collected water exceeds surface tension capacity!
+          if (waterVolume >= waterCapacity) {
+            var excess = waterVolume - waterCapacity;
+            waterVolume -= excess * 0.025; // Gradual realistic fluid drainage
+
+            // Spawn side trickle droplets that roll down the left & right tablet borders
+            sideSpawnTimer++;
+            var spawnThreshold = Math.max(10, Math.round(28 - excess * 1.5));
+            if (sideSpawnTimer >= spawnThreshold) {
+              sideSpawnTimer = 0;
+
+              // Left side droplet
+              if (sideDroplets.length < 35) {
+                sideDroplets.push({
+                  side: -1,
+                  x: tabletLeft + 1,
+                  y: tabletTop + cornerR * 0.4,
+                  vy: Math.random() * 0.7 + 1.3,
+                  r: Math.random() * 0.7 + 1.8,
+                  alpha: 0.92
+                });
+              }
+
+              // Right side droplet
+              if (sideDroplets.length < 35) {
+                sideDroplets.push({
+                  side: 1,
+                  x: tabletRight - 1,
+                  y: tabletTop + cornerR * 0.4,
+                  vy: Math.random() * 0.7 + 1.3,
+                  r: Math.random() * 0.7 + 1.8,
+                  alpha: 0.92
+                });
+              }
+            }
+
+            // Glistening liquid meniscus curve spilling around the top rounded corners
+            var streamAlpha = Math.min(0.85, (excess / 12.0) * 0.65 + rainIllumination * 0.3);
+            rCtx.save();
+            // Left shoulder wet sheen
+            var leftSheen = rCtx.createLinearGradient(tabletLeft + cornerR * 0.6, tabletTop, tabletLeft - 2, tabletTop + cornerR);
+            leftSheen.addColorStop(0, 'rgba(255, 255, 255, ' + streamAlpha.toFixed(3) + ')');
+            leftSheen.addColorStop(1, 'rgba(215, 240, 255, ' + (streamAlpha * 0.5).toFixed(3) + ')');
+            rCtx.strokeStyle = leftSheen;
+            rCtx.lineWidth = 1.8;
+            rCtx.beginPath();
+            rCtx.moveTo(tabletLeft + cornerR * 0.6, tabletTop - poolHeight * 0.4);
+            rCtx.quadraticCurveTo(tabletLeft - 2, tabletTop + 2, tabletLeft + 1, tabletTop + cornerR);
+            rCtx.stroke();
+
+            // Right shoulder wet sheen
+            var rightSheen = rCtx.createLinearGradient(tabletRight - cornerR * 0.6, tabletTop, tabletRight + 2, tabletTop + cornerR);
+            rightSheen.addColorStop(0, 'rgba(255, 255, 255, ' + streamAlpha.toFixed(3) + ')');
+            rightSheen.addColorStop(1, 'rgba(215, 240, 255, ' + (streamAlpha * 0.5).toFixed(3) + ')');
+            rCtx.strokeStyle = rightSheen;
+            rCtx.lineWidth = 1.8;
+            rCtx.beginPath();
+            rCtx.moveTo(tabletRight - cornerR * 0.6, tabletTop - poolHeight * 0.4);
+            rCtx.quadraticCurveTo(tabletRight + 2, tabletTop + 2, tabletRight - 1, tabletTop + cornerR);
+            rCtx.stroke();
+            rCtx.restore();
+          }
+
+          // 4. Update & Render Droplets Trickling Down the Sides
+          for (var sdIdx = sideDroplets.length - 1; sdIdx >= 0; sdIdx--) {
+            var sDrop = sideDroplets[sdIdx];
+            sDrop.y += sDrop.vy;
+
+            // Cling to outer rim
+            sDrop.x = sDrop.side === -1 ? (tabletLeft + 1) : (tabletRight - 1);
+
+            // Draw sliding water droplet
+            drawPhotorealisticWaterDrop(rCtx, sDrop.x, sDrop.y, sDrop.r, sDrop.vy, sDrop.alpha, false, 1.35);
+
+            // When reaching the bottom of the tablet: feed into bottom corner accumulators!
+            if (sDrop.y >= tabletBottom - 2) {
+              if (sDrop.side === -1) {
+                bottomAccumLeft += sDrop.r * 0.32;
+              } else {
+                bottomAccumRight += sDrop.r * 0.32;
+              }
+              sideDroplets.splice(sdIdx, 1);
+            }
+          }
+
+          // 5. Water Accumulating & Properly Falling at the Bottom of the Tablet
+          var blX = tabletLeft + cornerR * 0.4;
+          var blY = tabletBottom;
+          var brX = tabletRight - cornerR * 0.4;
+          var brY = tabletBottom;
+
+          // Bottom Left Hanging Droplet
+          if (bottomAccumLeft > 0.05) {
+            var hangR_L = Math.min(4.2, 1.2 + bottomAccumLeft * 2.5);
+            var wobble_L = Math.sin(animTime * 6.0) * 0.3;
+            drawPhotorealisticWaterDrop(rCtx, blX, blY + hangR_L * 0.6 + wobble_L, hangR_L, 0, 0.92, true);
+
+            // Critical mass reached: PINCH-OFF and release a falling water droplet!
+            if (bottomAccumLeft >= 1.0) {
+              fallingDrops.push({
+                x: blX + (Math.random() - 0.5) * 2,
+                y: blY + hangR_L * 0.9,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: Math.random() * 0.6 + 1.2,
+                r: Math.random() * 0.5 + 2.3,
+                alpha: 0.95,
+                fallDist: 0,
+                maxFall: Math.random() * 120 + 160
+              });
+              bottomAccumLeft = 0.06; // Residual bead left after pinch-off
+            }
+          }
+
+          // Bottom Right Hanging Droplet
+          if (bottomAccumRight > 0.05) {
+            var hangR_R = Math.min(4.2, 1.2 + bottomAccumRight * 2.5);
+            var wobble_R = Math.sin(animTime * 6.0 + 1.8) * 0.3;
+            drawPhotorealisticWaterDrop(rCtx, brX, brY + hangR_R * 0.6 + wobble_R, hangR_R, 0, 0.92, true);
+
+            // Critical mass reached: PINCH-OFF and release a falling water droplet!
+            if (bottomAccumRight >= 1.0) {
+              fallingDrops.push({
+                x: brX + (Math.random() - 0.5) * 2,
+                y: brY + hangR_R * 0.9,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: Math.random() * 0.6 + 1.2,
+                r: Math.random() * 0.5 + 2.3,
+                alpha: 0.95,
+                fallDist: 0,
+                maxFall: Math.random() * 120 + 160
+              });
+              bottomAccumRight = 0.06; // Residual bead left after pinch-off
+            }
+          }
+
+          // 6. Free-Falling Droplets Dripping from the Bottom into the Darkness
+          for (var fdIdx = fallingDrops.length - 1; fdIdx >= 0; fdIdx--) {
+            var fd = fallingDrops[fdIdx];
+            fd.vy += 0.34; // Gravity acceleration
+            fd.vx *= 0.99; // Aerodynamic drag
+            fd.x += fd.vx;
+            fd.y += fd.vy;
+            fd.fallDist += fd.vy;
+
+            if (fd.fallDist >= fd.maxFall || fd.y > rainH + 40) {
+              fallingDrops.splice(fdIdx, 1);
+              continue;
+            }
+
+            var fadeRatio = Math.max(0, 1 - (fd.fallDist / fd.maxFall));
+            var dropAlpha = fd.alpha * fadeRatio * (1.0 + rainIllumination * 0.4);
+
+            drawPhotorealisticWaterDrop(rCtx, fd.x, fd.y, fd.r, fd.vy, dropAlpha, false);
           }
         }
 
