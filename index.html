@@ -322,7 +322,7 @@
       width: 100vw !important;
       height: 100vh !important;
       pointer-events: none !important;
-      z-index: 10 !important;
+      z-index: 25 !important;
       overflow: hidden !important;
     }
 
@@ -3722,7 +3722,7 @@
         var animTime = 0;
         var prevHero = null;
         var prevHeroTop = null;
-        var totalDrops = window.innerWidth < 900 ? 95 : 155;
+        var totalDrops = window.innerWidth < 900 ? 120 : 210;
         var lightningLevel = 0;
         var lightningTarget = 0;
 
@@ -3736,99 +3736,116 @@
         window.addEventListener('resize', resizeRain);
         resizeRain();
 
-        // Photorealistic 3D Liquid Water Droplet Optical Shader (Refractive dome, caustic focus, dual sky glints)
-        function draw3DSurfaceDroplet(ctx, x, y, r, wobble, sliding, lightning, fallTime, vy, angle, isAirborne) {
+        // Pure 2D Ledge Water Droplet Renderer (Convex Dome resting on the 1D horizontal ledge line)
+        function draw2DLedgeDroplet(ctx, x, y, r, sagY, wobble, lightning) {
+          if (r <= 0.4) return;
+          ctx.save();
+          ctx.translate(x, y);
+
+          var lightBoost = lightning || 0;
+          var w = wobble ? Math.sin(animTime * 26.0) * wobble * 0.28 : 0;
+          var h = r * (0.85 - w * 0.5);
+          var sag = sagY || 0;
+
+          // 1. Contact shadow / base line on the ledge
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+          ctx.fillRect(-r * 0.95, -0.4, r * 1.9, 1.2);
+
+          // 2. Liquid Droplet Body resting on the horizontal ledge line
+          ctx.beginPath();
+          if (sag > 0) {
+            // Sagging pendant droplet: forming hanging bulb with a thinning neck
+            var neckW = Math.max(0.8, r * Math.max(0.2, 0.8 - (sag / 7.0) * 0.45));
+            var bulbW = r * (0.75 + (sag / 7.0) * 0.35);
+
+            // Upper dome remnant
+            ctx.moveTo(-neckW, 0);
+            ctx.bezierCurveTo(-neckW, -h * 0.6, -r * 0.3, -h * 0.7, 0, -h * 0.7);
+            ctx.bezierCurveTo(r * 0.3, -h * 0.7, neckW, -h * 0.6, neckW, 0);
+
+            // Lower hanging bulb stretching downwards over the ledge
+            ctx.bezierCurveTo(neckW, sag * 0.3, bulbW, sag * 0.65, 0, sag);
+            ctx.bezierCurveTo(-bulbW, sag * 0.65, -neckW, sag * 0.3, -neckW, 0);
+            ctx.closePath();
+          } else {
+            // Convex liquid dome resting flat on top of the ledge line
+            var baseW = r * (1.0 + w * 0.4);
+            ctx.moveTo(-baseW, 0);
+            ctx.bezierCurveTo(-baseW, -h * 0.82, -r * 0.48, -h, 0, -h);
+            ctx.bezierCurveTo(r * 0.48, -h, baseW, -h * 0.82, baseW, 0);
+            ctx.closePath();
+          }
+
+          // Translucent refractive liquid fill
+          var grad = ctx.createLinearGradient(0, -h, 0, Math.max(0.5, sag));
+          grad.addColorStop(0, 'rgba(240, 252, 255, ' + (0.80 + lightBoost * 0.20).toFixed(3) + ')');
+          grad.addColorStop(0.35, 'rgba(175, 225, 255, ' + (0.42 + lightBoost * 0.25).toFixed(3) + ')');
+          grad.addColorStop(0.80, 'rgba(195, 235, 255, ' + (0.65 + lightBoost * 0.20).toFixed(3) + ')');
+          grad.addColorStop(1, 'rgba(235, 250, 255, ' + (0.90 + lightBoost * 0.10).toFixed(3) + ')');
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Meniscus surface tension rim
+          ctx.strokeStyle = 'rgba(235, 250, 255, ' + (0.88 + lightBoost * 0.12).toFixed(3) + ')';
+          ctx.lineWidth = Math.max(0.6, r * 0.16);
+          ctx.stroke();
+
+          // 3. Primary Specular Highlight (Sky reflection on the upper-left curve of the dome)
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.ellipse(-r * 0.32, -h * 0.60, Math.max(0.6, r * 0.26), Math.max(0.4, r * 0.15), -Math.PI / 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 4. Caustic contact glow / pendant tip highlight
+          if (sag > 1.5) {
+            // Pendant tip glint where light gathers at the bottom of the hanging drop
+            ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.85 + lightBoost * 0.15).toFixed(3) + ')';
+            ctx.beginPath();
+            ctx.arc(0, sag - 1.0, Math.max(0.5, r * 0.22), 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Caustic light gathering along the contact base
+            ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.65 + lightBoost * 0.35).toFixed(3) + ')';
+            ctx.beginPath();
+            ctx.arc(r * 0.32, -0.8, Math.max(0.45, r * 0.15), 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+        }
+
+        // 2D Falling Teardrop Droplet Renderer (Detached drop accelerating under gravity)
+        function drawFallingDroplet(ctx, x, y, r, vy, lightning) {
           if (r <= 0.35) return;
           ctx.save();
           ctx.translate(x, y);
 
           var lightBoost = lightning || 0;
-          var scaleX = 1.0;
-          var scaleY = 1.0;
+          var tailLen = Math.min(r * 3.2, r * 1.4 + (vy || 0) * 0.45);
 
-          if (isAirborne) {
-            // In-flight falling raindrop head: align with flight trajectory and apply aerodynamic teardrop shape
-            if (angle !== undefined && angle !== null) {
-              ctx.rotate(angle);
-            }
-            scaleX = 0.86;
-            scaleY = 1.28;
-          } else if (fallTime !== undefined && fallTime !== null) {
-            // Detached falling droplet: capillary shape oscillation (Rayleigh liquid drop oscillation)
-            var osc = Math.sin(fallTime * 18.0) * Math.exp(-fallTime * 0.6) * 0.25;
-            var speedStretch = Math.min(0.52, Math.max(0, vy || 0) * 0.042);
-            scaleY = 1.0 + speedStretch + osc;
-            scaleX = Math.max(0.64, 1.0 - speedStretch * 0.5 - osc);
-          } else {
-            // Surface droplet: gentle capillary vibration on landing / merge
-            var w = wobble ? Math.sin(animTime * 24.0) * wobble * 0.22 : 0;
-            scaleX = 1.0 + w;
-            scaleY = 1.0 - w * 0.6;
-            if (sliding) {
-              // Teardrop elongation along direction of slide
-              if (angle !== undefined && angle !== null) {
-                ctx.rotate(angle);
-              }
-              scaleY *= 1.32;
-              scaleX *= 0.84;
-            }
-          }
-
-          ctx.scale(scaleX, scaleY);
-
-          // 1. Ambient Occlusion / Contact Drop Shadow on the surface
-          if (!isAirborne && (fallTime === undefined || fallTime === null)) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.48)';
-            ctx.beginPath();
-            ctx.ellipse(0, r * 0.28, r * 1.12, r * 0.62, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Refracted caustic brightening in the shadow core
-            ctx.fillStyle = 'rgba(170, 225, 255, 0.16)';
-            ctx.beginPath();
-            ctx.ellipse(r * 0.12, r * 0.32, r * 0.62, r * 0.32, 0, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          // 2. Refractive Liquid Dome Body (Translucent core with sky-cyan undertone)
-          var bodyGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.32, r * 0.06, 0, 0, r * 1.25);
-          bodyGrad.addColorStop(0, 'rgba(242, 253, 255, ' + (0.58 + lightBoost * 0.35).toFixed(3) + ')');
-          bodyGrad.addColorStop(0.38, 'rgba(180, 226, 255, ' + (0.30 + lightBoost * 0.22).toFixed(3) + ')');
-          bodyGrad.addColorStop(0.82, 'rgba(110, 178, 238, ' + (0.44 + lightBoost * 0.20).toFixed(3) + ')');
-          bodyGrad.addColorStop(1, 'rgba(218, 246, 255, ' + (0.82 + lightBoost * 0.18).toFixed(3) + ')');
-          ctx.fillStyle = bodyGrad;
+          // Smooth organic teardrop path
           ctx.beginPath();
-          ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.moveTo(0, r * 1.1);
+          ctx.bezierCurveTo(r * 0.85, r * 1.1, r * 0.75, -r * 0.2, r * 0.15, -tailLen);
+          ctx.lineTo(-r * 0.15, -tailLen);
+          ctx.bezierCurveTo(-r * 0.75, -r * 0.2, -r * 0.85, r * 1.1, 0, r * 1.1);
+          ctx.closePath();
+
+          var fGrad = ctx.createLinearGradient(0, -tailLen, 0, r * 1.2);
+          fGrad.addColorStop(0, 'rgba(215, 240, 255, ' + (0.35 + lightBoost * 0.2).toFixed(3) + ')');
+          fGrad.addColorStop(0.55, 'rgba(180, 225, 255, ' + (0.55 + lightBoost * 0.25).toFixed(3) + ')');
+          fGrad.addColorStop(1, 'rgba(240, 252, 255, ' + (0.88 + lightBoost * 0.12).toFixed(3) + ')');
+          ctx.fillStyle = fGrad;
           ctx.fill();
 
-          // Meniscus edge refraction border
-          ctx.strokeStyle = 'rgba(235, 250, 255, ' + (0.86 + lightBoost * 0.14).toFixed(3) + ')';
-          ctx.lineWidth = Math.max(0.65, r * 0.18);
+          ctx.strokeStyle = 'rgba(235, 250, 255, ' + (0.85 + lightBoost * 0.15).toFixed(3) + ')';
+          ctx.lineWidth = 0.65;
           ctx.stroke();
 
-          // 3. Lower Caustic Focal Arc (Light concentrated through the convex liquid lens)
-          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.80 + lightBoost * 0.20).toFixed(3) + ')';
-          ctx.lineWidth = Math.max(0.72, r * 0.30);
-          ctx.beginPath();
-          ctx.arc(0, r * 0.22, r * 0.66, 0.18 * Math.PI, 0.82 * Math.PI, false);
-          ctx.stroke();
-
-          // 4. Primary Specular Sky Highlight (Top-left curved glint)
-          ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.96 + lightBoost * 0.04).toFixed(3) + ')';
-          ctx.beginPath();
-          ctx.ellipse(-r * 0.35, -r * 0.36, r * 0.36, r * 0.22, -Math.PI / 4, 0, Math.PI * 2);
-          ctx.fill();
-
-          // 5. Razor-sharp white pin-point core
+          // Leading specular highlight glint
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(-r * 0.35, -r * 0.36, Math.max(0.55, r * 0.15), 0, Math.PI * 2);
-          ctx.fill();
-
-          // 6. Secondary subtle bottom-right rim glint (Fresnel reflection)
-          ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.52 + lightBoost * 0.3).toFixed(3) + ')';
-          ctx.beginPath();
-          ctx.arc(r * 0.4, r * 0.24, Math.max(0.5, r * 0.13), 0, Math.PI * 2);
+          ctx.arc(-r * 0.22, r * 0.2, Math.max(0.45, r * 0.20), 0, Math.PI * 2);
           ctx.fill();
 
           ctx.restore();
@@ -3840,31 +3857,31 @@
           var tier = 1;
           var spd, len, thickness, baseAlpha;
 
-          if (tierRand < 0.35) {
-            // Tier 0: Fine Atmospheric Mist & Distant Drizzle
+          if (tierRand < 0.28) {
+            // Tier 0: Distant Atmospheric Mist
             tier = 0;
-            spd = Math.random() * 4 + 16;
-            len = Math.random() * 12 + 14;
-            thickness = Math.random() * 0.2 + 0.70;
-            baseAlpha = Math.random() * 0.08 + 0.12;
-          } else if (tierRand < 0.85) {
-            // Tier 1: Core Cinematic Photorealistic Storm Drops
+            spd = Math.random() * 6 + 24;
+            len = Math.random() * 18 + 32;
+            thickness = Math.random() * 0.2 + 0.8;
+            baseAlpha = Math.random() * 0.08 + 0.15;
+          } else if (tierRand < 0.80) {
+            // Tier 1: Core Cinematic Rain Streaks
             tier = 1;
-            spd = Math.random() * 8 + 26;
-            len = Math.random() * 24 + 36;
-            thickness = Math.random() * 0.35 + 1.25;
-            baseAlpha = Math.random() * 0.14 + 0.28;
+            spd = Math.random() * 10 + 36;
+            len = Math.random() * 32 + 58;
+            thickness = Math.random() * 0.3 + 1.1;
+            baseAlpha = Math.random() * 0.14 + 0.32;
           } else {
-            // Tier 2: Heavy Foreground Whistling Streaks
+            // Tier 2: Heavy Foreground Glistening Drops
             tier = 2;
-            spd = Math.random() * 10 + 38;
-            len = Math.random() * 38 + 68;
-            thickness = Math.random() * 0.45 + 1.85;
-            baseAlpha = Math.random() * 0.16 + 0.40;
+            spd = Math.random() * 12 + 48;
+            len = Math.random() * 40 + 82;
+            thickness = Math.random() * 0.4 + 1.5;
+            baseAlpha = Math.random() * 0.18 + 0.48;
           }
 
-          var windAngle = 0.17 + (Math.random() - 0.5) * 0.04;
-          var y = -(Math.random() * 90 + 20); // Spawns above viewport in top storm clouds
+          var windAngle = 0.14 + (Math.random() - 0.5) * 0.025;
+          var y = -(Math.random() * 100 + 20); // Spawns in top storm clouds
           var x = Math.random() * (rainW + 280) - 140;
 
           return {
@@ -3958,7 +3975,7 @@
             }
           }
 
-          // If no hero section is on screen (user is in Services, Careers, Footer):
+          // If no hero section is on screen:
           if (!activeHero || !activeHeroRect) {
             rCtx.clearRect(0, 0, rainW, rainH);
             prevHero = null;
@@ -3984,9 +4001,6 @@
             }
             for (var fIdx = 0; fIdx < fallingDrops.length; fIdx++) {
               fallingDrops[fIdx].y += scrollDeltaY;
-            }
-            for (var rIdx = 0; rIdx < ripples.length; rIdx++) {
-              ripples[rIdx].y += scrollDeltaY;
             }
             for (var spIdx = 0; spIdx < splashes.length; spIdx++) {
               splashes[spIdx].y += scrollDeltaY;
@@ -4017,20 +4031,18 @@
           var tabletBottom = activeBoxRect ? activeBoxRect.bottom : (tabletTop + 600);
           var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.1);
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
-          var tabletWidth = tabletRight - tabletLeft;
-          var tabletCenterX = tabletLeft + tabletWidth * 0.5;
 
-          // Progressive Storm Roll-in: Starts completely empty on open, then rain begins from clouds!
+          // Progressive Storm Roll-in: Starts empty on page open, rain arrives naturally from clouds!
           var stormElapsed = (performance.now() - stormStartTime) / 1000;
           var targetDropCount = 0;
-          if (stormElapsed > 0.8) {
-            var ramp = Math.min(1.0, (stormElapsed - 0.8) / 3.8);
+          if (stormElapsed > 0.6) {
+            var ramp = Math.min(1.0, (stormElapsed - 0.6) / 3.4);
             targetDropCount = Math.floor(ramp * ramp * totalDrops);
           }
 
           while (raindrops.length < targetDropCount) {
             var newDrop = createDrop(false, 0);
-            newDrop.y = -(Math.random() * 90 + 20); // Spawns above viewport in top storm clouds
+            newDrop.y = -(Math.random() * 90 + 20); // Spawns above viewport in storm clouds
             raindrops.push(newDrop);
           }
 
@@ -4038,7 +4050,7 @@
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
           if (lightningLevel < 0.005 && lightningTarget === 0) lightningLevel = 0;
 
-          // Pure electric white illumination on overlay and cloud silhouettes
+          // Electric white illumination on overlay and cloud silhouettes
           var overlays = document.querySelectorAll('.hero-lightning-flash');
           for (var o = 0; o < overlays.length; o++) {
             overlays[o].style.opacity = lightningLevel.toFixed(3);
@@ -4053,312 +4065,259 @@
           var rainIllumination = lightningLevel * 0.65;
           animTime += 0.04;
 
-          // 1. Update & Render Falling Raindrops (Actual Liquid Water Droplets)
+          // =========================================================================
+          // 1. UPDATE & RENDER FALLING RAINDROPS (Real 2D Atmospheric Liquid Streaks)
+          // =========================================================================
           for (var i = 0; i < raindrops.length; i++) {
             var d = raindrops[i];
             var prevY = d.y;
             var prevX = d.x;
 
             d.phase += 0.09;
-            var microFlutter = Math.sin(d.phase) * 0.32;
+            var microFlutter = Math.sin(d.phase) * 0.28;
 
-            var vx = Math.sin(d.windAngle) * d.spd + microFlutter * 0.25;
+            var vx = Math.sin(d.windAngle) * d.spd + microFlutter * 0.22;
             var vy = Math.cos(d.windAngle) * d.spd;
             var dropFall = vy + scrollBoost * 0.95;
 
             d.x += vx;
             d.y += dropFall;
 
-            // When Raindroplet Touches the Tablet Surface: Instant Shatter Splash & Surface Wetting!
-            if (prevY <= tabletTop && d.y >= tabletTop) {
+            // --- A. Collision with Tablet Top (The 1D Horizontal Ledge Line) ---
+            var isOverTablet = (d.x >= tabletLeft - 4 && d.x <= tabletRight + 4);
+
+            if (isOverTablet && prevY <= tabletTop && d.y >= tabletTop) {
               var tTop = (tabletTop - prevY) / (d.y - prevY);
               var hitX = prevX + tTop * (d.x - prevX);
 
-              if (hitX >= tabletLeft - 8 && hitX <= tabletRight + 8) {
-                // 1. High-Speed Shatter Splash: Micro-droplets blasting upward off the surface
-                var splashCount = d.tier === 2 ? Math.floor(Math.random() * 3 + 4) : Math.floor(Math.random() * 2 + 2);
-                if (splashes.length < 90) {
+              if (hitX >= tabletLeft - 4 && hitX <= tabletRight + 4) {
+                // 1. Instant 2D Shatter Splash: Micro-droplets pop upward into the 2D air
+                var splashCount = d.tier === 2 ? Math.floor(Math.random() * 3 + 3) : Math.floor(Math.random() * 2 + 2);
+                if (splashes.length < 80) {
                   for (var sp = 0; sp < splashCount; sp++) {
-                    var splashAngle = (Math.random() - 0.5) * 1.5; // Fan spray upward
+                    var splashAngle = (Math.random() - 0.5) * 1.5;
                     var splashSpd = Math.random() * 2.8 + 1.2;
                     splashes.push({
                       x: hitX + (Math.random() - 0.5) * 3,
                       y: tabletTop - Math.random() * 2,
-                      vx: Math.sin(splashAngle) * splashSpd + Math.sin(d.windAngle) * 0.7,
+                      vx: Math.sin(splashAngle) * splashSpd + Math.sin(d.windAngle) * 0.8,
                       vy: -Math.cos(splashAngle) * splashSpd, // Bounces upward!
-                      gravity: 0.25 + Math.random() * 0.08,
-                      r: d.tier === 2 ? (Math.random() * 0.4 + 0.75) : (Math.random() * 0.3 + 0.45),
-                      alpha: 0.9 + Math.random() * 0.1,
-                      decay: Math.random() * 0.045 + 0.05 // Lasts ~14-18 frames (approx 0.25s)
+                      gravity: 0.28 + Math.random() * 0.06,
+                      r: d.tier === 2 ? (Math.random() * 0.35 + 0.65) : (Math.random() * 0.25 + 0.45),
+                      alpha: 0.95,
+                      decay: Math.random() * 0.045 + 0.05
                     });
                   }
                 }
 
-                // 2. Surface Impact Shockwave Ripple
-                if (ripples.length < 40) {
-                  ripples.push({
-                    x: hitX,
-                    y: tabletTop,
-                    rx: 2.4,
-                    ry: 0.70,
-                    maxR: Math.random() * 8 + 10,
-                    alpha: 0.85,
-                    growth: 0.75,
-                    decay: 0.045
-                  });
-                }
-
-                // 3. Shockwave transmission: vibrate nearby resting droplets
+                // 2. Transmit capillary vibration to nearby droplets on the ledge
                 for (var wIdx = 0; wIdx < surfaceDrops.length; wIdx++) {
                   var nearDrop = surfaceDrops[wIdx];
                   var nearDist = Math.abs(nearDrop.x - hitX);
                   if (nearDist < 35) {
-                    nearDrop.wobble = Math.max(nearDrop.wobble || 0, 0.75 * (1 - nearDist / 35));
+                    nearDrop.wobble = Math.max(nearDrop.wobble || 0, 0.9 * (1 - nearDist / 35));
                   }
                 }
 
-                // 4. Coalescence: Join existing surface droplet if close
+                // 3. Water Coalescence: When rain touches an existing droplet on the ledge, IT COMBINES!
                 var merged = false;
                 for (var s = 0; s < surfaceDrops.length; s++) {
                   var sdCheck = surfaceDrops[s];
-                  var dist = Math.hypot(sdCheck.x - hitX, sdCheck.y - tabletTop);
-                  if (dist < (sdCheck.r + 5.5)) {
-                    var incomingR = d.tier === 2 ? 1.7 : (d.tier === 1 ? 1.2 : 0.85);
+                  var dist = Math.abs(sdCheck.x - hitX);
+                  if (dist < (sdCheck.r + 14.0)) {
+                    // Rain liquid is absorbed into the droplet!
+                    var addVol = d.tier === 2 ? 6.5 : (d.tier === 1 ? 4.8 : 3.2);
                     var oldV = Math.pow(sdCheck.r, 3);
-                    var incV = Math.pow(incomingR, 3);
-                    var newV = oldV + incV;
-                    sdCheck.r = Math.min(5.6, Math.cbrt(newV));
-                    sdCheck.x = (sdCheck.x * oldV + hitX * incV) / newV;
+                    var newV = oldV + addVol;
+                    sdCheck.r = Math.min(5.2, Math.cbrt(newV));
+                    sdCheck.x = (sdCheck.x * oldV + hitX * addVol) / newV;
                     sdCheck.wobble = 1.0;
                     merged = true;
                     break;
                   }
                 }
 
-                // 5. If not touching an existing drop: It stays on the surface as a glistening micro-bead!
-                if (!merged && surfaceDrops.length < 65) {
-                  var initR = d.tier === 2 ? (Math.random() * 0.4 + 1.35) : (Math.random() * 0.3 + 0.9);
-                  var offY = Math.random() * 4 - 2;
+                // 4. If no droplet is touched: It lands and stays on the ledge as a new water droplet!
+                if (!merged && surfaceDrops.length < 50) {
+                  var initR = d.tier === 2 ? (Math.random() * 0.35 + 1.5) : (Math.random() * 0.3 + 1.1);
                   surfaceDrops.push({
                     x: hitX,
-                    y: tabletTop + offY,
-                    offsetY: offY,
                     r: initR,
-                    vx: 0,
-                    vy: 0,
-                    sliding: false,
-                    wobble: 0.8,
-                    wetTrail: []
+                    sagY: 0,
+                    wobble: 0.85
                   });
                 }
+
+                // Raindrop is blocked by the tablet: resets to storm clouds above!
+                d.y = -(Math.random() * 90 + 20);
+                d.x = Math.random() * (rainW + 280) - 140;
+                continue;
               }
+            }
 
-              // Raindrop resets to top clouds
+            // --- B. The Umbrella Effect: Drops directly underneath the tablet cannot exist! ---
+            if (isOverTablet && d.y > tabletTop && d.y < tabletBottom) {
+              d.y = -(Math.random() * 90 + 20);
+              d.x = Math.random() * (rainW + 280) - 140;
+              continue;
+            }
+
+            // --- C. Reset drops that fall past the bottom of the screen (Sides continue freely!) ---
+            if (d.y > rainH + 50) {
               d.y = -(Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
-            // Cut-off past tabletTop into darkness
-            if (d.y > tabletTop) {
-              d.y = -(Math.random() * 80 + 20);
-              d.x = Math.random() * (rainW + 280) - 140;
-              continue;
-            }
-
-            // Lateral Reset
+            // Lateral reset
             if (d.x > rainW + 90) {
               d.y = -(Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
-            // Fade out into darkness as drops approach the tablet
-            var fadeZone = 200;
-            var distToTablet = tabletTop - d.y;
+            // --- D. Fade out as drops directly approach the tablet ledge ---
             var darknessFade = 1.0;
-            if (distToTablet < fadeZone) {
-              darknessFade = Math.max(0.18, distToTablet / fadeZone);
+            if (isOverTablet) {
+              var fadeZone = 180;
+              var distToTablet = tabletTop - d.y;
+              if (distToTablet < fadeZone && distToTablet > 0) {
+                darknessFade = Math.max(0.20, distToTablet / fadeZone);
+              }
             }
 
-            var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46))) * darknessFade;
+            var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45))) * darknessFade;
             finalAlpha = Math.min(0.96, Math.max(0.02, finalAlpha));
 
             var effectiveLen = d.len * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
             var tailX = d.x - Math.sin(d.windAngle) * effectiveLen;
             var tailY = d.y - Math.cos(d.windAngle) * effectiveLen;
 
-            // Render Photorealistic Liquid Raindrop (Dual-pass optical streak + specular head glint)
-            var haloAlpha = finalAlpha * 0.30;
-            var haloGrad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
-            haloGrad.addColorStop(0, 'rgba(215, 238, 255, 0)');
-            haloGrad.addColorStop(0.65, 'rgba(215, 238, 255, ' + (haloAlpha * 0.6).toFixed(3) + ')');
-            haloGrad.addColorStop(1, 'rgba(230, 246, 255, ' + haloAlpha.toFixed(3) + ')');
+            // --- E. Render Pure Motion-Blurred Atmospheric Rain Streaks (No balls / No pins) ---
+            var streakAlpha = finalAlpha * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
 
-            rCtx.strokeStyle = haloGrad;
-            rCtx.lineWidth = d.thickness * 1.85;
-            rCtx.lineCap = 'round';
+            // Pass 1: Translucent outer water sheen halo along full velocity vector
+            rCtx.strokeStyle = 'rgba(195, 230, 255, ' + (streakAlpha * 0.35).toFixed(3) + ')';
+            rCtx.lineWidth = d.thickness * 1.35;
+            rCtx.lineCap = 'butt';
             rCtx.beginPath();
             rCtx.moveTo(tailX, tailY);
             rCtx.lineTo(d.x, d.y);
             rCtx.stroke();
 
-            var coreAlpha = finalAlpha * 0.92;
-            var coreGrad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
-            coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            coreGrad.addColorStop(0.40, 'rgba(255, 255, 255, ' + (coreAlpha * 0.28).toFixed(3) + ')');
-            coreGrad.addColorStop(0.85, 'rgba(255, 255, 255, ' + (coreAlpha * 0.85).toFixed(3) + ')');
-            coreGrad.addColorStop(1, 'rgba(255, 255, 255, ' + coreAlpha.toFixed(3) + ')');
+            // Pass 2: Dense crystalline white core along leading 55% of the streak
+            var midX = d.x - Math.sin(d.windAngle) * (effectiveLen * 0.55);
+            var midY = d.y - Math.cos(d.windAngle) * (effectiveLen * 0.55);
 
-            rCtx.strokeStyle = coreGrad;
-            rCtx.lineWidth = Math.max(0.65, d.thickness * 0.72);
+            rCtx.strokeStyle = 'rgba(255, 255, 255, ' + (streakAlpha * 0.95).toFixed(3) + ')';
+            rCtx.lineWidth = Math.max(0.65, d.thickness * 0.70);
             rCtx.beginPath();
-            rCtx.moveTo(tailX, tailY);
+            rCtx.moveTo(midX, midY);
             rCtx.lineTo(d.x, d.y);
             rCtx.stroke();
-
-            // Foreground heavy drop leading specular glint
-            if (d.tier === 2 && finalAlpha > 0.16) {
-              rCtx.fillStyle = '#ffffff';
-              rCtx.beginPath();
-              rCtx.arc(d.x, d.y, Math.max(0.65, d.thickness * 0.52), 0, Math.PI * 2);
-              rCtx.fill();
-
-              rCtx.fillStyle = 'rgba(215, 245, 255, ' + (finalAlpha * 0.45).toFixed(3) + ')';
-              rCtx.beginPath();
-              rCtx.arc(d.x, d.y, d.thickness * 1.25, 0, Math.PI * 2);
-              rCtx.fill();
-            }
           }
 
-          // 2. Coalescence Physics: Surface droplets touch, attract, and join together!
+          // =========================================================================
+          // 2. WATER COALESCENCE ON THE 1D LEDGE (Surface Tension Drops Attract & Merge!)
+          // =========================================================================
           for (var p1 = 0; p1 < surfaceDrops.length; p1++) {
             var drop1 = surfaceDrops[p1];
             for (var p2 = p1 + 1; p2 < surfaceDrops.length; p2++) {
               var drop2 = surfaceDrops[p2];
-              var distP = Math.hypot(drop2.x - drop1.x, drop2.y - drop1.y);
-              if (distP < (drop1.r + drop2.r) * 1.12) {
-                // Surface tension pulls them together: FUSE into a single larger droplet!
+              var distP = Math.abs(drop2.x - drop1.x);
+
+              // 1. Capillary attraction: nearby droplets on the ledge pull towards each other
+              if (distP < 28.0 && distP > (drop1.r + drop2.r)) {
+                var pull = (1 - distP / 28.0) * 0.22;
+                if (drop1.x < drop2.x) {
+                  drop1.x += pull;
+                  drop2.x -= pull;
+                } else {
+                  drop1.x -= pull;
+                  drop2.x += pull;
+                }
+              }
+
+              // 2. Contact Coalescence: When perimeters touch, THEY COMBINE INTO ONE LARGER DROP!
+              if (distP <= (drop1.r + drop2.r + 2.0)) {
                 var v1 = Math.pow(drop1.r, 3);
                 var v2 = Math.pow(drop2.r, 3);
                 var vSum = v1 + v2;
-                var combinedR = Math.min(6.2, Math.cbrt(vSum));
+                var combinedR = Math.min(5.6, Math.cbrt(vSum));
                 drop1.r = combinedR;
-                drop1.wobble = 1.0;
                 drop1.x = (drop1.x * v1 + drop2.x * v2) / vSum;
-                drop1.offsetY = (drop1.offsetY * v1 + drop2.offsetY * v2) / vSum;
-                drop1.y = tabletTop + drop1.offsetY;
-                if (drop2.sliding) drop1.sliding = true;
+                drop1.wobble = 1.25; // Elastic bounce from coalescence
                 surfaceDrops.splice(p2, 1);
                 p2--;
               }
             }
           }
 
-          // 3. Sliding Physics: When too much water is collected (r >= 2.9px), it slides off!
+          // =========================================================================
+          // 3. FALLING PHYSICS: WHEN WATER COLLECTS TOO MUCH, IT FALLS!
+          // =========================================================================
           for (var sIdx = surfaceDrops.length - 1; sIdx >= 0; sIdx--) {
             var sd = surfaceDrops[sIdx];
 
             // Dampen capillary vibration
-            if (sd.wobble > 0) sd.wobble *= 0.91;
+            if (sd.wobble > 0) sd.wobble *= 0.90;
 
-            // Critical mass threshold: surface adhesion yields, droplet starts sliding!
-            if (sd.r >= 2.9 && !sd.sliding) {
-              sd.sliding = true;
-              var slideLeft = sd.x < tabletCenterX;
-              sd.vx = slideLeft ? -(Math.random() * 0.4 + 0.75) : +(Math.random() * 0.4 + 0.75);
-              sd.vy = Math.random() * 0.3 + 0.4;
-            }
+            // Critical mass threshold: surface tension yields, droplet sags and falls!
+            var isCorner = (sd.x <= tabletLeft + 25 || sd.x >= tabletRight - 25);
+            var criticalMass = isCorner ? 2.25 : 2.85;
 
-            if (sd.sliding) {
-              // Accelerates smoothly down the slope
-              sd.x += sd.vx;
-              sd.offsetY += sd.vy;
-              sd.y = tabletTop + sd.offsetY;
-              sd.vy += 0.035;
-              sd.vx *= 1.015;
+            if (sd.r >= criticalMass) {
+              // Sags down over the lip of the ledge line
+              sd.sagY = (sd.sagY || 0) + 0.90;
 
-              // Absorbs smaller stationary droplets in its sliding path (snowball effect)
-              for (var otherIdx = surfaceDrops.length - 1; otherIdx >= 0; otherIdx--) {
-                if (otherIdx !== sIdx) {
-                  var other = surfaceDrops[otherIdx];
-                  if (!other.sliding && Math.hypot(other.x - sd.x, other.y - sd.y) < (sd.r + other.r) * 1.08) {
-                    var vCur = Math.pow(sd.r, 3);
-                    var vOth = Math.pow(other.r, 3);
-                    sd.r = Math.min(6.8, Math.cbrt(vCur + vOth));
-                    sd.vx *= 1.12; // Kinetic momentum surge on absorption
-                    sd.vy *= 1.10;
-                    surfaceDrops.splice(otherIdx, 1);
-                    if (otherIdx < sIdx) sIdx--;
-                  }
-                }
-              }
+              // When the neck stretches fully: PINCH-OFF! IT DETACHES AND FALLS!
+              if (sd.sagY >= 6.8) {
+                var dropX = sd.x;
+                var isLeftCorner = (dropX <= tabletLeft + 12);
+                var isRightCorner = (dropX >= tabletRight - 12);
 
-              // Glistening wet trail left behind the sliding droplet
-              if (Math.random() < 0.45 && sd.wetTrail.length < 10) {
-                sd.wetTrail.push({ x: sd.x, y: sd.y, r: sd.r * 0.32, alpha: 0.6 });
-              }
+                if (isLeftCorner) dropX = tabletLeft;
+                if (isRightCorner) dropX = tabletRight;
 
-              // When reaching the edge of the tablet (slides off the shoulders):
-              if (sd.x <= tabletLeft - 2 || sd.x >= tabletRight + 2 || sd.offsetY >= 26) {
-                // Detaches as an oscillating free-falling droplet!
+                // Primary detached falling droplet
                 fallingDrops.push({
-                  x: sd.x,
-                  y: sd.y,
-                  r: sd.r * 0.88,
-                  vx: sd.vx * 0.75,
-                  vy: Math.max(1.1, sd.vy * 1.1),
-                  fallTime: 0,
-                  alpha: 0.96,
+                  x: dropX,
+                  y: tabletTop + 5,
+                  r: sd.r * 0.85,
+                  vy: 2.2,
+                  vx: isLeftCorner ? -0.4 : (isRightCorner ? 0.4 : (Math.random() - 0.5) * 0.3),
                   fallDist: 0,
-                  maxFall: Math.random() * 150 + 190
+                  maxFall: Math.random() * 180 + 220,
+                  alpha: 0.95
                 });
 
-                // Satellite micro-droplet
+                // Satellite trailing micro-droplet (Plateau-Rayleigh instability)
                 fallingDrops.push({
-                  x: sd.x - sd.vx * 1.4,
-                  y: sd.y - 3,
-                  r: sd.r * 0.28,
-                  vx: sd.vx * 0.35,
-                  vy: 0.85,
-                  fallTime: 0,
-                  alpha: 0.85,
+                  x: dropX,
+                  y: tabletTop - 1,
+                  r: sd.r * 0.26,
+                  vy: 1.1,
+                  vx: isLeftCorner ? -0.2 : (isRightCorner ? 0.2 : (Math.random() - 0.5) * 0.15),
                   fallDist: 0,
-                  maxFall: Math.random() * 100 + 130
+                  maxFall: Math.random() * 110 + 140,
+                  alpha: 0.85
                 });
 
+                // Reset droplet on ledge so fresh water can collect
                 surfaceDrops.splice(sIdx, 1);
                 continue;
               }
-            } else {
-              // Stationary droplet pinned to tablet surface
-              sd.y = tabletTop + sd.offsetY;
             }
 
-            // Render wet trail behind sliding droplets
-            for (var trIdx = sd.wetTrail.length - 1; trIdx >= 0; trIdx--) {
-              var tr = sd.wetTrail[trIdx];
-              tr.alpha -= 0.015;
-              if (tr.alpha <= 0) {
-                sd.wetTrail.splice(trIdx, 1);
-                continue;
-              }
-              rCtx.fillStyle = 'rgba(215, 240, 255, ' + (tr.alpha * 0.45).toFixed(3) + ')';
-              rCtx.beginPath();
-              rCtx.arc(tr.x, tr.y, tr.r, 0, Math.PI * 2);
-              rCtx.fill();
-            }
-
-            // Render 3D Surface Water Droplet Bead
-            var slideAngle = sd.sliding ? (Math.atan2(sd.vy, sd.vx) - Math.PI / 2) : 0;
-            draw3DSurfaceDroplet(rCtx, sd.x, sd.y, sd.r, sd.wobble, sd.sliding, rainIllumination, null, null, slideAngle, false);
+            // Render 2D Water Droplet resting on the 1D ledge line
+            draw2DLedgeDroplet(rCtx, sd.x, tabletTop, sd.r, sd.sagY, sd.wobble, rainIllumination);
           }
 
-          // 4. Wet Rim Highlight along tablet top edge where rain strikes
+          // 4. Wet Rim Highlight along the ledge where rain strikes
           var rimGrad = rCtx.createLinearGradient(tabletLeft, tabletTop, tabletRight, tabletTop);
           rimGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-          rimGrad.addColorStop(0.08, 'rgba(215, 240, 255, ' + (0.22 + rainIllumination * 0.22).toFixed(3) + ')');
-          rimGrad.addColorStop(0.5, 'rgba(240, 250, 255, ' + (0.32 + rainIllumination * 0.32).toFixed(3) + ')');
-          rimGrad.addColorStop(0.92, 'rgba(215, 240, 255, ' + (0.22 + rainIllumination * 0.22).toFixed(3) + ')');
+          rimGrad.addColorStop(0.08, 'rgba(215, 240, 255, ' + (0.28 + rainIllumination * 0.25).toFixed(3) + ')');
+          rimGrad.addColorStop(0.5, 'rgba(240, 250, 255, ' + (0.38 + rainIllumination * 0.35).toFixed(3) + ')');
+          rimGrad.addColorStop(0.92, 'rgba(215, 240, 255, ' + (0.28 + rainIllumination * 0.25).toFixed(3) + ')');
           rimGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
           rCtx.strokeStyle = rimGrad;
@@ -4368,26 +4327,7 @@
           rCtx.lineTo(tabletRight - 12, tabletTop);
           rCtx.stroke();
 
-          // 5. Update & Render Surface Ripples on Impact
-          for (var rpIdx = ripples.length - 1; rpIdx >= 0; rpIdx--) {
-            var rp = ripples[rpIdx];
-            rp.rx += rp.growth;
-            rp.ry += rp.growth * 0.30;
-            rp.alpha -= rp.decay;
-            if (rp.alpha <= 0.01 || rp.rx >= rp.maxR) {
-              ripples.splice(rpIdx, 1);
-              continue;
-            }
-
-            var ripAlpha = Math.min(0.85, rp.alpha * (0.65 + rainIllumination * 0.35));
-            rCtx.strokeStyle = 'rgba(255, 255, 255, ' + ripAlpha.toFixed(3) + ')';
-            rCtx.lineWidth = 0.9;
-            rCtx.beginPath();
-            rCtx.ellipse(rp.x, tabletTop, rp.rx, rp.ry, 0, 0, Math.PI * 2);
-            rCtx.stroke();
-          }
-
-          // 6. Update & Render Shatter Splash Particles (Upward mist and droplet spray from impacts)
+          // 5. Update & Render 2D Splash Particles (Upward mist and droplet spray from impacts)
           for (var spIdx = splashes.length - 1; spIdx >= 0; spIdx--) {
             var sp = splashes[spIdx];
             sp.x += sp.vx;
@@ -4415,11 +4355,10 @@
             rCtx.fill();
           }
 
-          // 7. Update & Render Free-Falling Droplets with Capillary Shape Oscillation
+          // 6. Update & Render Free-Falling Droplets (Drops detached after collecting too much water)
           for (var fdIdx = fallingDrops.length - 1; fdIdx >= 0; fdIdx--) {
             var fd = fallingDrops[fdIdx];
-            fd.fallTime += 0.055;
-            fd.vy += 0.32; // Gravity acceleration
+            fd.vy += 0.38; // Gravity acceleration
             fd.vx *= 0.99; // Air drag
             fd.x += fd.vx;
             fd.y += fd.vy;
@@ -4430,10 +4369,7 @@
               continue;
             }
 
-            var fadeRatio = Math.max(0, 1 - (fd.fallDist / fd.maxFall));
-            var dropAlpha = fd.alpha * fadeRatio * (1.0 + rainIllumination * 0.4);
-
-            draw3DSurfaceDroplet(rCtx, fd.x, fd.y, fd.r, 0, false, rainIllumination, fd.fallTime, fd.vy, null, false);
+            drawFallingDroplet(rCtx, fd.x, fd.y, fd.r, fd.vy, rainIllumination);
           }
         }
 
