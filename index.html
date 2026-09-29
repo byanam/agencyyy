@@ -280,9 +280,11 @@
       0% {
         transform: translate3d(-3%, 0, 0) scale(1.03);
       }
+
       50% {
         transform: translate3d(2.5%, -1.5%, 0) scale(1.08);
       }
+
       100% {
         transform: translate3d(4%, 1%, 0) scale(1.04);
       }
@@ -292,9 +294,11 @@
       0% {
         transform: translate3d(3%, 1%, 0) scale(1.07);
       }
+
       50% {
         transform: translate3d(-2%, -2%, 0) scale(1.03);
       }
+
       100% {
         transform: translate3d(-4%, 0.5%, 0) scale(1.09);
       }
@@ -889,7 +893,7 @@
       background: linear-gradient(180deg, #131418 0%, #0e0f12 50%, #0b0c0f 100%) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       border-top-color: rgba(255, 255, 255, calc(0.08 + var(--storm-intensity, 0.5) * 0.20)) !important;
-      box-shadow: 
+      box-shadow:
         0 30px 90px rgba(0, 0, 0, 0.85),
         0 10px 30px rgba(0, 0, 0, 0.5),
         inset 0 1px 0 rgba(255, 255, 255, calc(0.10 + var(--storm-intensity, 0.5) * 0.22)),
@@ -1767,8 +1771,9 @@
                   <div class="Carousel-module__nu5vFW__carousel">
                     <div class="Carousel-module__nu5vFW__carousel__track">
                       <div class="Carousel-module__nu5vFW__carousel__inner">
-                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/ozon-fresh-logo.svg"
-                            alt="ozon-fresh-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img
+                            src="/images/logos/ozon-fresh-logo.svg" alt="ozon-fresh-logo"
+                            class="Carousel-module__nu5vFW__carousel__item-image" /></div>
                         <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/x5-logo.svg"
                             alt="x5-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
                         <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/lavka-logo.svg"
@@ -1789,8 +1794,9 @@
                             alt="otello-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
                       </div>
                       <div class="Carousel-module__nu5vFW__carousel__inner" aria-hidden="true">
-                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/ozon-fresh-logo.svg"
-                            alt="ozon-fresh-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img
+                            src="/images/logos/ozon-fresh-logo.svg" alt="ozon-fresh-logo"
+                            class="Carousel-module__nu5vFW__carousel__item-image" /></div>
                         <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/x5-logo.svg"
                             alt="x5-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
                         <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/lavka-logo.svg"
@@ -1831,7 +1837,8 @@
                           </div>
                           <div class="CaseCard-module__iyTA2W__case-card__content-text">
                             <p class="u-p-normal">High-conversion corporate platforms, intuitive architecture, and
-                              SEO-optimized web systems engineered to scale B2B brands and enterprise products. Featured:
+                              SEO-optimized web systems engineered to scale B2B brands and enterprise products.
+                              Featured:
                               Nest</p>
                           </div>
                         </div>
@@ -3722,7 +3729,8 @@
         var stormStartTime = performance.now();
         var stormIntensity = 1.0; // Starts SUPER STRONG right at the beginning!
         var animTime = 0;
-        var prevScrollY = null;
+        var prevHero = null;
+        var prevHeroTop = null;
         var totalScrollTraveled = 0;
         var maxDrops = window.innerWidth < 900 ? 130 : 220;
         var minDrops = window.innerWidth < 900 ? 32 : 55;
@@ -3850,53 +3858,76 @@
 
         scheduleNextLightning();
 
-        // 60fps Storm Render Loop — CONTINUOUS ACROSS THE ENTIRE WEBSITE
+        // 60fps Storm Render Loop — Rain strictly in Hero section down to Tablet, continuous simulation
         function renderStorm() {
           requestAnimationFrame(renderStorm);
 
-          // 1. Global Scroll Tracking (Works continuously across all sections and infinite loop)
-          var currentScrollY = (loopScroll && loopScroll.state && loopScroll.state.pos !== undefined) ?
-            -loopScroll.state.pos : (window.pageYOffset || window.scrollY || 0);
+          // Find active/nearest Hero section and its corresponding showcase tablet box
+          var allHeroes = document.querySelectorAll('.page-module__ZDaQEq__s1.figma-hero-s1');
+          var activeHero = null;
+          var activeHeroRect = null;
+          var activeBox = null;
+          var activeBoxRect = null;
 
-          var scrollDeltaY = 0;
-          if (prevScrollY !== null) {
-            scrollDeltaY = prevScrollY - currentScrollY; // Positive when scrolling UP, negative when scrolling DOWN
-            if (Math.abs(scrollDeltaY) > 95) scrollDeltaY = 0; // Guard against infinite loop wrap jumps
+          var bestHeroDist = Infinity;
+          for (var h = 0; h < allHeroes.length; h++) {
+            var hr = allHeroes[h].getBoundingClientRect();
+            var dist = 0;
+            if (hr.bottom < 0) dist = Math.abs(hr.bottom);
+            else if (hr.top > rainH) dist = hr.top - rainH;
+            else dist = 0; // Currently in view
+
+            if (dist < bestHeroDist) {
+              bestHeroDist = dist;
+              activeHero = allHeroes[h];
+              activeHeroRect = hr;
+            }
           }
-          prevScrollY = currentScrollY;
+
+          if (activeHero) {
+            var parentWrap = activeHero.closest('[data-loop-scroll="wrap"]');
+            if (parentWrap) {
+              activeBox = parentWrap.querySelector('.showcase-framed-box');
+              if (activeBox) {
+                activeBoxRect = activeBox.getBoundingClientRect();
+              }
+            }
+          }
+          if (!activeBoxRect) {
+            var allBoxes = document.querySelectorAll('.showcase-framed-box');
+            if (allBoxes.length > 0) {
+              activeBoxRect = allBoxes[0].getBoundingClientRect();
+            }
+          }
+
+          // Camera motion compensation
+          var scrollDeltaY = 0;
+          if (activeHeroRect && prevHeroTop !== null) {
+            scrollDeltaY = activeHeroRect.top - prevHeroTop;
+            if (Math.abs(scrollDeltaY) > 95) scrollDeltaY = 0;
+          }
+          if (activeHeroRect) {
+            prevHeroTop = activeHeroRect.top;
+          }
 
           var scrollBoost = Math.max(0, scrollDeltaY);
           if (scrollDeltaY !== 0) {
             totalScrollTraveled += Math.abs(scrollDeltaY);
-            // Synchronize splash particles with scroll displacement
             for (var spIdx = 0; spIdx < splashes.length; spIdx++) {
               splashes[spIdx].y += scrollDeltaY;
             }
           }
 
-          // 2. Detect if any showcase tablet box is currently on or near the screen
-          var allBoxes = document.querySelectorAll('.showcase-framed-box');
-          var visibleBoxRect = null;
-          for (var b = 0; b < allBoxes.length; b++) {
-            var br = allBoxes[b].getBoundingClientRect();
-            // Check if top ledge is visible in viewport or near it
-            if (br.top > -40 && br.top < rainH + 40) {
-              visibleBoxRect = br;
-              break;
-            }
-          }
+          var cloudTop = activeHeroRect ? activeHeroRect.top : 0;
+          var tabletTop = activeBoxRect ? activeBoxRect.top : (activeHeroRect ? activeHeroRect.bottom : rainH);
+          var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.05);
+          var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.95);
 
-          var hasVisibleTablet = false;
-          var tabletTop = -9999;
-          var tabletLeft = 0;
-          var tabletRight = 0;
+          // The spawn ceiling is the storm clouds (which move up with the hero when scrolling)
+          var spawnCeiling = Math.min(0, cloudTop);
 
-          if (visibleBoxRect) {
-            tabletTop = visibleBoxRect.top;
-            tabletLeft = visibleBoxRect.left;
-            tabletRight = visibleBoxRect.right;
-            hasVisibleTablet = (tabletTop > 0 && tabletTop < rainH);
-          }
+          // Clear canvas every frame
+          rCtx.clearRect(0, 0, rainW, rainH);
 
           // =========================================================================
           // DYNAMIC RAIN INTENSITY (SUPER STRONG AT FIRST -> CALMS DOWN -> SURGES -> CALMS)
@@ -3907,7 +3938,9 @@
           if (stormElapsed > 3.2) {
             var cycleTime = stormElapsed - 3.2;
             var timePhase = cycleTime * 0.31; // ~20s atmospheric wave period
-            var scrollPhase = (totalScrollTraveled * 0.0022) + (Math.abs(currentScrollY) * 0.0008);
+            var currentScrollPos = (loopScroll && loopScroll.state && loopScroll.state.pos !== undefined) ?
+              Math.abs(loopScroll.state.pos) : (window.pageYOffset || window.scrollY || 0);
+            var scrollPhase = (totalScrollTraveled * 0.0022) + (currentScrollPos * 0.0008);
 
             var dynamicWave = Math.cos(timePhase + scrollPhase);
             var microGust = Math.sin(timePhase * 2.1 + scrollPhase * 0.5) * 0.12;
@@ -3915,26 +3948,20 @@
             targetIntensity = 0.61 + 0.39 * dynamicWave + microGust;
           }
 
-          // Clamp between 0.22 (calm, peaceful drizzle) and 1.0 (super strong downpour)
           targetIntensity = Math.max(0.22, Math.min(1.0, targetIntensity));
-
-          // Smooth lerp for continuous, cinematic transitions
           stormIntensity += (targetIntensity - stormIntensity) * 0.045;
 
-          // Dynamically scale parameters based on storm intensity
           var stormSpeedMult = 0.45 + 0.55 * Math.pow(stormIntensity, 1.1);
           var stormLenMult = 0.48 + 0.52 * stormIntensity;
           var stormAlphaMult = 0.65 + 0.35 * stormIntensity;
           var activeDropCount = Math.round(minDrops + (maxDrops - minDrops) * Math.pow(stormIntensity, 1.25));
 
-          // Broadcast storm intensity to CSS so the tablet frame reacts in real time
           document.documentElement.style.setProperty('--storm-intensity', stormIntensity.toFixed(3));
 
           // Smooth lerp lightning intensity
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
           if (lightningLevel < 0.005 && lightningTarget === 0) lightningLevel = 0;
 
-          // Electric white illumination on overlay and cloud silhouettes
           var overlays = document.querySelectorAll('.hero-lightning-flash');
           for (var o = 0; o < overlays.length; o++) {
             overlays[o].style.opacity = lightningLevel.toFixed(3);
@@ -3944,13 +3971,11 @@
             clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
 
-          rCtx.clearRect(0, 0, rainW, rainH);
-
           var rainIllumination = lightningLevel * 0.65;
           animTime += 0.04;
 
           // =========================================================================
-          // 1. UPDATE & RENDER FALLING RAINDROPS (CONTINUOUS FULL-SCREEN RAIN)
+          // UPDATE & RENDER RAINDROPS (Always simulates in the section; vanishes at tablet top)
           // =========================================================================
           for (var i = 0; i < raindrops.length; i++) {
             if (i >= activeDropCount) continue;
@@ -3971,33 +3996,30 @@
             d.x += vx;
             d.y += dropFall;
 
-            // --- A. Collision with Tablet Top (When the tablet is on screen) ---
-            if (hasVisibleTablet) {
-              var isOverTablet = (d.x >= tabletLeft - 2 && d.x <= tabletRight + 2);
+            // --- A. Collision with Tablet Top (The 1D Horizontal Sharp Ledge) ---
+            var isOverTablet = (d.x >= tabletLeft - 2 && d.x <= tabletRight + 2);
 
-              if (isOverTablet && prevY <= tabletTop && d.y >= tabletTop) {
-                var tTop = (tabletTop - prevY) / (d.y - prevY);
-                var hitX = prevX + tTop * (d.x - prevX);
+            if (isOverTablet && prevY <= tabletTop && d.y >= tabletTop) {
+              var tTop = (tabletTop - prevY) / (d.y - prevY);
+              var hitX = prevX + tTop * (d.x - prevX);
 
-                if (hitX >= tabletLeft - 2 && hitX <= tabletRight + 2) {
-                  // TABLET REACTION: Splash count, velocity and spread scale directly with rain speed and volume!
+              if (hitX >= tabletLeft - 2 && hitX <= tabletRight + 2) {
+                // TABLET REACTION: Splash count, velocity and spread scale directly with rain speed and volume!
+                if (tabletTop >= -20 && tabletTop <= rainH + 20) {
                   var impactSpd = dropFall;
                   var impactRatio = Math.min(1.5, Math.max(0.4, impactSpd / 38.0));
-
-                  // In calm drizzle: 1-2 small particles. In heavy storm: 4-6 vigorous particles.
                   var baseCount = d.tier === 2 ? (Math.random() * 3 + 3) : (Math.random() * 2 + 2);
                   var splashCount = Math.max(1, Math.round(baseCount * (0.35 + 0.65 * stormIntensity)));
 
                   if (splashes.length < 150) {
                     for (var sp = 0; sp < splashCount; sp++) {
                       var splashAngle = (Math.random() - 0.5) * (1.1 + 0.5 * stormIntensity);
-                      // Bounce speed directly propelled by the impact velocity of the drop!
                       var splashSpd = (Math.random() * 2.8 + 1.2) * (0.45 + 0.55 * impactRatio);
                       splashes.push({
                         x: hitX + (Math.random() - 0.5) * (1.5 + 2.0 * stormIntensity),
                         y: tabletTop - Math.random() * 2,
                         vx: Math.sin(splashAngle) * splashSpd + Math.sin(effWind) * (0.4 + 0.4 * stormIntensity),
-                        vy: -Math.cos(splashAngle) * splashSpd, // Bounces upward!
+                        vy: -Math.cos(splashAngle) * splashSpd,
                         gravity: 0.26 + Math.random() * 0.06,
                         r: (d.tier === 2 ? (Math.random() * 0.35 + 0.55) : (Math.random() * 0.25 + 0.38)) * (0.65 + 0.35 * stormIntensity),
                         alpha: 0.95,
@@ -4005,38 +4027,47 @@
                       });
                     }
                   }
-
-                  // Raindrop is blocked by the tablet: resets to storm clouds above!
-                  d.y = -(Math.random() * 90 + 20);
-                  d.x = Math.random() * (rainW + 280) - 140;
-                  continue;
                 }
+
+                // Raindrop is blocked by the tablet: resets to storm clouds above!
+                d.y = spawnCeiling - (Math.random() * 90 + 20);
+                d.x = Math.random() * (rainW + 280) - 140;
+                continue;
               }
             }
 
-            // --- B. Continuous Full-Screen Rain: Resets ONLY at the bottom of the viewport ---
-            if (d.y > rainH + 70) {
-              d.y = -(Math.random() * 90 + 20);
+            // --- B. Section Boundary: Rain vanishes right at the tablet top (does NOT go below tablet) ---
+            if (d.y >= tabletTop + 15) {
+              d.y = spawnCeiling - (Math.random() * 90 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
             // Lateral reset
             if (d.x > rainW + 90) {
-              d.y = -(Math.random() * 80 + 20);
+              d.y = spawnCeiling - (Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
-            var finalAlpha = d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45));
+            // Do not draw if drop is still above the viewport or below the tablet
+            var effectiveLen = d.len * stormLenMult * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
+            if (d.y < -effectiveLen || d.y > tabletTop + 15) continue;
+
+            // Subtle fade only in the last 15px past the tablet ledge into the darkness
+            var boundaryFade = 1.0;
+            if (d.y > tabletTop) {
+              boundaryFade = Math.max(0, 1.0 - (d.y - tabletTop) / 15.0);
+            }
+
+            var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45))) * boundaryFade;
             finalAlpha = Math.min(0.96, Math.max(0.0, finalAlpha));
 
             if (finalAlpha <= 0.01) continue;
 
-            var effectiveLen = d.len * stormLenMult * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
             var tailX = d.x - Math.sin(effWind) * effectiveLen;
             var tailY = d.y - Math.cos(effWind) * effectiveLen;
 
-            // --- C. Render Pure Motion-Blurred Atmospheric Rain Streaks ---
+            // Render Pure Motion-Blurred Atmospheric Rain Streaks
             var streakAlpha = finalAlpha * stormAlphaMult * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
 
             // Pass 1: Translucent outer water sheen halo along full velocity vector
@@ -4061,7 +4092,7 @@
           }
 
           // TABLET REACTION: Wet Rim Highlight along the sharp ledge (when visible on screen)
-          if (hasVisibleTablet && tabletTop >= 0 && tabletTop <= rainH) {
+          if (tabletTop >= -2 && tabletTop <= rainH + 2) {
             var rimIntensity = Math.min(1.0, 0.20 + 0.70 * stormIntensity + rainIllumination * 0.4);
             var rimGrad = rCtx.createLinearGradient(tabletLeft, tabletTop, tabletRight, tabletTop);
             rimGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
@@ -4083,7 +4114,7 @@
             var sp = splashes[spIdx];
             sp.x += sp.vx;
             sp.y += sp.vy;
-            sp.vy += sp.gravity; // Gravity curves spray downward into a parabolic arc
+            sp.vy += sp.gravity;
             sp.alpha -= sp.decay;
 
             if (sp.alpha <= 0.01) {
@@ -4093,13 +4124,11 @@
 
             var splashAlpha = Math.min(1.0, sp.alpha * (0.85 + rainIllumination * 0.3));
 
-            // Core bright micro-droplet
             rCtx.fillStyle = 'rgba(255, 255, 255, ' + splashAlpha.toFixed(3) + ')';
             rCtx.beginPath();
             rCtx.arc(sp.x, sp.y, sp.r, 0, Math.PI * 2);
             rCtx.fill();
 
-            // Refractive water sheen halo around splash droplet
             rCtx.fillStyle = 'rgba(180, 230, 255, ' + (splashAlpha * 0.45).toFixed(3) + ')';
             rCtx.beginPath();
             rCtx.arc(sp.x, sp.y, sp.r * 1.8, 0, Math.PI * 2);
