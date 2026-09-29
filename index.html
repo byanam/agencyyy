@@ -3717,11 +3717,10 @@
         var splashes = [];
         var ripples = [];
         var sideDroplets = []; // Droplets trickling down the left and right tablet edges
-        var fallingDrops = []; // Free-falling droplets detaching from the bottom of the tablet
+        var fallingDrops = []; // Free-falling droplets detaching with pinch-off physics
         var waterVolume = 0.0; // Starts at ZERO: collects realistically as rain falls!
-        var waterCapacity = 36.0; // Surface tension retention capacity: water accumulates before spilling!
-        var bottomAccumLeft = 0.0; // Water gathered at bottom-left corner
-        var bottomAccumRight = 0.0; // Water gathered at bottom-right corner
+        var waterCapacity = 38.0; // Surface tension retention capacity: water accumulates before spilling!
+        var stormStartTime = performance.now(); // Website opens empty; rain rolls in naturally
         var sideSpawnTimer = 0;
         var animTime = 0;
         var prevHero = null;
@@ -3729,6 +3728,14 @@
         var totalDrops = window.innerWidth < 900 ? 95 : 160;
         var lightningLevel = 0;
         var lightningTarget = 0;
+
+        // Capillary Drip Emitters at the 4 corners of the tablet
+        var dripEmitters = {
+          topLeft: { mass: 0.0, recoil: 0.0 },
+          topRight: { mass: 0.0, recoil: 0.0 },
+          bottomLeft: { mass: 0.0, recoil: 0.0 },
+          bottomRight: { mass: 0.0, recoil: 0.0 }
+        };
 
         function resizeRain() {
           rainW = window.innerWidth;
@@ -3741,52 +3748,80 @@
         resizeRain();
 
         // Photorealistic Water Droplet Renderer (Wednesday / Apple liquid CGI aesthetics)
-        function drawPhotorealisticWaterDrop(ctx, x, y, r, vy, alpha, isHanging, stretch) {
+        function drawPhotorealisticWaterDrop(ctx, x, y, r, vy, alpha, isHanging, fallTime, stretchOverride) {
           if (alpha <= 0.02 || r <= 0.4) return;
           ctx.save();
           ctx.translate(x, y);
 
-          var s = stretch || (isHanging ? (1.0 + Math.sin(animTime * 6.5) * 0.12) : Math.min(2.4, 1.0 + Math.max(0, vy) * 0.07));
-          ctx.scale(1.0, s);
+          // Capillary surface tension shape dynamics
+          var scaleX = 1.0;
+          var scaleY = 1.0;
 
-          // 1. Refractive Water Body (Teardrop path with surface tension curvature)
+          if (stretchOverride) {
+            scaleY = stretchOverride;
+            scaleX = 1.0 / Math.sqrt(Math.max(0.5, stretchOverride));
+          } else if (isHanging) {
+            // Hanging droplet: swaying gently with surface tension
+            var sway = Math.sin(animTime * 6.5) * 0.12;
+            scaleY = 1.0 + sway;
+            scaleX = 1.0 - sway * 0.5;
+          } else {
+            // Free-falling droplet: authentic capillary shape oscillation!
+            // Wobbles between prolate (tall) and oblate (wide) as seen in high-speed fluid photography
+            var t = fallTime || 0;
+            var osc = Math.sin(t * 16.5) * Math.exp(-t * 0.75) * 0.24;
+            var speedStretch = Math.min(0.45, Math.max(0, vy) * 0.04);
+            scaleY = 1.0 + speedStretch + osc;
+            scaleX = Math.max(0.65, 1.0 - speedStretch * 0.5 - osc);
+          }
+
+          ctx.scale(scaleX, scaleY);
+
+          // 1. Fluid Teardrop Silhouette with Capillary Curvature
           ctx.beginPath();
           ctx.arc(0, 0, r, 0, Math.PI, false);
-          ctx.quadraticCurveTo(-r * 0.88, -r * 0.9, 0, -r * (isHanging ? 1.7 : 1.45));
-          ctx.quadraticCurveTo(r * 0.88, -r * 0.9, r, 0);
+          var neckHeight = isHanging ? (r * 1.85) : (r * 1.55);
+          ctx.bezierCurveTo(-r * 0.92, -r * 0.6, -r * 0.48, -neckHeight, 0, -neckHeight);
+          ctx.bezierCurveTo(r * 0.48, -neckHeight, r * 0.92, -r * 0.6, r, 0);
           ctx.closePath();
 
-          // Translucent liquid refraction gradient
-          var bodyGrad = ctx.createRadialGradient(-r * 0.25, -r * 0.25, r * 0.1, 0, 0, r * 1.35);
-          bodyGrad.addColorStop(0, 'rgba(235, 248, 255, ' + (alpha * 0.50).toFixed(3) + ')');
-          bodyGrad.addColorStop(0.5, 'rgba(175, 220, 255, ' + (alpha * 0.24).toFixed(3) + ')');
-          bodyGrad.addColorStop(0.85, 'rgba(120, 185, 240, ' + (alpha * 0.38).toFixed(3) + ')');
-          bodyGrad.addColorStop(1, 'rgba(215, 242, 255, ' + (alpha * 0.70).toFixed(3) + ')');
+          // 2. Liquid Optical Refraction Body (Translucent core with sky-cyan undertone)
+          var bodyGrad = ctx.createRadialGradient(-r * 0.28, -r * 0.3, r * 0.1, 0, -r * 0.2, r * 1.4);
+          bodyGrad.addColorStop(0, 'rgba(240, 252, 255, ' + (alpha * 0.55).toFixed(3) + ')');
+          bodyGrad.addColorStop(0.45, 'rgba(180, 225, 255, ' + (alpha * 0.26).toFixed(3) + ')');
+          bodyGrad.addColorStop(0.85, 'rgba(125, 190, 245, ' + (alpha * 0.40).toFixed(3) + ')');
+          bodyGrad.addColorStop(1, 'rgba(215, 245, 255, ' + (alpha * 0.75).toFixed(3) + ')');
           ctx.fillStyle = bodyGrad;
           ctx.fill();
 
-          // Liquid meniscus edge refraction border
-          ctx.strokeStyle = 'rgba(230, 248, 255, ' + (alpha * 0.75).toFixed(3) + ')';
-          ctx.lineWidth = Math.max(0.65, r * 0.16);
+          // 3. Meniscus Border Refraction
+          ctx.strokeStyle = 'rgba(235, 250, 255, ' + (alpha * 0.78).toFixed(3) + ')';
+          ctx.lineWidth = Math.max(0.65, r * 0.15);
           ctx.stroke();
 
-          // 2. Bottom Internal Caustic Lens Glow
+          // 4. Bottom Caustic Focal Glint (Light focusing through the water lens)
           ctx.beginPath();
-          ctx.arc(0, r * 0.35, r * 0.58, 0.25 * Math.PI, 0.75 * Math.PI, false);
-          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (alpha * 0.65).toFixed(3) + ')';
-          ctx.lineWidth = Math.max(0.7, r * 0.26);
+          ctx.arc(0, r * 0.38, r * 0.55, 0.22 * Math.PI, 0.78 * Math.PI, false);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (alpha * 0.70).toFixed(3) + ')';
+          ctx.lineWidth = Math.max(0.75, r * 0.26);
           ctx.stroke();
 
-          // 3. Primary Specular Glint (Top-left curved highlight reflecting sky)
-          ctx.fillStyle = 'rgba(255, 255, 255, ' + (alpha * 0.95).toFixed(3) + ')';
+          // 5. Primary Sky Specular Glint (Top-left curved highlight)
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + (alpha * 0.96).toFixed(3) + ')';
           ctx.beginPath();
-          ctx.ellipse(-r * 0.32, -r * 0.36, r * 0.26, r * 0.18, -Math.PI / 4, 0, Math.PI * 2);
+          ctx.ellipse(-r * 0.32, -r * 0.45, r * 0.28, r * 0.18, -Math.PI / 4, 0, Math.PI * 2);
           ctx.fill();
 
-          // 4. Pin-point specular core dot
+          // 6. Secondary subtle edge glint (Fresnel rim reflection)
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + (alpha * 0.55).toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(r * 0.35, -r * 0.2, r * 0.12, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 7. Razor-sharp white pin-point specular core
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(-r * 0.32, -r * 0.36, Math.max(0.5, r * 0.1), 0, Math.PI * 2);
+          ctx.arc(-r * 0.32, -r * 0.45, Math.max(0.5, r * 0.1), 0, Math.PI * 2);
           ctx.fill();
 
           ctx.restore();
@@ -3822,8 +3857,7 @@
           }
 
           var windAngle = 0.17 + (Math.random() - 0.5) * 0.04;
-          var limitY = maxSpawnY || rainH;
-          var y = initialScatter ? (Math.random() * (limitY + 40) - 40) : (Math.random() * 80 - 60);
+          var y = -(Math.random() * 90 + 20); // Spawns above viewport in top storm clouds
           var x = Math.random() * (rainW + 280) - 140;
 
           return {
@@ -3837,10 +3871,6 @@
             windAngle: windAngle,
             phase: Math.random() * Math.PI * 2
           };
-        }
-
-        for (var i = 0; i < totalDrops; i++) {
-          raindrops.push(createDrop(true, 700));
         }
 
         // Stochastic Hogwarts Thunderstorm Lightning Strike Sequencer
@@ -3976,6 +4006,20 @@
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
           var cornerR = Math.min(32, Math.max(20, (tabletRight - tabletLeft) * 0.025));
 
+          // Progressive Storm Roll-in: Starts clean and empty, then rain begins from top clouds!
+          var stormElapsed = (performance.now() - stormStartTime) / 1000;
+          var targetDropCount = 0;
+          if (stormElapsed > 1.0) {
+            var ramp = Math.min(1.0, (stormElapsed - 1.0) / 4.2);
+            targetDropCount = Math.floor(ramp * ramp * totalDrops);
+          }
+
+          while (raindrops.length < targetDropCount) {
+            var newDrop = createDrop(false, 0);
+            newDrop.y = -(Math.random() * 90 + 20); // Spawns in top storm clouds
+            raindrops.push(newDrop);
+          }
+
           // Smooth lerp lightning intensity
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
           if (lightningLevel < 0.005 && lightningTarget === 0) lightningLevel = 0;
@@ -3995,7 +4039,7 @@
           var rainIllumination = lightningLevel * 0.65;
           animTime += 0.04;
 
-          // Subtle natural drainage/settling of collected water (evaporation & settling)
+          // Subtle natural drainage/settling of collected water
           waterVolume = Math.max(0, waterVolume - 0.006);
 
           // Update & Render Photorealistic Raindrops
@@ -4060,21 +4104,21 @@
               }
 
               // After reaching the tablet threshold, rain fades out into darkness and resets to top clouds
-              d.y = Math.random() * 70 - 50;
+              d.y = -(Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
             // Cut-off past tabletTop into darkness
             if (d.y > tabletTop) {
-              d.y = Math.random() * 70 - 50;
+              d.y = -(Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
             // Lateral Reset
             if (d.x > rainW + 90) {
-              d.y = Math.random() * 70 - 50;
+              d.y = -(Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
@@ -4126,7 +4170,7 @@
 
             // Photorealistic leading droplet bead
             if (d.tier >= 1 && finalAlpha > 0.12) {
-              drawPhotorealisticWaterDrop(rCtx, d.x, d.y, d.thickness * (d.tier === 2 ? 0.95 : 0.75), vy, coreAlpha, false, 1.25);
+              drawPhotorealisticWaterDrop(rCtx, d.x, d.y, d.thickness * (d.tier === 2 ? 0.95 : 0.75), vy, coreAlpha, false, 0, 1.25);
             }
           }
 
@@ -4216,37 +4260,50 @@
             rCtx.fill();
           }
 
-          // 3. Overflow Physics: Only when collected water exceeds surface tension capacity!
+          // 3. Overflow & Capillary Droplet Physics: Only when collected water exceeds surface tension capacity!
+          var tlX = tabletLeft + cornerR * 0.4;
+          var tlY = tabletTop;
+          var trX = tabletRight - cornerR * 0.4;
+          var trY = tabletTop;
+          var blX = tabletLeft + cornerR * 0.4;
+          var blY = tabletBottom;
+          var brX = tabletRight - cornerR * 0.4;
+          var brY = tabletBottom;
+
           if (waterVolume >= waterCapacity) {
             var excess = waterVolume - waterCapacity;
-            waterVolume -= excess * 0.025; // Gradual realistic fluid drainage
+            waterVolume -= excess * 0.02; // Slow realistic fluid drainage
 
-            // Spawn side trickle droplets that roll down the left & right tablet borders
+            // Top-left and Top-right capillary emitters slowly gather mass
+            dripEmitters.topLeft.mass += excess * 0.005 + 0.003;
+            dripEmitters.topRight.mass += excess * 0.005 + 0.003;
+
+            // Spawn side trickle droplets that roll down the outer borders
             sideSpawnTimer++;
-            var spawnThreshold = Math.max(10, Math.round(28 - excess * 1.5));
+            var spawnThreshold = Math.max(12, Math.round(32 - excess * 1.5));
             if (sideSpawnTimer >= spawnThreshold) {
               sideSpawnTimer = 0;
 
               // Left side droplet
-              if (sideDroplets.length < 35) {
+              if (sideDroplets.length < 25) {
                 sideDroplets.push({
                   side: -1,
                   x: tabletLeft + 1,
                   y: tabletTop + cornerR * 0.4,
-                  vy: Math.random() * 0.7 + 1.3,
-                  r: Math.random() * 0.7 + 1.8,
+                  vy: Math.random() * 0.6 + 1.2,
+                  r: Math.random() * 0.6 + 1.8,
                   alpha: 0.92
                 });
               }
 
               // Right side droplet
-              if (sideDroplets.length < 35) {
+              if (sideDroplets.length < 25) {
                 sideDroplets.push({
                   side: 1,
                   x: tabletRight - 1,
                   y: tabletTop + cornerR * 0.4,
-                  vy: Math.random() * 0.7 + 1.3,
-                  r: Math.random() * 0.7 + 1.8,
+                  vy: Math.random() * 0.6 + 1.2,
+                  r: Math.random() * 0.6 + 1.8,
                   alpha: 0.92
                 });
               }
@@ -4288,73 +4345,82 @@
             sDrop.x = sDrop.side === -1 ? (tabletLeft + 1) : (tabletRight - 1);
 
             // Draw sliding water droplet
-            drawPhotorealisticWaterDrop(rCtx, sDrop.x, sDrop.y, sDrop.r, sDrop.vy, sDrop.alpha, false, 1.35);
+            drawPhotorealisticWaterDrop(rCtx, sDrop.x, sDrop.y, sDrop.r, sDrop.vy, sDrop.alpha, false, 0, 1.35);
 
-            // When reaching the bottom of the tablet: feed into bottom corner accumulators!
+            // When reaching the bottom of the tablet: feed into bottom corner emitters!
             if (sDrop.y >= tabletBottom - 2) {
               if (sDrop.side === -1) {
-                bottomAccumLeft += sDrop.r * 0.32;
+                dripEmitters.bottomLeft.mass += sDrop.r * 0.32;
               } else {
-                bottomAccumRight += sDrop.r * 0.32;
+                dripEmitters.bottomRight.mass += sDrop.r * 0.32;
               }
               sideDroplets.splice(sdIdx, 1);
             }
           }
 
-          // 5. Water Accumulating & Properly Falling at the Bottom of the Tablet
-          var blX = tabletLeft + cornerR * 0.4;
-          var blY = tabletBottom;
-          var brX = tabletRight - cornerR * 0.4;
-          var brY = tabletBottom;
+          // 5. Capillary Droplet Swelling & Pinch-Off Emitters (Top & Bottom Corners)
+          var emittersList = [
+            { em: dripEmitters.topLeft, x: tlX, y: tlY, isBottom: false },
+            { em: dripEmitters.topRight, x: trX, y: trY, isBottom: false },
+            { em: dripEmitters.bottomLeft, x: blX, y: blY, isBottom: true },
+            { em: dripEmitters.bottomRight, x: brX, y: brY, isBottom: true }
+          ];
 
-          // Bottom Left Hanging Droplet
-          if (bottomAccumLeft > 0.05) {
-            var hangR_L = Math.min(4.2, 1.2 + bottomAccumLeft * 2.5);
-            var wobble_L = Math.sin(animTime * 6.0) * 0.3;
-            drawPhotorealisticWaterDrop(rCtx, blX, blY + hangR_L * 0.6 + wobble_L, hangR_L, 0, 0.92, true);
+          for (var eIdx = 0; eIdx < emittersList.length; eIdx++) {
+            var item = emittersList[eIdx];
+            var em = item.em;
 
-            // Critical mass reached: PINCH-OFF and release a falling water droplet!
-            if (bottomAccumLeft >= 1.0) {
-              fallingDrops.push({
-                x: blX + (Math.random() - 0.5) * 2,
-                y: blY + hangR_L * 0.9,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: Math.random() * 0.6 + 1.2,
-                r: Math.random() * 0.5 + 2.3,
-                alpha: 0.95,
-                fallDist: 0,
-                maxFall: Math.random() * 120 + 160
-              });
-              bottomAccumLeft = 0.06; // Residual bead left after pinch-off
+            // Handle elastic spring recoil after pinch-off
+            if (em.recoil < 0) {
+              em.recoil += 0.16;
+              if (em.recoil > 0) em.recoil = 0;
+            }
+
+            if (em.mass > 0.03) {
+              var r = Math.min(4.8, 1.4 + em.mass * 3.4);
+              var sway = Math.sin(animTime * 6.5 + (item.isBottom ? 1.5 : 0)) * (0.08 + em.mass * 0.14);
+              drawPhotorealisticWaterDrop(rCtx, item.x, item.y + em.recoil + r * 0.45, r, 0, 0.95, true, 0, 1.0 + em.mass * 0.6 + sway);
+
+              // Critical surface tension detachment threshold reached: PINCH-OFF!
+              if (em.mass >= 1.0) {
+                // 1. Primary detached falling water droplet
+                fallingDrops.push({
+                  x: item.x + (Math.random() - 0.5) * 1.5,
+                  y: item.y + r * 0.9,
+                  r: r * 0.88,
+                  vx: (Math.random() - 0.5) * 0.25,
+                  vy: 1.1,
+                  fallTime: 0,
+                  alpha: 0.96,
+                  fallDist: 0,
+                  maxFall: Math.random() * 140 + 190
+                });
+
+                // 2. Trailing satellite micro-droplet (classic real fluid mechanics)
+                fallingDrops.push({
+                  x: item.x,
+                  y: item.y + r * 0.2,
+                  r: r * 0.26,
+                  vx: 0,
+                  vy: 0.85,
+                  fallTime: 0,
+                  alpha: 0.85,
+                  fallDist: 0,
+                  maxFall: Math.random() * 100 + 130
+                });
+
+                // Elastic meniscus recoil and residual capillary bead
+                em.recoil = -1.8;
+                em.mass = 0.04;
+              }
             }
           }
 
-          // Bottom Right Hanging Droplet
-          if (bottomAccumRight > 0.05) {
-            var hangR_R = Math.min(4.2, 1.2 + bottomAccumRight * 2.5);
-            var wobble_R = Math.sin(animTime * 6.0 + 1.8) * 0.3;
-            drawPhotorealisticWaterDrop(rCtx, brX, brY + hangR_R * 0.6 + wobble_R, hangR_R, 0, 0.92, true);
-
-            // Critical mass reached: PINCH-OFF and release a falling water droplet!
-            if (bottomAccumRight >= 1.0) {
-              fallingDrops.push({
-                x: brX + (Math.random() - 0.5) * 2,
-                y: brY + hangR_R * 0.9,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: Math.random() * 0.6 + 1.2,
-                r: Math.random() * 0.5 + 2.3,
-                alpha: 0.95,
-                fallDist: 0,
-                maxFall: Math.random() * 120 + 160
-              });
-              bottomAccumRight = 0.06; // Residual bead left after pinch-off
-            }
-          }
-
-          // 6. Free-Falling Droplets Dripping from the Bottom into the Darkness
+          // 6. Free-Falling Droplets with Capillary Shape Oscillation
           for (var fdIdx = fallingDrops.length - 1; fdIdx >= 0; fdIdx--) {
             var fd = fallingDrops[fdIdx];
-            fd.vy += 0.34; // Gravity acceleration
+            fd.fallTime += 0.055;
+            fd.vy += 0.32; // Gravity acceleration
             fd.vx *= 0.99; // Aerodynamic drag
             fd.x += fd.vx;
             fd.y += fd.vy;
@@ -4368,7 +4434,7 @@
             var fadeRatio = Math.max(0, 1 - (fd.fallDist / fd.maxFall));
             var dropAlpha = fd.alpha * fadeRatio * (1.0 + rainIllumination * 0.4);
 
-            drawPhotorealisticWaterDrop(rCtx, fd.x, fd.y, fd.r, fd.vy, dropAlpha, false);
+            drawPhotorealisticWaterDrop(rCtx, fd.x, fd.y, fd.r, fd.vy, dropAlpha, false, fd.fallTime);
           }
         }
 
