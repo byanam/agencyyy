@@ -888,11 +888,13 @@
       border-radius: 0 !important;
       background: linear-gradient(180deg, #131418 0%, #0e0f12 50%, #0b0c0f 100%) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-top-color: rgba(255, 255, 255, calc(0.08 + var(--storm-intensity, 0.5) * 0.20)) !important;
       box-shadow: 
         0 30px 90px rgba(0, 0, 0, 0.85),
         0 10px 30px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.14),
-        inset 0 0 60px rgba(255, 255, 255, 0.015) !important;
+        inset 0 1px 0 rgba(255, 255, 255, calc(0.10 + var(--storm-intensity, 0.5) * 0.22)),
+        inset 0 0 60px rgba(255, 255, 255, calc(0.01 + var(--storm-intensity, 0.5) * 0.025)) !important;
+      transition: border-top-color 0.3s ease, box-shadow 0.3s ease;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
@@ -908,6 +910,8 @@
       width: 80% !important;
       height: 240px !important;
       background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 80%) !important;
+      opacity: calc(0.40 + var(--storm-intensity, 0.5) * 0.60) !important;
+      transition: opacity 0.4s ease;
       pointer-events: none !important;
       z-index: 0 !important;
     }
@@ -3715,11 +3719,14 @@
         var rainW = 0, rainH = 0;
         var raindrops = [];
         var splashes = [];
-        var stormStartTime = performance.now(); // Website opens empty; rain rolls in naturally
+        var stormStartTime = performance.now();
+        var stormIntensity = 1.0; // Starts SUPER STRONG right at the beginning!
         var animTime = 0;
         var prevHero = null;
         var prevHeroTop = null;
-        var totalDrops = window.innerWidth < 900 ? 120 : 210;
+        var totalScrollTraveled = 0;
+        var maxDrops = window.innerWidth < 900 ? 130 : 220;
+        var minDrops = window.innerWidth < 900 ? 32 : 55;
         var lightningLevel = 0;
         var lightningTarget = 0;
 
@@ -3763,7 +3770,7 @@
           }
 
           var windAngle = 0.14 + (Math.random() - 0.5) * 0.025;
-          var y = -(Math.random() * 100 + 20); // Spawns in top storm clouds
+          var y = initialScatter ? (Math.random() * (maxSpawnY || rainH || 800)) : (-(Math.random() * 100 + 20));
           var x = Math.random() * (rainW + 280) - 140;
 
           return {
@@ -3777,6 +3784,11 @@
             windAngle: windAngle,
             phase: Math.random() * Math.PI * 2
           };
+        }
+
+        // Instantly pre-populate drops across viewport so rain is SUPER STRONG right at the start!
+        for (var p = 0; p < maxDrops; p++) {
+          raindrops.push(createDrop(true, window.innerHeight || 800));
         }
 
         // Stochastic Hogwarts Thunderstorm Lightning Strike Sequencer
@@ -3833,7 +3845,7 @@
         }
 
         function scheduleNextLightning() {
-          var delay = Math.random() * 4200 + 3200;
+          var delay = stormIntensity > 0.65 ? (Math.random() * 3800 + 2600) : (Math.random() * 6500 + 6000);
           setTimeout(triggerLightningStrike, delay);
         }
 
@@ -3875,9 +3887,9 @@
           prevHeroTop = activeHeroRect.top;
 
           var scrollBoost = Math.max(0, scrollDeltaY);
-
-          // Synchronize splash particles with scroll displacement
           if (scrollDeltaY !== 0) {
+            totalScrollTraveled += Math.abs(scrollDeltaY);
+            // Synchronize splash particles with scroll displacement
             for (var spIdx = 0; spIdx < splashes.length; spIdx++) {
               splashes[spIdx].y += scrollDeltaY;
             }
@@ -3907,21 +3919,40 @@
           var tabletBottom = activeBoxRect ? activeBoxRect.bottom : (tabletTop + 600);
           var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.1);
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
-          var tabletCenterX = tabletLeft + (tabletRight - tabletLeft) * 0.5;
 
-          // Progressive Storm Roll-in: Starts empty on page open, rain arrives naturally from clouds!
+          // =========================================================================
+          // DYNAMIC RAIN INTENSITY (SUPER STRONG AT FIRST -> CALMS DOWN -> SURGES -> CALMS)
+          // =========================================================================
           var stormElapsed = (performance.now() - stormStartTime) / 1000;
-          var targetDropCount = 0;
-          if (stormElapsed > 0.6) {
-            var ramp = Math.min(1.0, (stormElapsed - 0.6) / 3.4);
-            targetDropCount = Math.floor(ramp * ramp * totalDrops);
+          var targetIntensity = 1.0;
+
+          if (stormElapsed > 3.2) {
+            var cycleTime = stormElapsed - 3.2;
+            var timePhase = cycleTime * 0.31; // ~20s atmospheric wave period
+            var currentScrollPos = (loopScroll && loopScroll.state && loopScroll.state.pos !== undefined) ?
+              Math.abs(loopScroll.state.pos) : (window.pageYOffset || window.scrollY || 0);
+            var scrollPhase = (totalScrollTraveled * 0.0022) + (currentScrollPos * 0.0008);
+
+            var dynamicWave = Math.cos(timePhase + scrollPhase);
+            var microGust = Math.sin(timePhase * 2.1 + scrollPhase * 0.5) * 0.12;
+
+            targetIntensity = 0.61 + 0.39 * dynamicWave + microGust;
           }
 
-          while (raindrops.length < targetDropCount) {
-            var newDrop = createDrop(false, 0);
-            newDrop.y = -(Math.random() * 90 + 20); // Spawns above viewport in storm clouds
-            raindrops.push(newDrop);
-          }
+          // Clamp between 0.22 (calm, peaceful drizzle) and 1.0 (super strong downpour)
+          targetIntensity = Math.max(0.22, Math.min(1.0, targetIntensity));
+
+          // Smooth lerp for continuous, cinematic transitions
+          stormIntensity += (targetIntensity - stormIntensity) * 0.045;
+
+          // Dynamically scale parameters based on storm intensity
+          var stormSpeedMult = 0.45 + 0.55 * Math.pow(stormIntensity, 1.1);
+          var stormLenMult = 0.48 + 0.52 * stormIntensity;
+          var stormAlphaMult = 0.65 + 0.35 * stormIntensity;
+          var activeDropCount = Math.round(minDrops + (maxDrops - minDrops) * Math.pow(stormIntensity, 1.25));
+
+          // Broadcast storm intensity to CSS so the tablet frame reacts in real time
+          document.documentElement.style.setProperty('--storm-intensity', stormIntensity.toFixed(3));
 
           // Smooth lerp lightning intensity
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
@@ -3943,9 +3974,11 @@
           animTime += 0.04;
 
           // =========================================================================
-          // 1. UPDATE & RENDER FALLING RAINDROPS (Real 2D Atmospheric Liquid Streaks)
+          // 1. UPDATE & RENDER FALLING RAINDROPS (Dynamic Speed, Volume & Atmospheric Streaks)
           // =========================================================================
           for (var i = 0; i < raindrops.length; i++) {
+            if (i >= activeDropCount) continue;
+
             var d = raindrops[i];
             var prevY = d.y;
             var prevX = d.x;
@@ -3953,8 +3986,10 @@
             d.phase += 0.09;
             var microFlutter = Math.sin(d.phase) * 0.28;
 
-            var vx = Math.sin(d.windAngle) * d.spd + microFlutter * 0.22;
-            var vy = Math.cos(d.windAngle) * d.spd;
+            var effWind = d.windAngle + Math.sin(animTime * 0.65) * 0.025 * stormIntensity;
+            var currentSpd = d.spd * stormSpeedMult;
+            var vx = Math.sin(effWind) * currentSpd + microFlutter * (0.12 + 0.16 * stormIntensity);
+            var vy = Math.cos(effWind) * currentSpd;
             var dropFall = vy + scrollBoost * 0.95;
 
             d.x += vx;
@@ -3968,21 +4003,28 @@
               var hitX = prevX + tTop * (d.x - prevX);
 
               if (hitX >= tabletLeft - 2 && hitX <= tabletRight + 2) {
-                // Instant 2D Shatter Splash: Micro-droplets pop upward into the air
-                var splashCount = d.tier === 2 ? Math.floor(Math.random() * 4 + 3) : Math.floor(Math.random() * 3 + 2);
-                if (splashes.length < 140) {
+                // TABLET REACTION: Splash count, velocity and spread scale directly with rain speed and volume!
+                var impactSpd = dropFall;
+                var impactRatio = Math.min(1.5, Math.max(0.4, impactSpd / 38.0));
+
+                // In calm drizzle: 1-2 small particles. In heavy storm: 4-6 vigorous particles.
+                var baseCount = d.tier === 2 ? (Math.random() * 3 + 3) : (Math.random() * 2 + 2);
+                var splashCount = Math.max(1, Math.round(baseCount * (0.35 + 0.65 * stormIntensity)));
+
+                if (splashes.length < 150) {
                   for (var sp = 0; sp < splashCount; sp++) {
-                    var splashAngle = (Math.random() - 0.5) * 1.5;
-                    var splashSpd = Math.random() * 3.4 + 1.2;
+                    var splashAngle = (Math.random() - 0.5) * (1.1 + 0.5 * stormIntensity);
+                    // Bounce speed directly propelled by the impact velocity of the drop!
+                    var splashSpd = (Math.random() * 2.8 + 1.2) * (0.45 + 0.55 * impactRatio);
                     splashes.push({
-                      x: hitX + (Math.random() - 0.5) * 2.5,
+                      x: hitX + (Math.random() - 0.5) * (1.5 + 2.0 * stormIntensity),
                       y: tabletTop - Math.random() * 2,
-                      vx: Math.sin(splashAngle) * splashSpd + Math.sin(d.windAngle) * 0.75,
+                      vx: Math.sin(splashAngle) * splashSpd + Math.sin(effWind) * (0.4 + 0.4 * stormIntensity),
                       vy: -Math.cos(splashAngle) * splashSpd, // Bounces upward!
-                      gravity: 0.28 + Math.random() * 0.06,
-                      r: d.tier === 2 ? (Math.random() * 0.4 + 0.65) : (Math.random() * 0.3 + 0.45),
+                      gravity: 0.26 + Math.random() * 0.06,
+                      r: (d.tier === 2 ? (Math.random() * 0.35 + 0.55) : (Math.random() * 0.25 + 0.38)) * (0.65 + 0.35 * stormIntensity),
                       alpha: 0.95,
-                      decay: Math.random() * 0.038 + 0.042
+                      decay: (Math.random() * 0.035 + 0.038) * (1.18 - 0.25 * stormIntensity)
                     });
                   }
                 }
@@ -4022,16 +4064,16 @@
 
             if (finalAlpha <= 0.01) continue;
 
-            var effectiveLen = d.len * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
-            var tailX = d.x - Math.sin(d.windAngle) * effectiveLen;
-            var tailY = d.y - Math.cos(d.windAngle) * effectiveLen;
+            var effectiveLen = d.len * stormLenMult * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
+            var tailX = d.x - Math.sin(effWind) * effectiveLen;
+            var tailY = d.y - Math.cos(effWind) * effectiveLen;
 
             // --- D. Render Pure Motion-Blurred Atmospheric Rain Streaks ---
-            var streakAlpha = finalAlpha * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
+            var streakAlpha = finalAlpha * stormAlphaMult * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
 
             // Pass 1: Translucent outer water sheen halo along full velocity vector
             rCtx.strokeStyle = 'rgba(195, 230, 255, ' + (streakAlpha * 0.35).toFixed(3) + ')';
-            rCtx.lineWidth = d.thickness * 1.35;
+            rCtx.lineWidth = d.thickness * (1.1 + 0.3 * stormIntensity);
             rCtx.lineCap = 'butt';
             rCtx.beginPath();
             rCtx.moveTo(tailX, tailY);
@@ -4039,8 +4081,8 @@
             rCtx.stroke();
 
             // Pass 2: Dense crystalline white core along leading 55% of the streak
-            var midX = d.x - Math.sin(d.windAngle) * (effectiveLen * 0.55);
-            var midY = d.y - Math.cos(d.windAngle) * (effectiveLen * 0.55);
+            var midX = d.x - Math.sin(effWind) * (effectiveLen * 0.55);
+            var midY = d.y - Math.cos(effWind) * (effectiveLen * 0.55);
 
             rCtx.strokeStyle = 'rgba(255, 255, 255, ' + (streakAlpha * 0.95).toFixed(3) + ')';
             rCtx.lineWidth = Math.max(0.65, d.thickness * 0.70);
@@ -4050,22 +4092,23 @@
             rCtx.stroke();
           }
 
-          // Wet Rim Highlight along the sharp ledge where rain strikes
+          // TABLET REACTION: Wet Rim Highlight along the sharp ledge
+          var rimIntensity = Math.min(1.0, 0.20 + 0.70 * stormIntensity + rainIllumination * 0.4);
           var rimGrad = rCtx.createLinearGradient(tabletLeft, tabletTop, tabletRight, tabletTop);
           rimGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-          rimGrad.addColorStop(0.08, 'rgba(215, 240, 255, ' + (0.28 + rainIllumination * 0.25).toFixed(3) + ')');
-          rimGrad.addColorStop(0.5, 'rgba(240, 250, 255, ' + (0.38 + rainIllumination * 0.35).toFixed(3) + ')');
-          rimGrad.addColorStop(0.92, 'rgba(215, 240, 255, ' + (0.28 + rainIllumination * 0.25).toFixed(3) + ')');
+          rimGrad.addColorStop(0.08, 'rgba(215, 240, 255, ' + (0.12 + rimIntensity * 0.32).toFixed(3) + ')');
+          rimGrad.addColorStop(0.5, 'rgba(240, 252, 255, ' + (0.18 + rimIntensity * 0.55).toFixed(3) + ')');
+          rimGrad.addColorStop(0.92, 'rgba(215, 240, 255, ' + (0.12 + rimIntensity * 0.32).toFixed(3) + ')');
           rimGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
           rCtx.strokeStyle = rimGrad;
-          rCtx.lineWidth = 1.2;
+          rCtx.lineWidth = 0.8 + 1.0 * stormIntensity;
           rCtx.beginPath();
           rCtx.moveTo(tabletLeft, tabletTop);
           rCtx.lineTo(tabletRight, tabletTop);
           rCtx.stroke();
 
-          // Update & Render 2D Splash Particles (Upward mist and droplet spray from impacts)
+          // TABLET REACTION: Render 2D Splash Particles with dynamic intensity
           for (var spIdx = splashes.length - 1; spIdx >= 0; spIdx--) {
             var sp = splashes[spIdx];
             sp.x += sp.vx;
