@@ -3977,7 +3977,7 @@
 
           var scrollBoost = Math.max(0, scrollDeltaY);
 
-          // Synchronize surface droplets and falling drops with scroll displacement
+          // Synchronize surface droplets, splashes, and falling drops with scroll displacement
           if (scrollDeltaY !== 0) {
             for (var sIdx = 0; sIdx < surfaceDrops.length; sIdx++) {
               surfaceDrops[sIdx].y += scrollDeltaY;
@@ -3987,6 +3987,9 @@
             }
             for (var rIdx = 0; rIdx < ripples.length; rIdx++) {
               ripples[rIdx].y += scrollDeltaY;
+            }
+            for (var spIdx = 0; spIdx < splashes.length; spIdx++) {
+              splashes[spIdx].y += scrollDeltaY;
             }
           }
 
@@ -4066,49 +4069,76 @@
             d.x += vx;
             d.y += dropFall;
 
-            // When Raindroplet Touches the Tablet Surface: It Stays or Joins Other Droplets!
+            // When Raindroplet Touches the Tablet Surface: Instant Shatter Splash & Surface Wetting!
             if (prevY <= tabletTop && d.y >= tabletTop) {
               var tTop = (tabletTop - prevY) / (d.y - prevY);
               var hitX = prevX + tTop * (d.x - prevX);
 
               if (hitX >= tabletLeft - 8 && hitX <= tabletRight + 8) {
-                // Splash ripple at impact point
-                if (ripples.length < 35) {
+                // 1. High-Speed Shatter Splash: Micro-droplets blasting upward off the surface
+                var splashCount = d.tier === 2 ? Math.floor(Math.random() * 3 + 4) : Math.floor(Math.random() * 2 + 2);
+                if (splashes.length < 90) {
+                  for (var sp = 0; sp < splashCount; sp++) {
+                    var splashAngle = (Math.random() - 0.5) * 1.5; // Fan spray upward
+                    var splashSpd = Math.random() * 2.8 + 1.2;
+                    splashes.push({
+                      x: hitX + (Math.random() - 0.5) * 3,
+                      y: tabletTop - Math.random() * 2,
+                      vx: Math.sin(splashAngle) * splashSpd + Math.sin(d.windAngle) * 0.7,
+                      vy: -Math.cos(splashAngle) * splashSpd, // Bounces upward!
+                      gravity: 0.25 + Math.random() * 0.08,
+                      r: d.tier === 2 ? (Math.random() * 0.4 + 0.75) : (Math.random() * 0.3 + 0.45),
+                      alpha: 0.9 + Math.random() * 0.1,
+                      decay: Math.random() * 0.045 + 0.05 // Lasts ~14-18 frames (approx 0.25s)
+                    });
+                  }
+                }
+
+                // 2. Surface Impact Shockwave Ripple
+                if (ripples.length < 40) {
                   ripples.push({
                     x: hitX,
                     y: tabletTop,
-                    rx: 2.2,
-                    ry: 0.65,
-                    maxR: Math.random() * 10 + 12,
-                    alpha: 0.72,
-                    growth: 0.65,
-                    decay: 0.035
+                    rx: 2.4,
+                    ry: 0.70,
+                    maxR: Math.random() * 8 + 10,
+                    alpha: 0.85,
+                    growth: 0.75,
+                    decay: 0.045
                   });
                 }
 
-                // Check if it touches an existing surface droplet: JOIN / COALESCE!
+                // 3. Shockwave transmission: vibrate nearby resting droplets
+                for (var wIdx = 0; wIdx < surfaceDrops.length; wIdx++) {
+                  var nearDrop = surfaceDrops[wIdx];
+                  var nearDist = Math.abs(nearDrop.x - hitX);
+                  if (nearDist < 35) {
+                    nearDrop.wobble = Math.max(nearDrop.wobble || 0, 0.75 * (1 - nearDist / 35));
+                  }
+                }
+
+                // 4. Coalescence: Join existing surface droplet if close
                 var merged = false;
                 for (var s = 0; s < surfaceDrops.length; s++) {
                   var sdCheck = surfaceDrops[s];
                   var dist = Math.hypot(sdCheck.x - hitX, sdCheck.y - tabletTop);
-                  if (dist < (sdCheck.r + 6.0)) {
-                    // Joins the other water droplet!
-                    var incomingR = d.tier === 2 ? 2.2 : (d.tier === 1 ? 1.5 : 1.0);
+                  if (dist < (sdCheck.r + 5.5)) {
+                    var incomingR = d.tier === 2 ? 1.7 : (d.tier === 1 ? 1.2 : 0.85);
                     var oldV = Math.pow(sdCheck.r, 3);
                     var incV = Math.pow(incomingR, 3);
                     var newV = oldV + incV;
-                    sdCheck.r = Math.min(6.8, Math.cbrt(newV));
+                    sdCheck.r = Math.min(5.6, Math.cbrt(newV));
                     sdCheck.x = (sdCheck.x * oldV + hitX * incV) / newV;
-                    sdCheck.wobble = 1.0; // Fluid capillary vibration on merging
+                    sdCheck.wobble = 1.0;
                     merged = true;
                     break;
                   }
                 }
 
-                // If not touching an existing drop: It STAYS THERE as a new surface water droplet bead!
-                if (!merged && surfaceDrops.length < 80) {
-                  var initR = d.tier === 2 ? (Math.random() * 0.5 + 1.9) : (Math.random() * 0.4 + 1.25);
-                  var offY = Math.random() * 5 - 2.5;
+                // 5. If not touching an existing drop: It stays on the surface as a glistening micro-bead!
+                if (!merged && surfaceDrops.length < 65) {
+                  var initR = d.tier === 2 ? (Math.random() * 0.4 + 1.35) : (Math.random() * 0.3 + 0.9);
+                  var offY = Math.random() * 4 - 2;
                   surfaceDrops.push({
                     x: hitX,
                     y: tabletTop + offY,
@@ -4157,8 +4187,8 @@
             var tailX = d.x - Math.sin(d.windAngle) * effectiveLen;
             var tailY = d.y - Math.cos(d.windAngle) * effectiveLen;
 
-            // Render Photorealistic Liquid Raindrop (Dual-pass optical streak + 3D droplet bead)
-            var haloAlpha = finalAlpha * 0.32;
+            // Render Photorealistic Liquid Raindrop (Dual-pass optical streak + specular head glint)
+            var haloAlpha = finalAlpha * 0.30;
             var haloGrad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
             haloGrad.addColorStop(0, 'rgba(215, 238, 255, 0)');
             haloGrad.addColorStop(0.65, 'rgba(215, 238, 255, ' + (haloAlpha * 0.6).toFixed(3) + ')');
@@ -4175,7 +4205,7 @@
             var coreAlpha = finalAlpha * 0.92;
             var coreGrad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
             coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            coreGrad.addColorStop(0.45, 'rgba(255, 255, 255, ' + (coreAlpha * 0.3).toFixed(3) + ')');
+            coreGrad.addColorStop(0.40, 'rgba(255, 255, 255, ' + (coreAlpha * 0.28).toFixed(3) + ')');
             coreGrad.addColorStop(0.85, 'rgba(255, 255, 255, ' + (coreAlpha * 0.85).toFixed(3) + ')');
             coreGrad.addColorStop(1, 'rgba(255, 255, 255, ' + coreAlpha.toFixed(3) + ')');
 
@@ -4186,10 +4216,17 @@
             rCtx.lineTo(d.x, d.y);
             rCtx.stroke();
 
-            // Actual 3D Liquid Water Droplet Head Bead
-            if (d.tier >= 1 && finalAlpha > 0.12) {
-              var beadR = d.thickness * (d.tier === 2 ? 1.15 : 0.95);
-              draw3DSurfaceDroplet(rCtx, d.x, d.y, beadR, 0, false, rainIllumination, null, null, d.windAngle, true);
+            // Foreground heavy drop leading specular glint
+            if (d.tier === 2 && finalAlpha > 0.16) {
+              rCtx.fillStyle = '#ffffff';
+              rCtx.beginPath();
+              rCtx.arc(d.x, d.y, Math.max(0.65, d.thickness * 0.52), 0, Math.PI * 2);
+              rCtx.fill();
+
+              rCtx.fillStyle = 'rgba(215, 245, 255, ' + (finalAlpha * 0.45).toFixed(3) + ')';
+              rCtx.beginPath();
+              rCtx.arc(d.x, d.y, d.thickness * 1.25, 0, Math.PI * 2);
+              rCtx.fill();
             }
           }
 
@@ -4204,7 +4241,7 @@
                 var v1 = Math.pow(drop1.r, 3);
                 var v2 = Math.pow(drop2.r, 3);
                 var vSum = v1 + v2;
-                var combinedR = Math.min(7.0, Math.cbrt(vSum));
+                var combinedR = Math.min(6.2, Math.cbrt(vSum));
                 drop1.r = combinedR;
                 drop1.wobble = 1.0;
                 drop1.x = (drop1.x * v1 + drop2.x * v2) / vSum;
@@ -4217,7 +4254,7 @@
             }
           }
 
-          // 3. Sliding Physics: When too much water is collected (r >= 3.2px), it slides off!
+          // 3. Sliding Physics: When too much water is collected (r >= 2.9px), it slides off!
           for (var sIdx = surfaceDrops.length - 1; sIdx >= 0; sIdx--) {
             var sd = surfaceDrops[sIdx];
 
@@ -4225,7 +4262,7 @@
             if (sd.wobble > 0) sd.wobble *= 0.91;
 
             // Critical mass threshold: surface adhesion yields, droplet starts sliding!
-            if (sd.r >= 3.2 && !sd.sliding) {
+            if (sd.r >= 2.9 && !sd.sliding) {
               sd.sliding = true;
               var slideLeft = sd.x < tabletCenterX;
               sd.vx = slideLeft ? -(Math.random() * 0.4 + 0.75) : +(Math.random() * 0.4 + 0.75);
@@ -4247,7 +4284,7 @@
                   if (!other.sliding && Math.hypot(other.x - sd.x, other.y - sd.y) < (sd.r + other.r) * 1.08) {
                     var vCur = Math.pow(sd.r, 3);
                     var vOth = Math.pow(other.r, 3);
-                    sd.r = Math.min(7.5, Math.cbrt(vCur + vOth));
+                    sd.r = Math.min(6.8, Math.cbrt(vCur + vOth));
                     sd.vx *= 1.12; // Kinetic momentum surge on absorption
                     sd.vy *= 1.10;
                     surfaceDrops.splice(otherIdx, 1);
@@ -4316,11 +4353,26 @@
             draw3DSurfaceDroplet(rCtx, sd.x, sd.y, sd.r, sd.wobble, sd.sliding, rainIllumination, null, null, slideAngle, false);
           }
 
-          // 4. Update & Render Surface Ripples on Impact
+          // 4. Wet Rim Highlight along tablet top edge where rain strikes
+          var rimGrad = rCtx.createLinearGradient(tabletLeft, tabletTop, tabletRight, tabletTop);
+          rimGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+          rimGrad.addColorStop(0.08, 'rgba(215, 240, 255, ' + (0.22 + rainIllumination * 0.22).toFixed(3) + ')');
+          rimGrad.addColorStop(0.5, 'rgba(240, 250, 255, ' + (0.32 + rainIllumination * 0.32).toFixed(3) + ')');
+          rimGrad.addColorStop(0.92, 'rgba(215, 240, 255, ' + (0.22 + rainIllumination * 0.22).toFixed(3) + ')');
+          rimGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+          rCtx.strokeStyle = rimGrad;
+          rCtx.lineWidth = 1.2;
+          rCtx.beginPath();
+          rCtx.moveTo(tabletLeft + 12, tabletTop);
+          rCtx.lineTo(tabletRight - 12, tabletTop);
+          rCtx.stroke();
+
+          // 5. Update & Render Surface Ripples on Impact
           for (var rpIdx = ripples.length - 1; rpIdx >= 0; rpIdx--) {
             var rp = ripples[rpIdx];
             rp.rx += rp.growth;
-            rp.ry += rp.growth * 0.32;
+            rp.ry += rp.growth * 0.30;
             rp.alpha -= rp.decay;
             if (rp.alpha <= 0.01 || rp.rx >= rp.maxR) {
               ripples.splice(rpIdx, 1);
@@ -4335,7 +4387,35 @@
             rCtx.stroke();
           }
 
-          // 5. Update & Render Free-Falling Droplets with Capillary Shape Oscillation
+          // 6. Update & Render Shatter Splash Particles (Upward mist and droplet spray from impacts)
+          for (var spIdx = splashes.length - 1; spIdx >= 0; spIdx--) {
+            var sp = splashes[spIdx];
+            sp.x += sp.vx;
+            sp.y += sp.vy;
+            sp.vy += sp.gravity; // Gravity curves spray downward into a parabolic arc
+            sp.alpha -= sp.decay;
+
+            if (sp.alpha <= 0.01) {
+              splashes.splice(spIdx, 1);
+              continue;
+            }
+
+            var splashAlpha = Math.min(1.0, sp.alpha * (0.85 + rainIllumination * 0.3));
+
+            // Core bright micro-droplet
+            rCtx.fillStyle = 'rgba(255, 255, 255, ' + splashAlpha.toFixed(3) + ')';
+            rCtx.beginPath();
+            rCtx.arc(sp.x, sp.y, sp.r, 0, Math.PI * 2);
+            rCtx.fill();
+
+            // Refractive water sheen halo around splash droplet
+            rCtx.fillStyle = 'rgba(180, 230, 255, ' + (splashAlpha * 0.45).toFixed(3) + ')';
+            rCtx.beginPath();
+            rCtx.arc(sp.x, sp.y, sp.r * 1.8, 0, Math.PI * 2);
+            rCtx.fill();
+          }
+
+          // 7. Update & Render Free-Falling Droplets with Capillary Shape Oscillation
           for (var fdIdx = fallingDrops.length - 1; fdIdx >= 0; fdIdx--) {
             var fd = fallingDrops[fdIdx];
             fd.fallTime += 0.055;
