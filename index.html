@@ -3715,6 +3715,12 @@
         var rainW = 0, rainH = 0;
         var raindrops = [];
         var splashes = [];
+        var ripples = [];
+        var cascades = [];
+        var waterVolume = 8.0; // Initialized with a light natural pool
+        var animTime = 0;
+        var prevHero = null;
+        var prevHeroTop = null;
         var totalDrops = window.innerWidth < 900 ? 95 : 160;
         var lightningLevel = 0;
         var lightningTarget = 0;
@@ -3729,33 +3735,33 @@
         window.addEventListener('resize', resizeRain);
         resizeRain();
 
-        // Build Multi-Depth Rain Drops (Spawn in Cloud Layer at Top)
+        // Build Multi-Depth Photorealistic Rain Drops
         function createDrop(initialScatter, maxSpawnY) {
           var tierRand = Math.random();
           var tier = 1;
           var spd, len, thickness, baseAlpha;
 
-          if (tierRand < 0.38) {
+          if (tierRand < 0.35) {
             // Tier 0: Fine Atmospheric Mist & Distant Drizzle
             tier = 0;
-            spd = Math.random() * 4 + 14;
+            spd = Math.random() * 4 + 16;
             len = Math.random() * 12 + 14;
             thickness = Math.random() * 0.2 + 0.65;
-            baseAlpha = Math.random() * 0.08 + 0.09;
-          } else if (tierRand < 0.88) {
-            // Tier 1: Core Cinematic Storm Drops
+            baseAlpha = Math.random() * 0.08 + 0.10;
+          } else if (tierRand < 0.85) {
+            // Tier 1: Core Cinematic Photorealistic Storm Drops
             tier = 1;
-            spd = Math.random() * 8 + 24;
-            len = Math.random() * 22 + 34;
-            thickness = Math.random() * 0.3 + 1.05;
-            baseAlpha = Math.random() * 0.14 + 0.22;
+            spd = Math.random() * 8 + 26;
+            len = Math.random() * 24 + 36;
+            thickness = Math.random() * 0.35 + 1.15;
+            baseAlpha = Math.random() * 0.14 + 0.26;
           } else {
             // Tier 2: Heavy Foreground Whistling Streaks
             tier = 2;
-            spd = Math.random() * 10 + 36;
-            len = Math.random() * 38 + 65;
-            thickness = Math.random() * 0.4 + 1.65;
-            baseAlpha = Math.random() * 0.16 + 0.36;
+            spd = Math.random() * 10 + 38;
+            len = Math.random() * 38 + 68;
+            thickness = Math.random() * 0.45 + 1.75;
+            baseAlpha = Math.random() * 0.16 + 0.38;
           }
 
           var windAngle = 0.17 + (Math.random() - 0.5) * 0.04;
@@ -3771,7 +3777,8 @@
             len: len,
             thickness: thickness,
             baseAlpha: baseAlpha,
-            windAngle: windAngle
+            windAngle: windAngle,
+            phase: Math.random() * Math.PI * 2
           };
         }
 
@@ -3862,8 +3869,23 @@
           // Rain has stopped and completely disappeared into the darkness!
           if (!activeHero || !activeHeroRect) {
             rCtx.clearRect(0, 0, rainW, rainH);
+            prevHero = null;
+            prevHeroTop = null;
             return;
           }
+
+          // Compensate for camera motion during upward scrolling so rain doesn't slow down
+          var scrollDeltaY = 0;
+          if (prevHero === activeHero && prevHeroTop !== null) {
+            scrollDeltaY = activeHeroRect.top - prevHeroTop;
+            if (Math.abs(scrollDeltaY) > 95) scrollDeltaY = 0; // Guard against infinite loop wrap jumps
+          }
+          prevHero = activeHero;
+          prevHeroTop = activeHeroRect.top;
+
+          // When user scrolls UP, the hero moves DOWN in viewport (scrollDeltaY > 0).
+          // Boost falling speed so drops maintain terminal velocity and never appear to slow down!
+          var scrollBoost = Math.max(0, scrollDeltaY);
 
           // Find tablet box corresponding to active hero
           var activeBoxRect = null;
@@ -3885,7 +3907,7 @@
             }
           }
 
-          // The tablet threshold where rain hits, bounces off, and fades out into darkness
+          // The tablet threshold where rain hits, accumulates, and fades out into darkness
           var tabletTop = activeBoxRect ? activeBoxRect.top : activeHeroRect.bottom;
           var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.1);
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
@@ -3907,38 +3929,67 @@
           rCtx.clearRect(0, 0, rainW, rainH);
 
           var rainIllumination = lightningLevel * 0.65;
+          animTime += 0.04;
 
-          // Update & Render Raindrops
+          // Subtle natural drainage/settling of collected water
+          waterVolume = Math.max(0, waterVolume - 0.012);
+
+          // Update & Render Photorealistic Raindrops
           for (var i = 0; i < raindrops.length; i++) {
             var d = raindrops[i];
             var prevY = d.y;
             var prevX = d.x;
 
-            var vx = Math.sin(d.windAngle) * d.spd;
-            var vy = Math.cos(d.windAngle) * d.spd;
-            d.x += vx;
-            d.y += vy;
+            // Organic fluid aerodynamic flutter
+            d.phase += 0.09;
+            var microFlutter = Math.sin(d.phase) * 0.32;
 
-            // 1. Deflection & Bounce on the Tablet Top Rim
+            var vx = Math.sin(d.windAngle) * d.spd + microFlutter * 0.25;
+            var vy = Math.cos(d.windAngle) * d.spd;
+            var dropFall = vy + scrollBoost * 0.95;
+
+            d.x += vx;
+            d.y += dropFall;
+
+            // 1. Deflection, Bounce, and Water Collection on the Tablet Top Rim
             if (prevY <= tabletTop && d.y >= tabletTop) {
               var tTop = (tabletTop - prevY) / (d.y - prevY);
               var hitX = prevX + tTop * (d.x - prevX);
 
               // If hitting the tablet top surface:
-              if (hitX >= tabletLeft - 4 && hitX <= tabletRight + 4) {
-                // Tactile micro-splashes bouncing upward off the top rim
-                if (splashes.length < 65) {
+              if (hitX >= tabletLeft - 8 && hitX <= tabletRight + 8) {
+                // Add to collected water pool!
+                var dropVol = d.tier === 2 ? 0.40 : (d.tier === 1 ? 0.22 : 0.08);
+                waterVolume += dropVol;
+                if (waterVolume > 28.0) waterVolume = 28.0;
+
+                // Spawn expanding water surface ripples in the pool
+                if (ripples.length < 45) {
+                  ripples.push({
+                    x: hitX,
+                    y: tabletTop,
+                    rx: 2.5,
+                    ry: 0.75,
+                    maxR: d.tier === 2 ? (Math.random() * 12 + 22) : (Math.random() * 8 + 14),
+                    alpha: Math.min(0.9, 0.48 + d.tier * 0.18 + rainIllumination * 0.35),
+                    growth: Math.random() * 0.35 + 0.75,
+                    decay: Math.random() * 0.024 + 0.026
+                  });
+                }
+
+                // Tactile micro-splashes bouncing upward off the collected water
+                if (splashes.length < 60) {
                   var count = d.tier === 2 ? 3 : (d.tier === 1 ? 2 : 1);
                   for (var k = 0; k < count; k++) {
                     splashes.push({
-                      x: hitX + (Math.random() - 0.5) * 4,
+                      x: hitX + (Math.random() - 0.5) * 5,
                       y: tabletTop - Math.random() * 2,
-                      vx: vx * 0.35 + (Math.random() - 0.5) * 2.8,
-                      vy: -(Math.random() * 2.8 + 1.2), // bouncing upward into the air
+                      vx: vx * 0.22 + (Math.random() - 0.5) * 2.6,
+                      vy: -(Math.random() * 3.0 + 1.2), // bouncing upward into the air
                       size: Math.random() * 0.65 + 0.65,
-                      alpha: Math.min(0.85, d.baseAlpha * 1.8 + rainIllumination * 0.5),
+                      alpha: Math.min(0.92, d.baseAlpha * 1.9 + rainIllumination * 0.5),
                       life: 1.0,
-                      decay: Math.random() * 0.08 + 0.08,
+                      decay: Math.random() * 0.07 + 0.08,
                       gravity: 0.28
                     });
                   }
@@ -3970,27 +4021,242 @@
             var distToTablet = tabletTop - d.y;
             var darknessFade = 1.0;
             if (distToTablet < fadeZone) {
-              // Smoothly taper opacity into the dark, maintaining visibility for the top bounce
-              darknessFade = Math.max(0.2, distToTablet / fadeZone);
+              darknessFade = Math.max(0.18, distToTablet / fadeZone);
             }
 
             var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46))) * darknessFade;
             finalAlpha = Math.min(0.96, Math.max(0.02, finalAlpha));
 
-            var tailX = d.x - Math.sin(d.windAngle) * d.len;
-            var tailY = d.y - Math.cos(d.windAngle) * d.len;
+            var effectiveLen = d.len * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
+            var tailX = d.x - Math.sin(d.windAngle) * effectiveLen;
+            var tailY = d.y - Math.cos(d.windAngle) * effectiveLen;
 
-            // Stark pure white motion-blurred gradient streak fading into the darkness
-            var grad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
-            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            grad.addColorStop(0.55, 'rgba(255, 255, 255, ' + (finalAlpha * 0.45).toFixed(3) + ')');
-            grad.addColorStop(1, 'rgba(255, 255, 255, ' + finalAlpha.toFixed(3) + ')');
+            // Render Photorealistic Liquid Raindrop (Dual-pass)
+            // Pass 1: Translucent refractive water halo
+            var haloAlpha = finalAlpha * 0.32;
+            var haloGrad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
+            haloGrad.addColorStop(0, 'rgba(215, 238, 255, 0)');
+            haloGrad.addColorStop(0.65, 'rgba(215, 238, 255, ' + (haloAlpha * 0.6).toFixed(3) + ')');
+            haloGrad.addColorStop(1, 'rgba(230, 246, 255, ' + haloAlpha.toFixed(3) + ')');
 
-            rCtx.strokeStyle = grad;
-            rCtx.lineWidth = d.thickness;
+            rCtx.strokeStyle = haloGrad;
+            rCtx.lineWidth = d.thickness * 1.85;
+            rCtx.lineCap = 'round';
             rCtx.beginPath();
             rCtx.moveTo(tailX, tailY);
             rCtx.lineTo(d.x, d.y);
+            rCtx.stroke();
+
+            // Pass 2: Crystalline specular core highlight
+            var coreAlpha = finalAlpha * 0.92;
+            var coreGrad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
+            coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            coreGrad.addColorStop(0.45, 'rgba(255, 255, 255, ' + (coreAlpha * 0.3).toFixed(3) + ')');
+            coreGrad.addColorStop(0.85, 'rgba(255, 255, 255, ' + (coreAlpha * 0.85).toFixed(3) + ')');
+            coreGrad.addColorStop(1, 'rgba(255, 255, 255, ' + coreAlpha.toFixed(3) + ')');
+
+            rCtx.strokeStyle = coreGrad;
+            rCtx.lineWidth = Math.max(0.65, d.thickness * 0.72);
+            rCtx.beginPath();
+            rCtx.moveTo(tailX, tailY);
+            rCtx.lineTo(d.x, d.y);
+            rCtx.stroke();
+
+            // Leading tear-drop specular bead
+            if (d.tier >= 1 && finalAlpha > 0.12) {
+              var beadR = d.thickness * (d.tier === 2 ? 0.82 : 0.62);
+              rCtx.fillStyle = 'rgba(255, 255, 255, ' + coreAlpha.toFixed(3) + ')';
+              rCtx.beginPath();
+              rCtx.arc(d.x, d.y, beadR, 0, Math.PI * 2);
+              rCtx.fill();
+            }
+          }
+
+          // Overflow Cascades Logic (When too much water collects, it spills off to left & right)
+          var cornerR = Math.min(32, Math.max(20, (tabletRight - tabletLeft) * 0.025));
+          var poolHeight = Math.min(6.0, (waterVolume / 14.0) * 4.8);
+
+          if (waterVolume > 14.0) {
+            var overflow = waterVolume - 14.0;
+            var spillIntensity = Math.min(1.0, overflow / 8.0);
+            waterVolume -= overflow * 0.045; // Excess water continuously drains into the waterfalls
+
+            var spawnCount = Math.floor(spillIntensity * 2.8 + Math.random());
+            for (var sc = 0; sc < spawnCount; sc++) {
+              // Left corner cascade particle
+              if (cascades.length < 80) {
+                cascades.push({
+                  x: tabletLeft + Math.random() * 8 + 2,
+                  y: tabletTop + Math.random() * 3,
+                  vx: -(Math.random() * 1.8 + 1.1), // pouring outward to the left
+                  vy: Math.random() * 1.8 + 2.0,
+                  size: Math.random() * 1.1 + 0.85,
+                  len: Math.random() * 14 + 10,
+                  alpha: Math.random() * 0.25 + 0.55,
+                  fallDist: 0,
+                  maxFall: Math.random() * 75 + 75, // 75-150px fall before dissolving into darkness
+                  gravity: 0.32
+                });
+              }
+              // Right corner cascade particle
+              if (cascades.length < 80) {
+                cascades.push({
+                  x: tabletRight - Math.random() * 8 - 2,
+                  y: tabletTop + Math.random() * 3,
+                  vx: +(Math.random() * 1.8 + 1.1), // pouring outward to the right
+                  vy: Math.random() * 1.8 + 2.0,
+                  size: Math.random() * 1.1 + 0.85,
+                  len: Math.random() * 14 + 10,
+                  alpha: Math.random() * 0.25 + 0.55,
+                  fallDist: 0,
+                  maxFall: Math.random() * 75 + 75,
+                  gravity: 0.32
+                });
+              }
+            }
+
+            // Cascading Waterfall Stream Rivulets pouring over the rounded corners
+            var streamAlpha = Math.min(0.85, spillIntensity * 0.65 + rainIllumination * 0.3);
+
+            rCtx.save();
+            // Left Stream Rivulet
+            var leftStreamGrad = rCtx.createLinearGradient(
+              tabletLeft + cornerR * 0.5, tabletTop,
+              tabletLeft - 14, tabletTop + 75
+            );
+            leftStreamGrad.addColorStop(0, 'rgba(255, 255, 255, ' + streamAlpha.toFixed(3) + ')');
+            leftStreamGrad.addColorStop(0.3, 'rgba(215, 240, 255, ' + (streamAlpha * 0.75).toFixed(3) + ')');
+            leftStreamGrad.addColorStop(0.7, 'rgba(180, 225, 255, ' + (streamAlpha * 0.35).toFixed(3) + ')');
+            leftStreamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            rCtx.strokeStyle = leftStreamGrad;
+            rCtx.lineWidth = 2.2;
+            rCtx.lineCap = 'round';
+            rCtx.beginPath();
+            rCtx.moveTo(tabletLeft + cornerR * 0.6, tabletTop - poolHeight * 0.5);
+            var cpx1 = tabletLeft - 4;
+            var cpy1 = tabletTop + 6;
+            var endX1 = tabletLeft - 10 + Math.sin(animTime * 6.0) * 2;
+            var endY1 = tabletTop + 65;
+            rCtx.quadraticCurveTo(cpx1, cpy1, endX1, endY1);
+            rCtx.stroke();
+
+            // Right Stream Rivulet
+            var rightStreamGrad = rCtx.createLinearGradient(
+              tabletRight - cornerR * 0.5, tabletTop,
+              tabletRight + 14, tabletTop + 75
+            );
+            rightStreamGrad.addColorStop(0, 'rgba(255, 255, 255, ' + streamAlpha.toFixed(3) + ')');
+            rightStreamGrad.addColorStop(0.3, 'rgba(215, 240, 255, ' + (streamAlpha * 0.75).toFixed(3) + ')');
+            rightStreamGrad.addColorStop(0.7, 'rgba(180, 225, 255, ' + (streamAlpha * 0.35).toFixed(3) + ')');
+            rightStreamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            rCtx.strokeStyle = rightStreamGrad;
+            rCtx.lineWidth = 2.2;
+            rCtx.lineCap = 'round';
+            rCtx.beginPath();
+            rCtx.moveTo(tabletRight - cornerR * 0.6, tabletTop - poolHeight * 0.5);
+            var cpx2 = tabletRight + 4;
+            var cpy2 = tabletTop + 6;
+            var endX2 = tabletRight + 10 + Math.sin(animTime * 6.0 + 1.5) * 2;
+            var endY2 = tabletTop + 65;
+            rCtx.quadraticCurveTo(cpx2, cpy2, endX2, endY2);
+            rCtx.stroke();
+            rCtx.restore();
+          }
+
+          // Update & Render Cascade Particles
+          for (var cIdx = cascades.length - 1; cIdx >= 0; cIdx--) {
+            var cp = cascades[cIdx];
+            cp.x += cp.vx;
+            cp.y += cp.vy;
+            cp.vy += cp.gravity;
+            cp.vx *= 0.985;
+            cp.fallDist += cp.vy;
+
+            if (cp.fallDist >= cp.maxFall || cp.y > rainH) {
+              cascades.splice(cIdx, 1);
+              continue;
+            }
+
+            var fadeRatio = Math.max(0, 1 - (cp.fallDist / cp.maxFall));
+            var curAlpha = cp.alpha * fadeRatio * (1.0 + rainIllumination * 0.5);
+            if (curAlpha < 0.02) continue;
+
+            var cTailX = cp.x - cp.vx * 1.8;
+            var cTailY = cp.y - cp.vy * 1.8;
+
+            rCtx.strokeStyle = 'rgba(220, 242, 255, ' + curAlpha.toFixed(3) + ')';
+            rCtx.lineWidth = cp.size;
+            rCtx.beginPath();
+            rCtx.moveTo(cTailX, cTailY);
+            rCtx.lineTo(cp.x, cp.y);
+            rCtx.stroke();
+
+            rCtx.fillStyle = 'rgba(255, 255, 255, ' + Math.min(0.95, curAlpha * 1.4).toFixed(3) + ')';
+            rCtx.beginPath();
+            rCtx.arc(cp.x, cp.y, cp.size * 0.72, 0, Math.PI * 2);
+            rCtx.fill();
+          }
+
+          // Render Collected Water Film along Tablet Top Rim
+          if (poolHeight > 0.35) {
+            var rimLeft = tabletLeft + cornerR * 0.6;
+            var rimRight = tabletRight - cornerR * 0.6;
+            var rimWidth = rimRight - rimLeft;
+
+            if (rimWidth > 50) {
+              rCtx.save();
+              var poolGrad = rCtx.createLinearGradient(0, tabletTop - poolHeight - 1, 0, tabletTop + 3);
+              poolGrad.addColorStop(0, 'rgba(255, 255, 255, ' + (0.75 + rainIllumination * 0.25).toFixed(3) + ')');
+              poolGrad.addColorStop(0.2, 'rgba(210, 240, 255, ' + (0.45 + rainIllumination * 0.3).toFixed(3) + ')');
+              poolGrad.addColorStop(0.6, 'rgba(160, 210, 255, ' + (0.22 + rainIllumination * 0.15).toFixed(3) + ')');
+              poolGrad.addColorStop(1, 'rgba(120, 180, 240, 0.0)');
+
+              rCtx.fillStyle = poolGrad;
+              rCtx.beginPath();
+              rCtx.moveTo(rimLeft, tabletTop);
+              var step = Math.max(12, rimWidth / 48);
+              for (var wx = rimLeft; wx <= rimRight; wx += step) {
+                var wave = Math.sin(wx * 0.025 + animTime * 3.2) * 0.75 + Math.cos(wx * 0.06 - animTime * 2.1) * 0.4;
+                var curY = tabletTop - poolHeight + wave;
+                rCtx.lineTo(wx, curY);
+              }
+              rCtx.lineTo(rimRight, tabletTop);
+              rCtx.closePath();
+              rCtx.fill();
+
+              // Crisp Specular Top Meniscus Edge
+              rCtx.strokeStyle = 'rgba(255, 255, 255, ' + Math.min(0.95, 0.65 + rainIllumination * 0.35).toFixed(3) + ')';
+              rCtx.lineWidth = 1.1;
+              rCtx.beginPath();
+              for (var wx2 = rimLeft; wx2 <= rimRight; wx2 += step) {
+                var wave2 = Math.sin(wx2 * 0.025 + animTime * 3.2) * 0.75 + Math.cos(wx2 * 0.06 - animTime * 2.1) * 0.4;
+                var curY2 = tabletTop - poolHeight + wave2;
+                if (wx2 === rimLeft) rCtx.moveTo(wx2, curY2);
+                else rCtx.lineTo(wx2, curY2);
+              }
+              rCtx.stroke();
+              rCtx.restore();
+            }
+          }
+
+          // Update & Render Surface Ripples in the Collected Water Pool
+          for (var rpIdx = ripples.length - 1; rpIdx >= 0; rpIdx--) {
+            var rp = ripples[rpIdx];
+            rp.rx += rp.growth;
+            rp.ry += rp.growth * 0.32;
+            rp.alpha -= rp.decay;
+            if (rp.alpha <= 0.01 || rp.rx >= rp.maxR) {
+              ripples.splice(rpIdx, 1);
+              continue;
+            }
+
+            var ripAlpha = Math.min(0.85, rp.alpha * (0.65 + rainIllumination * 0.35));
+            rCtx.strokeStyle = 'rgba(255, 255, 255, ' + ripAlpha.toFixed(3) + ')';
+            rCtx.lineWidth = 0.9;
+            rCtx.beginPath();
+            rCtx.ellipse(rp.x, tabletTop - (poolHeight * 0.4), rp.rx, rp.ry, 0, 0, Math.PI * 2);
             rCtx.stroke();
           }
 
@@ -4005,9 +4271,15 @@
               splashes.splice(s, 1);
               continue;
             }
-            rCtx.fillStyle = 'rgba(255, 255, 255, ' + (sp.alpha * sp.life).toFixed(3) + ')';
+            var splashAlpha = (sp.alpha * sp.life * (1.0 + rainIllumination * 0.5)).toFixed(3);
+            rCtx.fillStyle = 'rgba(220, 245, 255, ' + splashAlpha + ')';
             rCtx.beginPath();
-            rCtx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
+            rCtx.arc(sp.x, sp.y, sp.size * 1.2, 0, Math.PI * 2);
+            rCtx.fill();
+
+            rCtx.fillStyle = 'rgba(255, 255, 255, ' + splashAlpha + ')';
+            rCtx.beginPath();
+            rCtx.arc(sp.x, sp.y, sp.size * 0.6, 0, Math.PI * 2);
             rCtx.fill();
           }
         }
