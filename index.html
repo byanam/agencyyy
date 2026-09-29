@@ -4158,16 +4158,11 @@
               }
             }
 
-            // --- B. The Umbrella Effect: Rain directly underneath the tablet cannot exist! ---
-            if (isOverTablet && d.y > tabletTop) {
-              d.y = -(Math.random() * 90 + 20);
-              d.x = Math.random() * (rainW + 280) - 140;
-              continue;
-            }
+            // --- B. Rain Vanishes at Top of Tablet: The rain itself exists only through Hero section till top of tablet ---
+            var rainVanishY = tabletTop + 30;
 
-            // --- C. Rain MUST NOT GO BELOW THE TABLET: Resets at tabletBottom ---
-            if (d.y >= tabletBottom) {
-              d.y = -(Math.random() * 80 + 20);
+            if (d.y >= rainVanishY) {
+              d.y = -(Math.random() * 90 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
@@ -4178,21 +4173,12 @@
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
-            // --- D. Fade out into the black background before reaching bottom ---
+            // --- C. Fade out smoothly as rain approaches tabletTop into the black background ---
             var darknessFade = 1.0;
-            if (isOverTablet) {
-              var fadeZoneTop = 180;
-              var distToTablet = tabletTop - d.y;
-              if (distToTablet < fadeZoneTop && distToTablet > 0) {
-                darknessFade = Math.max(0.18, distToTablet / fadeZoneTop);
-              }
-            } else {
-              // Rain on the sides: smoothly fades out and dissolves into the black background before tabletBottom
-              var fadeZoneBottom = 260;
-              var distToBottom = tabletBottom - d.y;
-              if (distToBottom < fadeZoneBottom) {
-                darknessFade = Math.max(0, distToBottom / fadeZoneBottom);
-              }
+            var fadeZone = 190;
+            var distToVanish = rainVanishY - d.y;
+            if (distToVanish < fadeZone && distToVanish > 0) {
+              darknessFade = Math.max(0, distToVanish / fadeZone);
             }
 
             var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45))) * darknessFade;
@@ -4204,7 +4190,7 @@
             var tailX = d.x - Math.sin(d.windAngle) * effectiveLen;
             var tailY = d.y - Math.cos(d.windAngle) * effectiveLen;
 
-            // --- E. Render Pure Motion-Blurred Atmospheric Rain Streaks ---
+            // --- D. Render Pure Motion-Blurred Atmospheric Rain Streaks ---
             var streakAlpha = finalAlpha * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
 
             // Pass 1: Translucent outer water sheen halo along full velocity vector
@@ -4265,7 +4251,7 @@
           }
 
           // =========================================================================
-          // 3. LATERAL FLOW & FALLING PHYSICS: FALLS FROM THE SIDES ONLY, NOT FROM TABLET!
+          // 3. LATERAL FLOW & FALLING PHYSICS: FALLS FROM SIDES ONLY & GOES BENEATH TABLET
           // =========================================================================
           for (var sIdx = surfaceDrops.length - 1; sIdx >= 0; sIdx--) {
             var sd = surfaceDrops[sIdx];
@@ -4294,7 +4280,7 @@
               if (sd.sagY >= 6.8) {
                 var sideX = atLeftEdge ? (tabletLeft - 3) : (tabletRight + 3);
 
-                // Primary detached falling droplet along the side
+                // Primary detached falling droplet along the side (can go beneath the tablet!)
                 fallingDrops.push({
                   x: sideX,
                   y: tabletTop + 5,
@@ -4302,7 +4288,7 @@
                   vy: 2.2,
                   vx: atLeftEdge ? -0.35 : 0.35,
                   fallDist: 0,
-                  maxFall: Math.min(tabletBottom - tabletTop, Math.random() * 180 + 240),
+                  maxFall: (tabletBottom - tabletTop) + Math.random() * 350 + 400,
                   alpha: 0.95
                 });
 
@@ -4314,7 +4300,7 @@
                   vy: 1.1,
                   vx: atLeftEdge ? -0.15 : 0.15,
                   fallDist: 0,
-                  maxFall: Math.min(tabletBottom - tabletTop, Math.random() * 110 + 150),
+                  maxFall: (tabletBottom - tabletTop) + Math.random() * 200 + 250,
                   alpha: 0.85
                 });
 
@@ -4374,7 +4360,7 @@
             rCtx.fill();
           }
 
-          // 6. Update & Render Free-Falling Droplets (Falling ONLY along the sides, disappearing before tabletBottom)
+          // 6. Update & Render Free-Falling Droplets (Droplets can go beneath the tablet!)
           for (var fdIdx = fallingDrops.length - 1; fdIdx >= 0; fdIdx--) {
             var fd = fallingDrops[fdIdx];
             fd.vy += 0.38; // Gravity acceleration
@@ -4383,19 +4369,16 @@
             fd.y += fd.vy;
             fd.fallDist += fd.vy;
 
-            // Disappear into black background as it approaches tabletBottom
-            var distToBottom = tabletBottom - fd.y;
-            var bottomFade = 1.0;
-            if (distToBottom < 200) {
-              bottomFade = Math.max(0, distToBottom / 200);
-            }
+            // Droplets can go beneath the tablet, and fade out smoothly into the deep darkness as they fall
+            var fadeRatio = Math.max(0, 1 - (fd.fallDist / fd.maxFall));
+            var dropFade = fadeRatio * fadeRatio;
 
-            if (fd.fallDist >= fd.maxFall || fd.y >= tabletBottom - 10 || bottomFade <= 0.02) {
+            if (fd.fallDist >= fd.maxFall || fd.y > rainH + 80 || dropFade <= 0.02) {
               fallingDrops.splice(fdIdx, 1);
               continue;
             }
 
-            drawFallingDroplet(rCtx, fd.x, fd.y, fd.r, fd.vy, rainIllumination, bottomFade);
+            drawFallingDroplet(rCtx, fd.x, fd.y, fd.r, fd.vy, rainIllumination, dropFade);
           }
         }
 
