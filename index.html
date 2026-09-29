@@ -224,7 +224,7 @@
       z-index: 5 !important;
     }
 
-    /* Atmospheric Black Thunder Clouds with Natural Curved Bend at Top & Bottom */
+    /* Atmospheric Black Thunder Clouds with Natural Curved Bend & Hogwarts Storm Animation */
     .hero-clouds-wrap {
       position: absolute !important;
       top: 0 !important;
@@ -241,6 +241,26 @@
       mask-image: radial-gradient(ellipse 100% 58% at 50% 52%, #000000 20%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0.45) 66%, rgba(0, 0, 0, 0.08) 84%, transparent 100%) !important;
     }
 
+    /* Continuous Volumetric Cloud Billow & Drift */
+    .hero-clouds-drift-layer {
+      position: absolute !important;
+      inset: -6% -8% -6% -8% !important;
+      width: 116% !important;
+      height: 112% !important;
+      pointer-events: none !important;
+      will-change: transform;
+    }
+
+    .hero-clouds-drift-1 {
+      animation: cloudsDriftOne 34s ease-in-out infinite alternate !important;
+    }
+
+    .hero-clouds-drift-2 {
+      opacity: 0.42 !important;
+      mix-blend-mode: screen !important;
+      animation: cloudsDriftTwo 46s ease-in-out infinite alternate !important;
+    }
+
     .hero-clouds-img {
       width: 100% !important;
       height: 100% !important;
@@ -249,6 +269,60 @@
       display: block !important;
       border-radius: inherit !important;
       filter: brightness(0.85) contrast(1.15) !important;
+    }
+
+    .hero-clouds-img-layer2 {
+      filter: brightness(0.72) contrast(1.25) blur(10px) !important;
+      transform: scaleX(-1);
+    }
+
+    @keyframes cloudsDriftOne {
+      0% {
+        transform: translate3d(-3%, 0, 0) scale(1.03);
+      }
+      50% {
+        transform: translate3d(2.5%, -1.5%, 0) scale(1.08);
+      }
+      100% {
+        transform: translate3d(4%, 1%, 0) scale(1.04);
+      }
+    }
+
+    @keyframes cloudsDriftTwo {
+      0% {
+        transform: translate3d(3%, 1%, 0) scale(1.07);
+      }
+      50% {
+        transform: translate3d(-2%, -2%, 0) scale(1.03);
+      }
+      100% {
+        transform: translate3d(-4%, 0.5%, 0) scale(1.09);
+      }
+    }
+
+    /* Hogwarts Thunderstorm Lightning Sheet Flash Overlay */
+    .hero-lightning-flash {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      pointer-events: none !important;
+      z-index: 2 !important;
+      opacity: 0;
+      mix-blend-mode: color-dodge !important;
+      background: radial-gradient(ellipse 85% 65% at var(--lightning-x, 48%) var(--lightning-y, 30%), rgba(225, 240, 255, 0.95) 0%, rgba(150, 190, 255, 0.6) 32%, rgba(100, 130, 220, 0.22) 65%, transparent 88%) !important;
+      transition: opacity 0.05s ease-out;
+    }
+
+    /* Ambient Harry Potter Wind-Swept Rain Canvas */
+    .hero-rain-canvas {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      pointer-events: none !important;
+      z-index: 3 !important;
+      opacity: 0.8 !important;
     }
 
     .figma-hero-top-row {
@@ -1605,7 +1679,14 @@
             <div class="HnWrap-module__Jtsr0G__wrapper">
               <div class="page-module__ZDaQEq__s1 figma-hero-s1">
                 <div class="hero-clouds-wrap">
-                  <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img" fetchpriority="high" />
+                  <div class="hero-clouds-drift-layer hero-clouds-drift-1">
+                    <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img" fetchpriority="high" />
+                  </div>
+                  <div class="hero-clouds-drift-layer hero-clouds-drift-2">
+                    <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img hero-clouds-img-layer2" />
+                  </div>
+                  <div class="hero-lightning-flash" id="hero-lightning-flash"></div>
+                  <canvas class="hero-rain-canvas" id="hero-rain-canvas"></canvas>
                 </div>
                 <div class="figma-hero-top-row">
                   <div class="figma-hero-logo-wrap">
@@ -3622,6 +3703,154 @@
           pCtx.restore();
         }
       }
+
+      // === 5. Hero Hogwarts Thunderstorm & Atmospheric Rain Engine ===
+      function initHeroThunderstorm() {
+        var rainCanvas = document.getElementById('hero-rain-canvas');
+        var lightningOverlay = document.getElementById('hero-lightning-flash');
+        if (!rainCanvas) return;
+        var rCtx = rainCanvas.getContext('2d');
+        if (!rCtx) return;
+
+        var rainW = 0, rainH = 0;
+        var raindrops = [];
+        var maxDrops = window.innerWidth < 900 ? 55 : 120;
+        var lightningLevel = 0;
+        var lightningTarget = 0;
+
+        function resizeRain() {
+          var wrap = rainCanvas.parentElement;
+          var rect = wrap ? wrap.getBoundingClientRect() : null;
+          rainW = rect && rect.width ? rect.width : window.innerWidth;
+          rainH = rect && rect.height ? rect.height : Math.min(window.innerHeight * 0.88, 800);
+          rainCanvas.width = rainW;
+          rainCanvas.height = rainH;
+        }
+
+        window.addEventListener('resize', resizeRain);
+        resizeRain();
+
+        // Initialize rain particles
+        for (var i = 0; i < maxDrops; i++) {
+          raindrops.push({
+            x: Math.random() * (rainW + 120) - 60,
+            y: Math.random() * rainH,
+            spd: Math.random() * 8 + 14,
+            len: Math.random() * 16 + 14,
+            thickness: Math.random() * 0.75 + 0.65,
+            alpha: Math.random() * 0.22 + 0.12,
+            angle: 0.16 + (Math.random() - 0.5) * 0.04
+          });
+        }
+
+        // Lightning state and stochastic strike sequencer
+        var isFlashing = false;
+
+        function triggerLightningStrike() {
+          if (isFlashing) return;
+          isFlashing = true;
+
+          // Pick random epicenter across cloud bank
+          var posX = Math.round(Math.random() * 50 + 25);
+          var posY = Math.round(Math.random() * 20 + 20);
+          if (lightningOverlay) {
+            lightningOverlay.style.setProperty('--lightning-x', posX + '%');
+            lightningOverlay.style.setProperty('--lightning-y', posY + '%');
+          }
+
+          var strikeType = Math.random();
+          if (strikeType < 0.65) {
+            // Iconic Harry Potter Double Strike
+            lightningTarget = Math.random() * 0.3 + 0.65;
+            setTimeout(function () {
+              lightningTarget = 0.15;
+              setTimeout(function () {
+                lightningTarget = Math.random() * 0.25 + 0.75;
+                setTimeout(function () {
+                  lightningTarget = 0;
+                  isFlashing = false;
+                  scheduleNextLightning();
+                }, 130);
+              }, 50);
+            }, 80);
+          } else if (strikeType < 0.88) {
+            // Distant Cloud Rumble
+            lightningTarget = Math.random() * 0.25 + 0.35;
+            setTimeout(function () {
+              lightningTarget = 0;
+              isFlashing = false;
+              scheduleNextLightning();
+            }, 280);
+          } else {
+            // Sharp Sudden Bolt Flash
+            lightningTarget = 0.95;
+            setTimeout(function () {
+              lightningTarget = 0;
+              isFlashing = false;
+              scheduleNextLightning();
+            }, 90);
+          }
+        }
+
+        function scheduleNextLightning() {
+          var delay = Math.random() * 4500 + 3500; // 3.5s to 8s
+          setTimeout(triggerLightningStrike, delay);
+        }
+
+        scheduleNextLightning();
+
+        // 60fps Storm Render Loop
+        function renderStorm() {
+          requestAnimationFrame(renderStorm);
+
+          // Only render when hero clouds are on-screen
+          var wrap = rainCanvas.parentElement;
+          if (wrap) {
+            var b = wrap.getBoundingClientRect();
+            if (b.bottom < -40 || b.top > window.innerHeight + 40) {
+              return;
+            }
+          }
+
+          // Smooth lerp lightning intensity
+          lightningLevel += (lightningTarget - lightningLevel) * 0.32;
+          if (lightningLevel < 0.005 && lightningTarget === 0) lightningLevel = 0;
+
+          if (lightningOverlay) {
+            lightningOverlay.style.opacity = lightningLevel.toFixed(3);
+          }
+
+          // Render Falling Rain Streaks
+          rCtx.clearRect(0, 0, rainW, rainH);
+
+          var rainIllumination = lightningLevel * 0.45;
+          for (var i = 0; i < raindrops.length; i++) {
+            var d = raindrops[i];
+            d.x += Math.sin(d.angle) * d.spd;
+            d.y += Math.cos(d.angle) * d.spd;
+
+            if (d.y > rainH + 20 || d.x > rainW + 50) {
+              d.y = -20;
+              d.x = Math.random() * (rainW + 100) - 50;
+            }
+
+            var finalAlpha = Math.min(0.85, d.alpha + rainIllumination);
+            rCtx.strokeStyle = 'rgba(210, 230, 255, ' + finalAlpha.toFixed(3) + ')';
+            rCtx.lineWidth = d.thickness;
+            rCtx.beginPath();
+            rCtx.moveTo(d.x, d.y);
+            rCtx.lineTo(
+              d.x - Math.sin(d.angle) * d.len,
+              d.y - Math.cos(d.angle) * d.len
+            );
+            rCtx.stroke();
+          }
+        }
+
+        renderStorm();
+      }
+
+      initHeroThunderstorm();
 
       function updateServiceTopicLinesAndPen(progress, pos) {
         var vw = window.innerWidth;
