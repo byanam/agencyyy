@@ -224,6 +224,31 @@
       z-index: 5 !important;
     }
 
+    /* Atmospheric Black Thunder Clouds at Top of Hero Section */
+    .hero-clouds-wrap {
+      position: absolute !important;
+      top: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 100vw !important;
+      height: clamp(450px, 50vw, 800px) !important;
+      max-height: 85vh !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+      -webkit-mask-image: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.95) 35%, rgba(0, 0, 0, 0.45) 68%, rgba(0, 0, 0, 0) 100%) !important;
+      mask-image: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.95) 35%, rgba(0, 0, 0, 0.45) 68%, rgba(0, 0, 0, 0) 100%) !important;
+    }
+
+    .hero-clouds-img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center top !important;
+      display: block !important;
+      filter: brightness(0.85) contrast(1.15) !important;
+    }
+
     .figma-hero-top-row {
       display: flex !important;
       flex-direction: row !important;
@@ -768,6 +793,121 @@
       color: var(--color-parchment);
       box-shadow: none !important;
       transform: translateX(4px);
+    }
+
+    /* =========================================================
+       SHOWCASE FRAMED BOX ("SOME OF WHAT WE'VE BEEN MAKING")
+       Elevated rectangular frame container resting on top of the black background
+       ========================================================= */
+    .showcase-framed-box {
+      width: calc(100% - clamp(24px, 4.5vw, 88px)) !important;
+      max-width: 1360px !important;
+      margin: clamp(70px, 8vw, 130px) auto clamp(90px, 10vw, 160px) auto !important;
+      padding: clamp(60px, 7vw, 100px) clamp(20px, 3.5vw, 48px) clamp(80px, 9vw, 130px) clamp(20px, 3.5vw, 48px) !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      z-index: 5 !important;
+      overflow: hidden !important;
+      border-radius: clamp(24px, 2.8vw, 36px) !important;
+      background: linear-gradient(180deg, #131418 0%, #0e0f12 50%, #0b0c0f 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 
+        0 30px 90px rgba(0, 0, 0, 0.85),
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 0 60px rgba(255, 255, 255, 0.015) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+
+    /* Ambient atmospheric soft top illumination inside the frame */
+    .showcase-framed-box::before {
+      content: "" !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 80% !important;
+      height: 240px !important;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 80%) !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+    }
+
+    .showcase-framed-box .page-module__ZDaQEq__s2 {
+      width: 100% !important;
+      min-height: clamp(260px, 26vw, 380px) !important;
+      margin: 0 0 clamp(60px, 7vw, 100px) 0 !important;
+      padding: 0 !important;
+      position: relative !important;
+      z-index: 2 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+    }
+
+    .showcase-framed-box .Carousel-module__nu5vFW__carousel {
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%) !important;
+      mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%) !important;
+    }
+
+    .showcase-framed-box .BlockButton-module__44lcOa__block-button--margin-bottom {
+      width: 100% !important;
+      margin-bottom: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      position: relative !important;
+      z-index: 2 !important;
+    }
+
+    .showcase-framed-box .BlockButton-module__44lcOa__block-button__sec {
+      width: 100% !important;
+      max-width: 1240px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .showcase-framed-box .page-module__ZDaQEq__s3__cases {
+      width: 100% !important;
+      max-width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: clamp(100px, 12vw, 180px) !important;
+      margin: 0 auto !important;
+    }
+
+    .showcase-framed-box .CaseCard-module__iyTA2W__case-card__content-text p,
+    .showcase-framed-box .CaseCard-module__iyTA2W__case-card__content-text .u-p-normal {
+      color: #8c8c94 !important;
+    }
+
+    .showcase-framed-box .CaseCard-module__iyTA2W__case-card__img {
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    @media (max-width: 991px) {
+      .showcase-framed-box {
+        width: calc(100% - 24px) !important;
+        border-radius: 20px !important;
+        padding: 40px 16px 60px 16px !important;
+        margin: 40px auto 60px auto !important;
+      }
+
+      .showcase-framed-box .page-module__ZDaQEq__s2 {
+        min-height: 200px !important;
+        margin: 0 0 40px 0 !important;
+      }
+
+      .showcase-framed-box .page-module__ZDaQEq__s3__cases {
+        gap: 60px !important;
+      }
     }
 
     /* =========================================================
@@ -1462,6 +1602,9 @@
           <div class="LoopScroll-module__5wuzDq__loop-wrap" data-loop-scroll="wrap">
             <div class="HnWrap-module__Jtsr0G__wrapper">
               <div class="page-module__ZDaQEq__s1 figma-hero-s1">
+                <div class="hero-clouds-wrap">
+                  <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img" fetchpriority="high" />
+                </div>
                 <div class="figma-hero-top-row">
                   <div class="figma-hero-logo-wrap">
                     <svg width="704" height="403" viewBox="0 0 704 403" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -1531,117 +1674,119 @@
                   </div>
                 </div>
               </div>
-              <div id="works" class="page-module__ZDaQEq__s2">
-                <div class="Carousel-module__nu5vFW__carousel">
-                  <div class="Carousel-module__nu5vFW__carousel__track">
-                    <div class="Carousel-module__nu5vFW__carousel__inner">
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/ozon-fresh-logo.svg"
-                          alt="ozon-fresh-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/x5-logo.svg"
-                          alt="x5-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/lavka-logo.svg"
-                          alt="lavka-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/phizer-logo.svg"
-                          alt="phizer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/bayer-logo.svg"
-                          alt="bayer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/amway-logo.svg"
-                          alt="amway-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/metro-logo.svg"
-                          alt="metro-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/yango-logo.svg"
-                          alt="yango-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/kuper-logo.svg"
-                          alt="kuper-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/otello-logo.svg"
-                          alt="otello-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                    </div>
-                    <div class="Carousel-module__nu5vFW__carousel__inner" aria-hidden="true">
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/ozon-fresh-logo.svg"
-                          alt="ozon-fresh-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/x5-logo.svg"
-                          alt="x5-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/lavka-logo.svg"
-                          alt="lavka-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/phizer-logo.svg"
-                          alt="phizer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/bayer-logo.svg"
-                          alt="bayer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/amway-logo.svg"
-                          alt="amway-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/metro-logo.svg"
-                          alt="metro-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/yango-logo.svg"
-                          alt="yango-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/kuper-logo.svg"
-                          alt="kuper-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
-                      <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/otello-logo.svg"
-                          alt="otello-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+              <section id="works" class="showcase-framed-box">
+                <div class="page-module__ZDaQEq__s2">
+                  <div class="Carousel-module__nu5vFW__carousel">
+                    <div class="Carousel-module__nu5vFW__carousel__track">
+                      <div class="Carousel-module__nu5vFW__carousel__inner">
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/ozon-fresh-logo.svg"
+                            alt="ozon-fresh-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/x5-logo.svg"
+                            alt="x5-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/lavka-logo.svg"
+                            alt="lavka-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/phizer-logo.svg"
+                            alt="phizer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/bayer-logo.svg"
+                            alt="bayer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/amway-logo.svg"
+                            alt="amway-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/metro-logo.svg"
+                            alt="metro-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/yango-logo.svg"
+                            alt="yango-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/kuper-logo.svg"
+                            alt="kuper-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/otello-logo.svg"
+                            alt="otello-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                      </div>
+                      <div class="Carousel-module__nu5vFW__carousel__inner" aria-hidden="true">
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/ozon-fresh-logo.svg"
+                            alt="ozon-fresh-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/x5-logo.svg"
+                            alt="x5-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/lavka-logo.svg"
+                            alt="lavka-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/phizer-logo.svg"
+                            alt="phizer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/bayer-logo.svg"
+                            alt="bayer-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/amway-logo.svg"
+                            alt="amway-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/metro-logo.svg"
+                            alt="metro-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/yango-logo.svg"
+                            alt="yango-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/kuper-logo.svg"
+                            alt="kuper-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                        <div class="Carousel-module__nu5vFW__carousel__item"><img src="/images/logos/otello-logo.svg"
+                            alt="otello-logo" class="Carousel-module__nu5vFW__carousel__item-image" /></div>
+                      </div>
                     </div>
                   </div>
+                  <div class="BlockButton-module__44lcOa__block-button__h-wrap cases-carousel-heading-wrap">
+                    <h2 class="u-h2-big">Some of What<br />We’ve Been Making</h2>
+                  </div>
                 </div>
-                <div class="BlockButton-module__44lcOa__block-button__h-wrap cases-carousel-heading-wrap">
-                  <h2 class="u-h2-big">Some of What<br />We’ve Been Making</h2>
+                <div
+                  class="BlockButton-module__44lcOa__block-button BlockButton-module__44lcOa__block-button--margin-bottom">
+                  <div class="BlockButton-module__44lcOa__block-button__sec">
+                    <div class="page-module__ZDaQEq__s3__cases"><a class="CaseCard-module__iyTA2W__case-card"
+                        href="#contact">
+                        <div
+                          class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
+                          <img src="/images/site_nest.png" loading="eager" alt="B2B Websites Showcase - Nest" />
+                        </div>
+                        <div class="CaseCard-module__iyTA2W__case-card__content">
+                          <div class="CaseCard-module__iyTA2W__case-card__content-h">
+                            <h3 class="u-h3">B2B Websites</h3>
+                          </div>
+                          <div class="CaseCard-module__iyTA2W__case-card__content-text">
+                            <p class="u-p-normal">High-conversion corporate platforms, intuitive architecture, and
+                              SEO-optimized web systems engineered to scale B2B brands and enterprise products. Featured:
+                              Nest</p>
+                          </div>
+                        </div>
+                      </a><a class="CaseCard-module__iyTA2W__case-card" href="#contact">
+                        <div
+                          class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
+                          <img src="/images/site_unbrief.png" loading="eager" alt="SaaS Websites Showcase - Unbrief" />
+                        </div>
+                        <div class="CaseCard-module__iyTA2W__case-card__content">
+                          <div class="CaseCard-module__iyTA2W__case-card__content-h">
+                            <h3 class="u-h3">SaaS Websites</h3>
+                          </div>
+                          <div class="CaseCard-module__iyTA2W__case-card__content-text">
+                            <p class="u-p-normal">Conversion-focused marketing websites, dynamic product showcases, and
+                              full-stack interactive frontend development built for modern SaaS and AI platforms.
+                              Featured: Unbrief</p>
+                          </div>
+                        </div>
+                      </a><a class="CaseCard-module__iyTA2W__case-card" href="#contact">
+                        <div
+                          class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
+                          <img src="/images/site_playstation.png" loading="eager"
+                            alt="E-Commerce Websites Showcase - PlayStation Store" />
+                        </div>
+                        <div class="CaseCard-module__iyTA2W__case-card__content">
+                          <div class="CaseCard-module__iyTA2W__case-card__content-h">
+                            <h3 class="u-h3">E-Commerce Websites</h3>
+                          </div>
+                          <div class="CaseCard-module__iyTA2W__case-card__content-text">
+                            <p class="u-p-normal">Immersive digital storefronts, responsive product showcases, fluid
+                              micro-interactions, and high-performance checkout flows built to maximize sales. Featured:
+                              PlayStation Store</p>
+                          </div>
+                        </div>
+                      </a></div>
+                  </div>
+                  <div class="BlockButton-module__44lcOa__block-button__btn" style="display: none;">
+                    <div class="Button-module__SBF53G__button-link"><a href="#contact">
+                        <div class="u-p-normal">View all</div>
+                      </a></div>
+                  </div>
                 </div>
-              </div>
-              <div
-                class="BlockButton-module__44lcOa__block-button BlockButton-module__44lcOa__block-button--margin-bottom">
-                <div class="BlockButton-module__44lcOa__block-button__sec">
-                  <div class="page-module__ZDaQEq__s3__cases"><a class="CaseCard-module__iyTA2W__case-card"
-                      href="#contact">
-                      <div
-                        class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
-                        <img src="/images/site_nest.png" loading="eager" alt="B2B Websites Showcase - Nest" />
-                      </div>
-                      <div class="CaseCard-module__iyTA2W__case-card__content">
-                        <div class="CaseCard-module__iyTA2W__case-card__content-h">
-                          <h3 class="u-h3">B2B Websites</h3>
-                        </div>
-                        <div class="CaseCard-module__iyTA2W__case-card__content-text">
-                          <p class="u-p-normal">High-conversion corporate platforms, intuitive architecture, and
-                            SEO-optimized web systems engineered to scale B2B brands and enterprise products. Featured:
-                            Nest</p>
-                        </div>
-                      </div>
-                    </a><a class="CaseCard-module__iyTA2W__case-card" href="#contact">
-                      <div
-                        class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
-                        <img src="/images/site_unbrief.png" loading="eager" alt="SaaS Websites Showcase - Unbrief" />
-                      </div>
-                      <div class="CaseCard-module__iyTA2W__case-card__content">
-                        <div class="CaseCard-module__iyTA2W__case-card__content-h">
-                          <h3 class="u-h3">SaaS Websites</h3>
-                        </div>
-                        <div class="CaseCard-module__iyTA2W__case-card__content-text">
-                          <p class="u-p-normal">Conversion-focused marketing websites, dynamic product showcases, and
-                            full-stack interactive frontend development built for modern SaaS and AI platforms.
-                            Featured: Unbrief</p>
-                        </div>
-                      </div>
-                    </a><a class="CaseCard-module__iyTA2W__case-card" href="#contact">
-                      <div
-                        class="CaseCard-module__iyTA2W__case-card__img CaseCard-module__iyTA2W__case-card__img_large">
-                        <img src="/images/site_playstation.png" loading="eager"
-                          alt="E-Commerce Websites Showcase - PlayStation Store" />
-                      </div>
-                      <div class="CaseCard-module__iyTA2W__case-card__content">
-                        <div class="CaseCard-module__iyTA2W__case-card__content-h">
-                          <h3 class="u-h3">E-Commerce Websites</h3>
-                        </div>
-                        <div class="CaseCard-module__iyTA2W__case-card__content-text">
-                          <p class="u-p-normal">Immersive digital storefronts, responsive product showcases, fluid
-                            micro-interactions, and high-performance checkout flows built to maximize sales. Featured:
-                            PlayStation Store</p>
-                        </div>
-                      </div>
-                    </a></div>
-                </div>
-                <div class="BlockButton-module__44lcOa__block-button__btn" style="display: none;">
-                  <div class="Button-module__SBF53G__button-link"><a href="#contact">
-                      <div class="u-p-normal">View all</div>
-                    </a></div>
-                </div>
-              </div>
+              </section>
               <div id="services" class="BlockButton-module__44lcOa__block-button">
                 <div class="BlockButton-module__44lcOa__block-button__h-wrap">
                   <h2 class="u-h2-big">Services</h2>
