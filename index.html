@@ -268,11 +268,11 @@
       object-position: center top !important;
       display: block !important;
       border-radius: inherit !important;
-      filter: brightness(0.85) contrast(1.15) !important;
+      filter: brightness(calc(0.85 + var(--cloud-lightning-boost, 0) * 0.95)) contrast(calc(1.15 + var(--cloud-lightning-boost, 0) * 0.25)) !important;
     }
 
     .hero-clouds-img-layer2 {
-      filter: brightness(0.72) contrast(1.25) blur(10px) !important;
+      filter: brightness(calc(0.72 + var(--cloud-lightning-boost, 0) * 0.85)) contrast(calc(1.25 + var(--cloud-lightning-boost, 0) * 0.2)) blur(10px) !important;
       transform: scaleX(-1);
     }
 
@@ -300,7 +300,7 @@
       }
     }
 
-    /* Hogwarts Thunderstorm Lightning Sheet Flash Overlay */
+    /* Hogwarts Thunderstorm Stark Electric White Lightning Flash Overlay */
     .hero-lightning-flash {
       position: absolute !important;
       inset: 0 !important;
@@ -309,20 +309,22 @@
       pointer-events: none !important;
       z-index: 2 !important;
       opacity: 0;
-      mix-blend-mode: color-dodge !important;
-      background: radial-gradient(ellipse 85% 65% at var(--lightning-x, 48%) var(--lightning-y, 30%), rgba(225, 240, 255, 0.95) 0%, rgba(150, 190, 255, 0.6) 32%, rgba(100, 130, 220, 0.22) 65%, transparent 88%) !important;
-      transition: opacity 0.05s ease-out;
+      mix-blend-mode: screen !important;
+      background: radial-gradient(ellipse 90% 70% at var(--lightning-x, 48%) var(--lightning-y, 30%), rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.82) 28%, rgba(245, 245, 250, 0.32) 58%, transparent 85%) !important;
+      transition: opacity 0.04s ease-out;
     }
 
-    /* Ambient Harry Potter Wind-Swept Rain Canvas */
+    /* Harry Potter Cinematic Atmospheric Rain Canvas */
     .hero-rain-canvas {
       position: absolute !important;
-      inset: 0 !important;
-      width: 100% !important;
+      top: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 100vw !important;
       height: 100% !important;
       pointer-events: none !important;
       z-index: 3 !important;
-      opacity: 0.8 !important;
+      overflow: hidden !important;
     }
 
     .figma-hero-top-row {
@@ -1686,8 +1688,8 @@
                     <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img hero-clouds-img-layer2" />
                   </div>
                   <div class="hero-lightning-flash" id="hero-lightning-flash"></div>
-                  <canvas class="hero-rain-canvas" id="hero-rain-canvas"></canvas>
                 </div>
+                <canvas class="hero-rain-canvas" id="hero-rain-canvas"></canvas>
                 <div class="figma-hero-top-row">
                   <div class="figma-hero-logo-wrap">
                     <svg width="704" height="403" viewBox="0 0 704 403" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -3708,92 +3710,138 @@
       function initHeroThunderstorm() {
         var rainCanvas = document.getElementById('hero-rain-canvas');
         var lightningOverlay = document.getElementById('hero-lightning-flash');
+        var cloudsWrap = document.querySelector('.hero-clouds-wrap');
+        var heroEl = document.querySelector('.page-module__ZDaQEq__s1.figma-hero-s1');
         if (!rainCanvas) return;
         var rCtx = rainCanvas.getContext('2d');
         if (!rCtx) return;
 
         var rainW = 0, rainH = 0;
         var raindrops = [];
-        var maxDrops = window.innerWidth < 900 ? 55 : 120;
+        var splashes = [];
+        var totalDrops = window.innerWidth < 900 ? 110 : 185;
         var lightningLevel = 0;
         var lightningTarget = 0;
+        var cloudBaseAltitude = 230;
 
         function resizeRain() {
-          var wrap = rainCanvas.parentElement;
-          var rect = wrap ? wrap.getBoundingClientRect() : null;
-          rainW = rect && rect.width ? rect.width : window.innerWidth;
-          rainH = rect && rect.height ? rect.height : Math.min(window.innerHeight * 0.88, 800);
+          rainW = window.innerWidth;
+          rainH = Math.max(heroEl ? heroEl.offsetHeight : 1000, window.innerHeight);
           rainCanvas.width = rainW;
           rainCanvas.height = rainH;
+          if (cloudsWrap) {
+            cloudBaseAltitude = Math.min(cloudsWrap.offsetHeight * 0.72, 340);
+          }
         }
 
         window.addEventListener('resize', resizeRain);
         resizeRain();
 
-        // Initialize rain particles
-        for (var i = 0; i < maxDrops; i++) {
-          raindrops.push({
-            x: Math.random() * (rainW + 120) - 60,
-            y: Math.random() * rainH,
-            spd: Math.random() * 8 + 14,
-            len: Math.random() * 16 + 14,
-            thickness: Math.random() * 0.75 + 0.65,
-            alpha: Math.random() * 0.22 + 0.12,
-            angle: 0.16 + (Math.random() - 0.5) * 0.04
-          });
+        // Build Multi-Depth Rain Drops (Originating from Cloud Altitude)
+        function createDrop(initialScatter) {
+          var tierRand = Math.random();
+          var tier = 1; // default midground
+          var spd, len, thickness, baseAlpha;
+
+          if (tierRand < 0.38) {
+            // Tier 0: Fine Atmospheric Mist & Distant Drizzle
+            tier = 0;
+            spd = Math.random() * 4 + 14;
+            len = Math.random() * 12 + 14;
+            thickness = Math.random() * 0.2 + 0.65;
+            baseAlpha = Math.random() * 0.08 + 0.09;
+          } else if (tierRand < 0.88) {
+            // Tier 1: Core Cinematic Storm Drops
+            tier = 1;
+            spd = Math.random() * 8 + 24;
+            len = Math.random() * 22 + 34;
+            thickness = Math.random() * 0.3 + 1.05;
+            baseAlpha = Math.random() * 0.14 + 0.22;
+          } else {
+            // Tier 2: Heavy Foreground Whistling Streaks
+            tier = 2;
+            spd = Math.random() * 10 + 36;
+            len = Math.random() * 38 + 65;
+            thickness = Math.random() * 0.4 + 1.65;
+            baseAlpha = Math.random() * 0.16 + 0.36;
+          }
+
+          var spawnCloudY = Math.random() * 140 - 50;
+          var y = initialScatter ? (Math.random() * (rainH + 100) - 50) : spawnCloudY;
+          var x = Math.random() * (rainW + 280) - 140;
+          var windAngle = 0.17 + (Math.random() - 0.5) * 0.04;
+
+          return {
+            tier: tier,
+            x: x,
+            y: y,
+            spawnCloudY: spawnCloudY,
+            spd: spd,
+            len: len,
+            thickness: thickness,
+            baseAlpha: baseAlpha,
+            windAngle: windAngle
+          };
         }
 
-        // Lightning state and stochastic strike sequencer
+        for (var i = 0; i < totalDrops; i++) {
+          raindrops.push(createDrop(true));
+        }
+
+        // Stochastic Hogwarts Thunderstorm Lightning Strike Sequencer
         var isFlashing = false;
 
         function triggerLightningStrike() {
           if (isFlashing) return;
           isFlashing = true;
 
-          // Pick random epicenter across cloud bank
-          var posX = Math.round(Math.random() * 50 + 25);
-          var posY = Math.round(Math.random() * 20 + 20);
+          // Pick random cloud epicenter
+          var posX = Math.round(Math.random() * 54 + 23);
+          var posY = Math.round(Math.random() * 22 + 16);
           if (lightningOverlay) {
             lightningOverlay.style.setProperty('--lightning-x', posX + '%');
             lightningOverlay.style.setProperty('--lightning-y', posY + '%');
           }
 
           var strikeType = Math.random();
-          if (strikeType < 0.65) {
-            // Iconic Harry Potter Double Strike
-            lightningTarget = Math.random() * 0.3 + 0.65;
+          if (strikeType < 0.62) {
+            // The Iconic Harry Potter Double Strike
+            lightningTarget = Math.random() * 0.3 + 0.70;
             setTimeout(function () {
               lightningTarget = 0.15;
               setTimeout(function () {
-                lightningTarget = Math.random() * 0.25 + 0.75;
+                lightningTarget = Math.random() * 0.2 + 0.80;
                 setTimeout(function () {
                   lightningTarget = 0;
                   isFlashing = false;
                   scheduleNextLightning();
                 }, 130);
-              }, 50);
+              }, 45);
             }, 80);
-          } else if (strikeType < 0.88) {
-            // Distant Cloud Rumble
-            lightningTarget = Math.random() * 0.25 + 0.35;
+          } else if (strikeType < 0.86) {
+            // Intra-Cloud Electric Rumble
+            lightningTarget = Math.random() * 0.2 + 0.45;
             setTimeout(function () {
-              lightningTarget = 0;
-              isFlashing = false;
-              scheduleNextLightning();
-            }, 280);
+              lightningTarget = 0.25;
+              setTimeout(function () {
+                lightningTarget = 0;
+                isFlashing = false;
+                scheduleNextLightning();
+              }, 160);
+            }, 120);
           } else {
-            // Sharp Sudden Bolt Flash
-            lightningTarget = 0.95;
+            // Sudden Blinding Lightning Bolt Crack
+            lightningTarget = 1.0;
             setTimeout(function () {
               lightningTarget = 0;
               isFlashing = false;
               scheduleNextLightning();
-            }, 90);
+            }, 95);
           }
         }
 
         function scheduleNextLightning() {
-          var delay = Math.random() * 4500 + 3500; // 3.5s to 8s
+          var delay = Math.random() * 4200 + 3200; // 3.2s to 7.4s
           setTimeout(triggerLightningStrike, delay);
         }
 
@@ -3803,47 +3851,103 @@
         function renderStorm() {
           requestAnimationFrame(renderStorm);
 
-          // Only render when hero clouds are on-screen
-          var wrap = rainCanvas.parentElement;
-          if (wrap) {
-            var b = wrap.getBoundingClientRect();
-            if (b.bottom < -40 || b.top > window.innerHeight + 40) {
+          // Only render when hero is on-screen
+          if (heroEl) {
+            var b = heroEl.getBoundingClientRect();
+            if (b.bottom < -60 || b.top > window.innerHeight + 60) {
               return;
             }
           }
 
           // Smooth lerp lightning intensity
-          lightningLevel += (lightningTarget - lightningLevel) * 0.32;
+          lightningLevel += (lightningTarget - lightningLevel) * 0.34;
           if (lightningLevel < 0.005 && lightningTarget === 0) lightningLevel = 0;
 
+          // Pure electric white illumination on overlay and cloud silhouettes
           if (lightningOverlay) {
             lightningOverlay.style.opacity = lightningLevel.toFixed(3);
           }
+          if (cloudsWrap) {
+            cloudsWrap.style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
+          }
 
-          // Render Falling Rain Streaks
           rCtx.clearRect(0, 0, rainW, rainH);
 
-          var rainIllumination = lightningLevel * 0.45;
+          var rainIllumination = lightningLevel * 0.65;
+
+          // Update & Render Raindrops
           for (var i = 0; i < raindrops.length; i++) {
             var d = raindrops[i];
-            d.x += Math.sin(d.angle) * d.spd;
-            d.y += Math.cos(d.angle) * d.spd;
 
-            if (d.y > rainH + 20 || d.x > rainW + 50) {
-              d.y = -20;
-              d.x = Math.random() * (rainW + 100) - 50;
+            d.x += Math.sin(d.windAngle) * d.spd;
+            d.y += Math.cos(d.windAngle) * d.spd;
+
+            // Reset when reaching bottom or drifting off right
+            if (d.y > rainH + 15 || d.x > rainW + 90) {
+              // Trigger floor micro-splashes on impact
+              if (d.tier >= 1 && splashes.length < 35 && Math.random() < 0.55) {
+                var count = d.tier === 2 ? 2 : 1;
+                for (var k = 0; k < count; k++) {
+                  splashes.push({
+                    x: d.x,
+                    y: rainH - Math.random() * 6 - 2,
+                    vx: (Math.random() - 0.45) * 2.8 + Math.sin(d.windAngle) * 1.2,
+                    vy: -(Math.random() * 2.4 + 1.2),
+                    size: Math.random() * 0.65 + 0.65,
+                    alpha: Math.min(0.65, d.baseAlpha * 1.6 + rainIllumination * 0.4),
+                    life: 1.0,
+                    decay: Math.random() * 0.09 + 0.09
+                  });
+                }
+              }
+
+              // Re-spawn strictly inside the clouds at the top!
+              d.y = Math.random() * 130 - 45;
+              d.x = Math.random() * (rainW + 280) - 140;
+              d.spawnCloudY = d.y;
             }
 
-            var finalAlpha = Math.min(0.85, d.alpha + rainIllumination);
-            rCtx.strokeStyle = 'rgba(210, 230, 255, ' + finalAlpha.toFixed(3) + ')';
+            // Cloud Emergence Factor: drops smoothly condense and emerge out of the storm clouds
+            var cloudEmerge = 1.0;
+            if (d.y < cloudBaseAltitude) {
+              cloudEmerge = Math.max(0.08, Math.min(1.0, (d.y - d.spawnCloudY) / (cloudBaseAltitude - d.spawnCloudY + 1)));
+            }
+
+            var finalAlpha = (d.baseAlpha * cloudEmerge) + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46));
+            finalAlpha = Math.min(0.96, Math.max(0.02, finalAlpha));
+
+            var tailX = d.x - Math.sin(d.windAngle) * d.len;
+            var tailY = d.y - Math.cos(d.windAngle) * d.len;
+
+            // Stark pure white motion-blurred gradient streak
+            var grad = rCtx.createLinearGradient(tailX, tailY, d.x, d.y);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            grad.addColorStop(0.55, 'rgba(255, 255, 255, ' + (finalAlpha * 0.45).toFixed(3) + ')');
+            grad.addColorStop(1, 'rgba(255, 255, 255, ' + finalAlpha.toFixed(3) + ')');
+
+            rCtx.strokeStyle = grad;
             rCtx.lineWidth = d.thickness;
             rCtx.beginPath();
-            rCtx.moveTo(d.x, d.y);
-            rCtx.lineTo(
-              d.x - Math.sin(d.angle) * d.len,
-              d.y - Math.cos(d.angle) * d.len
-            );
+            rCtx.moveTo(tailX, tailY);
+            rCtx.lineTo(d.x, d.y);
             rCtx.stroke();
+          }
+
+          // Update & Render Micro-Splashes
+          for (var s = splashes.length - 1; s >= 0; s--) {
+            var sp = splashes[s];
+            sp.x += sp.vx;
+            sp.y += sp.vy;
+            sp.vy += 0.28; // gravity
+            sp.life -= sp.decay;
+            if (sp.life <= 0) {
+              splashes.splice(s, 1);
+              continue;
+            }
+            rCtx.fillStyle = 'rgba(255, 255, 255, ' + (sp.alpha * sp.life).toFixed(3) + ')';
+            rCtx.beginPath();
+            rCtx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
+            rCtx.fill();
           }
         }
 
