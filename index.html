@@ -885,7 +885,7 @@
       position: relative !important;
       z-index: 15 !important;
       overflow: hidden !important;
-      border-radius: clamp(24px, 2.8vw, 36px) !important;
+      border-radius: 0 !important;
       background: linear-gradient(180deg, #131418 0%, #0e0f12 50%, #0b0c0f 100%) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       box-shadow: 
@@ -972,7 +972,7 @@
     @media (max-width: 991px) {
       .showcase-framed-box {
         width: calc(100% - 24px) !important;
-        border-radius: 20px !important;
+        border-radius: 0 !important;
         padding: 40px 16px 60px 16px !important;
         margin: 40px auto 60px auto !important;
       }
@@ -4328,8 +4328,8 @@
           rCtx.strokeStyle = rimGrad;
           rCtx.lineWidth = 1.2;
           rCtx.beginPath();
-          rCtx.moveTo(tabletLeft + 12, tabletTop);
-          rCtx.lineTo(tabletRight - 12, tabletTop);
+          rCtx.moveTo(tabletLeft, tabletTop);
+          rCtx.lineTo(tabletRight, tabletTop);
           rCtx.stroke();
 
           // 5. Update & Render 2D Splash Particles (Upward mist and droplet spray from impacts)
