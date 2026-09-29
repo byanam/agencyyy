@@ -3815,8 +3815,10 @@
         }
 
         // 2D Falling Teardrop Droplet Renderer (Detached drop accelerating under gravity)
-        function drawFallingDroplet(ctx, x, y, r, vy, lightning) {
+        function drawFallingDroplet(ctx, x, y, r, vy, lightning, fadeAlpha) {
           if (r <= 0.35) return;
+          var fade = (fadeAlpha !== undefined) ? fadeAlpha : 1.0;
+          if (fade <= 0.01) return;
           ctx.save();
           ctx.translate(x, y);
 
@@ -3832,18 +3834,18 @@
           ctx.closePath();
 
           var fGrad = ctx.createLinearGradient(0, -tailLen, 0, r * 1.2);
-          fGrad.addColorStop(0, 'rgba(215, 240, 255, ' + (0.35 + lightBoost * 0.2).toFixed(3) + ')');
-          fGrad.addColorStop(0.55, 'rgba(180, 225, 255, ' + (0.55 + lightBoost * 0.25).toFixed(3) + ')');
-          fGrad.addColorStop(1, 'rgba(240, 252, 255, ' + (0.88 + lightBoost * 0.12).toFixed(3) + ')');
+          fGrad.addColorStop(0, 'rgba(215, 240, 255, ' + ((0.35 + lightBoost * 0.2) * fade).toFixed(3) + ')');
+          fGrad.addColorStop(0.55, 'rgba(180, 225, 255, ' + ((0.55 + lightBoost * 0.25) * fade).toFixed(3) + ')');
+          fGrad.addColorStop(1, 'rgba(240, 252, 255, ' + ((0.88 + lightBoost * 0.12) * fade).toFixed(3) + ')');
           ctx.fillStyle = fGrad;
           ctx.fill();
 
-          ctx.strokeStyle = 'rgba(235, 250, 255, ' + (0.85 + lightBoost * 0.15).toFixed(3) + ')';
+          ctx.strokeStyle = 'rgba(235, 250, 255, ' + ((0.85 + lightBoost * 0.15) * fade).toFixed(3) + ')';
           ctx.lineWidth = 0.65;
           ctx.stroke();
 
           // Leading specular highlight glint
-          ctx.fillStyle = '#ffffff';
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + fade.toFixed(3) + ')';
           ctx.beginPath();
           ctx.arc(-r * 0.22, r * 0.2, Math.max(0.45, r * 0.20), 0, Math.PI * 2);
           ctx.fill();
@@ -4031,6 +4033,7 @@
           var tabletBottom = activeBoxRect ? activeBoxRect.bottom : (tabletTop + 600);
           var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.1);
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.9);
+          var tabletCenterX = tabletLeft + (tabletRight - tabletLeft) * 0.5;
 
           // Progressive Storm Roll-in: Starts empty on page open, rain arrives naturally from clouds!
           var stormElapsed = (performance.now() - stormStartTime) / 1000;
@@ -4155,15 +4158,15 @@
               }
             }
 
-            // --- B. The Umbrella Effect: Drops directly underneath the tablet cannot exist! ---
-            if (isOverTablet && d.y > tabletTop && d.y < tabletBottom) {
+            // --- B. The Umbrella Effect: Rain directly underneath the tablet cannot exist! ---
+            if (isOverTablet && d.y > tabletTop) {
               d.y = -(Math.random() * 90 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
             }
 
-            // --- C. Reset drops that fall past the bottom of the screen (Sides continue freely!) ---
-            if (d.y > rainH + 50) {
+            // --- C. Rain MUST NOT GO BELOW THE TABLET: Resets at tabletBottom ---
+            if (d.y >= tabletBottom) {
               d.y = -(Math.random() * 80 + 20);
               d.x = Math.random() * (rainW + 280) - 140;
               continue;
@@ -4175,24 +4178,33 @@
               d.x = Math.random() * (rainW + 280) - 140;
             }
 
-            // --- D. Fade out as drops directly approach the tablet ledge ---
+            // --- D. Fade out into the black background before reaching bottom ---
             var darknessFade = 1.0;
             if (isOverTablet) {
-              var fadeZone = 180;
+              var fadeZoneTop = 180;
               var distToTablet = tabletTop - d.y;
-              if (distToTablet < fadeZone && distToTablet > 0) {
-                darknessFade = Math.max(0.20, distToTablet / fadeZone);
+              if (distToTablet < fadeZoneTop && distToTablet > 0) {
+                darknessFade = Math.max(0.18, distToTablet / fadeZoneTop);
+              }
+            } else {
+              // Rain on the sides: smoothly fades out and dissolves into the black background before tabletBottom
+              var fadeZoneBottom = 260;
+              var distToBottom = tabletBottom - d.y;
+              if (distToBottom < fadeZoneBottom) {
+                darknessFade = Math.max(0, distToBottom / fadeZoneBottom);
               }
             }
 
             var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45))) * darknessFade;
-            finalAlpha = Math.min(0.96, Math.max(0.02, finalAlpha));
+            finalAlpha = Math.min(0.96, Math.max(0.0, finalAlpha));
+
+            if (finalAlpha <= 0.01) continue;
 
             var effectiveLen = d.len * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
             var tailX = d.x - Math.sin(d.windAngle) * effectiveLen;
             var tailY = d.y - Math.cos(d.windAngle) * effectiveLen;
 
-            // --- E. Render Pure Motion-Blurred Atmospheric Rain Streaks (No balls / No pins) ---
+            // --- E. Render Pure Motion-Blurred Atmospheric Rain Streaks ---
             var streakAlpha = finalAlpha * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
 
             // Pass 1: Translucent outer water sheen halo along full velocity vector
@@ -4226,8 +4238,8 @@
               var distP = Math.abs(drop2.x - drop1.x);
 
               // 1. Capillary attraction: nearby droplets on the ledge pull towards each other
-              if (distP < 28.0 && distP > (drop1.r + drop2.r)) {
-                var pull = (1 - distP / 28.0) * 0.22;
+              if (distP < 32.0 && distP > (drop1.r + drop2.r)) {
+                var pull = (1 - distP / 32.0) * 0.25;
                 if (drop1.x < drop2.x) {
                   drop1.x += pull;
                   drop2.x -= pull;
@@ -4253,7 +4265,7 @@
           }
 
           // =========================================================================
-          // 3. FALLING PHYSICS: WHEN WATER COLLECTS TOO MUCH, IT FALLS!
+          // 3. LATERAL FLOW & FALLING PHYSICS: FALLS FROM THE SIDES ONLY, NOT FROM TABLET!
           // =========================================================================
           for (var sIdx = surfaceDrops.length - 1; sIdx >= 0; sIdx--) {
             var sd = surfaceDrops[sIdx];
@@ -4261,44 +4273,48 @@
             // Dampen capillary vibration
             if (sd.wobble > 0) sd.wobble *= 0.90;
 
-            // Critical mass threshold: surface tension yields, droplet sags and falls!
-            var isCorner = (sd.x <= tabletLeft + 25 || sd.x >= tabletRight - 25);
-            var criticalMass = isCorner ? 2.25 : 2.85;
+            // Lateral migration towards the edges (water flows outward towards the sides!)
+            var toLeft = sd.x < tabletCenterX;
+            var flowSpeed = 0.22 + (sd.r - 1.0) * 0.18;
+            if (toLeft) {
+              sd.x -= flowSpeed;
+            } else {
+              sd.x += flowSpeed;
+            }
 
-            if (sd.r >= criticalMass) {
-              // Sags down over the lip of the ledge line
-              sd.sagY = (sd.sagY || 0) + 0.90;
+            // Check if droplet has reached the outer corners / sides of the tablet
+            var atLeftEdge = (sd.x <= tabletLeft + 6);
+            var atRightEdge = (sd.x >= tabletRight - 6);
 
-              // When the neck stretches fully: PINCH-OFF! IT DETACHES AND FALLS!
+            if (atLeftEdge || atRightEdge) {
+              // Water has reached the side edge! It sags over the side corner and drips down the side!
+              sd.sagY = (sd.sagY || 0) + 0.92;
+
+              // When the pendant droplet stretches: PINCH-OFF! IT DETACHES AND FALLS DOWN THE SIDE!
               if (sd.sagY >= 6.8) {
-                var dropX = sd.x;
-                var isLeftCorner = (dropX <= tabletLeft + 12);
-                var isRightCorner = (dropX >= tabletRight - 12);
+                var sideX = atLeftEdge ? (tabletLeft - 3) : (tabletRight + 3);
 
-                if (isLeftCorner) dropX = tabletLeft;
-                if (isRightCorner) dropX = tabletRight;
-
-                // Primary detached falling droplet
+                // Primary detached falling droplet along the side
                 fallingDrops.push({
-                  x: dropX,
+                  x: sideX,
                   y: tabletTop + 5,
                   r: sd.r * 0.85,
                   vy: 2.2,
-                  vx: isLeftCorner ? -0.4 : (isRightCorner ? 0.4 : (Math.random() - 0.5) * 0.3),
+                  vx: atLeftEdge ? -0.35 : 0.35,
                   fallDist: 0,
-                  maxFall: Math.random() * 180 + 220,
+                  maxFall: Math.min(tabletBottom - tabletTop, Math.random() * 180 + 240),
                   alpha: 0.95
                 });
 
-                // Satellite trailing micro-droplet (Plateau-Rayleigh instability)
+                // Satellite trailing micro-droplet along the side
                 fallingDrops.push({
-                  x: dropX,
+                  x: sideX,
                   y: tabletTop - 1,
                   r: sd.r * 0.26,
                   vy: 1.1,
-                  vx: isLeftCorner ? -0.2 : (isRightCorner ? 0.2 : (Math.random() - 0.5) * 0.15),
+                  vx: atLeftEdge ? -0.15 : 0.15,
                   fallDist: 0,
-                  maxFall: Math.random() * 110 + 140,
+                  maxFall: Math.min(tabletBottom - tabletTop, Math.random() * 110 + 150),
                   alpha: 0.85
                 });
 
@@ -4306,6 +4322,9 @@
                 surfaceDrops.splice(sIdx, 1);
                 continue;
               }
+            } else {
+              // Droplets on the face of the tablet NEVER sag downwards across the tablet!
+              sd.sagY = 0;
             }
 
             // Render 2D Water Droplet resting on the 1D ledge line
@@ -4355,7 +4374,7 @@
             rCtx.fill();
           }
 
-          // 6. Update & Render Free-Falling Droplets (Drops detached after collecting too much water)
+          // 6. Update & Render Free-Falling Droplets (Falling ONLY along the sides, disappearing before tabletBottom)
           for (var fdIdx = fallingDrops.length - 1; fdIdx >= 0; fdIdx--) {
             var fd = fallingDrops[fdIdx];
             fd.vy += 0.38; // Gravity acceleration
@@ -4364,12 +4383,19 @@
             fd.y += fd.vy;
             fd.fallDist += fd.vy;
 
-            if (fd.fallDist >= fd.maxFall || fd.y > rainH + 40) {
+            // Disappear into black background as it approaches tabletBottom
+            var distToBottom = tabletBottom - fd.y;
+            var bottomFade = 1.0;
+            if (distToBottom < 200) {
+              bottomFade = Math.max(0, distToBottom / 200);
+            }
+
+            if (fd.fallDist >= fd.maxFall || fd.y >= tabletBottom - 10 || bottomFade <= 0.02) {
               fallingDrops.splice(fdIdx, 1);
               continue;
             }
 
-            drawFallingDroplet(rCtx, fd.x, fd.y, fd.r, fd.vy, rainIllumination);
+            drawFallingDroplet(rCtx, fd.x, fd.y, fd.r, fd.vy, rainIllumination, bottomFade);
           }
         }
 
