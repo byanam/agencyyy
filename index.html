@@ -314,16 +314,15 @@
       transition: opacity 0.04s ease-out;
     }
 
-    /* Harry Potter Cinematic Atmospheric Rain Canvas */
-    .hero-rain-canvas {
-      position: absolute !important;
+    /* Harry Potter Cinematic Atmospheric Rain Canvas Across Whole Site Loop */
+    .site-rain-canvas {
+      position: fixed !important;
       top: 0 !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
+      left: 0 !important;
       width: 100vw !important;
-      height: 100% !important;
+      height: 100vh !important;
       pointer-events: none !important;
-      z-index: 3 !important;
+      z-index: 10 !important;
       overflow: hidden !important;
     }
 
@@ -884,7 +883,7 @@
       padding: clamp(60px, 7vw, 100px) clamp(20px, 3.5vw, 48px) clamp(80px, 9vw, 130px) clamp(20px, 3.5vw, 48px) !important;
       box-sizing: border-box !important;
       position: relative !important;
-      z-index: 5 !important;
+      z-index: 15 !important;
       overflow: hidden !important;
       border-radius: clamp(24px, 2.8vw, 36px) !important;
       background: linear-gradient(180deg, #131418 0%, #0e0f12 50%, #0b0c0f 100%) !important;
@@ -1607,6 +1606,7 @@
       </div>
     </div>
   </header>
+  <canvas class="site-rain-canvas" id="site-rain-canvas"></canvas>
   <div>
     <div id="main-page-content" class="page-module__ZDaQEq__main-wrap">
       <div class="Preloader-module__Zghlvq__preloader">
@@ -1689,7 +1689,6 @@
                   </div>
                   <div class="hero-lightning-flash" id="hero-lightning-flash"></div>
                 </div>
-                <canvas class="hero-rain-canvas" id="hero-rain-canvas"></canvas>
                 <div class="figma-hero-top-row">
                   <div class="figma-hero-logo-wrap">
                     <svg width="704" height="403" viewBox="0 0 704 403" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -3706,12 +3705,9 @@
         }
       }
 
-      // === 5. Hero Hogwarts Thunderstorm & Atmospheric Rain Engine ===
+      // === 5. Hero & Site-Wide Hogwarts Thunderstorm & Atmospheric Rain Engine ===
       function initHeroThunderstorm() {
-        var rainCanvas = document.getElementById('hero-rain-canvas');
-        var lightningOverlay = document.getElementById('hero-lightning-flash');
-        var cloudsWrap = document.querySelector('.hero-clouds-wrap');
-        var heroEl = document.querySelector('.page-module__ZDaQEq__s1.figma-hero-s1');
+        var rainCanvas = document.getElementById('site-rain-canvas');
         if (!rainCanvas) return;
         var rCtx = rainCanvas.getContext('2d');
         if (!rCtx) return;
@@ -3719,28 +3715,24 @@
         var rainW = 0, rainH = 0;
         var raindrops = [];
         var splashes = [];
-        var totalDrops = window.innerWidth < 900 ? 110 : 185;
+        var totalDrops = window.innerWidth < 900 ? 115 : 190;
         var lightningLevel = 0;
         var lightningTarget = 0;
-        var cloudBaseAltitude = 230;
 
         function resizeRain() {
           rainW = window.innerWidth;
-          rainH = Math.max(heroEl ? heroEl.offsetHeight : 1000, window.innerHeight);
+          rainH = window.innerHeight;
           rainCanvas.width = rainW;
           rainCanvas.height = rainH;
-          if (cloudsWrap) {
-            cloudBaseAltitude = Math.min(cloudsWrap.offsetHeight * 0.72, 340);
-          }
         }
 
         window.addEventListener('resize', resizeRain);
         resizeRain();
 
-        // Build Multi-Depth Rain Drops (Originating from Cloud Altitude)
+        // Build Multi-Depth Rain Drops
         function createDrop(initialScatter) {
           var tierRand = Math.random();
-          var tier = 1; // default midground
+          var tier = 1;
           var spd, len, thickness, baseAlpha;
 
           if (tierRand < 0.38) {
@@ -3766,16 +3758,14 @@
             baseAlpha = Math.random() * 0.16 + 0.36;
           }
 
-          var spawnCloudY = Math.random() * 140 - 50;
-          var y = initialScatter ? (Math.random() * (rainH + 100) - 50) : spawnCloudY;
-          var x = Math.random() * (rainW + 280) - 140;
           var windAngle = 0.17 + (Math.random() - 0.5) * 0.04;
+          var y = initialScatter ? (Math.random() * (rainH + 60) - 30) : (Math.random() * 80 - 60);
+          var x = Math.random() * (rainW + 280) - 140;
 
           return {
             tier: tier,
             x: x,
             y: y,
-            spawnCloudY: spawnCloudY,
             spd: spd,
             len: len,
             thickness: thickness,
@@ -3795,12 +3785,14 @@
           if (isFlashing) return;
           isFlashing = true;
 
-          // Pick random cloud epicenter
           var posX = Math.round(Math.random() * 54 + 23);
           var posY = Math.round(Math.random() * 22 + 16);
-          if (lightningOverlay) {
-            lightningOverlay.style.setProperty('--lightning-x', posX + '%');
-            lightningOverlay.style.setProperty('--lightning-y', posY + '%');
+
+          // Update all lightning overlays in both original and cloned wraps
+          var overlays = document.querySelectorAll('.hero-lightning-flash');
+          for (var o = 0; o < overlays.length; o++) {
+            overlays[o].style.setProperty('--lightning-x', posX + '%');
+            overlays[o].style.setProperty('--lightning-y', posY + '%');
           }
 
           var strikeType = Math.random();
@@ -3851,48 +3843,106 @@
         function renderStorm() {
           requestAnimationFrame(renderStorm);
 
-          // Only render when hero is on-screen
-          if (heroEl) {
-            var b = heroEl.getBoundingClientRect();
-            if (b.bottom < -60 || b.top > window.innerHeight + 60) {
-              return;
-            }
-          }
-
           // Smooth lerp lightning intensity
           lightningLevel += (lightningTarget - lightningLevel) * 0.34;
           if (lightningLevel < 0.005 && lightningTarget === 0) lightningLevel = 0;
 
           // Pure electric white illumination on overlay and cloud silhouettes
-          if (lightningOverlay) {
-            lightningOverlay.style.opacity = lightningLevel.toFixed(3);
+          var overlays = document.querySelectorAll('.hero-lightning-flash');
+          for (var o = 0; o < overlays.length; o++) {
+            overlays[o].style.opacity = lightningLevel.toFixed(3);
           }
-          if (cloudsWrap) {
-            cloudsWrap.style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
+          var clouds = document.querySelectorAll('.hero-clouds-wrap');
+          for (var c = 0; c < clouds.length; c++) {
+            clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
 
           rCtx.clearRect(0, 0, rainW, rainH);
 
           var rainIllumination = lightningLevel * 0.65;
 
+          // Detect any visible showcase tablet boxes on screen (original + clone)
+          var showcaseBoxes = document.querySelectorAll('.showcase-framed-box');
+          var activeBoxes = [];
+          for (var b = 0; b < showcaseBoxes.length; b++) {
+            var rect = showcaseBoxes[b].getBoundingClientRect();
+            if (rect.bottom > -40 && rect.top < rainH + 40) {
+              activeBoxes.push(rect);
+            }
+          }
+
           // Update & Render Raindrops
           for (var i = 0; i < raindrops.length; i++) {
             var d = raindrops[i];
-
+            var prevY = d.y;
             d.x += Math.sin(d.windAngle) * d.spd;
             d.y += Math.cos(d.windAngle) * d.spd;
 
-            // Reset when reaching bottom or drifting off right
+            var hitTablet = false;
+
+            // Check against visible tablet frames
+            for (var j = 0; j < activeBoxes.length; j++) {
+              var box = activeBoxes[j];
+              // Horizontal bounds with a slight padding
+              if (d.x >= box.left - 4 && d.x <= box.right + 4) {
+                // Crossing top edge -> drop hits the tablet with tactile micro-splashes!
+                if (prevY <= box.top + 8 && d.y >= box.top) {
+                  hitTablet = true;
+                  if (splashes.length < 55) {
+                    var splashCount = d.tier === 2 ? 3 : (d.tier === 1 ? 2 : 1);
+                    for (var k = 0; k < splashCount; k++) {
+                      splashes.push({
+                        x: d.x,
+                        y: box.top + Math.random() * 3,
+                        vx: (Math.random() - 0.45) * 3 + Math.sin(d.windAngle) * 1.5,
+                        vy: -(Math.random() * 2.8 + 1.2),
+                        size: Math.random() * 0.7 + 0.6,
+                        alpha: Math.min(0.8, d.baseAlpha * 1.8 + rainIllumination * 0.5),
+                        life: 1.0,
+                        decay: Math.random() * 0.09 + 0.08
+                      });
+                    }
+                  }
+
+                  // Respawn: if there's room below the tablet on screen, spawn some below it into Services!
+                  if (rainH - box.bottom > 140 && Math.random() < 0.45) {
+                    d.y = box.bottom + Math.random() * 25;
+                    d.x = box.left + Math.random() * (box.right - box.left);
+                  } else {
+                    d.y = Math.random() * 70 - 50;
+                    d.x = Math.random() * (rainW + 280) - 140;
+                  }
+                  break;
+                }
+
+                // If drop is inside the tablet interior, DO NOT DRAW and push it below or reset!
+                if (d.y > box.top && d.y < box.bottom) {
+                  hitTablet = true;
+                  if (rainH - box.bottom > 140) {
+                    d.y = box.bottom + 2;
+                  } else {
+                    d.y = Math.random() * 70 - 50;
+                    d.x = Math.random() * (rainW + 280) - 140;
+                  }
+                  break;
+                }
+              }
+            }
+
+            if (hitTablet) {
+              continue;
+            }
+
+            // Reset when reaching bottom of screen or drifting off right
             if (d.y > rainH + 15 || d.x > rainW + 90) {
-              // Trigger floor micro-splashes on impact
-              if (d.tier >= 1 && splashes.length < 35 && Math.random() < 0.55) {
+              if (d.tier >= 1 && splashes.length < 55 && Math.random() < 0.45) {
                 var count = d.tier === 2 ? 2 : 1;
-                for (var k = 0; k < count; k++) {
+                for (var spK = 0; spK < count; spK++) {
                   splashes.push({
                     x: d.x,
-                    y: rainH - Math.random() * 6 - 2,
-                    vx: (Math.random() - 0.45) * 2.8 + Math.sin(d.windAngle) * 1.2,
-                    vy: -(Math.random() * 2.4 + 1.2),
+                    y: rainH - Math.random() * 4 - 2,
+                    vx: (Math.random() - 0.45) * 2.6 + Math.sin(d.windAngle) * 1.2,
+                    vy: -(Math.random() * 2.2 + 1.0),
                     size: Math.random() * 0.65 + 0.65,
                     alpha: Math.min(0.65, d.baseAlpha * 1.6 + rainIllumination * 0.4),
                     life: 1.0,
@@ -3901,20 +3951,12 @@
                 }
               }
 
-              // Re-spawn strictly inside the clouds at the top!
-              d.y = Math.random() * 130 - 45;
+              d.y = Math.random() * 70 - 50;
               d.x = Math.random() * (rainW + 280) - 140;
-              d.spawnCloudY = d.y;
             }
 
-            // Cloud Emergence Factor: drops smoothly condense and emerge out of the storm clouds
-            var cloudEmerge = 1.0;
-            if (d.y < cloudBaseAltitude) {
-              cloudEmerge = Math.max(0.08, Math.min(1.0, (d.y - d.spawnCloudY) / (cloudBaseAltitude - d.spawnCloudY + 1)));
-            }
-
-            var finalAlpha = (d.baseAlpha * cloudEmerge) + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46));
-            finalAlpha = Math.min(0.96, Math.max(0.02, finalAlpha));
+            var finalAlpha = d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.72 : 0.46));
+            finalAlpha = Math.min(0.96, Math.max(0.04, finalAlpha));
 
             var tailX = d.x - Math.sin(d.windAngle) * d.len;
             var tailY = d.y - Math.cos(d.windAngle) * d.len;
