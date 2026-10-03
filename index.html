@@ -4059,24 +4059,28 @@
             ubElements[uIdx].style.setProperty('--umbrella-lightning', lightningLevel.toFixed(3));
           }
 
-          // Dynamic scroll-driven umbrella opening (0 = closed at top, 1 = fully open as you scroll down)
-          var curScroll = 0;
-          if (activeHeroRect) {
-            curScroll = Math.max(0, -activeHeroRect.top);
-          }
-          if (loopScroll && loopScroll.state && typeof loopScroll.state.pos === 'number') {
-            curScroll = Math.max(curScroll, Math.abs(loopScroll.state.pos));
+          // Active umbrella element and its live bounding box in current viewport
+          var ubEl = activeHero ? activeHero.querySelector('.figma-hero-umbrella-canvas') : document.querySelector('.figma-hero-umbrella-canvas');
+          var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
+
+          // The umbrella opens dynamically as you scroll down to reach it!
+          // When the umbrella enters from the bottom (ubRect.top ~ rainH * 0.88), it starts closed (0.0).
+          // As you scroll and it moves towards the center of your screen (ubRect.top ~ rainH * 0.28), it blossoms fully open (1.0).
+          // When scrolling back up, it smoothly folds closed.
+          var targetOpen = 0.0;
+          if (ubRect) {
+            var startOpenY = rainH * 0.88; // Bottom of viewport where user first sees it
+            var fullOpenY = rainH * 0.28;  // Prime center viewing position
+            var openFrac = (startOpenY - ubRect.top) / (startOpenY - fullOpenY);
+            targetOpen = Math.max(0.0, Math.min(1.0, openFrac));
           }
 
-          var targetOpen = Math.min(1.0, Math.max(0.0, curScroll / 340.0));
-          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.18;
+          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.20;
           if (Math.abs(targetOpen - umbrellaOpenProgress) < 0.001) umbrellaOpenProgress = targetOpen;
 
           drawUmbrellaScrub(umbrellaOpenProgress);
 
           // Active umbrella collision geometry & dynamic rain barrier
-          var ubEl = activeHero ? activeHero.querySelector('.figma-hero-umbrella-canvas') : document.querySelector('.figma-hero-umbrella-canvas');
-          var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
           var hasUmbrella = ubRect && ubRect.bottom > -40 && ubRect.top < rainH + 40;
           var ubCenterX = 0, ubHalfW = 0;
           if (hasUmbrella) {
