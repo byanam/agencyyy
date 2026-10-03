@@ -495,7 +495,7 @@
       pointer-events: none !important;
     }
 
-    .figma-hero-umbrella-canvas {
+    .figma-hero-umbrella-img {
       width: clamp(620px, 94vw, 1580px) !important;
       max-width: 99vw !important;
       height: auto !important;
@@ -506,7 +506,6 @@
       transition: filter 0.05s ease-out;
       will-change: filter, transform;
       pointer-events: auto !important;
-      cursor: pointer;
     }
 
     /* Authentic Redis Agency LoopScroll Viewport Architecture */
@@ -1776,8 +1775,8 @@
                   </div>
                 </div>
                 <div class="figma-hero-umbrella-wrap">
-                  <canvas class="figma-hero-umbrella-canvas" id="figma-hero-umbrella-canvas" width="2048" height="1746"
-                    title="Scroll down to open umbrella (or click to toggle)"></canvas>
+                  <img src="/images/hero_umbrella.png" alt="Yellow Umbrella" class="figma-hero-umbrella-img"
+                    id="figma-hero-umbrella-img" width="2048" height="1746" loading="eager" />
                 </div>
               </div>
               <section id="works" class="showcase-framed-box">
@@ -3748,54 +3747,6 @@
         var stormIntensity = 1.0; // Starts SUPER STRONG right at the beginning!
         var animTime = 0;
 
-        // === Approach 1: Apple-Style Photorealistic Frame Scrub Sequence ===
-        var scrubFrames = [];
-        var totalScrubFrames = 17;
-        var scrubLoadedCount = 0;
-        var umbrellaOpenProgress = 0.0; // 0 = tightly closed at top, 1 = fully open dome
-
-        for (var fi = 0; fi < totalScrubFrames; fi++) {
-          (function (index) {
-            var img = new Image();
-            img.onload = function () {
-              scrubLoadedCount++;
-              if (index === 0 && umbrellaOpenProgress === 0.0) {
-                drawUmbrellaScrub(0.0);
-              }
-            };
-            img.src = '/images/umbrella_scrub_' + index + '.png';
-            scrubFrames[index] = img;
-          })(fi);
-        }
-
-        function drawUmbrellaScrub(progress) {
-          var p = Math.max(0.0, Math.min(1.0, progress));
-          var floatIdx = p * (totalScrubFrames - 1);
-          var idxA = Math.floor(floatIdx);
-          var idxB = Math.min(totalScrubFrames - 1, idxA + 1);
-          var frac = floatIdx - idxA;
-
-          var imgA = scrubFrames[idxA];
-          var imgB = scrubFrames[idxB];
-          if (!imgA || !imgA.complete) return;
-
-          var canvases = document.querySelectorAll('.figma-hero-umbrella-canvas');
-          canvases.forEach(function (c) {
-            var ctx = c.getContext('2d');
-            if (!ctx) return;
-            ctx.clearRect(0, 0, 2048, 1746);
-            ctx.globalAlpha = 1.0;
-            ctx.drawImage(imgA, 0, 0, 2048, 1746);
-            if (frac > 0.01 && imgB && imgB.complete && idxB !== idxA) {
-              ctx.globalAlpha = frac;
-              ctx.drawImage(imgB, 0, 0, 2048, 1746);
-              ctx.globalAlpha = 1.0;
-            }
-          });
-        }
-
-        // Draw initial closed frame at page top
-        drawUmbrellaScrub(0.0);
         var prevHero = null;
         var prevHeroTop = null;
         var totalScrollTraveled = 0;
@@ -3847,12 +3798,12 @@
           var y = initialScatter ? (Math.random() * (maxSpawnY || rainH || 800)) : (-(Math.random() * 100 + 20));
           var x = Math.random() * rainW;
           if (initialScatter) {
-            var ubInitEl = document.querySelector('.figma-hero-umbrella-canvas');
+            var ubInitEl = document.querySelector('.figma-hero-umbrella-img');
             if (ubInitEl) {
               var ubInitR = ubInitEl.getBoundingClientRect();
-              var curHalfW = ubInitR.width * (0.075 + 0.410 * (typeof umbrellaOpenProgress !== 'undefined' ? umbrellaOpenProgress : 0));
+              var curHalfW = ubInitR.width * 0.485;
               var curCenter = ubInitR.left + ubInitR.width * 0.5;
-              if (x >= curCenter - curHalfW && x <= curCenter + curHalfW && y >= ubInitR.top + ubInitR.height * 0.09 && y <= ubInitR.bottom + 80) {
+              if (x >= curCenter - curHalfW && x <= curCenter + curHalfW && y >= ubInitR.top + ubInitR.height * 0.06 && y <= ubInitR.bottom + 80) {
                 y = -(Math.random() * 100 + 20);
               }
             }
@@ -4054,39 +4005,20 @@
           for (var c = 0; c < clouds.length; c++) {
             clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
-          var ubElements = document.querySelectorAll('.figma-hero-umbrella-canvas');
+          var ubElements = document.querySelectorAll('.figma-hero-umbrella-img');
           for (var uIdx = 0; uIdx < ubElements.length; uIdx++) {
             ubElements[uIdx].style.setProperty('--umbrella-lightning', lightningLevel.toFixed(3));
           }
 
-          // Active umbrella element and its live bounding box in current viewport
-          var ubEl = activeHero ? activeHero.querySelector('.figma-hero-umbrella-canvas') : document.querySelector('.figma-hero-umbrella-canvas');
-          var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
-
-          // The umbrella opens dynamically as you scroll down to reach it!
-          // When the umbrella enters from the bottom (ubRect.top ~ rainH * 0.88), it starts closed (0.0).
-          // As you scroll and it moves towards the center of your screen (ubRect.top ~ rainH * 0.28), it blossoms fully open (1.0).
-          // When scrolling back up, it smoothly folds closed.
-          var targetOpen = 0.0;
-          if (ubRect) {
-            var startOpenY = rainH * 0.88; // Bottom of viewport where user first sees it
-            var fullOpenY = rainH * 0.28;  // Prime center viewing position
-            var openFrac = (startOpenY - ubRect.top) / (startOpenY - fullOpenY);
-            targetOpen = Math.max(0.0, Math.min(1.0, openFrac));
-          }
-
-          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.20;
-          if (Math.abs(targetOpen - umbrellaOpenProgress) < 0.001) umbrellaOpenProgress = targetOpen;
-
-          drawUmbrellaScrub(umbrellaOpenProgress);
-
           // Active umbrella collision geometry & dynamic rain barrier
+          var ubEl = activeHero ? activeHero.querySelector('.figma-hero-umbrella-img') : document.querySelector('.figma-hero-umbrella-img');
+          var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
           var hasUmbrella = ubRect && ubRect.bottom > -40 && ubRect.top < rainH + 40;
-          var ubCenterX = 0, ubHalfW = 0;
+          var ubCenterX = 0, ubHalfW = 0, ubRimY = 0;
           if (hasUmbrella) {
             ubCenterX = ubRect.left + ubRect.width * 0.5;
-            // Half-width expands smoothly from 0.075 (closed) to 0.485 (fully open dome)
-            ubHalfW = ubRect.width * (0.075 + 0.410 * umbrellaOpenProgress);
+            ubHalfW = ubRect.width * 0.485;
+            ubRimY = ubRect.top + ubRect.height * 0.360;
           }
 
           var rainIllumination = lightningLevel * 0.65;
@@ -4114,10 +4046,8 @@
               var u = (d.x - ubCenterX) / Math.max(1, ubHalfW);
               var u2 = u * u;
 
-              // Interpolate between closed conical profile and wide open protective dome
-              var openCanopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
-              var closedCanopyY = ubRect.top + ubRect.height * (0.114 + 0.650 * u2) + 1.5;
-              canopyY = closedCanopyY * (1.0 - umbrellaOpenProgress) + openCanopyY * umbrellaOpenProgress;
+              // Wide open protective dome canopy surface
+              canopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
 
               if (Math.abs(u) < 0.032) {
                 canopyY = ubRect.top + ubRect.height * 0.063 + 1.5; // ferrule nub at center
@@ -4130,7 +4060,7 @@
               if (hitCanopy || isUnderCanopy) {
                 if (hitCanopy && canopyY >= -20 && canopyY <= rainH + 20) {
                   // EFFECT 1: Expanding Circular Water Ripple Ring on the Taut Canopy
-                  if (umbrellaOpenProgress > 0.15 && ubRipples.length < 55) {
+                  if (ubRipples.length < 55) {
                     ubRipples.push({
                       x: d.x,
                       y: canopyY,
@@ -4145,7 +4075,7 @@
                   // EFFECT 2: High-Velocity Mist & Droplet Splash Spray along Dome Normal
                   var slope = ((ubRect.height * 0.262) / Math.max(1, ubHalfW)) * (0.356 * u + 0.336 * u * u2);
                   var normalAngle = Math.atan2(-1, -slope);
-                  var splashCount = Math.max(2, Math.round((d.tier === 2 ? 5 : 3) * (0.4 + 0.6 * umbrellaOpenProgress)));
+                  var splashCount = d.tier === 2 ? 5 : 3;
                   if (splashes.length < 180) {
                     for (var usp = 0; usp < splashCount; usp++) {
                       var fanAngle = normalAngle + (Math.random() - 0.5) * 1.1;
@@ -4164,7 +4094,7 @@
                   }
 
                   // EFFECT 3: Water beads trickling down the dome
-                  if (umbrellaOpenProgress > 0.35 && Math.random() < 0.40 && ubBeads.length < 35) {
+                  if (Math.random() < 0.40 && ubBeads.length < 35) {
                     ubBeads.push({
                       u: u,
                       spd: (u < 0 ? -1 : 1) * (Math.random() * 0.010 + 0.006),
