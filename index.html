@@ -191,11 +191,11 @@
     }
 
     /* =========================================================
-       FIGMA HERO SECTION (Scaled Up for High-Impact Desktop)
+       FIGMA HERO SECTION (Full-Width Atmospheric Stage)
        ========================================================= */
     .figma-hero-s1 {
       width: 100% !important;
-      max-width: 1600px !important;
+      max-width: 100% !important;
       margin: 0 auto !important;
       padding: clamp(100px, 10vw, 160px) clamp(20px, 4vw, 80px) 40px clamp(20px, 4vw, 80px) !important;
       box-sizing: border-box !important;
@@ -204,31 +204,32 @@
       align-items: center !important;
       position: relative !important;
       z-index: 5 !important;
+      overflow-x: clip !important;
+      overflow-y: visible !important;
     }
 
-    /* Atmospheric Thunder Clouds at Top of Hero Page */
+    /* Atmospheric Thunder Clouds at Top of Hero Page — Exact Figma Group 8 Placement Across Whole Page */
+    /* Group 8: position: absolute; width: 2254px; height: 977px; left: -558px; top: -516px; */
     .hero-clouds-wrap {
       position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      height: auto !important;
+      top: -516px !important;
+      left: -558px !important;
+      width: 2254px !important;
+      height: 977px !important;
+      min-width: calc(100% + 558px + 120px) !important;
       pointer-events: none !important;
       z-index: 0 !important;
       overflow: hidden !important;
-      border-radius: clamp(32px, 4vw, 64px) clamp(32px, 4vw, 64px) 0 0 !important;
+      border-radius: 0 !important;
     }
 
     .hero-clouds-img {
       width: 100% !important;
-      height: auto !important;
-      max-height: clamp(340px, 44vw, 650px) !important;
-      min-height: 220px !important;
+      height: 100% !important;
       object-fit: cover !important;
       object-position: center top !important;
       display: block !important;
-      border-radius: inherit !important;
+      border-radius: 0 !important;
       filter: brightness(calc(0.95 + var(--cloud-lightning-boost, 0) * 0.95)) contrast(calc(1.08 + var(--cloud-lightning-boost, 0) * 0.25)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.65)) !important;
       will-change: filter;
     }
@@ -358,8 +359,25 @@
         padding-top: 110px !important;
       }
 
+      .hero-clouds-wrap {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        top: -320px !important;
+        width: max(100vw, 1350px) !important;
+        min-width: 100vw !important;
+        height: 720px !important;
+      }
+
       .figma-stat-text {
         font-size: clamp(22px, 3.2vw, 36px) !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-clouds-wrap {
+        top: -220px !important;
+        width: max(100vw, 1050px) !important;
+        height: 560px !important;
       }
     }
 
