@@ -502,10 +502,9 @@
       aspect-ratio: 2048 / 1746;
       object-fit: contain !important;
       display: block !important;
-      shape-rendering: geometricPrecision !important;
       filter: drop-shadow(0 32px 80px rgba(0, 0, 0, 0.98)) drop-shadow(0 15px 45px rgba(255, 195, 0, 0.16)) brightness(calc(1 + var(--umbrella-lightning, 0) * 0.45));
       transition: filter 0.05s ease-out;
-      will-change: filter;
+      will-change: filter, transform;
       pointer-events: auto !important;
     }
 
@@ -1776,7 +1775,7 @@
                   </div>
                 </div>
                 <div class="figma-hero-umbrella-wrap">
-                  <img src="/images/hero_umbrella.svg?v=vector_hd" alt="Yellow Umbrella" class="figma-hero-umbrella-img"
+                  <img src="/images/hero_umbrella.png" alt="Yellow Umbrella" class="figma-hero-umbrella-img"
                     id="figma-hero-umbrella-img" width="2048" height="1746" loading="eager" />
                 </div>
               </div>
