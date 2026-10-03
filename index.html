@@ -3746,61 +3746,313 @@
         var stormIntensity = 1.0; // Starts SUPER STRONG right at the beginning!
         var animTime = 0;
 
-        // 5-Stage Animated HIMYM Yellow Umbrella with Black Handle
-        var umbrellaStages = [];
-        var umbrellaLoaded = 0;
-        var umbrellaOpenProgress = 0.0; // 0 = closed, 1 = fully open
+        // === Master 3D Three.js Umbrella Model & Dynamic Opening Mechanism ===
+        var ubScene, ubCamera, ubRenderers = [];
+        var umbrellaRoot, canopyGeom, canopyMesh;
+        var tipMeshes = [], runnerMesh, stretcherMeshes = [];
+        var umbrellaOpenProgress = 0.0; // 0 = tightly closed, 1 = fully open dome
         var manualToggleOpen = false;
-        var umbrellaStageFiles = [
-          '/images/umbrella_stage_0.png',
-          '/images/umbrella_stage_1.png',
-          '/images/umbrella_stage_2.png',
-          '/images/umbrella_stage_3.png',
-          '/images/umbrella_stage_4.png'
-        ];
 
-        function drawUmbrellaFrame(progress) {
-          var canvases = document.querySelectorAll('.figma-hero-umbrella-canvas');
-          if (!canvases.length) return;
-          progress = Math.max(0, Math.min(1, progress));
-          var stageFloat = progress * 4.0;
-          var s0 = Math.floor(stageFloat);
-          var s1 = Math.min(4, s0 + 1);
-          var frac = stageFloat - s0;
+        var Y_apex = 1.45;
+        var R_max = 3.32;
+        var H_dome = 0.72;
+        var L_rib = 3.42;
 
-          var a0 = (s0 === s1 || frac < 0.005) ? 1.0 : Math.min(1.0, (1.0 - frac) * 1.45);
-          var a1 = (s0 === s1 || frac < 0.005) ? 0.0 : Math.min(1.0, frac * 1.45);
+        if (typeof THREE !== 'undefined') {
+          ubScene = new THREE.Scene();
 
-          for (var ci = 0; ci < canvases.length; ci++) {
-            var ctx = canvases[ci].getContext('2d');
-            if (!ctx) continue;
-            ctx.clearRect(0, 0, 2048, 1746);
-            if (umbrellaStages[s0] && umbrellaStages[s0].complete) {
-              ctx.globalAlpha = a0;
-              ctx.drawImage(umbrellaStages[s0], 0, 0);
+          ubCamera = new THREE.PerspectiveCamera(34, 2048 / 1746, 0.1, 100);
+          ubCamera.position.set(0, -0.45, 8.9);
+          ubCamera.lookAt(0, -0.55, 0);
+
+          // Calibrated Studio Lighting for Vibrant HIMYM Yellow & Satin Black
+          var ubAmbLight = new THREE.AmbientLight(0xfff8ee, 0.85);
+          ubScene.add(ubAmbLight);
+
+          var ubKeyLight = new THREE.DirectionalLight(0xfff6e6, 1.45);
+          ubKeyLight.position.set(-2.5, 6.0, 5.0);
+          ubScene.add(ubKeyLight);
+
+          var ubFillLight = new THREE.DirectionalLight(0xffeedd, 0.70);
+          ubFillLight.position.set(4.0, 2.5, 3.5);
+          ubScene.add(ubFillLight);
+
+          var ubRimLight = new THREE.DirectionalLight(0xffffff, 0.90);
+          ubRimLight.position.set(1.5, -4.5, 4.0);
+          ubScene.add(ubRimLight);
+
+          var ubTopLight = new THREE.DirectionalLight(0xfffae0, 0.55);
+          ubTopLight.position.set(0, 7.0, 2.0);
+          ubScene.add(ubTopLight);
+
+          // Studio Reflection Environment for authentic PBR specular highlights
+          try {
+            var ubEnvCanvas = document.createElement('canvas');
+            ubEnvCanvas.width = 512;
+            ubEnvCanvas.height = 256;
+            var ubEnvCtx = ubEnvCanvas.getContext('2d');
+            var ubGrad = ubEnvCtx.createLinearGradient(0, 0, 0, 256);
+            ubGrad.addColorStop(0, '#554433');
+            ubGrad.addColorStop(0.3, '#2a221b');
+            ubGrad.addColorStop(0.6, '#110d0a');
+            ubGrad.addColorStop(1, '#050302');
+            ubEnvCtx.fillStyle = ubGrad;
+            ubEnvCtx.fillRect(0, 0, 512, 256);
+            ubEnvCtx.fillStyle = 'rgba(255, 240, 210, 0.22)';
+            ubEnvCtx.fillRect(70, 25, 110, 180);
+            ubEnvCtx.fillRect(330, 35, 90, 160);
+
+            var ubEnvTexture = new THREE.CanvasTexture(ubEnvCanvas);
+            ubEnvTexture.mapping = THREE.EquirectangularReflectionMapping;
+            ubScene.environment = ubEnvTexture;
+          } catch (e) { }
+
+          // Root 3D Umbrella Assembly
+          umbrellaRoot = new THREE.Group();
+          ubScene.add(umbrellaRoot);
+
+          // PBR Materials (Exact color matched from reference image)
+          var yellowCanopyMat = new THREE.MeshStandardMaterial({
+            color: 0xf1c408, // Rich golden HIMYM yellow
+            roughness: 0.38,
+            metalness: 0.04,
+            side: THREE.DoubleSide
+          });
+
+          var yellowHardwareMat = new THREE.MeshStandardMaterial({
+            color: 0xf1c408,
+            roughness: 0.28,
+            metalness: 0.10
+          });
+
+          var blackMetalMat = new THREE.MeshStandardMaterial({
+            color: 0x181818,
+            roughness: 0.35,
+            metalness: 0.65
+          });
+
+          var blackHandleMat = new THREE.MeshStandardMaterial({
+            color: 0x141414,
+            roughness: 0.40,
+            metalness: 0.18
+          });
+
+          // 1. Central Shaft (Black Metal Rod)
+          var shaftGeom = new THREE.CylinderGeometry(0.048, 0.048, 3.60, 24);
+          var shaftMesh = new THREE.Mesh(shaftGeom, blackMetalMat);
+          shaftMesh.position.y = -0.25;
+          umbrellaRoot.add(shaftMesh);
+
+          // 2. Top Ferrule / Finial (Yellow Cap at Apex)
+          var finialGeom = new THREE.CylinderGeometry(0.055, 0.090, 0.32, 24);
+          var finialMesh = new THREE.Mesh(finialGeom, yellowHardwareMat);
+          finialMesh.position.y = 1.61;
+          umbrellaRoot.add(finialMesh);
+
+          var finialTipGeom = new THREE.SphereGeometry(0.055, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.5);
+          var finialTipMesh = new THREE.Mesh(finialTipGeom, yellowHardwareMat);
+          finialTipMesh.position.y = 1.77;
+          umbrellaRoot.add(finialTipMesh);
+
+          // 3. Ergonomic J-Hook Handle
+          var collarGeom = new THREE.CylinderGeometry(0.078, 0.078, 0.12, 24);
+          var collarMesh = new THREE.Mesh(collarGeom, blackHandleMat);
+          collarMesh.position.y = -2.00;
+          umbrellaRoot.add(collarMesh);
+
+          var handleCurve = new THREE.CurvePath();
+          handleCurve.add(new THREE.LineCurve3(new THREE.Vector3(0, -2.05, 0), new THREE.Vector3(0, -2.85, 0)));
+          handleCurve.add(new THREE.CubicBezierCurve3(
+            new THREE.Vector3(0, -2.85, 0),
+            new THREE.Vector3(0, -3.32, 0),
+            new THREE.Vector3(0.58, -3.32, 0),
+            new THREE.Vector3(0.58, -2.62, 0)
+          ));
+
+          var handleGeom = new THREE.TubeGeometry(handleCurve, 40, 0.088, 20, false);
+          var handleMesh = new THREE.Mesh(handleGeom, blackHandleMat);
+          umbrellaRoot.add(handleMesh);
+
+          var handleCapGeom = new THREE.SphereGeometry(0.088, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.5);
+          var handleCapMesh = new THREE.Mesh(handleCapGeom, blackHandleMat);
+          handleCapMesh.position.set(0.58, -2.62, 0);
+          umbrellaRoot.add(handleCapMesh);
+
+          // 4. Procedural 8-Gore Canopy Mesh (Dynamic BufferGeometry)
+          var radialSegments = 64; // 8 gores x 8 sub-segments
+          var heightSegments = 24;
+          canopyGeom = new THREE.BufferGeometry();
+          var numVertices = (heightSegments + 1) * (radialSegments + 1);
+          var positions = new Float32Array(numVertices * 3);
+          var uvs = new Float32Array(numVertices * 2);
+          var indices = [];
+
+          for (var j = 0; j <= heightSegments; j++) {
+            var v = j / heightSegments;
+            for (var i = 0; i <= radialSegments; i++) {
+              var u = i / radialSegments;
+              var vIdx = j * (radialSegments + 1) + i;
+              uvs[vIdx * 2] = u;
+              uvs[vIdx * 2 + 1] = v;
             }
-            if (a1 > 0 && umbrellaStages[s1] && umbrellaStages[s1].complete) {
-              ctx.globalAlpha = a1;
-              ctx.drawImage(umbrellaStages[s1], 0, 0);
+          }
+
+          for (var gj = 0; gj < heightSegments; gj++) {
+            for (var gi = 0; gi < radialSegments; gi++) {
+              var va = gj * (radialSegments + 1) + gi;
+              var vb = (gj + 1) * (radialSegments + 1) + gi;
+              var vc = (gj + 1) * (radialSegments + 1) + (gi + 1);
+              var vd = gj * (radialSegments + 1) + (gi + 1);
+              indices.push(va, vb, vd);
+              indices.push(vb, vc, vd);
             }
-            ctx.globalAlpha = 1.0;
+          }
+
+          canopyGeom.setIndex(indices);
+          canopyGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          canopyGeom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+
+          canopyMesh = new THREE.Mesh(canopyGeom, yellowCanopyMat);
+          umbrellaRoot.add(canopyMesh);
+
+          // 5. Rib Tips (8 Yellow Rounded Nubs along Rim)
+          var tipGeom = new THREE.CylinderGeometry(0.024, 0.024, 0.09, 12);
+          for (var tk = 0; tk < 8; tk++) {
+            var tm = new THREE.Mesh(tipGeom, yellowHardwareMat);
+            umbrellaRoot.add(tm);
+            tipMeshes.push(tm);
+          }
+
+          // 6. Sliding Runner (Collared Ring on Shaft)
+          var runnerGeom = new THREE.CylinderGeometry(0.068, 0.068, 0.12, 16);
+          runnerMesh = new THREE.Mesh(runnerGeom, blackMetalMat);
+          umbrellaRoot.add(runnerMesh);
+
+          // 7. 8 Stretchers (Articulated Metal Struts)
+          var stretcherGeom = new THREE.CylinderGeometry(0.015, 0.015, 1.0, 8);
+          stretcherGeom.translate(0, 0.5, 0);
+          for (var sk = 0; sk < 8; sk++) {
+            var sm = new THREE.Mesh(stretcherGeom, blackMetalMat);
+            umbrellaRoot.add(sm);
+            stretcherMeshes.push(sm);
           }
         }
 
-        for (var sIdx = 0; sIdx < 5; sIdx++) {
-          (function (idx) {
-            var img = new Image();
-            img.src = umbrellaStageFiles[idx];
-            img.onload = function () {
-              umbrellaLoaded++;
-              drawUmbrellaFrame(umbrellaOpenProgress);
-            };
-            if (img.complete) {
-              drawUmbrellaFrame(umbrellaOpenProgress);
+        // Procedural 3D Deformation Function (Deploys Canopy, Ribs, Runner & Struts)
+        function updateUmbrella3D(progress) {
+          if (!canopyGeom) return;
+          var t = Math.max(0, Math.min(1, progress));
+          var easeT = t * t * (3 - 2 * t); // Natural spring-damper easing
+          var pos = canopyGeom.attributes.position.array;
+          var idx = 0;
+
+          for (var j = 0; j <= 24; j++) {
+            var u = j / 24; // 0 at apex, 1 at rim
+            for (var i = 0; i <= 64; i++) {
+              var theta = (i / 64) * Math.PI * 2;
+              var scallopCos = Math.cos(8 * theta);
+              var scallopDip = 0.038 * (1 - scallopCos) * Math.pow(u, 2.5);
+              var scallopRad = 0.032 * (1 - scallopCos) * u * u;
+
+              // Full open dome profile matching reference image
+              var r_open = (R_max * Math.pow(Math.sin(u * Math.PI * 0.5), 0.92) - scallopRad);
+              var y_open = Y_apex - H_dome * (1 - Math.cos(u * Math.PI * 0.5)) + scallopDip;
+
+              // Closed folded profile: gathered along shaft with 8 cloth pleats
+              var pleat = 0.06 * Math.sin(8 * theta) * u;
+              var r_closed = (0.10 + 0.18 * u) + pleat;
+              var y_closed = Y_apex - L_rib * u;
+
+              var r = r_closed * (1 - easeT) + r_open * easeT;
+              var y = y_closed * (1 - easeT) + y_open * easeT;
+
+              pos[idx++] = r * Math.sin(theta);
+              pos[idx++] = y;
+              pos[idx++] = r * Math.cos(theta);
             }
-            umbrellaStages[idx] = img;
-          })(sIdx);
+          }
+
+          canopyGeom.computeVertexNormals();
+          canopyGeom.attributes.position.needsUpdate = true;
+
+          // Position 8 Rib Tips
+          for (var k = 0; k < 8; k++) {
+            var theta_k = (k / 8) * Math.PI * 2;
+            var r_open_tip = R_max;
+            var y_open_tip = Y_apex - H_dome;
+            var r_closed_tip = 0.28;
+            var y_closed_tip = Y_apex - L_rib;
+
+            var r_tip = r_closed_tip * (1 - easeT) + r_open_tip * easeT;
+            var y_tip = y_closed_tip * (1 - easeT) + y_open_tip * easeT;
+
+            if (tipMeshes[k]) {
+              tipMeshes[k].position.set(r_tip * Math.sin(theta_k), y_tip - 0.03, r_tip * Math.cos(theta_k));
+            }
+          }
+
+          // Runner slides along shaft: y = -1.35 when closed -> y = 1.05 when open
+          var runnerY = -1.35 * (1 - easeT) + 1.05 * easeT;
+          if (runnerMesh) {
+            runnerMesh.position.set(0, runnerY, 0);
+          }
+
+          // Stretchers connect runner to rib midpoints
+          var u_mid = 0.52;
+          for (var m = 0; m < 8; m++) {
+            if (!stretcherMeshes[m]) continue;
+            var theta_m = (m / 8) * Math.PI * 2;
+            var r_mid = (0.19 * (1 - easeT) + R_max * Math.pow(Math.sin(u_mid * Math.PI * 0.5), 0.92) * easeT);
+            var y_mid = (Y_apex - L_rib * u_mid) * (1 - easeT) + (Y_apex - H_dome * (1 - Math.cos(u_mid * Math.PI * 0.5))) * easeT;
+
+            var targetPos = new THREE.Vector3(r_mid * Math.sin(theta_m), y_mid, r_mid * Math.cos(theta_m));
+            var startPos = new THREE.Vector3(0, runnerY, 0);
+            var dist = startPos.distanceTo(targetPos);
+
+            stretcherMeshes[m].position.copy(startPos);
+            stretcherMeshes[m].scale.set(1, dist, 1);
+            stretcherMeshes[m].quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), targetPos.clone().sub(startPos).normalize());
+          }
         }
+
+        // WebGL Renderers Initialization (Supports all cloned canvases in LoopScroll)
+        function initUmbrellaWebGL() {
+          var canvases = document.querySelectorAll('.figma-hero-umbrella-canvas');
+          canvases.forEach(function (c) {
+            if (c.__ubRenderer) return;
+            try {
+              var r = new THREE.WebGLRenderer({
+                canvas: c,
+                alpha: true,
+                antialias: true,
+                powerPreference: 'high-performance'
+              });
+              r.setSize(2048, 1746, false);
+              r.setPixelRatio(1);
+              if (THREE.ACESFilmicToneMapping) {
+                r.toneMapping = THREE.ACESFilmicToneMapping;
+                r.toneMappingExposure = 1.12;
+              }
+              c.__ubRenderer = r;
+              ubRenderers.push({ renderer: r, canvas: c });
+            } catch (e) { }
+          });
+        }
+        initUmbrellaWebGL();
+
+        function renderUmbrella3D() {
+          if (!ubScene || !ubCamera) return;
+          if (!ubRenderers.length) {
+            initUmbrellaWebGL();
+          }
+          for (var ri = 0; ri < ubRenderers.length; ri++) {
+            ubRenderers[ri].renderer.render(ubScene, ubCamera);
+          }
+        }
+
+        // Initial pose: tightly closed at top
+        updateUmbrella3D(0.0);
+        renderUmbrella3D();
 
         // Click on umbrella canvas toggles opening/closing for quick testing
         document.addEventListener('click', function (e) {
@@ -4084,7 +4336,8 @@
           umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.18;
           if (Math.abs(targetOpen - umbrellaOpenProgress) < 0.001) umbrellaOpenProgress = targetOpen;
 
-          drawUmbrellaFrame(umbrellaOpenProgress);
+          updateUmbrella3D(umbrellaOpenProgress);
+          renderUmbrella3D();
 
           // Active umbrella collision geometry & dynamic rain barrier
           var ubEl = activeHero ? activeHero.querySelector('.figma-hero-umbrella-canvas') : document.querySelector('.figma-hero-umbrella-canvas');
