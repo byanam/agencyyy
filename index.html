@@ -495,11 +495,12 @@
       pointer-events: none !important;
     }
 
+    .figma-hero-umbrella-canvas,
     .figma-hero-umbrella-img {
       width: clamp(620px, 94vw, 1580px) !important;
       max-width: 99vw !important;
       height: auto !important;
-      max-height: none !important;
+      aspect-ratio: 2048 / 1746;
       object-fit: contain !important;
       display: block !important;
       filter: drop-shadow(0 32px 80px rgba(0, 0, 0, 0.98)) drop-shadow(0 15px 45px rgba(255, 195, 0, 0.16)) brightness(calc(1 + var(--umbrella-lightning, 0) * 0.45));
@@ -1773,7 +1774,8 @@
                   </div>
                 </div>
                 <div class="figma-hero-umbrella-wrap">
-                  <img src="/images/hero_umbrella.png?v=himym_yellow" alt="How I Met Your Mother Yellow Umbrella" class="figma-hero-umbrella-img" />
+                  <canvas class="figma-hero-umbrella-canvas" id="figma-hero-umbrella-canvas" width="2048" height="1746"></canvas>
+                  <img src="/images/hero_umbrella.png?v=himym_black" alt="How I Met Your Mother Yellow Umbrella" class="figma-hero-umbrella-img fallback-umbrella" style="display:none;" />
                 </div>
               </div>
               <section id="works" class="showcase-framed-box">
@@ -3743,6 +3745,64 @@
         var stormStartTime = performance.now();
         var stormIntensity = 1.0; // Starts SUPER STRONG right at the beginning!
         var animTime = 0;
+
+        // 5-Stage Animated HIMYM Yellow Umbrella with Black Handle
+        var umbrellaCanvas = document.getElementById('figma-hero-umbrella-canvas');
+        var ubCtx = umbrellaCanvas ? umbrellaCanvas.getContext('2d') : null;
+        var umbrellaStages = [];
+        var umbrellaLoaded = 0;
+        var umbrellaOpenProgress = 0.0; // 0 = closed, 1 = fully open
+        var umbrellaStageFiles = [
+          '/images/umbrella_stage_0.png',
+          '/images/umbrella_stage_1.png',
+          '/images/umbrella_stage_2.png',
+          '/images/umbrella_stage_3.png',
+          '/images/umbrella_stage_4.png'
+        ];
+
+        for (var sIdx = 0; sIdx < 5; sIdx++) {
+          (function (idx) {
+            var img = new Image();
+            img.src = umbrellaStageFiles[idx];
+            img.onload = function () {
+              umbrellaLoaded++;
+              if (ubCtx) {
+                drawUmbrellaFrame(umbrellaOpenProgress);
+              }
+            };
+            umbrellaStages[idx] = img;
+          })(sIdx);
+        }
+
+        function drawUmbrellaFrame(progress) {
+          if (!ubCtx) return;
+          progress = Math.max(0, Math.min(1, progress));
+          var stageFloat = progress * 4.0;
+          var s0 = Math.floor(stageFloat);
+          var s1 = Math.min(4, s0 + 1);
+          var frac = stageFloat - s0;
+
+          ubCtx.clearRect(0, 0, 2048, 1746);
+
+          if (s0 === s1 || frac < 0.005) {
+            if (umbrellaStages[s0] && umbrellaStages[s0].complete) {
+              ubCtx.globalAlpha = 1.0;
+              ubCtx.drawImage(umbrellaStages[s0], 0, 0);
+            }
+          } else {
+            var a0 = Math.min(1.0, (1.0 - frac) * 1.45);
+            var a1 = Math.min(1.0, frac * 1.45);
+            if (umbrellaStages[s0] && umbrellaStages[s0].complete) {
+              ubCtx.globalAlpha = a0;
+              ubCtx.drawImage(umbrellaStages[s0], 0, 0);
+            }
+            if (umbrellaStages[s1] && umbrellaStages[s1].complete) {
+              ubCtx.globalAlpha = a1;
+              ubCtx.drawImage(umbrellaStages[s1], 0, 0);
+            }
+            ubCtx.globalAlpha = 1.0;
+          }
+        }
         var prevHero = null;
         var prevHeroTop = null;
         var totalScrollTraveled = 0;
@@ -3794,10 +3854,12 @@
           var y = initialScatter ? (Math.random() * (maxSpawnY || rainH || 800)) : (-(Math.random() * 100 + 20));
           var x = Math.random() * rainW;
           if (initialScatter) {
-            var ubInitEl = document.querySelector('.figma-hero-umbrella-img');
+            var ubInitEl = document.querySelector('.figma-hero-umbrella-canvas') || document.querySelector('.figma-hero-umbrella-img');
             if (ubInitEl) {
               var ubInitR = ubInitEl.getBoundingClientRect();
-              if (x >= ubInitR.left && x <= ubInitR.right && y >= ubInitR.top + ubInitR.height * 0.09 && y <= ubInitR.bottom + 80) {
+              var curHalfW = ubInitR.width * (0.075 + 0.410 * (typeof umbrellaOpenProgress !== 'undefined' ? umbrellaOpenProgress : 0));
+              var curCenter = ubInitR.left + ubInitR.width * 0.5;
+              if (x >= curCenter - curHalfW && x <= curCenter + curHalfW && y >= ubInitR.top + ubInitR.height * 0.09 && y <= ubInitR.bottom + 80) {
                 y = -(Math.random() * 100 + 20);
               }
             }
@@ -3999,20 +4061,30 @@
           for (var c = 0; c < clouds.length; c++) {
             clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
-          var umbrellas = document.querySelectorAll('.figma-hero-umbrella-img');
-          for (var u = 0; u < umbrellas.length; u++) {
-            umbrellas[u].style.setProperty('--umbrella-lightning', lightningLevel.toFixed(3));
+          var ubElements = document.querySelectorAll('.figma-hero-umbrella-canvas, .figma-hero-umbrella-img');
+          for (var uIdx = 0; uIdx < ubElements.length; uIdx++) {
+            ubElements[uIdx].style.setProperty('--umbrella-lightning', lightningLevel.toFixed(3));
           }
 
-          // Active umbrella collision geometry & protective dry shield
-          var ubEl = document.querySelector('.figma-hero-umbrella-img');
+          // Dynamic scroll-driven umbrella opening (0 = closed at top, 1 = fully open as you scroll)
+          var curScroll = (loopScroll && loopScroll.state && loopScroll.state.pos !== undefined) ?
+            Math.abs(loopScroll.state.pos) : (window.pageYOffset || window.scrollY || 0);
+
+          var targetOpen = Math.min(1.0, Math.max(0.0, curScroll / 260.0));
+          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.12;
+          if (Math.abs(targetOpen - umbrellaOpenProgress) < 0.001) umbrellaOpenProgress = targetOpen;
+
+          drawUmbrellaFrame(umbrellaOpenProgress);
+
+          // Active umbrella collision geometry & dynamic rain barrier
+          var ubEl = document.querySelector('.figma-hero-umbrella-canvas') || document.querySelector('.figma-hero-umbrella-img');
           var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
           var hasUmbrella = ubRect && ubRect.bottom > -40 && ubRect.top < rainH + 40;
-          var ubCenterX = 0, ubHalfW = 0, ubRimY = 0;
+          var ubCenterX = 0, ubHalfW = 0;
           if (hasUmbrella) {
             ubCenterX = ubRect.left + ubRect.width * 0.5;
-            ubHalfW = ubRect.width * 0.485;
-            ubRimY = ubRect.top + ubRect.height * 0.355;
+            // Half-width expands smoothly from 0.075 to 0.485 of canvas width
+            ubHalfW = ubRect.width * (0.075 + 0.410 * umbrellaOpenProgress);
           }
 
           var rainIllumination = lightningLevel * 0.65;
@@ -4033,14 +4105,18 @@
 
             d.y += dropFall;
 
-            // --- A0. Precision Canopy Surface Touch & Complete Dry Umbrella Shadow ---
+            // --- A0. Precision Canopy Surface Touch & Dynamic Rain Barrier ---
             var isOverUmbrella = hasUmbrella && (d.x >= (ubCenterX - ubHalfW) && d.x <= (ubCenterX + ubHalfW));
             var canopyY = 0;
             if (isOverUmbrella) {
-              var u = (d.x - ubCenterX) / ubHalfW;
+              var u = (d.x - ubCenterX) / Math.max(1, ubHalfW);
               var u2 = u * u;
-              // Exact cloth canopy contour hugging the real white umbrella pixels:
-              canopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
+
+              // Interpolate between closed conical profile and wide open protective dome
+              var openCanopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
+              var closedCanopyY = ubRect.top + ubRect.height * (0.114 + 0.650 * u2) + 1.5;
+              canopyY = closedCanopyY * (1.0 - umbrellaOpenProgress) + openCanopyY * umbrellaOpenProgress;
+
               if (Math.abs(u) < 0.032) {
                 canopyY = ubRect.top + ubRect.height * 0.063 + 1.5; // ferrule nub at center
               }
@@ -4052,7 +4128,7 @@
               if (hitCanopy || isUnderCanopy) {
                 if (hitCanopy && canopyY >= -20 && canopyY <= rainH + 20) {
                   // EFFECT 1: Expanding Circular Water Ripple Ring on the Taut Canopy
-                  if (ubRipples.length < 55) {
+                  if (umbrellaOpenProgress > 0.15 && ubRipples.length < 55) {
                     ubRipples.push({
                       x: d.x,
                       y: canopyY,
@@ -4065,9 +4141,9 @@
                   }
 
                   // EFFECT 2: High-Velocity Mist & Droplet Splash Spray along Dome Normal
-                  var slope = ((ubRect.height * 0.262) / ubHalfW) * (0.356 * u + 0.336 * u * u2);
+                  var slope = ((ubRect.height * 0.262) / Math.max(1, ubHalfW)) * (0.356 * u + 0.336 * u * u2);
                   var normalAngle = Math.atan2(-1, -slope);
-                  var splashCount = Math.max(3, Math.round((d.tier === 2 ? 6 : 4) * (0.6 + 0.4 * stormIntensity)));
+                  var splashCount = Math.max(2, Math.round((d.tier === 2 ? 5 : 3) * (0.4 + 0.6 * umbrellaOpenProgress)));
                   if (splashes.length < 180) {
                     for (var usp = 0; usp < splashCount; usp++) {
                       var fanAngle = normalAngle + (Math.random() - 0.5) * 1.1;
@@ -4078,15 +4154,15 @@
                         vx: Math.cos(fanAngle) * fanSpd,
                         vy: Math.sin(fanAngle) * fanSpd,
                         gravity: 0.30,
-                        r: (d.tier === 2 ? (Math.random() * 0.4 + 0.7) : (Math.random() * 0.3 + 0.45)),
+                        r: (d.tier === 2 ? 0.6 : 0.4),
                         alpha: 1.0,
-                        decay: Math.random() * 0.035 + 0.04
+                        decay: 0.04
                       });
                     }
                   }
 
                   // EFFECT 3: Water beads trickling down the dome
-                  if (Math.random() < 0.40 && ubBeads.length < 35) {
+                  if (umbrellaOpenProgress > 0.35 && Math.random() < 0.40 && ubBeads.length < 35) {
                     ubBeads.push({
                       u: u,
                       spd: (u < 0 ? -1 : 1) * (Math.random() * 0.010 + 0.006),
