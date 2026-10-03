@@ -903,7 +903,7 @@
       content: none !important;
     }
 
-    /* Atmospheric Slanted Cloud Dividers */
+    /* Atmospheric Slanted Cloud Dividers (Derived directly from Hero Cloud Texture) */
     .cloud-divider-top-wrap,
     .cloud-divider-bottom-wrap {
       width: 100% !important;
@@ -915,28 +915,30 @@
     }
 
     .cloud-divider-top-wrap {
-      height: clamp(320px, 36vw, 560px) !important;
-      margin-top: clamp(10px, 2vw, 30px) !important;
+      height: clamp(340px, 40vw, 620px) !important;
+      margin-top: 0 !important;
       margin-bottom: clamp(-70px, -7vw, -120px) !important;
       z-index: 2 !important;
-      -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
-      mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
+      /* Top is 100% solid cloud matching the hero sky above; bottom fades into dark text space */
+      -webkit-mask-image: linear-gradient(180deg, black 0%, black 82%, transparent 100%) !important;
+      mask-image: linear-gradient(180deg, black 0%, black 82%, transparent 100%) !important;
     }
 
     .cloud-divider-bottom-wrap {
-      height: clamp(320px, 36vw, 560px) !important;
+      height: clamp(340px, 40vw, 620px) !important;
       margin-top: clamp(-70px, -7vw, -120px) !important;
-      margin-bottom: clamp(30px, 4vw, 70px) !important;
+      margin-bottom: clamp(20px, 3vw, 50px) !important;
       z-index: 2 !important;
-      -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
-      mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
+      /* Top fades from dark text space into the cloud formation */
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 100%) !important;
+      mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 100%) !important;
     }
 
     .cloud-divider-drift-layer {
       position: absolute !important;
-      inset: -5% -6% -5% -6% !important;
-      width: 112% !important;
-      height: 110% !important;
+      inset: -4% -5% -4% -5% !important;
+      width: 110% !important;
+      height: 108% !important;
       pointer-events: none !important;
       will-change: transform;
     }
@@ -949,28 +951,23 @@
       animation: cloudsBottomSlantDrift 44s ease-in-out infinite alternate !important;
     }
 
-    .cloud-divider-drift-layer-sheen {
-      opacity: 0.38 !important;
-      mix-blend-mode: screen !important;
-      filter: blur(8px) !important;
-    }
-
     .cloud-divider-img {
       width: 100% !important;
       height: 100% !important;
       object-fit: cover !important;
       display: block !important;
       pointer-events: none !important;
-      filter: brightness(calc(0.92 + var(--cloud-lightning-boost, 0) * 0.90)) contrast(calc(1.15 + var(--cloud-lightning-boost, 0) * 0.22)) !important;
+      /* Exact matching color, tone, and saturation as the hero clouds */
+      filter: brightness(calc(0.85 + var(--cloud-lightning-boost, 0) * 0.95)) contrast(calc(1.15 + var(--cloud-lightning-boost, 0) * 0.25)) !important;
       transition: filter 0.12s ease-out !important;
     }
 
     .cloud-divider-top-img {
-      object-position: right center !important;
+      object-position: center top !important;
     }
 
     .cloud-divider-bottom-img {
-      object-position: left center !important;
+      object-position: center bottom !important;
     }
 
     @keyframes cloudsTopSlantDrift {
@@ -1852,10 +1849,7 @@
                 <!-- Upper Slanted Cloud Divider (Separates Hero Page & Second Page; Slanted down from top-right to left) -->
                 <div class="cloud-divider-top-wrap" aria-hidden="true">
                   <div class="cloud-divider-drift-layer cloud-divider-top-drift">
-                    <img src="/images/feathered_clouds_slant_top.jpg" alt="" class="cloud-divider-img cloud-divider-top-img" />
-                  </div>
-                  <div class="cloud-divider-drift-layer cloud-divider-top-drift cloud-divider-drift-layer-sheen">
-                    <img src="/images/feathered_clouds_slant_top.jpg" alt="" class="cloud-divider-img cloud-divider-top-img" />
+                    <img src="/images/hero_clouds_slant_top.jpg" alt="" class="cloud-divider-img cloud-divider-top-img" />
                   </div>
                 </div>
 
@@ -1918,10 +1912,7 @@
                 <!-- Lower Slanted Cloud Divider (Slanted in opposite direction: swelling from bottom-left down to right) -->
                 <div class="cloud-divider-bottom-wrap" aria-hidden="true">
                   <div class="cloud-divider-drift-layer cloud-divider-bottom-drift">
-                    <img src="/images/feathered_clouds_slant_bottom.jpg" alt="" class="cloud-divider-img cloud-divider-bottom-img" />
-                  </div>
-                  <div class="cloud-divider-drift-layer cloud-divider-bottom-drift cloud-divider-drift-layer-sheen">
-                    <img src="/images/feathered_clouds_slant_bottom.jpg" alt="" class="cloud-divider-img cloud-divider-bottom-img" />
+                    <img src="/images/hero_clouds_slant_bottom.jpg" alt="" class="cloud-divider-img cloud-divider-bottom-img" />
                   </div>
                 </div>
 
