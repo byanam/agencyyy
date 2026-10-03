@@ -495,8 +495,7 @@
       pointer-events: none !important;
     }
 
-    .figma-hero-umbrella-canvas,
-    .figma-hero-umbrella-img {
+    .figma-hero-umbrella-canvas {
       width: clamp(620px, 94vw, 1580px) !important;
       max-width: 99vw !important;
       height: auto !important;
@@ -506,6 +505,8 @@
       filter: drop-shadow(0 32px 80px rgba(0, 0, 0, 0.98)) drop-shadow(0 15px 45px rgba(255, 195, 0, 0.16)) brightness(calc(1 + var(--umbrella-lightning, 0) * 0.45));
       transition: filter 0.05s ease-out;
       will-change: filter, transform;
+      pointer-events: auto !important;
+      cursor: pointer;
     }
 
     /* Authentic Redis Agency LoopScroll Viewport Architecture */
@@ -1774,8 +1775,7 @@
                   </div>
                 </div>
                 <div class="figma-hero-umbrella-wrap">
-                  <canvas class="figma-hero-umbrella-canvas" id="figma-hero-umbrella-canvas" width="2048" height="1746"></canvas>
-                  <img src="/images/hero_umbrella.png?v=himym_black" alt="How I Met Your Mother Yellow Umbrella" class="figma-hero-umbrella-img fallback-umbrella" style="display:none;" />
+                  <canvas class="figma-hero-umbrella-canvas" id="figma-hero-umbrella-canvas" width="2048" height="1746" title="Scroll down to open umbrella (or click to toggle)"></canvas>
                 </div>
               </div>
               <section id="works" class="showcase-framed-box">
@@ -3747,11 +3747,10 @@
         var animTime = 0;
 
         // 5-Stage Animated HIMYM Yellow Umbrella with Black Handle
-        var umbrellaCanvas = document.getElementById('figma-hero-umbrella-canvas');
-        var ubCtx = umbrellaCanvas ? umbrellaCanvas.getContext('2d') : null;
         var umbrellaStages = [];
         var umbrellaLoaded = 0;
         var umbrellaOpenProgress = 0.0; // 0 = closed, 1 = fully open
+        var manualToggleOpen = false;
         var umbrellaStageFiles = [
           '/images/umbrella_stage_0.png',
           '/images/umbrella_stage_1.png',
@@ -3760,49 +3759,55 @@
           '/images/umbrella_stage_4.png'
         ];
 
-        for (var sIdx = 0; sIdx < 5; sIdx++) {
-          (function (idx) {
-            var img = new Image();
-            img.src = umbrellaStageFiles[idx];
-            img.onload = function () {
-              umbrellaLoaded++;
-              if (ubCtx) {
-                drawUmbrellaFrame(umbrellaOpenProgress);
-              }
-            };
-            umbrellaStages[idx] = img;
-          })(sIdx);
-        }
-
         function drawUmbrellaFrame(progress) {
-          if (!ubCtx) return;
+          var canvases = document.querySelectorAll('.figma-hero-umbrella-canvas');
+          if (!canvases.length) return;
           progress = Math.max(0, Math.min(1, progress));
           var stageFloat = progress * 4.0;
           var s0 = Math.floor(stageFloat);
           var s1 = Math.min(4, s0 + 1);
           var frac = stageFloat - s0;
 
-          ubCtx.clearRect(0, 0, 2048, 1746);
+          var a0 = (s0 === s1 || frac < 0.005) ? 1.0 : Math.min(1.0, (1.0 - frac) * 1.45);
+          var a1 = (s0 === s1 || frac < 0.005) ? 0.0 : Math.min(1.0, frac * 1.45);
 
-          if (s0 === s1 || frac < 0.005) {
+          for (var ci = 0; ci < canvases.length; ci++) {
+            var ctx = canvases[ci].getContext('2d');
+            if (!ctx) continue;
+            ctx.clearRect(0, 0, 2048, 1746);
             if (umbrellaStages[s0] && umbrellaStages[s0].complete) {
-              ubCtx.globalAlpha = 1.0;
-              ubCtx.drawImage(umbrellaStages[s0], 0, 0);
+              ctx.globalAlpha = a0;
+              ctx.drawImage(umbrellaStages[s0], 0, 0);
             }
-          } else {
-            var a0 = Math.min(1.0, (1.0 - frac) * 1.45);
-            var a1 = Math.min(1.0, frac * 1.45);
-            if (umbrellaStages[s0] && umbrellaStages[s0].complete) {
-              ubCtx.globalAlpha = a0;
-              ubCtx.drawImage(umbrellaStages[s0], 0, 0);
+            if (a1 > 0 && umbrellaStages[s1] && umbrellaStages[s1].complete) {
+              ctx.globalAlpha = a1;
+              ctx.drawImage(umbrellaStages[s1], 0, 0);
             }
-            if (umbrellaStages[s1] && umbrellaStages[s1].complete) {
-              ubCtx.globalAlpha = a1;
-              ubCtx.drawImage(umbrellaStages[s1], 0, 0);
-            }
-            ubCtx.globalAlpha = 1.0;
+            ctx.globalAlpha = 1.0;
           }
         }
+
+        for (var sIdx = 0; sIdx < 5; sIdx++) {
+          (function (idx) {
+            var img = new Image();
+            img.src = umbrellaStageFiles[idx];
+            img.onload = function () {
+              umbrellaLoaded++;
+              drawUmbrellaFrame(umbrellaOpenProgress);
+            };
+            if (img.complete) {
+              drawUmbrellaFrame(umbrellaOpenProgress);
+            }
+            umbrellaStages[idx] = img;
+          })(sIdx);
+        }
+
+        // Click on umbrella canvas toggles opening/closing for quick testing
+        document.addEventListener('click', function (e) {
+          if (e.target && e.target.classList && e.target.classList.contains('figma-hero-umbrella-canvas')) {
+            manualToggleOpen = !manualToggleOpen;
+          }
+        });
         var prevHero = null;
         var prevHeroTop = null;
         var totalScrollTraveled = 0;
@@ -3854,7 +3859,7 @@
           var y = initialScatter ? (Math.random() * (maxSpawnY || rainH || 800)) : (-(Math.random() * 100 + 20));
           var x = Math.random() * rainW;
           if (initialScatter) {
-            var ubInitEl = document.querySelector('.figma-hero-umbrella-canvas') || document.querySelector('.figma-hero-umbrella-img');
+            var ubInitEl = document.querySelector('.figma-hero-umbrella-canvas');
             if (ubInitEl) {
               var ubInitR = ubInitEl.getBoundingClientRect();
               var curHalfW = ubInitR.width * (0.075 + 0.410 * (typeof umbrellaOpenProgress !== 'undefined' ? umbrellaOpenProgress : 0));
@@ -4061,29 +4066,34 @@
           for (var c = 0; c < clouds.length; c++) {
             clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
-          var ubElements = document.querySelectorAll('.figma-hero-umbrella-canvas, .figma-hero-umbrella-img');
+          var ubElements = document.querySelectorAll('.figma-hero-umbrella-canvas');
           for (var uIdx = 0; uIdx < ubElements.length; uIdx++) {
             ubElements[uIdx].style.setProperty('--umbrella-lightning', lightningLevel.toFixed(3));
           }
 
-          // Dynamic scroll-driven umbrella opening (0 = closed at top, 1 = fully open as you scroll)
-          var curScroll = (loopScroll && loopScroll.state && loopScroll.state.pos !== undefined) ?
-            Math.abs(loopScroll.state.pos) : (window.pageYOffset || window.scrollY || 0);
+          // Dynamic scroll-driven umbrella opening (0 = closed at top, 1 = fully open as you scroll down)
+          var curScroll = 0;
+          if (activeHeroRect) {
+            curScroll = Math.max(0, -activeHeroRect.top);
+          }
+          if (loopScroll && loopScroll.state && typeof loopScroll.state.pos === 'number') {
+            curScroll = Math.max(curScroll, Math.abs(loopScroll.state.pos));
+          }
 
-          var targetOpen = Math.min(1.0, Math.max(0.0, curScroll / 260.0));
-          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.12;
+          var targetOpen = manualToggleOpen ? 1.0 : Math.min(1.0, Math.max(0.0, curScroll / 300.0));
+          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.18;
           if (Math.abs(targetOpen - umbrellaOpenProgress) < 0.001) umbrellaOpenProgress = targetOpen;
 
           drawUmbrellaFrame(umbrellaOpenProgress);
 
           // Active umbrella collision geometry & dynamic rain barrier
-          var ubEl = document.querySelector('.figma-hero-umbrella-canvas') || document.querySelector('.figma-hero-umbrella-img');
+          var ubEl = activeHero ? activeHero.querySelector('.figma-hero-umbrella-canvas') : document.querySelector('.figma-hero-umbrella-canvas');
           var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
           var hasUmbrella = ubRect && ubRect.bottom > -40 && ubRect.top < rainH + 40;
           var ubCenterX = 0, ubHalfW = 0;
           if (hasUmbrella) {
             ubCenterX = ubRect.left + ubRect.width * 0.5;
-            // Half-width expands smoothly from 0.075 to 0.485 of canvas width
+            // Half-width expands smoothly from 0.075 (closed) to 0.485 (fully open dome)
             ubHalfW = ubRect.width * (0.075 + 0.410 * umbrellaOpenProgress);
           }
 
