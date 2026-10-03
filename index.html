@@ -208,7 +208,7 @@
       overflow-y: visible !important;
     }
 
-    /* Atmospheric Thunder Clouds at Top of Hero Page — Exact Full Width Fit Without Cropping */
+    /* Atmospheric Thunder Clouds at Top of Hero Page — Appears above rain element */
     .hero-clouds-wrap {
       position: absolute !important;
       top: 0 !important;
@@ -218,7 +218,7 @@
       max-width: 100% !important;
       height: auto !important;
       pointer-events: none !important;
-      z-index: 0 !important;
+      z-index: 10 !important;
       overflow: visible !important;
       border-radius: 0 !important;
     }
@@ -241,7 +241,7 @@
       width: 100% !important;
       height: 100% !important;
       pointer-events: none !important;
-      z-index: 2 !important;
+      z-index: 11 !important;
       opacity: 0;
       mix-blend-mode: screen !important;
       background: radial-gradient(ellipse 90% 70% at var(--lightning-x, 48%) var(--lightning-y, 30%), rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.82) 28%, rgba(245, 245, 250, 0.32) 58%, transparent 85%) !important;
@@ -256,7 +256,7 @@
       width: 100vw !important;
       height: 100vh !important;
       pointer-events: none !important;
-      z-index: 25 !important;
+      z-index: 4 !important;
       overflow: hidden !important;
     }
 
@@ -445,7 +445,7 @@
       position: fixed !important;
       inset: 0 !important;
       overflow: hidden !important;
-      z-index: 2 !important;
+      z-index: 6 !important;
       width: 100% !important;
       height: 100% !important;
     }
@@ -2234,12 +2234,17 @@
           }
 
           var cloudTop = activeHeroRect ? activeHeroRect.top : 0;
+          var cloudImg = activeHero ? activeHero.querySelector('.hero-clouds-img') : document.querySelector('.hero-clouds-img');
+          var cloudRect = cloudImg ? cloudImg.getBoundingClientRect() : null;
+          // Rain emerges from inside the lower belly of the clouds
+          var cloudEmergeY = cloudRect ? (cloudRect.top + cloudRect.height * 0.42) : (cloudTop + 120);
+          var cloudFadeDist = cloudRect ? Math.max(30, cloudRect.height * 0.35) : 80;
           var tabletTop = activeBoxRect ? activeBoxRect.top : (activeHeroRect ? activeHeroRect.bottom : rainH);
           var tabletLeft = activeBoxRect ? activeBoxRect.left : (rainW * 0.05);
           var tabletRight = activeBoxRect ? activeBoxRect.right : (rainW * 0.95);
 
-          // The spawn ceiling is the storm clouds (which move up with the hero when scrolling)
-          var spawnCeiling = Math.min(0, cloudTop);
+          // The spawn ceiling is inside the storm clouds so drops are ready to emerge
+          var spawnCeiling = cloudEmergeY - (Math.random() * 30 + 10);
 
           // Clear canvas every frame
           rCtx.clearRect(0, 0, rainW, rainH);
@@ -2432,12 +2437,18 @@
               continue;
             }
 
-            // Do not draw if drop is still above the viewport or below the tablet
+            // Do not draw if drop is still above cloud emergence or below tablet
             var effectiveLen = d.len * stormLenMult * (1 + Math.min(1.2, scrollBoost / 35) * 0.4);
-            if (d.y < -effectiveLen || d.y > tabletTop + 15) continue;
+            if (d.y < cloudEmergeY || d.y > tabletTop + 15) continue;
 
             // ABSOLUTE DRY ZONE: No streak can ever render below canopy in umbrella column
             if (isOverUmbrella && d.y >= canopyY) continue;
+
+            // Smooth emergence fade as drops emerge from inside the belly of the clouds
+            var cloudFade = 1.0;
+            if (d.y < cloudEmergeY + cloudFadeDist) {
+              cloudFade = Math.max(0, (d.y - cloudEmergeY) / cloudFadeDist);
+            }
 
             // Subtle fade only in the last 15px past the tablet ledge into the darkness
             var boundaryFade = 1.0;
@@ -2445,13 +2456,13 @@
               boundaryFade = Math.max(0, 1.0 - (d.y - tabletTop) / 15.0);
             }
 
-            var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45))) * boundaryFade;
+            var finalAlpha = (d.baseAlpha + (rainIllumination * (d.tier === 2 ? 0.70 : 0.45))) * boundaryFade * cloudFade;
             finalAlpha = Math.min(0.96, Math.max(0.0, finalAlpha));
 
             if (finalAlpha <= 0.01) continue;
 
-            // Straight vertical streak coordinates (no slant)
-            var tailY = d.y - effectiveLen;
+            // Straight vertical streak coordinates (starts cleanly from inside clouds)
+            var tailY = Math.max(cloudEmergeY, d.y - effectiveLen);
             var headY = d.y;
             if (isOverUmbrella && headY > canopyY) {
               headY = canopyY;
