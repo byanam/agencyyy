@@ -224,84 +224,31 @@
       z-index: 5 !important;
     }
 
-    /* Atmospheric Black Thunder Clouds with Natural Curved Bend & Hogwarts Storm Animation */
+    /* Atmospheric Thunder Clouds at Top of Hero Page */
     .hero-clouds-wrap {
       position: absolute !important;
       top: 0 !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      width: 100vw !important;
-      height: clamp(520px, 55vw, 860px) !important;
-      max-height: 88vh !important;
-      overflow: hidden !important;
+      left: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
       pointer-events: none !important;
       z-index: 0 !important;
+      overflow: hidden !important;
       border-radius: clamp(32px, 4vw, 64px) clamp(32px, 4vw, 64px) 0 0 !important;
-      -webkit-mask-image: radial-gradient(ellipse 100% 58% at 50% 52%, #000000 20%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0.45) 66%, rgba(0, 0, 0, 0.08) 84%, transparent 100%) !important;
-      mask-image: radial-gradient(ellipse 100% 58% at 50% 52%, #000000 20%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0.45) 66%, rgba(0, 0, 0, 0.08) 84%, transparent 100%) !important;
-    }
-
-    /* Continuous Volumetric Cloud Billow & Drift */
-    .hero-clouds-drift-layer {
-      position: absolute !important;
-      inset: -6% -8% -6% -8% !important;
-      width: 116% !important;
-      height: 112% !important;
-      pointer-events: none !important;
-      will-change: transform;
-    }
-
-    .hero-clouds-drift-1 {
-      animation: cloudsDriftOne 34s ease-in-out infinite alternate !important;
-    }
-
-    .hero-clouds-drift-2 {
-      opacity: 0.42 !important;
-      mix-blend-mode: screen !important;
-      animation: cloudsDriftTwo 46s ease-in-out infinite alternate !important;
     }
 
     .hero-clouds-img {
       width: 100% !important;
-      height: 100% !important;
+      height: auto !important;
+      max-height: clamp(340px, 44vw, 650px) !important;
+      min-height: 220px !important;
       object-fit: cover !important;
       object-position: center top !important;
       display: block !important;
       border-radius: inherit !important;
-      filter: brightness(calc(0.85 + var(--cloud-lightning-boost, 0) * 0.95)) contrast(calc(1.15 + var(--cloud-lightning-boost, 0) * 0.25)) !important;
-    }
-
-    .hero-clouds-img-layer2 {
-      filter: brightness(calc(0.72 + var(--cloud-lightning-boost, 0) * 0.85)) contrast(calc(1.25 + var(--cloud-lightning-boost, 0) * 0.2)) blur(10px) !important;
-      transform: scaleX(-1);
-    }
-
-    @keyframes cloudsDriftOne {
-      0% {
-        transform: translate3d(-3%, 0, 0) scale(1.03);
-      }
-
-      50% {
-        transform: translate3d(2.5%, -1.5%, 0) scale(1.08);
-      }
-
-      100% {
-        transform: translate3d(4%, 1%, 0) scale(1.04);
-      }
-    }
-
-    @keyframes cloudsDriftTwo {
-      0% {
-        transform: translate3d(3%, 1%, 0) scale(1.07);
-      }
-
-      50% {
-        transform: translate3d(-2%, -2%, 0) scale(1.03);
-      }
-
-      100% {
-        transform: translate3d(-4%, 0.5%, 0) scale(1.09);
-      }
+      filter: brightness(calc(0.95 + var(--cloud-lightning-boost, 0) * 0.95)) contrast(calc(1.08 + var(--cloud-lightning-boost, 0) * 0.25)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.65)) !important;
+      will-change: filter;
     }
 
     /* Hogwarts Thunderstorm Stark Electric White Lightning Flash Overlay */
@@ -1702,12 +1649,7 @@
             <div class="HnWrap-module__Jtsr0G__wrapper">
               <div class="page-module__ZDaQEq__s1 figma-hero-s1">
                 <div class="hero-clouds-wrap">
-                  <div class="hero-clouds-drift-layer hero-clouds-drift-1">
-                    <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img" fetchpriority="high" />
-                  </div>
-                  <div class="hero-clouds-drift-layer hero-clouds-drift-2">
-                    <img src="/images/dark_hero_clouds.jpg" alt="" class="hero-clouds-img hero-clouds-img-layer2" />
-                  </div>
+                  <img src="/images/hero_clouds.png" alt="Storm Clouds" class="hero-clouds-img" fetchpriority="high" />
                   <div class="hero-lightning-flash" id="hero-lightning-flash"></div>
                 </div>
                 <div class="figma-hero-top-row">
