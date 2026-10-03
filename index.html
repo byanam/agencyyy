@@ -482,6 +482,30 @@
       }
     }
 
+    /* Hero Umbrella (Beneath "Building high-impact digital experiences...") */
+    .figma-hero-umbrella-wrap {
+      width: 100% !important;
+      max-width: 1480px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin: clamp(36px, 4.5vw, 68px) auto 0 auto !important;
+      position: relative !important;
+      z-index: 6 !important;
+      pointer-events: none !important;
+    }
+
+    .figma-hero-umbrella-img {
+      width: clamp(260px, 32vw, 440px) !important;
+      height: auto !important;
+      max-height: 480px !important;
+      object-fit: contain !important;
+      display: block !important;
+      filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.95)) brightness(calc(1 + var(--umbrella-lightning, 0) * 0.45));
+      transition: filter 0.05s ease-out;
+      will-change: filter, transform;
+    }
+
     /* Authentic Redis Agency LoopScroll Viewport Architecture */
     html,
     body {
@@ -883,7 +907,7 @@
     .showcase-framed-box {
       width: 100% !important;
       max-width: 100% !important;
-      margin: clamp(100px, 12vw, 180px) auto 0 auto !important;
+      margin: clamp(70px, 9vw, 130px) auto 0 auto !important;
       padding: 0 !important;
       box-sizing: border-box !important;
       position: relative !important;
@@ -966,7 +990,7 @@
         width: 100% !important;
         border-radius: 0 !important;
         padding: 0 !important;
-        margin: clamp(60px, 9vw, 100px) auto 0 auto !important;
+        margin: clamp(40px, 6.5vw, 75px) auto 0 auto !important;
       }
 
       .showcase-framed-box .page-module__ZDaQEq__s2 {
@@ -1746,6 +1770,9 @@
                     <h2 class="TextHeadingBlock-module__jHEe_W__title-big">Building high-impact digital experiences
                       &amp; scalable web platforms for ambitious brands</h2>
                   </div>
+                </div>
+                <div class="figma-hero-umbrella-wrap">
+                  <img src="/images/hero_umbrella.png" alt="Hero Umbrella" class="figma-hero-umbrella-img" />
                 </div>
               </div>
               <section id="works" class="showcase-framed-box">
@@ -3953,6 +3980,22 @@
           for (var c = 0; c < clouds.length; c++) {
             clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
+          var umbrellas = document.querySelectorAll('.figma-hero-umbrella-img');
+          for (var u = 0; u < umbrellas.length; u++) {
+            umbrellas[u].style.setProperty('--umbrella-lightning', lightningLevel.toFixed(3));
+          }
+
+          // Active umbrella collision geometry
+          var ubEl = document.querySelector('.figma-hero-umbrella-img');
+          var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
+          var hasUmbrella = ubRect && ubRect.bottom > 0 && ubRect.top < rainH;
+          var ubCenterX = 0, ubHalfW = 0, ubApexY = 0, ubRimY = 0;
+          if (hasUmbrella) {
+            ubCenterX = ubRect.left + ubRect.width * 0.5;
+            ubHalfW = ubRect.width * 0.49;
+            ubApexY = ubRect.top + ubRect.height * 0.05;
+            ubRimY = ubRect.top + ubRect.height * 0.42;
+          }
 
           var rainIllumination = lightningLevel * 0.65;
           animTime += 0.04;
@@ -3978,6 +4021,36 @@
 
             d.x += vx;
             d.y += dropFall;
+
+            // --- A0. Collision with Umbrella Canopy ---
+            if (hasUmbrella && d.x >= (ubCenterX - ubHalfW) && d.x <= (ubCenterX + ubHalfW)) {
+              var ubNorm = (d.x - ubCenterX) / ubHalfW;
+              var ubSurfaceY = ubApexY + (ubRimY - ubApexY) * (ubNorm * ubNorm);
+              if (prevY <= ubSurfaceY && d.y >= ubSurfaceY) {
+                if (ubSurfaceY >= -20 && ubSurfaceY <= rainH + 20) {
+                  var ubSplashCount = Math.max(1, Math.round((d.tier === 2 ? 3 : 2) * (0.4 + 0.6 * stormIntensity)));
+                  if (splashes.length < 150) {
+                    for (var usp = 0; usp < ubSplashCount; usp++) {
+                      var spAngle = ubNorm * 0.75 + (Math.random() - 0.5) * 0.65;
+                      var spSpeed = (Math.random() * 2.2 + 1.2) * (0.5 + 0.5 * (dropFall / 35));
+                      splashes.push({
+                        x: d.x + (Math.random() - 0.5) * 2,
+                        y: ubSurfaceY - 1,
+                        vx: Math.sin(spAngle) * spSpeed,
+                        vy: -Math.abs(Math.cos(spAngle)) * spSpeed * 0.8,
+                        gravity: 0.28,
+                        r: (d.tier === 2 ? 0.55 : 0.35) * (0.65 + 0.35 * stormIntensity),
+                        alpha: 0.95,
+                        decay: 0.045
+                      });
+                    }
+                  }
+                }
+                d.y = spawnCeiling - (Math.random() * 90 + 20);
+                d.x = Math.random() * (rainW + 280) - 140;
+                continue;
+              }
+            }
 
             // --- A. Collision with Tablet Top (The 1D Horizontal Sharp Ledge) ---
             var isOverTablet = (d.x >= tabletLeft - 2 && d.x <= tabletRight + 2);
