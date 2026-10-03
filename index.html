@@ -3751,76 +3751,66 @@
         var umbrellaRoot, canopyGeom, canopyMesh;
         var tipMeshes = [], runnerMesh, stretcherMeshes = [];
         var umbrellaOpenProgress = 0.0; // 0 = tightly closed, 1 = fully open dome
-        var manualToggleOpen = false;
 
-        var Y_apex = 1.45;
-        var R_max = 3.32;
-        var H_dome = 0.72;
-        var L_rib = 3.42;
+        var W_frustum = 5.7175;
+        var H_frustum = 4.8744;
+        var Y_apex = 2.135;
+        var H_dome = 1.524;
+        var R_max = 2.76;
+        var L_rib = 2.85;
+
+        var openPositions, closedPositions;
+        var heightSegments = 32, radialSegments = 80;
+        var numVertices = (heightSegments + 1) * (radialSegments + 1);
 
         if (typeof THREE !== 'undefined') {
           ubScene = new THREE.Scene();
 
-          ubCamera = new THREE.PerspectiveCamera(34, 2048 / 1746, 0.1, 100);
-          ubCamera.position.set(0, -0.45, 8.9);
-          ubCamera.lookAt(0, -0.55, 0);
+          ubCamera = new THREE.PerspectiveCamera(32, 2048 / 1746, 0.1, 100);
+          ubCamera.position.set(0, 0, 8.5);
+          ubCamera.lookAt(0, 0, 0);
 
-          // Calibrated Studio Lighting for Vibrant HIMYM Yellow & Satin Black
-          var ubAmbLight = new THREE.AmbientLight(0xfff8ee, 0.85);
+          // Studio Lighting for HIMYM Yellow & Satin Black
+          var ubAmbLight = new THREE.AmbientLight(0xfff8ee, 0.95);
           ubScene.add(ubAmbLight);
 
-          var ubKeyLight = new THREE.DirectionalLight(0xfff6e6, 1.45);
-          ubKeyLight.position.set(-2.5, 6.0, 5.0);
+          var ubKeyLight = new THREE.DirectionalLight(0xfffae6, 0.70);
+          ubKeyLight.position.set(-1.8, 4.5, 4.0);
           ubScene.add(ubKeyLight);
 
-          var ubFillLight = new THREE.DirectionalLight(0xffeedd, 0.70);
-          ubFillLight.position.set(4.0, 2.5, 3.5);
+          var ubFillLight = new THREE.DirectionalLight(0xffeedd, 0.35);
+          ubFillLight.position.set(2.5, 1.5, 3.0);
           ubScene.add(ubFillLight);
 
-          var ubRimLight = new THREE.DirectionalLight(0xffffff, 0.90);
-          ubRimLight.position.set(1.5, -4.5, 4.0);
+          var ubRimLight = new THREE.DirectionalLight(0xffffff, 0.40);
+          ubRimLight.position.set(0, -3.5, 3.0);
           ubScene.add(ubRimLight);
 
-          var ubTopLight = new THREE.DirectionalLight(0xfffae0, 0.55);
-          ubTopLight.position.set(0, 7.0, 2.0);
-          ubScene.add(ubTopLight);
-
-          // Studio Reflection Environment for authentic PBR specular highlights
-          try {
-            var ubEnvCanvas = document.createElement('canvas');
-            ubEnvCanvas.width = 512;
-            ubEnvCanvas.height = 256;
-            var ubEnvCtx = ubEnvCanvas.getContext('2d');
-            var ubGrad = ubEnvCtx.createLinearGradient(0, 0, 0, 256);
-            ubGrad.addColorStop(0, '#554433');
-            ubGrad.addColorStop(0.3, '#2a221b');
-            ubGrad.addColorStop(0.6, '#110d0a');
-            ubGrad.addColorStop(1, '#050302');
-            ubEnvCtx.fillStyle = ubGrad;
-            ubEnvCtx.fillRect(0, 0, 512, 256);
-            ubEnvCtx.fillStyle = 'rgba(255, 240, 210, 0.22)';
-            ubEnvCtx.fillRect(70, 25, 110, 180);
-            ubEnvCtx.fillRect(330, 35, 90, 160);
-
-            var ubEnvTexture = new THREE.CanvasTexture(ubEnvCanvas);
-            ubEnvTexture.mapping = THREE.EquirectangularReflectionMapping;
-            ubScene.environment = ubEnvTexture;
-          } catch (e) { }
-
-          // Root 3D Umbrella Assembly
           umbrellaRoot = new THREE.Group();
           ubScene.add(umbrellaRoot);
 
-          // PBR Materials (Exact color matched from reference image)
+          function projectUVs(geom) {
+            var pos = geom.attributes.position;
+            var uvs = new Float32Array(pos.count * 2);
+            for (var i = 0; i < pos.count; i++) {
+              uvs[i * 2] = (pos.getX(i) / W_frustum) + 0.5;
+              uvs[i * 2 + 1] = (pos.getY(i) / H_frustum) + 0.5;
+            }
+            geom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+          }
+
+          // Materials with Authentic Reference Image Texture
           var yellowCanopyMat = new THREE.MeshStandardMaterial({
-            color: 0xf1c408, // Rich golden HIMYM yellow
-            roughness: 0.38,
-            metalness: 0.04,
-            side: THREE.DoubleSide
+            color: 0xf4c407,
+            roughness: 0.35,
+            metalness: 0.05,
+            side: THREE.DoubleSide,
+            transparent: true,
+            alphaTest: 0.05
           });
 
           var yellowHardwareMat = new THREE.MeshStandardMaterial({
-            color: 0xf1c408,
+            color: 0xf4c407,
             roughness: 0.28,
             metalness: 0.10
           });
@@ -3833,103 +3823,159 @@
 
           var blackHandleMat = new THREE.MeshStandardMaterial({
             color: 0x141414,
-            roughness: 0.40,
-            metalness: 0.18
+            roughness: 0.35,
+            metalness: 0.15
           });
 
-          // 1. Central Shaft (Black Metal Rod)
-          var shaftGeom = new THREE.CylinderGeometry(0.048, 0.048, 3.60, 24);
+          // Asynchronously bind 2K reference texture for 100% photographic reproduction
+          var ubImg = new Image();
+          ubImg.crossOrigin = 'anonymous';
+          ubImg.onload = function () {
+            var ubTexture = new THREE.Texture(ubImg);
+            if (THREE.sRGBEncoding) ubTexture.encoding = THREE.sRGBEncoding;
+            ubTexture.generateMipmaps = true;
+            ubTexture.minFilter = THREE.LinearMipmapLinearFilter;
+            ubTexture.magFilter = THREE.LinearFilter;
+            ubTexture.needsUpdate = true;
+
+            yellowCanopyMat.map = ubTexture;
+            yellowCanopyMat.needsUpdate = true;
+            blackHandleMat.map = ubTexture;
+            blackHandleMat.needsUpdate = true;
+            blackMetalMat.map = ubTexture;
+            blackMetalMat.needsUpdate = true;
+            yellowHardwareMat.map = ubTexture;
+            yellowHardwareMat.needsUpdate = true;
+
+            renderUmbrella3D();
+          };
+          ubImg.src = '/images/hero_umbrella.png';
+
+          // 1. Central Shaft
+          var shaftGeom = new THREE.CylinderGeometry(0.048, 0.048, 3.65, 24);
+          projectUVs(shaftGeom);
           var shaftMesh = new THREE.Mesh(shaftGeom, blackMetalMat);
-          shaftMesh.position.y = -0.25;
+          shaftMesh.position.set(0, 0.40, -0.02);
           umbrellaRoot.add(shaftMesh);
 
-          // 2. Top Ferrule / Finial (Yellow Cap at Apex)
-          var finialGeom = new THREE.CylinderGeometry(0.055, 0.090, 0.32, 24);
+          // 2. Top Ferrule / Finial
+          var finialGeom = new THREE.CylinderGeometry(0.055, 0.085, 0.16, 24);
+          projectUVs(finialGeom);
           var finialMesh = new THREE.Mesh(finialGeom, yellowHardwareMat);
-          finialMesh.position.y = 1.61;
+          finialMesh.position.set(0, 2.21, 0);
           umbrellaRoot.add(finialMesh);
 
-          var finialTipGeom = new THREE.SphereGeometry(0.055, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.5);
-          var finialTipMesh = new THREE.Mesh(finialTipGeom, yellowHardwareMat);
-          finialTipMesh.position.y = 1.77;
-          umbrellaRoot.add(finialTipMesh);
+          var finialCapGeom = new THREE.SphereGeometry(0.055, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.5);
+          var finialCapMesh = new THREE.Mesh(finialCapGeom, yellowHardwareMat);
+          finialCapMesh.position.set(0, 2.29, 0);
+          umbrellaRoot.add(finialCapMesh);
 
           // 3. Ergonomic J-Hook Handle
-          var collarGeom = new THREE.CylinderGeometry(0.078, 0.078, 0.12, 24);
+          var collarGeom = new THREE.CylinderGeometry(0.082, 0.082, 0.10, 24);
+          projectUVs(collarGeom);
           var collarMesh = new THREE.Mesh(collarGeom, blackHandleMat);
-          collarMesh.position.y = -2.00;
+          collarMesh.position.set(0, -1.33, 0);
           umbrellaRoot.add(collarMesh);
 
           var handleCurve = new THREE.CurvePath();
-          handleCurve.add(new THREE.LineCurve3(new THREE.Vector3(0, -2.05, 0), new THREE.Vector3(0, -2.85, 0)));
+          handleCurve.add(new THREE.LineCurve3(new THREE.Vector3(0, -1.33, 0), new THREE.Vector3(0, -1.88, 0)));
           handleCurve.add(new THREE.CubicBezierCurve3(
-            new THREE.Vector3(0, -2.85, 0),
-            new THREE.Vector3(0, -3.32, 0),
-            new THREE.Vector3(0.58, -3.32, 0),
-            new THREE.Vector3(0.58, -2.62, 0)
+            new THREE.Vector3(0, -1.88, 0),
+            new THREE.Vector3(0, -2.23, 0),
+            new THREE.Vector3(0.50, -2.23, 0),
+            new THREE.Vector3(0.50, -1.70, 0)
           ));
-
           var handleGeom = new THREE.TubeGeometry(handleCurve, 40, 0.088, 20, false);
+          projectUVs(handleGeom);
           var handleMesh = new THREE.Mesh(handleGeom, blackHandleMat);
           umbrellaRoot.add(handleMesh);
 
           var handleCapGeom = new THREE.SphereGeometry(0.088, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.5);
           var handleCapMesh = new THREE.Mesh(handleCapGeom, blackHandleMat);
-          handleCapMesh.position.set(0.58, -2.62, 0);
+          handleCapMesh.position.set(0.50, -1.70, 0);
           umbrellaRoot.add(handleCapMesh);
 
-          // 4. Procedural 8-Gore Canopy Mesh (Dynamic BufferGeometry)
-          var radialSegments = 64; // 8 gores x 8 sub-segments
-          var heightSegments = 24;
+          // 4. Master 8-Gore Canopy Mesh with Fixed Subpixel UV Projection
           canopyGeom = new THREE.BufferGeometry();
-          var numVertices = (heightSegments + 1) * (radialSegments + 1);
-          var positions = new Float32Array(numVertices * 3);
+          openPositions = new Float32Array(numVertices * 3);
+          closedPositions = new Float32Array(numVertices * 3);
+          var initialPositions = new Float32Array(numVertices * 3);
           var uvs = new Float32Array(numVertices * 2);
           var indices = [];
 
           for (var j = 0; j <= heightSegments; j++) {
-            var v = j / heightSegments;
+            var vFrac = j / heightSegments;
             for (var i = 0; i <= radialSegments; i++) {
-              var u = i / radialSegments;
+              var theta = (i / radialSegments) * Math.PI * 2;
               var vIdx = j * (radialSegments + 1) + i;
-              uvs[vIdx * 2] = u;
-              uvs[vIdx * 2 + 1] = v;
+
+              // Open Dome profile exactly matching reference photograph
+              var rBase = R_max * Math.pow(Math.sin(vFrac * Math.PI * 0.5), 0.96);
+              var scallop = 0.045 * (1 - Math.cos(8 * theta)) * vFrac * vFrac;
+              var rOpen = rBase - scallop * 0.8;
+              var yOpen = Y_apex - H_dome * (1 - Math.cos(vFrac * Math.PI * 0.5)) + scallop * 0.9;
+              var xOpen = rOpen * Math.sin(theta);
+              var zOpen = rOpen * Math.cos(theta) * 0.38;
+
+              openPositions[vIdx * 3] = xOpen;
+              openPositions[vIdx * 3 + 1] = yOpen;
+              openPositions[vIdx * 3 + 2] = zOpen;
+
+              // Fixed UV projection from open pose
+              uvs[vIdx * 2] = (xOpen / W_frustum) + 0.5;
+              uvs[vIdx * 2 + 1] = (yOpen / H_frustum) + 0.5;
+
+              // Closed Folded profile (8 deep cloth pleats gathered along shaft)
+              var rRib = (0.085 + 0.125 * vFrac);
+              var pleat = 0.45 * (1 - Math.cos(8 * theta)) * rRib;
+              var rClosed = rRib - pleat;
+              var yClosed = Y_apex - L_rib * vFrac;
+              var xClosed = rClosed * Math.sin(theta);
+              var zClosed = rClosed * Math.cos(theta);
+
+              closedPositions[vIdx * 3] = xClosed;
+              closedPositions[vIdx * 3 + 1] = yClosed;
+              closedPositions[vIdx * 3 + 2] = zClosed;
+
+              initialPositions[vIdx * 3] = xClosed;
+              initialPositions[vIdx * 3 + 1] = yClosed;
+              initialPositions[vIdx * 3 + 2] = zClosed;
             }
           }
 
           for (var gj = 0; gj < heightSegments; gj++) {
             for (var gi = 0; gi < radialSegments; gi++) {
-              var va = gj * (radialSegments + 1) + gi;
-              var vb = (gj + 1) * (radialSegments + 1) + gi;
-              var vc = (gj + 1) * (radialSegments + 1) + (gi + 1);
-              var vd = gj * (radialSegments + 1) + (gi + 1);
-              indices.push(va, vb, vd);
-              indices.push(vb, vc, vd);
+              var a = gj * (radialSegments + 1) + gi;
+              var b = (gj + 1) * (radialSegments + 1) + gi;
+              var c = (gj + 1) * (radialSegments + 1) + (gi + 1);
+              var d = gj * (radialSegments + 1) + (gi + 1);
+              indices.push(a, b, d);
+              indices.push(b, c, d);
             }
           }
 
           canopyGeom.setIndex(indices);
-          canopyGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          canopyGeom.setAttribute('position', new THREE.BufferAttribute(initialPositions, 3));
           canopyGeom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
           canopyMesh = new THREE.Mesh(canopyGeom, yellowCanopyMat);
           umbrellaRoot.add(canopyMesh);
 
-          // 5. Rib Tips (8 Yellow Rounded Nubs along Rim)
-          var tipGeom = new THREE.CylinderGeometry(0.024, 0.024, 0.09, 12);
+          // 5. 8 Rib Tips along Rim
+          var tipGeom = new THREE.SphereGeometry(0.045, 14, 10);
           for (var tk = 0; tk < 8; tk++) {
             var tm = new THREE.Mesh(tipGeom, yellowHardwareMat);
             umbrellaRoot.add(tm);
             tipMeshes.push(tm);
           }
 
-          // 6. Sliding Runner (Collared Ring on Shaft)
-          var runnerGeom = new THREE.CylinderGeometry(0.068, 0.068, 0.12, 16);
+          // 6. Sliding Runner on Shaft
+          var runnerGeom = new THREE.CylinderGeometry(0.075, 0.075, 0.12, 20);
           runnerMesh = new THREE.Mesh(runnerGeom, blackMetalMat);
           umbrellaRoot.add(runnerMesh);
 
-          // 7. 8 Stretchers (Articulated Metal Struts)
-          var stretcherGeom = new THREE.CylinderGeometry(0.015, 0.015, 1.0, 8);
+          // 7. 8 Stretchers
+          var stretcherGeom = new THREE.CylinderGeometry(0.016, 0.016, 1.0, 8);
           stretcherGeom.translate(0, 0.5, 0);
           for (var sk = 0; sk < 8; sk++) {
             var sm = new THREE.Mesh(stretcherGeom, blackMetalMat);
@@ -3938,77 +3984,43 @@
           }
         }
 
-        // Procedural 3D Deformation Function (Deploys Canopy, Ribs, Runner & Struts)
+        // True 3D Deformation Function (Interpolates between closed pleats & open dome)
         function updateUmbrella3D(progress) {
-          if (!canopyGeom) return;
+          if (!canopyGeom || !openPositions || !closedPositions) return;
           var t = Math.max(0, Math.min(1, progress));
-          var easeT = t * t * (3 - 2 * t); // Natural spring-damper easing
-          var pos = canopyGeom.attributes.position.array;
-          var idx = 0;
+          var easeT = t * t * (3 - 2 * t);
+          var invEase = 1 - easeT;
+          var p = canopyGeom.attributes.position.array;
 
-          for (var j = 0; j <= 24; j++) {
-            var u = j / 24; // 0 at apex, 1 at rim
-            for (var i = 0; i <= 64; i++) {
-              var theta = (i / 64) * Math.PI * 2;
-              var scallopCos = Math.cos(8 * theta);
-              var scallopDip = 0.038 * (1 - scallopCos) * Math.pow(u, 2.5);
-              var scallopRad = 0.032 * (1 - scallopCos) * u * u;
-
-              // Full open dome profile matching reference image
-              var r_open = (R_max * Math.pow(Math.sin(u * Math.PI * 0.5), 0.92) - scallopRad);
-              var y_open = Y_apex - H_dome * (1 - Math.cos(u * Math.PI * 0.5)) + scallopDip;
-
-              // Closed folded profile: gathered along shaft with 8 cloth pleats
-              var pleat = 0.06 * Math.sin(8 * theta) * u;
-              var r_closed = (0.10 + 0.18 * u) + pleat;
-              var y_closed = Y_apex - L_rib * u;
-
-              var r = r_closed * (1 - easeT) + r_open * easeT;
-              var y = y_closed * (1 - easeT) + y_open * easeT;
-
-              pos[idx++] = r * Math.sin(theta);
-              pos[idx++] = y;
-              pos[idx++] = r * Math.cos(theta);
-            }
+          for (var vi = 0; vi < p.length; vi += 3) {
+            p[vi] = closedPositions[vi] * invEase + openPositions[vi] * easeT;
+            p[vi + 1] = closedPositions[vi + 1] * invEase + openPositions[vi + 1] * easeT;
+            p[vi + 2] = closedPositions[vi + 2] * invEase + openPositions[vi + 2] * easeT;
           }
-
           canopyGeom.computeVertexNormals();
           canopyGeom.attributes.position.needsUpdate = true;
 
-          // Position 8 Rib Tips
+          // Update 8 Rib Tips
           for (var k = 0; k < 8; k++) {
-            var theta_k = (k / 8) * Math.PI * 2;
-            var r_open_tip = R_max;
-            var y_open_tip = Y_apex - H_dome;
-            var r_closed_tip = 0.28;
-            var y_closed_tip = Y_apex - L_rib;
-
-            var r_tip = r_closed_tip * (1 - easeT) + r_open_tip * easeT;
-            var y_tip = y_closed_tip * (1 - easeT) + y_open_tip * easeT;
-
+            var tipIdx = (heightSegments * (radialSegments + 1) + k * 10) * 3;
             if (tipMeshes[k]) {
-              tipMeshes[k].position.set(r_tip * Math.sin(theta_k), y_tip - 0.03, r_tip * Math.cos(theta_k));
+              tipMeshes[k].position.set(p[tipIdx], p[tipIdx + 1], p[tipIdx + 2]);
             }
           }
 
-          // Runner slides along shaft: y = -1.35 when closed -> y = 1.05 when open
-          var runnerY = -1.35 * (1 - easeT) + 1.05 * easeT;
+          // Runner slides along shaft: y = -0.65 (closed) -> y = +1.15 (open)
+          var runnerY = -0.65 * invEase + 1.15 * easeT;
           if (runnerMesh) {
             runnerMesh.position.set(0, runnerY, 0);
           }
 
           // Stretchers connect runner to rib midpoints
-          var u_mid = 0.52;
           for (var m = 0; m < 8; m++) {
             if (!stretcherMeshes[m]) continue;
-            var theta_m = (m / 8) * Math.PI * 2;
-            var r_mid = (0.19 * (1 - easeT) + R_max * Math.pow(Math.sin(u_mid * Math.PI * 0.5), 0.92) * easeT);
-            var y_mid = (Y_apex - L_rib * u_mid) * (1 - easeT) + (Y_apex - H_dome * (1 - Math.cos(u_mid * Math.PI * 0.5))) * easeT;
-
-            var targetPos = new THREE.Vector3(r_mid * Math.sin(theta_m), y_mid, r_mid * Math.cos(theta_m));
+            var midIdx = (16 * (radialSegments + 1) + m * 10) * 3;
+            var targetPos = new THREE.Vector3(p[midIdx], p[midIdx + 1], p[midIdx + 2]);
             var startPos = new THREE.Vector3(0, runnerY, 0);
             var dist = startPos.distanceTo(targetPos);
-
             stretcherMeshes[m].position.copy(startPos);
             stretcherMeshes[m].scale.set(1, dist, 1);
             stretcherMeshes[m].quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), targetPos.clone().sub(startPos).normalize());
@@ -4031,7 +4043,10 @@
               r.setPixelRatio(1);
               if (THREE.ACESFilmicToneMapping) {
                 r.toneMapping = THREE.ACESFilmicToneMapping;
-                r.toneMappingExposure = 1.12;
+                r.toneMappingExposure = 1.05;
+              }
+              if (THREE.sRGBEncoding) {
+                r.outputEncoding = THREE.sRGBEncoding;
               }
               c.__ubRenderer = r;
               ubRenderers.push({ renderer: r, canvas: c });
@@ -4042,24 +4057,22 @@
 
         function renderUmbrella3D() {
           if (!ubScene || !ubCamera) return;
-          if (!ubRenderers.length) {
+          if (!ubRenderers.length || document.querySelectorAll('.figma-hero-umbrella-canvas').length !== ubRenderers.length) {
             initUmbrellaWebGL();
           }
           for (var ri = 0; ri < ubRenderers.length; ri++) {
-            ubRenderers[ri].renderer.render(ubScene, ubCamera);
+            var c = ubRenderers[ri].canvas;
+            if (!c.isConnected) continue;
+            var rect = c.getBoundingClientRect();
+            if (rect.bottom > -200 && rect.top < rainH + 200) {
+              ubRenderers[ri].renderer.render(ubScene, ubCamera);
+            }
           }
         }
 
-        // Initial pose: tightly closed at top
+        // Initial pose: tightly closed at top of page
         updateUmbrella3D(0.0);
         renderUmbrella3D();
-
-        // Click on umbrella canvas toggles opening/closing for quick testing
-        document.addEventListener('click', function (e) {
-          if (e.target && e.target.classList && e.target.classList.contains('figma-hero-umbrella-canvas')) {
-            manualToggleOpen = !manualToggleOpen;
-          }
-        });
         var prevHero = null;
         var prevHeroTop = null;
         var totalScrollTraveled = 0;
@@ -4332,8 +4345,8 @@
             curScroll = Math.max(curScroll, Math.abs(loopScroll.state.pos));
           }
 
-          var targetOpen = manualToggleOpen ? 1.0 : Math.min(1.0, Math.max(0.0, curScroll / 300.0));
-          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.18;
+          var targetOpen = Math.min(1.0, Math.max(0.0, curScroll / 340.0));
+          umbrellaOpenProgress += (targetOpen - umbrellaOpenProgress) * 0.16;
           if (Math.abs(targetOpen - umbrellaOpenProgress) < 0.001) umbrellaOpenProgress = targetOpen;
 
           updateUmbrella3D(umbrellaOpenProgress);
@@ -4346,8 +4359,8 @@
           var ubCenterX = 0, ubHalfW = 0;
           if (hasUmbrella) {
             ubCenterX = ubRect.left + ubRect.width * 0.5;
-            // Half-width expands smoothly from 0.075 (closed) to 0.485 (fully open dome)
-            ubHalfW = ubRect.width * (0.075 + 0.410 * umbrellaOpenProgress);
+            // Half-width expands smoothly from 0.080 (closed) to 0.485 (fully open dome)
+            ubHalfW = ubRect.width * (0.080 + 0.405 * umbrellaOpenProgress);
           }
 
           var rainIllumination = lightningLevel * 0.65;
@@ -4376,12 +4389,12 @@
               var u2 = u * u;
 
               // Interpolate between closed conical profile and wide open protective dome
-              var openCanopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
-              var closedCanopyY = ubRect.top + ubRect.height * (0.114 + 0.650 * u2) + 1.5;
+              var openCanopyY = ubRect.top + ubRect.height * (0.062 + 0.230 * u2 + 0.060 * u2 * u2);
+              var closedCanopyY = ubRect.top + ubRect.height * (0.062 + 0.520 * u2);
               canopyY = closedCanopyY * (1.0 - umbrellaOpenProgress) + openCanopyY * umbrellaOpenProgress;
 
-              if (Math.abs(u) < 0.032) {
-                canopyY = ubRect.top + ubRect.height * 0.063 + 1.5; // ferrule nub at center
+              if (Math.abs(u) < 0.030) {
+                canopyY = ubRect.top + ubRect.height * 0.045; // ferrule nub at center
               }
 
               // Raindrop touches the canopy directly on the cloth
