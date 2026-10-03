@@ -3790,14 +3790,14 @@
             baseAlpha = Math.random() * 0.18 + 0.48;
           }
 
-          var windAngle = 0.14 + (Math.random() - 0.5) * 0.025;
+          var windAngle = 0; // Pure straight vertical rain!
           var y = initialScatter ? (Math.random() * (maxSpawnY || rainH || 800)) : (-(Math.random() * 100 + 20));
-          var x = Math.random() * (rainW + 280) - 140;
+          var x = Math.random() * rainW;
           if (initialScatter) {
             var ubInitEl = document.querySelector('.figma-hero-umbrella-img');
             if (ubInitEl) {
               var ubInitR = ubInitEl.getBoundingClientRect();
-              if (x >= ubInitR.left && x <= ubInitR.right && y >= ubInitR.top + ubInitR.height * 0.05 && y <= ubInitR.bottom + 80) {
+              if (x >= ubInitR.left && x <= ubInitR.right && y >= ubInitR.top + ubInitR.height * 0.09 && y <= ubInitR.bottom + 80) {
                 y = -(Math.random() * 100 + 20);
               }
             }
@@ -3811,7 +3811,7 @@
             len: len,
             thickness: thickness,
             baseAlpha: baseAlpha,
-            windAngle: windAngle,
+            windAngle: 0,
             phase: Math.random() * Math.PI * 2
           };
         }
@@ -4008,12 +4008,11 @@
           var ubEl = document.querySelector('.figma-hero-umbrella-img');
           var ubRect = ubEl ? ubEl.getBoundingClientRect() : null;
           var hasUmbrella = ubRect && ubRect.bottom > -40 && ubRect.top < rainH + 40;
-          var ubCenterX = 0, ubHalfW = 0, ubApexY = 0, ubRimY = 0;
+          var ubCenterX = 0, ubHalfW = 0, ubRimY = 0;
           if (hasUmbrella) {
             ubCenterX = ubRect.left + ubRect.width * 0.5;
-            ubHalfW = ubRect.width * 0.495;
-            ubApexY = ubRect.top + ubRect.height * 0.061;
-            ubRimY = ubRect.top + ubRect.height * 0.350;
+            ubHalfW = ubRect.width * 0.485;
+            ubRimY = ubRect.top + ubRect.height * 0.355;
           }
 
           var rainIllumination = lightningLevel * 0.65;
@@ -4027,58 +4026,56 @@
 
             var d = raindrops[i];
             var prevY = d.y;
-            var prevX = d.x;
 
-            d.phase += 0.09;
-            var microFlutter = Math.sin(d.phase) * 0.28;
-
-            var effWind = d.windAngle + Math.sin(animTime * 0.65) * 0.025 * stormIntensity;
+            // Straight falling rain — no horizontal slant or lateral wind
             var currentSpd = d.spd * stormSpeedMult;
-            var vx = Math.sin(effWind) * currentSpd + microFlutter * (0.12 + 0.16 * stormIntensity);
-            var vy = Math.cos(effWind) * currentSpd;
-            var dropFall = vy + scrollBoost * 0.95;
+            var dropFall = currentSpd + scrollBoost * 0.95;
 
-            d.x += vx;
             d.y += dropFall;
 
-            // --- A0. Precision Canopy Collision & Complete Dry Umbrella Shadow ---
+            // --- A0. Precision Canopy Surface Touch & Complete Dry Umbrella Shadow ---
             var isOverUmbrella = hasUmbrella && (d.x >= (ubCenterX - ubHalfW) && d.x <= (ubCenterX + ubHalfW));
             var canopyY = 0;
             if (isOverUmbrella) {
               var u = (d.x - ubCenterX) / ubHalfW;
               var u2 = u * u;
-              canopyY = ubApexY + (ubRimY - ubApexY) * (0.35 * u2 + 0.65 * u2 * u2);
+              // Exact cloth canopy contour hugging the real white umbrella pixels:
+              canopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
+              if (Math.abs(u) < 0.032) {
+                canopyY = ubRect.top + ubRect.height * 0.063 + 1.5; // ferrule nub at center
+              }
 
-              var crossedCanopy = (prevY <= canopyY + 6 && d.y >= canopyY - 4);
-              var isUnderCanopy = (d.y >= canopyY && d.y <= ubRect.bottom + 80);
+              // Raindrop touches the canopy directly on the cloth
+              var hitCanopy = (prevY <= canopyY && d.y >= canopyY);
+              var isUnderCanopy = (d.y > canopyY && d.y <= ubRect.bottom + 80);
 
-              if (crossedCanopy || isUnderCanopy) {
-                if (crossedCanopy && canopyY >= -20 && canopyY <= rainH + 20) {
+              if (hitCanopy || isUnderCanopy) {
+                if (hitCanopy && canopyY >= -20 && canopyY <= rainH + 20) {
                   // EFFECT 1: Expanding Circular Water Ripple Ring on the Taut Canopy
-                  if (ubRipples.length < 50) {
+                  if (ubRipples.length < 55) {
                     ubRipples.push({
                       x: d.x,
                       y: canopyY,
                       r: 2,
                       maxR: Math.random() * 8 + (d.tier === 2 ? 18 : 12),
-                      alpha: Math.min(1.0, 0.85 + rainIllumination * 0.15),
+                      alpha: Math.min(1.0, 0.88 + rainIllumination * 0.12),
                       growth: Math.random() * 0.7 + 1.1,
-                      tilt: u * 0.32
+                      tilt: u * 0.30
                     });
                   }
 
                   // EFFECT 2: High-Velocity Mist & Droplet Splash Spray along Dome Normal
-                  var slope = ((ubRimY - ubApexY) / ubHalfW) * (0.7 * u + 2.6 * u * u2);
+                  var slope = ((ubRect.height * 0.262) / ubHalfW) * (0.356 * u + 0.336 * u * u2);
                   var normalAngle = Math.atan2(-1, -slope);
                   var splashCount = Math.max(3, Math.round((d.tier === 2 ? 6 : 4) * (0.6 + 0.4 * stormIntensity)));
                   if (splashes.length < 180) {
                     for (var usp = 0; usp < splashCount; usp++) {
-                      var fanAngle = normalAngle + (Math.random() - 0.5) * 1.15;
-                      var fanSpd = (Math.random() * 3.6 + 1.6) * (0.6 + 0.4 * (dropFall / 35));
+                      var fanAngle = normalAngle + (Math.random() - 0.5) * 1.1;
+                      var fanSpd = (Math.random() * 3.5 + 1.6) * (0.6 + 0.4 * (dropFall / 35));
                       splashes.push({
-                        x: d.x + (Math.random() - 0.5) * 4,
-                        y: canopyY - 1,
-                        vx: Math.cos(fanAngle) * fanSpd + (Math.sin(effWind) * 0.4),
+                        x: d.x + (Math.random() - 0.5) * 2,
+                        y: canopyY,
+                        vx: Math.cos(fanAngle) * fanSpd,
                         vy: Math.sin(fanAngle) * fanSpd,
                         gravity: 0.30,
                         r: (d.tier === 2 ? (Math.random() * 0.4 + 0.7) : (Math.random() * 0.3 + 0.45)),
@@ -4102,7 +4099,7 @@
 
                 // Recycle drop back up to the storm clouds — CANNOT PENETRATE!
                 d.y = spawnCeiling - (Math.random() * 90 + 20);
-                d.x = Math.random() * (rainW + 280) - 140;
+                d.x = Math.random() * rainW;
                 continue;
               }
             }
@@ -4111,51 +4108,40 @@
             var isOverTablet = (d.x >= tabletLeft - 2 && d.x <= tabletRight + 2);
 
             if (isOverTablet && prevY <= tabletTop && d.y >= tabletTop) {
-              var tTop = (tabletTop - prevY) / (d.y - prevY);
-              var hitX = prevX + tTop * (d.x - prevX);
+              if (tabletTop >= -20 && tabletTop <= rainH + 20) {
+                var impactSpd = dropFall;
+                var impactRatio = Math.min(1.5, Math.max(0.4, impactSpd / 38.0));
+                var baseCount = d.tier === 2 ? (Math.random() * 3 + 3) : (Math.random() * 2 + 2);
+                var splashCount = Math.max(1, Math.round(baseCount * (0.35 + 0.65 * stormIntensity)));
 
-              if (hitX >= tabletLeft - 2 && hitX <= tabletRight + 2) {
-                if (tabletTop >= -20 && tabletTop <= rainH + 20) {
-                  var impactSpd = dropFall;
-                  var impactRatio = Math.min(1.5, Math.max(0.4, impactSpd / 38.0));
-                  var baseCount = d.tier === 2 ? (Math.random() * 3 + 3) : (Math.random() * 2 + 2);
-                  var splashCount = Math.max(1, Math.round(baseCount * (0.35 + 0.65 * stormIntensity)));
-
-                  if (splashes.length < 180) {
-                    for (var sp = 0; sp < splashCount; sp++) {
-                      var splashAngle = (Math.random() - 0.5) * (1.1 + 0.5 * stormIntensity);
-                      var splashSpd = (Math.random() * 2.8 + 1.2) * (0.45 + 0.55 * impactRatio);
-                      splashes.push({
-                        x: hitX + (Math.random() - 0.5) * (1.5 + 2.0 * stormIntensity),
-                        y: tabletTop - Math.random() * 2,
-                        vx: Math.sin(splashAngle) * splashSpd + Math.sin(effWind) * (0.4 + 0.4 * stormIntensity),
-                        vy: -Math.cos(splashAngle) * splashSpd,
-                        gravity: 0.26 + Math.random() * 0.06,
-                        r: (d.tier === 2 ? (Math.random() * 0.35 + 0.55) : (Math.random() * 0.25 + 0.38)) * (0.65 + 0.35 * stormIntensity),
-                        alpha: 0.95,
-                        decay: (Math.random() * 0.035 + 0.038) * (1.18 - 0.25 * stormIntensity)
-                      });
-                    }
+                if (splashes.length < 180) {
+                  for (var sp = 0; sp < splashCount; sp++) {
+                    var splashAngle = (Math.random() - 0.5) * (1.1 + 0.5 * stormIntensity);
+                    var splashSpd = (Math.random() * 2.8 + 1.2) * (0.45 + 0.55 * impactRatio);
+                    splashes.push({
+                      x: d.x + (Math.random() - 0.5) * (1.5 + 2.0 * stormIntensity),
+                      y: tabletTop - Math.random() * 2,
+                      vx: Math.sin(splashAngle) * splashSpd,
+                      vy: -Math.cos(splashAngle) * splashSpd,
+                      gravity: 0.26 + Math.random() * 0.06,
+                      r: (d.tier === 2 ? (Math.random() * 0.35 + 0.55) : (Math.random() * 0.25 + 0.38)) * (0.65 + 0.35 * stormIntensity),
+                      alpha: 0.95,
+                      decay: (Math.random() * 0.035 + 0.038) * (1.18 - 0.25 * stormIntensity)
+                    });
                   }
                 }
-
-                d.y = spawnCeiling - (Math.random() * 90 + 20);
-                d.x = Math.random() * (rainW + 280) - 140;
-                continue;
               }
+
+              d.y = spawnCeiling - (Math.random() * 90 + 20);
+              d.x = Math.random() * rainW;
+              continue;
             }
 
             // --- B. Section Boundary: Rain vanishes right at the tablet top (does NOT go below tablet) ---
             if (d.y >= tabletTop + 15) {
               d.y = spawnCeiling - (Math.random() * 90 + 20);
-              d.x = Math.random() * (rainW + 280) - 140;
+              d.x = Math.random() * rainW;
               continue;
-            }
-
-            // Lateral reset
-            if (d.x > rainW + 90) {
-              d.y = spawnCeiling - (Math.random() * 80 + 20);
-              d.x = Math.random() * (rainW + 280) - 140;
             }
 
             // Do not draw if drop is still above the viewport or below the tablet
@@ -4176,40 +4162,33 @@
 
             if (finalAlpha <= 0.01) continue;
 
-            var tailX = d.x - Math.sin(effWind) * effectiveLen;
-            var tailY = d.y - Math.cos(effWind) * effectiveLen;
-
-            // Truncate streak tip if it reaches canopy
-            var headX = d.x;
+            // Straight vertical streak coordinates (no slant)
+            var tailY = d.y - effectiveLen;
             var headY = d.y;
             if (isOverUmbrella && headY > canopyY) {
               headY = canopyY;
-              var tRat = (canopyY - tailY) / Math.max(0.001, (d.y - tailY));
-              headX = tailX + tRat * (d.x - tailX);
             }
             if (headY <= tailY) continue;
 
-            // Render Pure Motion-Blurred Atmospheric Rain Streaks
+            // Render Pure Straight Vertical Rain Streaks
             var streakAlpha = finalAlpha * stormAlphaMult * (d.tier === 0 ? 0.24 : (d.tier === 1 ? 0.42 : 0.70));
 
-            // Pass 1: Translucent outer water sheen halo along full velocity vector
+            // Pass 1: Translucent outer water sheen halo
             rCtx.strokeStyle = 'rgba(195, 230, 255, ' + (streakAlpha * 0.35).toFixed(3) + ')';
             rCtx.lineWidth = d.thickness * (1.1 + 0.3 * stormIntensity);
             rCtx.lineCap = 'butt';
             rCtx.beginPath();
-            rCtx.moveTo(tailX, tailY);
-            rCtx.lineTo(headX, headY);
+            rCtx.moveTo(d.x, tailY);
+            rCtx.lineTo(d.x, headY);
             rCtx.stroke();
 
             // Pass 2: Dense crystalline white core along leading 55% of the streak
-            var midX = headX - Math.sin(effWind) * (effectiveLen * 0.55);
-            var midY = headY - Math.cos(effWind) * (effectiveLen * 0.55);
-
+            var midY = headY - effectiveLen * 0.55;
             rCtx.strokeStyle = 'rgba(255, 255, 255, ' + (streakAlpha * 0.95).toFixed(3) + ')';
             rCtx.lineWidth = Math.max(0.65, d.thickness * 0.70);
             rCtx.beginPath();
-            rCtx.moveTo(midX, midY);
-            rCtx.lineTo(headX, headY);
+            rCtx.moveTo(d.x, midY);
+            rCtx.lineTo(d.x, headY);
             rCtx.stroke();
           }
 
@@ -4266,7 +4245,7 @@
 
             var bx = ubCenterX + b.u * ubHalfW;
             var bu2 = b.u * b.u;
-            var by = ubApexY + (ubRimY - ubApexY) * (0.35 * bu2 + 0.65 * bu2 * bu2);
+            var by = ubRect.top + ubRect.height * (0.098 + 0.178 * bu2 + 0.084 * bu2 * bu2) + 1.5;
 
             rCtx.fillStyle = 'rgba(255, 255, 255, ' + (b.alpha * 0.82).toFixed(3) + ')';
             rCtx.beginPath();
