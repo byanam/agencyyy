@@ -877,56 +877,133 @@
     }
 
     /* =========================================================
-       SHOWCASE FRAMED BOX ("SOME OF WHAT WE'VE BEEN MAKING")
-       Elevated rectangular frame container resting on top of the black background
+       SHOWCASE SECTION ("SOME OF WHAT WE'VE BEEN MAKING")
+       Natural full-width flow into the dark background (rectangle container removed)
        ========================================================= */
     .showcase-framed-box {
-      width: calc(100% - clamp(24px, 4.5vw, 88px)) !important;
-      max-width: 1360px !important;
-      margin: clamp(70px, 8vw, 130px) auto clamp(90px, 10vw, 160px) auto !important;
-      padding: clamp(60px, 7vw, 100px) clamp(20px, 3.5vw, 48px) clamp(80px, 9vw, 130px) clamp(20px, 3.5vw, 48px) !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
       box-sizing: border-box !important;
       position: relative !important;
-      z-index: 15 !important;
-      overflow: hidden !important;
+      z-index: 5 !important;
+      overflow: visible !important;
       border-radius: 0 !important;
-      background: linear-gradient(180deg, #131418 0%, #0e0f12 50%, #0b0c0f 100%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      border-top-color: rgba(255, 255, 255, calc(0.08 + var(--storm-intensity, 0.5) * 0.20)) !important;
-      box-shadow:
-        0 30px 90px rgba(0, 0, 0, 0.85),
-        0 10px 30px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, calc(0.10 + var(--storm-intensity, 0.5) * 0.22)),
-        inset 0 0 60px rgba(255, 255, 255, calc(0.01 + var(--storm-intensity, 0.5) * 0.025)) !important;
-      transition: border-top-color 0.3s ease, box-shadow 0.3s ease;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
     }
 
-    /* Ambient atmospheric soft top illumination inside the frame */
     .showcase-framed-box::before {
-      content: "" !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      width: 80% !important;
-      height: 240px !important;
-      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 80%) !important;
-      opacity: calc(0.40 + var(--storm-intensity, 0.5) * 0.60) !important;
-      transition: opacity 0.4s ease;
+      display: none !important;
+      content: none !important;
+    }
+
+    /* Atmospheric Slanted Cloud Dividers */
+    .cloud-divider-top-wrap,
+    .cloud-divider-bottom-wrap {
+      width: 100% !important;
+      max-width: 100vw !important;
+      position: relative !important;
       pointer-events: none !important;
-      z-index: 0 !important;
+      overflow: hidden !important;
+      background: transparent !important;
+    }
+
+    .cloud-divider-top-wrap {
+      height: clamp(320px, 36vw, 560px) !important;
+      margin-top: clamp(10px, 2vw, 30px) !important;
+      margin-bottom: clamp(-70px, -7vw, -120px) !important;
+      z-index: 2 !important;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
+      mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
+    }
+
+    .cloud-divider-bottom-wrap {
+      height: clamp(320px, 36vw, 560px) !important;
+      margin-top: clamp(-70px, -7vw, -120px) !important;
+      margin-bottom: clamp(30px, 4vw, 70px) !important;
+      z-index: 2 !important;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
+      mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%) !important;
+    }
+
+    .cloud-divider-drift-layer {
+      position: absolute !important;
+      inset: -5% -6% -5% -6% !important;
+      width: 112% !important;
+      height: 110% !important;
+      pointer-events: none !important;
+      will-change: transform;
+    }
+
+    .cloud-divider-top-drift {
+      animation: cloudsTopSlantDrift 38s ease-in-out infinite alternate !important;
+    }
+
+    .cloud-divider-bottom-drift {
+      animation: cloudsBottomSlantDrift 44s ease-in-out infinite alternate !important;
+    }
+
+    .cloud-divider-drift-layer-sheen {
+      opacity: 0.38 !important;
+      mix-blend-mode: screen !important;
+      filter: blur(8px) !important;
+    }
+
+    .cloud-divider-img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block !important;
+      pointer-events: none !important;
+      filter: brightness(calc(0.92 + var(--cloud-lightning-boost, 0) * 0.90)) contrast(calc(1.15 + var(--cloud-lightning-boost, 0) * 0.22)) !important;
+      transition: filter 0.12s ease-out !important;
+    }
+
+    .cloud-divider-top-img {
+      object-position: right center !important;
+    }
+
+    .cloud-divider-bottom-img {
+      object-position: left center !important;
+    }
+
+    @keyframes cloudsTopSlantDrift {
+      0% {
+        transform: translate3d(-1%, 0, 0) scale(1.02);
+      }
+      50% {
+        transform: translate3d(2%, 1.2%, 0) scale(1.06);
+      }
+      100% {
+        transform: translate3d(0, -1%, 0) scale(1.03);
+      }
+    }
+
+    @keyframes cloudsBottomSlantDrift {
+      0% {
+        transform: translate3d(1%, 0, 0) scale(1.03);
+      }
+      50% {
+        transform: translate3d(-2%, -1.2%, 0) scale(1.07);
+      }
+      100% {
+        transform: translate3d(0, 1%, 0) scale(1.02);
+      }
     }
 
     .showcase-framed-box .page-module__ZDaQEq__s2 {
       width: 100% !important;
-      min-height: clamp(260px, 26vw, 380px) !important;
-      margin: 0 0 clamp(60px, 7vw, 100px) 0 !important;
-      padding: 0 !important;
+      min-height: clamp(260px, 28vw, 420px) !important;
+      margin: 0 !important;
+      padding: clamp(20px, 3vw, 40px) 0 !important;
       position: relative !important;
-      z-index: 2 !important;
+      z-index: 10 !important;
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
@@ -947,7 +1024,7 @@
       background: transparent !important;
       border: none !important;
       position: relative !important;
-      z-index: 2 !important;
+      z-index: 3 !important;
     }
 
     .showcase-framed-box .BlockButton-module__44lcOa__block-button__sec {
@@ -961,7 +1038,9 @@
 
     .showcase-framed-box .page-module__ZDaQEq__s3__cases {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 1240px !important;
+      box-sizing: border-box !important;
+      padding: 0 clamp(20px, 4vw, 48px) clamp(80px, 10vw, 150px) clamp(20px, 4vw, 48px) !important;
       display: flex !important;
       flex-direction: column !important;
       gap: clamp(100px, 12vw, 180px) !important;
@@ -979,19 +1058,26 @@
 
     @media (max-width: 991px) {
       .showcase-framed-box {
-        width: calc(100% - 24px) !important;
+        width: 100% !important;
         border-radius: 0 !important;
-        padding: 40px 16px 60px 16px !important;
-        margin: 40px auto 60px auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .cloud-divider-top-wrap,
+      .cloud-divider-bottom-wrap {
+        height: clamp(240px, 50vw, 360px) !important;
       }
 
       .showcase-framed-box .page-module__ZDaQEq__s2 {
         min-height: 200px !important;
-        margin: 0 0 40px 0 !important;
+        margin: 0 !important;
+        padding: 10px 0 !important;
       }
 
       .showcase-framed-box .page-module__ZDaQEq__s3__cases {
         gap: 60px !important;
+        padding: 0 16px 60px 16px !important;
       }
     }
 
@@ -1763,7 +1849,17 @@
                 </div>
               </div>
               <section id="works" class="showcase-framed-box">
-                <div class="page-module__ZDaQEq__s2">
+                <!-- Upper Slanted Cloud Divider (Separates Hero Page & Second Page; Slanted down from top-right to left) -->
+                <div class="cloud-divider-top-wrap" aria-hidden="true">
+                  <div class="cloud-divider-drift-layer cloud-divider-top-drift">
+                    <img src="/images/feathered_clouds_slant_top.jpg" alt="" class="cloud-divider-img cloud-divider-top-img" />
+                  </div>
+                  <div class="cloud-divider-drift-layer cloud-divider-top-drift cloud-divider-drift-layer-sheen">
+                    <img src="/images/feathered_clouds_slant_top.jpg" alt="" class="cloud-divider-img cloud-divider-top-img" />
+                  </div>
+                </div>
+
+                <div class="page-module__ZDaQEq__s2 showcase-heading-stage">
                   <div class="Carousel-module__nu5vFW__carousel">
                     <div class="Carousel-module__nu5vFW__carousel__track">
                       <div class="Carousel-module__nu5vFW__carousel__inner">
@@ -1818,6 +1914,17 @@
                     <h2 class="u-h2-big">Some of What<br />We’ve Been Making</h2>
                   </div>
                 </div>
+
+                <!-- Lower Slanted Cloud Divider (Slanted in opposite direction: swelling from bottom-left down to right) -->
+                <div class="cloud-divider-bottom-wrap" aria-hidden="true">
+                  <div class="cloud-divider-drift-layer cloud-divider-bottom-drift">
+                    <img src="/images/feathered_clouds_slant_bottom.jpg" alt="" class="cloud-divider-img cloud-divider-bottom-img" />
+                  </div>
+                  <div class="cloud-divider-drift-layer cloud-divider-bottom-drift cloud-divider-drift-layer-sheen">
+                    <img src="/images/feathered_clouds_slant_bottom.jpg" alt="" class="cloud-divider-img cloud-divider-bottom-img" />
+                  </div>
+                </div>
+
                 <div
                   class="BlockButton-module__44lcOa__block-button BlockButton-module__44lcOa__block-button--margin-bottom">
                   <div class="BlockButton-module__44lcOa__block-button__sec">
@@ -3962,7 +4069,7 @@
           for (var o = 0; o < overlays.length; o++) {
             overlays[o].style.opacity = lightningLevel.toFixed(3);
           }
-          var clouds = document.querySelectorAll('.hero-clouds-wrap');
+          var clouds = document.querySelectorAll('.hero-clouds-wrap, .cloud-divider-top-wrap, .cloud-divider-bottom-wrap');
           for (var c = 0; c < clouds.length; c++) {
             clouds[c].style.setProperty('--cloud-lightning-boost', (lightningLevel * 0.95).toFixed(3));
           }
@@ -4087,23 +4194,6 @@
             rCtx.stroke();
           }
 
-          // TABLET REACTION: Wet Rim Highlight along the sharp ledge (when visible on screen)
-          if (tabletTop >= -2 && tabletTop <= rainH + 2) {
-            var rimIntensity = Math.min(1.0, 0.20 + 0.70 * stormIntensity + rainIllumination * 0.4);
-            var rimGrad = rCtx.createLinearGradient(tabletLeft, tabletTop, tabletRight, tabletTop);
-            rimGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            rimGrad.addColorStop(0.08, 'rgba(215, 240, 255, ' + (0.12 + rimIntensity * 0.32).toFixed(3) + ')');
-            rimGrad.addColorStop(0.5, 'rgba(240, 252, 255, ' + (0.18 + rimIntensity * 0.55).toFixed(3) + ')');
-            rimGrad.addColorStop(0.92, 'rgba(215, 240, 255, ' + (0.12 + rimIntensity * 0.32).toFixed(3) + ')');
-            rimGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-            rCtx.strokeStyle = rimGrad;
-            rCtx.lineWidth = 0.8 + 1.0 * stormIntensity;
-            rCtx.beginPath();
-            rCtx.moveTo(tabletLeft, tabletTop);
-            rCtx.lineTo(tabletRight, tabletTop);
-            rCtx.stroke();
-          }
 
           // TABLET REACTION: Render 2D Splash Particles with dynamic intensity
           for (var spIdx = splashes.length - 1; spIdx >= 0; spIdx--) {
