@@ -311,19 +311,6 @@
       fill: #D8D8D8 !important;
     }
 
-    .figma-hero-pen-slot {
-      width: clamp(34px, 2.7vw, 48px) !important;
-      min-width: 34px !important;
-      height: clamp(420px, 38vw, 660px) !important;
-      flex-shrink: 0 !important;
-      position: relative !important;
-      z-index: 1 !important;
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-      pointer-events: none !important;
-    }
-
     .figma-hero-social-proof {
       flex: 1 1 28% !important;
       max-width: 380px !important;
@@ -408,10 +395,6 @@
       .figma-hero-logo-wrap {
         max-width: 100% !important;
         justify-content: center !important;
-      }
-
-      .figma-hero-pen-slot {
-        display: none !important;
       }
 
       .figma-hero-social-proof {
@@ -500,45 +483,6 @@
       overflow: visible !important;
     }
 
-    /* Rediska / 3D Pen container - layered INSIDE / behind the leaves */
-    .Rediska-module__rS3Q1G__hn-rediska {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      pointer-events: none !important;
-      z-index: 25 !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      overflow: visible !important;
-    }
-
-    .Rediska-module__rS3Q1G__hn-rediska__wrap {
-      aspect-ratio: 1 / 1;
-      width: 44vw !important;
-      min-width: 400px !important;
-      max-width: 660px !important;
-      position: relative;
-      overflow: visible !important;
-      will-change: transform;
-    }
-
-    .Rediska-module__rS3Q1G__hn-rediska__sprite {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    @media (max-width: 991px) {
-      .Rediska-module__rS3Q1G__hn-rediska__wrap {
-        width: 60vw !important;
-        min-width: 320px !important;
-        max-width: 500px !important;
-      }
-    }
-
     /* Services Topic Dividing Lines & Dynamic Calligraphy Effects */
     .page-module__ZDaQEq__s4__services .TextColumn-module__OsnSpW__text-column {
       border-top: none !important;
@@ -578,28 +522,6 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.15s ease;
-    }
-
-    /* Interactive Topic Heading Illumination when Pen Underlines */
-    .TextColumn-module__OsnSpW__text-column__h h3 {
-      transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-      will-change: color, transform, text-shadow;
-    }
-
-    .TextColumn-module__OsnSpW__text-column__h h3.is-pen-active {
-      color: var(--color-gold-antique) !important;
-      transform: translateX(6px);
-      text-shadow: none !important;
-    }
-
-    /* Pen Ink Particles Overlay Canvas */
-    .pen-particles-canvas {
-      position: fixed !important;
-      inset: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      pointer-events: none !important;
-      z-index: 26 !important;
     }
 
     /* Botanical leaves container - removed/hidden */
@@ -1452,10 +1374,9 @@
       }
     }
   </style>
-  <script src="/three.min.js"></script>
 </head>
 
-<body><canvas id="pen-particles-canvas" class="pen-particles-canvas"></canvas>
+<body>
   <div hidden=""><!--$--><!--/$--></div>
   <header class="Header-module__D5nTzG__header" data-preloader-reveal="header">
     <div class="Header-module__D5nTzG__desktop">
@@ -1605,10 +1526,6 @@
           Digital Design &amp; Web Engineering</p>
         <div class="Preloader-module__Zghlvq__preloader__bg"></div>
       </div>
-      <div data-rediska="container" class="Rediska-module__rS3Q1G__hn-rediska">
-        <div data-rediska="rotate" class="Rediska-module__rS3Q1G__hn-rediska__wrap"><canvas data-rediska="sprite"
-            class="Rediska-module__rS3Q1G__hn-rediska__sprite"></canvas></div>
-      </div>
       <div class="BotvaParallax-module__iIfVja__botva" data-parallax-scroll="container">
         <div class="BotvaParallax-module__iIfVja__botva__wrap"><img
             src="/images/67446b8761145d75854e99d5_hero_botva_01@2-2.png" alt="" fetchPriority="low"
@@ -1692,7 +1609,6 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="figma-hero-pen-slot" id="hero-pen-slot"></div>
                   <div class="figma-hero-social-proof">
                     <div class="figma-hero-stat-block">
                       <p class="figma-stat-text">30+ Brands<br />Scaled</p>
@@ -2992,685 +2908,11 @@
         loopScroll.resume();
         setTimeout(function () {
           preloader.style.display = 'none';
-          if (typeof resizePenCanvas === 'function') resizePenCanvas();
         }, 600);
       }
 
       setTimeout(dismissPreloader, 1600);
       setTimeout(dismissPreloader, 2200);
-
-      // === 3. Highly Detailed, Photorealistic 3D Luxury Fountain Pen Model ===
-      var canvas = document.querySelector('[data-rediska="sprite"]');
-      var rotateWrap = document.querySelector('[data-rediska="rotate"]');
-
-      var scene, camera, renderer, penGroup, tippingBall;
-      var targetRotY = 0, currentRotY = 0;
-      var targetRotX = 0.35, currentRotX = 0.35;
-      var targetRotZ = 0, currentRotZ = 0;
-      var currentUnderlineBlend = 0;
-      var currentWriteT = 0;
-      var isWritingMode = false;
-      var writingLockedRotY = 0;
-      var rotYOffset = 0;
-      var tipWorldPos = null, tipNDC = null;
-
-      if (canvas && typeof THREE !== 'undefined') {
-        scene = new THREE.Scene();
-
-        // Luxury product perspective: 38 deg FOV, Z = 9.2 with dynamic aspect fit
-        camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-        camera.position.set(0, 0, 9.2);
-
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
-        // Studio Environment for photorealistic specular reflection
-        try {
-          var envCanvas = document.createElement('canvas');
-          envCanvas.width = 512;
-          envCanvas.height = 256;
-          var envCtx = envCanvas.getContext('2d');
-          var grad = envCtx.createLinearGradient(0, 0, 0, 256);
-          grad.addColorStop(0, '#554433');
-          grad.addColorStop(0.25, '#2e2218');
-          grad.addColorStop(0.5, '#120d09');
-          grad.addColorStop(0.75, '#1a120b');
-          grad.addColorStop(1, '#080503');
-          envCtx.fillStyle = grad;
-          envCtx.fillRect(0, 0, 512, 256);
-
-          // Soft studio rim reflections (warm, non-glaring)
-          envCtx.fillStyle = 'rgba(255, 235, 200, 0.15)';
-          envCtx.fillRect(80, 20, 90, 190);
-          envCtx.fillRect(320, 30, 70, 170);
-
-          var envTexture = new THREE.CanvasTexture(envCanvas);
-          envTexture.mapping = THREE.EquirectangularReflectionMapping;
-          scene.environment = envTexture;
-        } catch (e) { }
-
-        function resizePenCanvas() {
-          if (!canvas) return;
-          var rect = canvas.getBoundingClientRect();
-          var w = rect.width || canvas.clientWidth || 480;
-          var h = rect.height || canvas.clientHeight || 480;
-          if (w <= 0 || h <= 0) {
-            w = 480;
-            h = 480;
-          }
-          var aspect = w / h;
-          camera.aspect = aspect;
-          var minAspect = Math.min(aspect, 1.0);
-          camera.position.z = 9.2 / minAspect;
-          camera.updateProjectionMatrix();
-          renderer.setSize(w, h, false);
-        }
-        resizePenCanvas();
-        window.addEventListener('resize', resizePenCanvas);
-
-        // Calibrated Cinematic Wizarding Lighting (Deep shadows, authentic dark elder wood, golden rim)
-        var ambLight = new THREE.AmbientLight(0x281d16, 0.35);
-        scene.add(ambLight);
-
-        var keyLight = new THREE.DirectionalLight(0xfff6e6, 1.70);
-        keyLight.position.set(4, 7, 5);
-        scene.add(keyLight);
-
-        var fillLight = new THREE.DirectionalLight(0x402b1d, 0.50);
-        fillLight.position.set(-5, 2, -3);
-        scene.add(fillLight);
-
-        var rimLight = new THREE.DirectionalLight(0xd4af37, 1.25);
-        rimLight.position.set(2.5, -4, 4);
-        scene.add(rimLight);
-
-        // --- Master 3D Model: Albus Dumbledore's Elder Wand (1:1 Screen-Accurate Replica) ---
-        // Canon length: 15 inches (proportional span: Y: +3.885 to -3.885), oriented tip-downward
-        penGroup = new THREE.Group();
-        var penBody = new THREE.Group();
-        penBody.position.y = 0; // Intrinsically balanced around center of gravity
-        penGroup.add(penBody);
-
-        // 1. Procedural Concave Dimple Textures (True physical hollows via Normal Mapping)
-        var dimpleTextures = (function () {
-          var width = 512, height = 256;
-
-          // A. Normal Map (True concave depressions where normal vectors slope into each crater)
-          var nCanvas = document.createElement('canvas');
-          nCanvas.width = width;
-          nCanvas.height = height;
-          var nCtx = nCanvas.getContext('2d');
-          var nImgData = nCtx.createImageData(width, height);
-          var nData = nImgData.data;
-
-          // B. Diffuse Canvas (Rich aged elder wood with deep crevice shadows in craters)
-          var dCanvas = document.createElement('canvas');
-          dCanvas.width = width;
-          dCanvas.height = height;
-          var dCtx = dCanvas.getContext('2d');
-          var dImgData = dCtx.createImageData(width, height);
-          var dData = dImgData.data;
-
-          // C. Roughness Map (Matte rough hollows, satin worn outer wood)
-          var rCanvas = document.createElement('canvas');
-          rCanvas.width = width;
-          rCanvas.height = height;
-          var rCtx = rCanvas.getContext('2d');
-          var rImgData = rCtx.createImageData(width, height);
-          var rData = rImgData.data;
-
-          // Initialize base maps:
-          // Normal neutral: (128, 128, 255)
-          // Diffuse base: #24140b (36, 20, 11) with fine grain
-          // Roughness: ~122 (0.48)
-          for (var i = 0; i < width * height; i++) {
-            var idx = i * 4;
-            var x = i % width;
-            var grain = ((x * 37) % 19 < 3) ? -8 : (((x * 53) % 17 < 2) ? 6 : 0);
-
-            nData[idx] = 128;
-            nData[idx + 1] = 128;
-            nData[idx + 2] = 255;
-            nData[idx + 3] = 255;
-
-            dData[idx] = Math.max(12, Math.min(255, 36 + grain));
-            dData[idx + 1] = Math.max(8, Math.min(255, 20 + Math.round(grain * 0.6)));
-            dData[idx + 2] = Math.max(5, Math.min(255, 11 + Math.round(grain * 0.4)));
-            dData[idx + 3] = 255;
-
-            rData[idx] = 122;
-            rData[idx + 1] = 122;
-            rData[idx + 2] = 122;
-            rData[idx + 3] = 255;
-          }
-
-          // Pre-seeded organic distribution of concave craters across UV space
-          var rows = 12, cols = 26;
-          var dx = width / cols, dy = height / rows;
-          var craters = [];
-
-          for (var r = 0; r < rows; r++) {
-            var rowOffset = (r % 2 === 0) ? 0 : (dx * 0.5);
-            for (var c = 0; c < cols; c++) {
-              var jx = ((c * 17 + r * 31) % 13 - 6) * 0.85;
-              var jy = ((c * 23 + r * 19) % 11 - 5) * 0.75;
-              var cx = (c * dx + rowOffset + jx + width) % width;
-              var cy = Math.max(8, Math.min(height - 8, r * dy + dy * 0.5 + jy));
-              var radVar = ((c * 29 + r * 41) % 7) - 3;
-              var radius = Math.min(dx, dy) * 0.44 + radVar;
-              craters.push({ cx: cx, cy: cy, radius: radius });
-            }
-          }
-
-          // Carve each concave crater into the maps
-          for (var ci = 0; ci < craters.length; ci++) {
-            var cr = craters[ci];
-            var cx = cr.cx, cy = cr.cy, radius = cr.radius;
-            var minX = Math.floor(cx - radius * 1.15);
-            var maxX = Math.ceil(cx + radius * 1.15);
-            var minY = Math.max(0, Math.floor(cy - radius * 1.15));
-            var maxY = Math.min(height - 1, Math.ceil(cy + radius * 1.15));
-
-            for (var py = minY; py <= maxY; py++) {
-              for (var px = minX; px <= maxX; px++) {
-                var wrapX = ((px % width) + width) % width;
-                var distSq = (px - cx) * (px - cx) + (py - cy) * (py - cy);
-                var rSq = radius * radius;
-
-                if (distSq < rSq * 1.35) {
-                  var dist = Math.sqrt(distSq);
-                  var t = dist / radius;
-                  var pIdx = (py * width + wrapX) * 4;
-
-                  if (t <= 1.0) {
-                    // INSIDE CRATER: Inward-pointing concave normals
-                    var uX = (px - cx) / (dist || 1);
-                    var uY = (py - cy) / (dist || 1);
-                    var slope = Math.sin(t * Math.PI) * 0.95;
-
-                    var nx = -uX * slope;
-                    var ny = -uY * slope;
-                    var nz = Math.sqrt(Math.max(0.08, 1.0 - nx * nx - ny * ny));
-
-                    nData[pIdx] = Math.round((nx * 0.5 + 0.5) * 255);
-                    nData[pIdx + 1] = Math.round((ny * 0.5 + 0.5) * 255);
-                    nData[pIdx + 2] = Math.round((nz * 0.5 + 0.5) * 255);
-
-                    // Diffuse: deep dark crevice shadow
-                    var shadow = 0.20 + 0.80 * Math.pow(t, 1.35);
-                    dData[pIdx] = Math.round(dData[pIdx] * shadow);
-                    dData[pIdx + 1] = Math.round(dData[pIdx + 1] * shadow);
-                    dData[pIdx + 2] = Math.round(dData[pIdx + 2] * shadow);
-
-                    // Roughness: matte hollow
-                    var rough = Math.round(125 + (1 - t) * 90);
-                    rData[pIdx] = rough;
-                    rData[pIdx + 1] = rough;
-                    rData[pIdx + 2] = rough;
-                  } else {
-                    // CRATER RIM: Subtle worn wood highlight ridge
-                    var rimFrac = (t - 1.0) / 0.16;
-                    if (rimFrac <= 1.0) {
-                      var uX = (px - cx) / dist;
-                      var uY = (py - cy) / dist;
-                      var rimSlope = (1.0 - rimFrac) * 0.35;
-                      var nx = uX * rimSlope;
-                      var ny = uY * rimSlope;
-                      var nz = Math.sqrt(Math.max(0.1, 1.0 - nx * nx - ny * ny));
-
-                      nData[pIdx] = Math.round((nx * 0.5 + 0.5) * 255);
-                      nData[pIdx + 1] = Math.round((ny * 0.5 + 0.5) * 255);
-                      nData[pIdx + 2] = Math.round((nz * 0.5 + 0.5) * 255);
-
-                      var rimGleam = (1.0 - rimFrac) * 18;
-                      dData[pIdx] = Math.min(255, dData[pIdx] + Math.round(rimGleam * 1.2));
-                      dData[pIdx + 1] = Math.min(255, dData[pIdx + 1] + Math.round(rimGleam * 0.7));
-                      dData[pIdx + 2] = Math.min(255, dData[pIdx + 2] + Math.round(rimGleam * 0.4));
-
-                      var rimRough = Math.max(75, Math.round(122 - (1.0 - rimFrac) * 38));
-                      rData[pIdx] = rimRough;
-                      rData[pIdx + 1] = rimRough;
-                      rData[pIdx + 2] = rimRough;
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          nCtx.putImageData(nImgData, 0, 0);
-          dCtx.putImageData(dImgData, 0, 0);
-          rCtx.putImageData(rImgData, 0, 0);
-
-          var nTex = new THREE.CanvasTexture(nCanvas);
-          nTex.wrapS = THREE.RepeatWrapping;
-          nTex.wrapT = THREE.RepeatWrapping;
-
-          var dTex = new THREE.CanvasTexture(dCanvas);
-          dTex.wrapS = THREE.RepeatWrapping;
-          dTex.wrapT = THREE.RepeatWrapping;
-
-          var rTex = new THREE.CanvasTexture(rCanvas);
-          rTex.wrapS = THREE.RepeatWrapping;
-          rTex.wrapT = THREE.RepeatWrapping;
-
-          return { normal: nTex, diffuse: dTex, roughness: rTex };
-        })();
-
-        // 2. Procedural Rune Band Texture (Aged bone/ivory with carved runes from reference)
-        var runeTexture = (function () {
-          var rCanvas = document.createElement('canvas');
-          rCanvas.width = 512;
-          rCanvas.height = 128;
-          var rCtx = rCanvas.getContext('2d');
-
-          // Aged bone/ivory gradient
-          var bg = rCtx.createLinearGradient(0, 0, 0, 128);
-          bg.addColorStop(0.00, '#3e2d1c'); // dark top rim
-          bg.addColorStop(0.12, '#c8b788');
-          bg.addColorStop(0.50, '#dfd4b0'); // aged bone/ivory center
-          bg.addColorStop(0.88, '#baa878');
-          bg.addColorStop(1.00, '#362516'); // dark bottom rim
-          rCtx.fillStyle = bg;
-          rCtx.fillRect(0, 0, 512, 128);
-
-          // Subtle bone grain
-          rCtx.fillStyle = 'rgba(70, 50, 30, 0.08)';
-          for (var i = 0; i < 60; i++) {
-            var gx = (i * 89) % 512;
-            rCtx.fillRect(gx, 0, 1, 128);
-          }
-
-          // Carved black runes matching reference photo
-          rCtx.strokeStyle = '#110904';
-          rCtx.fillStyle = '#110904';
-          rCtx.lineWidth = 4.8;
-          rCtx.lineCap = 'round';
-          rCtx.lineJoin = 'round';
-
-          var runeCount = 4;
-          var step = 512 / runeCount;
-          for (var i = 0; i < runeCount; i++) {
-            var ox = i * step;
-
-            // Rune 1: 'Ϙ' circle-stave with center dot
-            rCtx.beginPath();
-            rCtx.moveTo(ox + 22, 24);
-            rCtx.lineTo(ox + 22, 104);
-            rCtx.moveTo(ox + 22, 24);
-            rCtx.bezierCurveTo(ox + 50, 24, ox + 50, 64, ox + 22, 64);
-            rCtx.stroke();
-            rCtx.beginPath();
-            rCtx.arc(ox + 35, 44, 3.2, 0, Math.PI * 2);
-            rCtx.fill();
-
-            // Rune 2: Horizontal chevron / arrowhead '<'
-            rCtx.beginPath();
-            rCtx.moveTo(ox + 94, 36);
-            rCtx.lineTo(ox + 66, 64);
-            rCtx.lineTo(ox + 94, 92);
-            rCtx.stroke();
-
-            // Rune 3: Vertical stave with 5 horizontal comb tines
-            rCtx.beginPath();
-            rCtx.moveTo(ox + 60, 24);
-            rCtx.lineTo(ox + 60, 104);
-            rCtx.moveTo(ox + 52, 38); rCtx.lineTo(ox + 70, 38);
-            rCtx.moveTo(ox + 50, 52); rCtx.lineTo(ox + 72, 52);
-            rCtx.moveTo(ox + 50, 64); rCtx.lineTo(ox + 72, 64);
-            rCtx.moveTo(ox + 52, 76); rCtx.lineTo(ox + 70, 76);
-            rCtx.moveTo(ox + 54, 90); rCtx.lineTo(ox + 68, 90);
-            rCtx.stroke();
-
-            // Rune 4: Vertical stave with diagonal ticks
-            rCtx.beginPath();
-            rCtx.moveTo(ox + 114, 24);
-            rCtx.lineTo(ox + 114, 104);
-            rCtx.moveTo(ox + 106, 44); rCtx.lineTo(ox + 114, 36);
-            rCtx.moveTo(ox + 114, 54); rCtx.lineTo(ox + 122, 62);
-            rCtx.moveTo(ox + 106, 78); rCtx.lineTo(ox + 114, 70);
-            rCtx.stroke();
-          }
-
-          var tex = new THREE.CanvasTexture(rCanvas);
-          tex.wrapS = THREE.RepeatWrapping;
-          tex.wrapT = THREE.ClampToEdgeWrapping;
-          return tex;
-        })();
-
-        // 3. PBR Materials
-        var dimpleWoodMat = new THREE.MeshStandardMaterial({
-          map: dimpleTextures.diffuse,
-          normalMap: dimpleTextures.normal,
-          roughnessMap: dimpleTextures.roughness,
-          roughness: 0.55,
-          metalness: 0.05
-        });
-
-        var smoothWoodMat = new THREE.MeshStandardMaterial({
-          color: 0x26160e,
-          roughness: 0.48,
-          metalness: 0.04
-        });
-
-        var runeBandMat = new THREE.MeshStandardMaterial({
-          map: runeTexture,
-          roughness: 0.35,
-          metalness: 0.10
-        });
-
-        var darkCollarMat = new THREE.MeshStandardMaterial({
-          color: 0x100905,
-          roughness: 0.70,
-          metalness: 0.02
-        });
-
-        // 4. Geometry Assembly: 1:1 Screen-Accurate Replica from Reference Photo
-        // A. Flared Pommel Base
-        var pommelPoints = [
-          new THREE.Vector2(0.040, 3.885),
-          new THREE.Vector2(0.245, 3.885),
-          new THREE.Vector2(0.270, 3.860),
-          new THREE.Vector2(0.220, 3.810),
-          new THREE.Vector2(0.140, 3.730),
-          new THREE.Vector2(0.135, 3.690),
-          new THREE.Vector2(0.160, 3.640)
-        ];
-        var pommel = new THREE.Mesh(new THREE.LatheGeometry(pommelPoints, 36), smoothWoodMat);
-        penBody.add(pommel);
-
-        // Fluted vertical grooves on the flared pommel
-        for (var f = 0; f < 6; f++) {
-          var fAngle = (f / 6) * Math.PI * 2;
-          var flute = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.14, 0.028), darkCollarMat);
-          var fR = 0.190;
-          flute.position.set(Math.cos(fAngle) * fR, 3.825, Math.sin(fAngle) * fR);
-          flute.rotation.y = -fAngle;
-          flute.rotation.z = 0.35;
-          penBody.add(flute);
-        }
-
-        // B. Bulb 1 (Butt Bulb, dimpled rounded bead)
-        var bulb1Points = [
-          new THREE.Vector2(0.160, 3.64),
-          new THREE.Vector2(0.208, 3.57),
-          new THREE.Vector2(0.228, 3.49),
-          new THREE.Vector2(0.200, 3.41),
-          new THREE.Vector2(0.155, 3.35)
-        ];
-        var bulb1 = new THREE.Mesh(new THREE.LatheGeometry(bulb1Points, 36), dimpleWoodMat);
-        penBody.add(bulb1);
-
-        // C. Grip Shaft (Between Bulb 1 and Bulb 2 - dimpled in photo)
-        var gripShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.155, 0.170, 0.25, 36), dimpleWoodMat);
-        gripShaft.position.y = 3.225;
-        penBody.add(gripShaft);
-
-        // D. Bulb 2: Main Handle Barrel (Distinctive asymmetric flared shoulder at base)
-        var barrelPoints = [
-          new THREE.Vector2(0.170, 3.10),
-          new THREE.Vector2(0.245, 3.03),
-          new THREE.Vector2(0.285, 2.92),
-          new THREE.Vector2(0.280, 2.70),
-          new THREE.Vector2(0.265, 2.48),
-          new THREE.Vector2(0.225, 2.36),
-          new THREE.Vector2(0.185, 2.26)
-        ];
-        var mainBarrel = new THREE.Mesh(new THREE.LatheGeometry(barrelPoints, 40), dimpleWoodMat);
-        penBody.add(mainBarrel);
-
-        // E. Tapered neck leading to Rune Band
-        var shaftToRune = new THREE.Mesh(new THREE.CylinderGeometry(0.185, 0.168, 0.28, 36), dimpleWoodMat);
-        shaftToRune.position.y = 2.12;
-        penBody.add(shaftToRune);
-
-        // Upper dark collar
-        var rCollarTop = new THREE.Mesh(new THREE.CylinderGeometry(0.176, 0.176, 0.035, 36), darkCollarMat);
-        rCollarTop.position.y = 1.965;
-        penBody.add(rCollarTop);
-
-        // F. Rune Band
-        var runeBand = new THREE.Mesh(new THREE.CylinderGeometry(0.170, 0.170, 0.145, 36), runeBandMat);
-        runeBand.position.y = 1.875;
-        penBody.add(runeBand);
-
-        // Lower dark collar
-        var rCollarBot = new THREE.Mesh(new THREE.CylinderGeometry(0.176, 0.176, 0.035, 36), darkCollarMat);
-        rCollarBot.position.y = 1.785;
-        penBody.add(rCollarBot);
-
-        // G. Bulb 3 (Dimpled node directly above Rune Band)
-        var bulb3Points = [
-          new THREE.Vector2(0.165, 1.77),
-          new THREE.Vector2(0.210, 1.68),
-          new THREE.Vector2(0.222, 1.60),
-          new THREE.Vector2(0.190, 1.50),
-          new THREE.Vector2(0.148, 1.44)
-        ];
-        var bulb3 = new THREE.Mesh(new THREE.LatheGeometry(bulb3Points, 36), dimpleWoodMat);
-        penBody.add(bulb3);
-
-        // H. Shaft 1 (Smooth tapered elder wood)
-        var shaft1 = new THREE.Mesh(new THREE.CylinderGeometry(0.148, 0.128, 0.70, 36), smoothWoodMat);
-        shaft1.position.y = 1.09;
-        penBody.add(shaft1);
-
-        // I. Bulb 4 (Dimpled node 2)
-        var bulb4Points = [
-          new THREE.Vector2(0.128, 0.74),
-          new THREE.Vector2(0.170, 0.65),
-          new THREE.Vector2(0.185, 0.58),
-          new THREE.Vector2(0.155, 0.50),
-          new THREE.Vector2(0.118, 0.44)
-        ];
-        var bulb4 = new THREE.Mesh(new THREE.LatheGeometry(bulb4Points, 36), dimpleWoodMat);
-        penBody.add(bulb4);
-
-        // J. Shaft 2 (Smooth tapered elder wood)
-        var shaft2 = new THREE.Mesh(new THREE.CylinderGeometry(0.118, 0.098, 0.84, 36), smoothWoodMat);
-        shaft2.position.y = 0.02;
-        penBody.add(shaft2);
-
-        // K. Bulb 5 (Dimpled node 3)
-        var bulb5Points = [
-          new THREE.Vector2(0.098, -0.40),
-          new THREE.Vector2(0.138, -0.48),
-          new THREE.Vector2(0.152, -0.54),
-          new THREE.Vector2(0.128, -0.60),
-          new THREE.Vector2(0.092, -0.66)
-        ];
-        var bulb5 = new THREE.Mesh(new THREE.LatheGeometry(bulb5Points, 36), dimpleWoodMat);
-        penBody.add(bulb5);
-
-        // L. Shaft 3 (Long slender tapered elder wood)
-        var shaft3 = new THREE.Mesh(new THREE.CylinderGeometry(0.092, 0.072, 1.08, 36), smoothWoodMat);
-        shaft3.position.y = -1.20;
-        penBody.add(shaft3);
-
-        // M. Bulb 6 (Small dimpled node near tip)
-        var bulb6Points = [
-          new THREE.Vector2(0.072, -1.74),
-          new THREE.Vector2(0.104, -1.82),
-          new THREE.Vector2(0.112, -1.86),
-          new THREE.Vector2(0.095, -1.90),
-          new THREE.Vector2(0.068, -1.96)
-        ];
-        var bulb6 = new THREE.Mesh(new THREE.LatheGeometry(bulb6Points, 36), dimpleWoodMat);
-        penBody.add(bulb6);
-
-        // N. Slender Tapered Tip
-        var tipPoints = [
-          new THREE.Vector2(0.028, -3.880),
-          new THREE.Vector2(0.035, -3.650),
-          new THREE.Vector2(0.045, -3.200),
-          new THREE.Vector2(0.054, -2.700),
-          new THREE.Vector2(0.062, -2.250),
-          new THREE.Vector2(0.068, -1.960),
-          new THREE.Vector2(0.001, -1.960)
-        ];
-        var tipShaft = new THREE.Mesh(new THREE.LatheGeometry(tipPoints, 36), smoothWoodMat);
-        penBody.add(tipShaft);
-
-        // O. Tipping Ball (Anchor point for particle emitters & spell strike)
-        tippingBall = new THREE.Mesh(new THREE.SphereGeometry(0.028, 16, 16), smoothWoodMat);
-        tippingBall.position.set(0, -3.885, 0.01);
-        penBody.add(tippingBall);
-
-        // Scale penGroup cleanly so it fits inside camera frustum with safety margin
-        penGroup.scale.set(0.68, 0.68, 0.68);
-        scene.add(penGroup);
-
-        // Smooth continuous 60fps render loop
-        function animatePen() {
-          requestAnimationFrame(animatePen);
-          currentRotY += (targetRotY - currentRotY) * 0.08;
-          currentRotX += (targetRotX - currentRotX) * 0.08;
-          currentRotZ += (targetRotZ - currentRotZ) * 0.08;
-
-          // Gentle continuous idle spin ONLY in normal hover mode (completely paused when writing or docked in hero)
-          if (!isWritingMode && currentUnderlineBlend < 0.01 && (!window.__heroPenBlend || window.__heroPenBlend < 0.05)) {
-            targetRotY += 0.003;
-          }
-
-          penGroup.rotation.y = currentRotY;
-          penGroup.rotation.x = currentRotX;
-          penGroup.rotation.z = currentRotZ;
-          penGroup.updateMatrixWorld(true);
-
-          renderer.render(scene, camera);
-        }
-        animatePen();
-      }
-
-      function getActiveServicesHeading() {
-        var headings = document.querySelectorAll('[data-services-heading="true"]');
-        if (!headings || !headings.length) return null;
-        var bestHeading = null;
-        var bestDist = Infinity;
-        var vh = window.innerHeight;
-        var targetCenter = vh * 0.5;
-        for (var i = 0; i < headings.length; i++) {
-          var rect = headings[i].getBoundingClientRect();
-          if (rect.top > -vh && rect.bottom < vh * 2) {
-            var cY = rect.top + rect.height * 0.5;
-            var dist = Math.abs(cY - targetCenter);
-            if (dist < bestDist) {
-              bestDist = dist;
-              bestHeading = headings[i];
-            }
-          }
-        }
-        return bestHeading;
-      }
-
-      function getUnderlinePoint(path, t) {
-        var p = Math.max(0, Math.min(1, t));
-        try {
-          if (path && path.getPointAtLength && path.getTotalLength) {
-            var total = path.getTotalLength();
-            if (total > 0) return path.getPointAtLength(p * total);
-          }
-        } catch (e) { }
-        // Analytical Bezier fallback for viewBox 0 0 320 20:
-        // M 6 10 C 60 15, 140 16, 210 10 C 255 6, 285 9, 314 8
-        if (p <= 0.5) {
-          var st = p * 2, u = 1 - st;
-          return {
-            x: u * u * u * 6 + 3 * u * u * st * 60 + 3 * u * st * st * 140 + st * st * st * 210,
-            y: u * u * u * 10 + 3 * u * u * st * 15 + 3 * u * st * st * 16 + st * st * st * 10
-          };
-        } else {
-          var st = (p - 0.5) * 2, u = 1 - st;
-          return {
-            x: u * u * u * 210 + 3 * u * u * st * 255 + 3 * u * st * st * 285 + st * st * st * 314,
-            y: u * u * u * 10 + 3 * u * u * st * 6 + 3 * u * st * st * 9 + st * st * st * 8
-          };
-        }
-      }
-
-      function getPenTipScreenOffset(wrapW, wrapH, rotDeg) {
-        if (tippingBall && camera && penGroup) {
-          if (!tipWorldPos) tipWorldPos = new THREE.Vector3();
-          if (!tipNDC) tipNDC = new THREE.Vector3();
-          tippingBall.getWorldPosition(tipWorldPos);
-          tipNDC.copy(tipWorldPos).project(camera);
-          var cX = tipNDC.x * 0.5 * wrapW;
-          var cY = -tipNDC.y * 0.5 * wrapH;
-          var rad = (rotDeg || 0) * Math.PI / 180;
-          return {
-            x: cX * Math.cos(rad) - cY * Math.sin(rad),
-            y: cX * Math.sin(rad) + cY * Math.cos(rad)
-          };
-        }
-        // High-accuracy mathematical fallback if Three.js objects not queried yet
-        var cX = -0.1390 * wrapW;
-        var cY = 0.3152 * wrapH;
-        var rad = (rotDeg || -10) * Math.PI / 180;
-        return {
-          x: cX * Math.cos(rad) - cY * Math.sin(rad),
-          y: cX * Math.sin(rad) + cY * Math.cos(rad)
-        };
-      }
-
-      // === 4. Golden Ink & Magical Spell Particles Engine ===
-      var particleCanvas = document.getElementById('pen-particles-canvas');
-      var pCtx = particleCanvas ? particleCanvas.getContext('2d') : null;
-      var particles = [];
-
-      function resizeParticleCanvas() {
-        if (particleCanvas) {
-          particleCanvas.width = window.innerWidth;
-          particleCanvas.height = window.innerHeight;
-        }
-      }
-      window.addEventListener('resize', resizeParticleCanvas);
-      resizeParticleCanvas();
-
-      function spawnInkParticles(x, y, intensity) {
-        if (particles.length > 70) return;
-        var count = Math.min(4, Math.max(1, Math.round(intensity * 3)));
-        for (var i = 0; i < count; i++) {
-          var angle = Math.random() * Math.PI * 2;
-          var spd = Math.random() * 1.6 + 0.4;
-          particles.push({
-            x: x + (Math.random() - 0.5) * 8,
-            y: y + (Math.random() - 0.5) * 6,
-            vx: Math.cos(angle) * spd - 0.6,
-            vy: Math.sin(angle) * spd + 0.5,
-            size: Math.random() * 2.8 + 1.2,
-            alpha: 1,
-            color: Math.random() > 0.35 ? '#f5d061' : (Math.random() > 0.5 ? '#ffffff' : '#ffd97d'),
-            decay: Math.random() * 0.028 + 0.02
-          });
-        }
-      }
-
-      function renderParticles() {
-        if (!pCtx || !particleCanvas) return;
-        pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-
-        // Render particles
-        for (var i = particles.length - 1; i >= 0; i--) {
-          var p = particles[i];
-          p.x += p.vx;
-          p.y += p.vy;
-          p.alpha -= p.decay;
-          p.size *= 0.96;
-          if (p.alpha <= 0 || p.size < 0.3) {
-            particles.splice(i, 1);
-            continue;
-          }
-          pCtx.save();
-          pCtx.globalAlpha = Math.max(0, p.alpha);
-          pCtx.fillStyle = p.color;
-          pCtx.shadowColor = p.color;
-          pCtx.shadowBlur = 8;
-          pCtx.beginPath();
-          pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          pCtx.fill();
-          pCtx.restore();
-        }
-      }
 
       // === 5. Hero Hogwarts Thunderstorm & Atmospheric Rain Engine ===
       function initHeroThunderstorm() {
@@ -4253,343 +3495,44 @@
 
       initHeroThunderstorm();
 
-      function updateServiceTopicLinesAndPen(progress, pos) {
-        var vw = window.innerWidth;
+      function updateServiceTopicLines(progress, pos) {
         var vh = window.innerHeight;
-
-        // 0. Hero Pen Docking Detection & Upright Position (Full Circle Looping Support)
-        var wrapHeight = (loopScroll && loopScroll.state && loopScroll.state.wrapHeight) ||
-          (document.querySelector('[data-loop-scroll="wrap"]') ? document.querySelector('[data-loop-scroll="wrap"]').offsetHeight : 0) || 8000;
-        var curPos = Math.abs(pos || 0);
-        var modPos = curPos % wrapHeight;
-        var distFromHero = Math.min(modPos, wrapHeight - modPos);
-
-        var allSlots = document.querySelectorAll('.figma-hero-pen-slot');
-        var bestSlotRect = null;
-        var minSlotDist = Infinity;
-
-        for (var sIdx = 0; sIdx < allSlots.length; sIdx++) {
-          var sElem = allSlots[sIdx];
-          var sRect = sElem.getBoundingClientRect();
-          if (sRect.height > 0) {
-            var cY = sRect.top + sRect.height * 0.5;
-            var dist = Math.abs(cY - (vh * 0.5));
-            if (dist < minSlotDist) {
-              minSlotDist = dist;
-              bestSlotRect = sRect;
-            }
-          }
-        }
-
-        var heroTargetX = 0;
-        var heroTargetY = 0;
-        var heroTargetR = 0;
-        var heroTargetRotX = 0;
-        var heroTargetRotY = 0;
-        var heroTargetRotZ = 0;
-        var heroBlend = 0;
-
-        if (bestSlotRect && window.innerWidth > 900) {
-          var slotCenterX = bestSlotRect.left + bestSlotRect.width * 0.5;
-          var slotCenterY = bestSlotRect.top + bestSlotRect.height * 0.5;
-          heroTargetX = slotCenterX - (vw * 0.5);
-          heroTargetY = slotCenterY - (vh * 0.5);
-
-          // Find nearest front-facing angle to currentRotY (closest multiple of 2π)
-          var nearestZeroY = Math.round(currentRotY / (Math.PI * 2)) * (Math.PI * 2);
-          heroTargetRotY = nearestZeroY;
-
-          var releaseSpan = 450;
-          if (distFromHero < releaseSpan) {
-            var hRatio = 1 - (distFromHero / releaseSpan);
-            heroBlend = hRatio * hRatio * (3 - 2 * hRatio);
-          }
-
-        }
-        window.__heroPenBlend = heroBlend;
-
-
-
-        // 1. Natural Lissajous trajectory and hover rotations
-        var s = Math.min(0.26 * vw, Math.max(140, vw * 0.5 - 260));
-        var r_a = progress / 9000;
-        var normX = s * Math.sin(2 * r_a * Math.PI);
-        var normY = (s / 3.5) * Math.sin(2 * r_a * Math.PI) * Math.cos(2 * r_a * Math.PI);
-        var normR = -14 + 26 * Math.sin(2 * r_a * Math.PI);
-
-        var normRotX = 0.35 + Math.sin(progress * 0.002) * 0.35;
-        var normRotY = progress * 0.005 + rotYOffset;
-        var normRotZ = Math.cos(progress * 0.002) * 0.25;
-
-        // 2. Query and sort all topic lines in viewport
         var allLines = document.querySelectorAll('.service-topic-line');
-        var visibleLines = [];
         var refY = vh * 0.68;
 
         for (var i = 0; i < allLines.length; i++) {
           var lineElem = allLines[i];
           var r = lineElem.getBoundingClientRect();
-          if (r.width > 0 && r.top > -vh * 0.8 && r.top < vh * 1.8) {
-            visibleLines.push({
-              elem: lineElem,
-              top: r.top,
-              left: r.left,
-              right: r.right,
-              width: r.width
-            });
+          var fill = lineElem.querySelector('.service-topic-line-fill');
+          var glow = lineElem.querySelector('.service-topic-line-glow');
+          if (!fill) continue;
+
+          var targetProg = 0;
+          if (r.top <= refY) {
+            targetProg = 1.0;
+          } else if (r.top < vh) {
+            targetProg = Math.max(0, Math.min(1, (vh - r.top) / (vh - refY)));
           }
-        }
 
-        visibleLines.sort(function (a, b) { return a.top - b.top; });
+          var prevP = parseFloat(lineElem.getAttribute('data-progress') || '0');
+          var curP = prevP + (targetProg - prevP) * 0.22;
+          if (Math.abs(targetProg - curP) < 0.001) curP = targetProg;
+          lineElem.setAttribute('data-progress', curP.toFixed(4));
 
-        // 3. Sequential Line Lifecycle & Explicit Right-to-Left Flight Motion
-        var targetScreenX = normX + (vw * 0.5);
-        var targetScreenY = normY + (vh * 0.5);
-        var targetPenBlend = 0;
-        var dynamicWriteRotX = 0.44;
-        var dynamicWriteRotZ = -0.36;
-        var dynamicWriteR = -12;
-        var activeHeadingElem = null;
-
-        var N = visibleLines.length;
-        var lineProgresses = new Array(N).fill(0);
-
-        if (N > 0) {
-          var firstLine = visibleLines[0];
-          var lastLine = visibleLines[N - 1];
-
-          if (firstLine.top > refY) {
-            // Approaching first line: swoop down to left start of Line 0
-            var approachSpan = 0.25 * vh;
-            if (firstLine.top <= refY + approachSpan) {
-              var approach = (refY + approachSpan - firstLine.top) / approachSpan;
-              approach = Math.max(0, Math.min(1, approach));
-              targetPenBlend = approach * approach * (3 - 2 * approach);
-              targetScreenX = firstLine.left;
-              targetScreenY = firstLine.top - Math.sin((1 - approach) * Math.PI * 0.5) * 40;
-              dynamicWriteRotX = 0.35 + targetPenBlend * 0.09;
-              dynamicWriteR = -12 + (1 - targetPenBlend) * 15;
-            }
+          fill.style.transform = 'scaleX(' + curP.toFixed(4) + ')';
+          if (curP >= 0.99) {
+            fill.style.background = '#333333';
           } else {
-            // Lines 0 to N-2
-            var matched = false;
-            for (var k = 0; k < N - 1; k++) {
-              var curLine = visibleLines[k];
-              var nextLine = visibleLines[k + 1];
-
-              if (curLine.top <= refY && nextLine.top > refY) {
-                var D = nextLine.top - curLine.top;
-                if (D <= 0) D = 180;
-                var t = (refY - curLine.top) / D;
-                t = Math.max(0, Math.min(1, t));
-
-                // Mark lines before k as fully drawn
-                for (var j = 0; j < k; j++) lineProgresses[j] = 1.0;
-
-                if (t <= 0.60) {
-                  // PHASE A: DRAW LINE k (LEFT -> RIGHT)
-                  var u = t / 0.60;
-                  lineProgresses[k] = u;
-
-                  var organicYWave = Math.sin(u * Math.PI * 8) * 1.8;
-                  targetScreenX = curLine.left + u * curLine.width;
-                  targetScreenY = curLine.top + organicYWave;
-                  targetPenBlend = 1;
-
-                  dynamicWriteRotX = 0.44 + Math.sin(u * Math.PI * 4) * 0.04;
-                  dynamicWriteRotZ = -0.36 + Math.sin(u * Math.PI * 2) * 0.05;
-                  dynamicWriteR = -12 + Math.sin(u * Math.PI * 3) * 3;
-
-                  if (u > 0.02 && u < 0.98) {
-                    spawnInkParticles(targetScreenX, targetScreenY, 1.2);
-                  }
-
-                  var topicContainer = curLine.elem.closest('.page-module__ZDaQEq__s4__services > div') || curLine.elem.nextElementSibling;
-                  if (topicContainer) {
-                    activeHeadingElem = topicContainer.querySelector('.TextColumn-module__OsnSpW__text-column__h h3');
-                  }
-                } else {
-                  // PHASE B: FLIGHT BETWEEN LINES (RIGHT -> LEFT)
-                  lineProgresses[k] = 1.0;
-
-                  var r = (t - 0.60) / 0.40;
-                  r = Math.max(0, Math.min(1, r));
-                  var smoothR = r * r * (3 - 2 * r);
-
-                  // Continuous glide from right of curLine to left of nextLine
-                  targetScreenX = curLine.right + smoothR * (nextLine.left - curLine.right);
-                  var arcLift = Math.sin(r * Math.PI) * 46;
-                  targetScreenY = curLine.top + smoothR * (nextLine.top - curLine.top) - arcLift;
-                  targetPenBlend = 1;
-
-                  dynamicWriteRotX = 0.44 - Math.sin(r * Math.PI) * 0.22;
-                  dynamicWriteRotZ = -0.36 + Math.sin(r * Math.PI) * 0.35;
-                  dynamicWriteR = -12 + Math.sin(r * Math.PI) * 20;
-                }
-
-                matched = true;
-                break;
-              }
-            }
-
-            if (!matched && lastLine.top <= refY) {
-              // Final line k = N - 1
-              for (var j = 0; j < N - 1; j++) lineProgresses[j] = 1.0;
-
-              var prevLine = N >= 2 ? visibleLines[N - 2] : null;
-              var D_last = prevLine ? (lastLine.top - prevLine.top) : 220;
-              if (D_last <= 0) D_last = 220;
-
-              var t_last = (refY - lastLine.top) / (0.60 * D_last);
-              if (t_last <= 1.0) {
-                // Drawing the final line (LEFT -> RIGHT)
-                var u_last = Math.max(0, Math.min(1, t_last));
-                lineProgresses[N - 1] = u_last;
-
-                var organicYWave = Math.sin(u_last * Math.PI * 8) * 1.8;
-                targetScreenX = lastLine.left + u_last * lastLine.width;
-                targetScreenY = lastLine.top + organicYWave;
-                targetPenBlend = 1;
-
-                dynamicWriteRotX = 0.44 + Math.sin(u_last * Math.PI * 4) * 0.04;
-                dynamicWriteRotZ = -0.36 + Math.sin(u_last * Math.PI * 2) * 0.05;
-                dynamicWriteR = -12 + Math.sin(u_last * Math.PI * 3) * 3;
-
-                if (u_last > 0.02 && u_last < 0.98) {
-                  spawnInkParticles(targetScreenX, targetScreenY, 1.2);
-                }
-
-                var topicContainer = lastLine.elem.closest('.page-module__ZDaQEq__s4__services > div') || lastLine.elem.nextElementSibling;
-                if (topicContainer) {
-                  activeHeadingElem = topicContainer.querySelector('.TextColumn-module__OsnSpW__text-column__h h3');
-                }
-              } else {
-                // Final line 100% drawn; gracefully exit into orbit
-                lineProgresses[N - 1] = 1.0;
-                var exitSpan = 0.35 * vh;
-                var exitFrac = (refY - 0.60 * D_last - lastLine.top) / exitSpan;
-                exitFrac = Math.max(0, Math.min(1, exitFrac));
-                var smoothExit = exitFrac * exitFrac * (3 - 2 * exitFrac);
-
-                targetPenBlend = 1 - smoothExit;
-                targetScreenX = lastLine.right;
-                targetScreenY = lastLine.top - Math.sin(smoothExit * Math.PI * 0.5) * 50;
-                dynamicWriteRotX = 0.44 - smoothExit * 0.15;
-                dynamicWriteRotZ = -0.36 + smoothExit * 0.25;
-                dynamicWriteR = -12 + smoothExit * 18;
-              }
-            }
-          }
-        }
-
-        // 4. Update visual line drawing in DOM using calculated sequential progresses
-        for (var i = 0; i < visibleLines.length; i++) {
-          var item = visibleLines[i];
-          var targetProg = lineProgresses[i] || 0;
-          var fill = item.elem.querySelector('.service-topic-line-fill');
-          var glow = item.elem.querySelector('.service-topic-line-glow');
-          if (fill) {
-            var prevP = parseFloat(item.elem.getAttribute('data-progress') || '0');
-            var curP = prevP + (targetProg - prevP) * 0.22;
-            if (Math.abs(targetProg - curP) < 0.001) curP = targetProg;
-            item.elem.setAttribute('data-progress', curP.toFixed(4));
-
-            fill.style.transform = 'scaleX(' + curP.toFixed(4) + ')';
-            if (curP >= 0.99) {
-              fill.style.background = '#333333';
-            } else {
-              fill.style.background = 'linear-gradient(90deg, #333333 0%, #a88932 60%, #f5d061 92%, #ffffff 100%)';
-            }
-
-            if (glow) {
-              glow.style.opacity = (curP > 0.01 && curP < 0.98) ? '1' : '0';
-            }
-          }
-        }
-
-        // 5. Update topic headings active highlight
-        var allTopicHeadings = document.querySelectorAll('.TextColumn-module__OsnSpW__text-column__h h3');
-        for (var hIdx = 0; hIdx < allTopicHeadings.length; hIdx++) {
-          var hElem = allTopicHeadings[hIdx];
-          if (hElem === activeHeadingElem) {
-            hElem.classList.add('is-pen-active');
-          } else {
-            hElem.classList.remove('is-pen-active');
-          }
-        }
-
-        // 6. Smoothly blend pen into writing mode and lock rotation
-        if (targetPenBlend > 0.01) {
-          if (!isWritingMode) {
-            isWritingMode = true;
-            var diff = (0 - currentRotY) % (Math.PI * 2);
-            if (diff < -Math.PI) diff += Math.PI * 2;
-            if (diff > Math.PI) diff -= Math.PI * 2;
-            writingLockedRotY = currentRotY + diff;
-          }
-        } else if (targetPenBlend === 0 && isWritingMode) {
-          isWritingMode = false;
-          rotYOffset = currentRotY - (progress * 0.005);
-        }
-
-        currentUnderlineBlend += (targetPenBlend - currentUnderlineBlend) * 0.16;
-        var b = currentUnderlineBlend;
-
-        // 7. Calculate handwriting screen trajectory and pen tip offset
-        var writeX = normX;
-        var writeY = normY;
-        var writeR = dynamicWriteR;
-
-        if (b > 0.001) {
-          var wrapRect = rotateWrap ? rotateWrap.getBoundingClientRect() : { width: 480, height: 480 };
-          var wrapW = wrapRect.width || 480;
-          var wrapH = wrapRect.height || 480;
-
-          var tipOffset = getPenTipScreenOffset(wrapW, wrapH, writeR);
-          var desiredWrapCenterX = targetScreenX - tipOffset.x;
-          var desiredWrapCenterY = targetScreenY - tipOffset.y;
-
-          writeX = desiredWrapCenterX - (vw * 0.5);
-          writeY = desiredWrapCenterY - (vh * 0.5);
-        }
-
-        // 8. Blend 3D rotations with dynamic calligraphy responsiveness & hero upright docking
-        if (heroBlend > 0.001) {
-          var hb = heroBlend;
-          targetRotX = heroTargetRotX * hb + normRotX * (1 - hb);
-          targetRotY = heroTargetRotY * hb + normRotY * (1 - hb);
-          targetRotZ = heroTargetRotZ * hb + normRotZ * (1 - hb);
-          rotYOffset = currentRotY - (progress * 0.005);
-        } else if (isWritingMode || b > 0.001) {
-          targetRotX = normRotX * (1 - b) + dynamicWriteRotX * b;
-          targetRotY = writingLockedRotY;
-          targetRotZ = normRotZ * (1 - b) + dynamicWriteRotZ * b;
-        } else {
-          targetRotX = normRotX;
-          targetRotY = normRotY;
-          targetRotZ = normRotZ;
-        }
-
-        if (rotateWrap) {
-          var finalX = normX * (1 - b) + writeX * b;
-          var finalY = normY * (1 - b) + writeY * b;
-          var finalR = normR * (1 - b) + writeR * b;
-
-          if (heroBlend > 0.001) {
-            var hb = heroBlend;
-            finalX = heroTargetX * hb + finalX * (1 - hb);
-            finalY = heroTargetY * hb + finalY * (1 - hb);
-            finalR = heroTargetR * hb + finalR * (1 - hb);
+            fill.style.background = 'linear-gradient(90deg, #333333 0%, #a88932 60%, #f5d061 92%, #ffffff 100%)';
           }
 
-          rotateWrap.style.transform = 'translate3d(' + finalX.toFixed(2) + 'px, ' + finalY.toFixed(2) + 'px, 0px) rotate(' + finalR.toFixed(2) + 'deg)';
+          if (glow) {
+            glow.style.opacity = (curP > 0.01 && curP < 0.98) ? '1' : '0';
+          }
         }
-
-        // 9. Render ink particles
-        renderParticles();
       }
 
-      // === 5. Topic Click Interaction & Pen Swoop ===
+      // === 5. Topic Click Interaction ===
       var activeTopicContainer = null;
 
       function initTopicClickInteractions() {
@@ -4612,18 +3555,6 @@
               if (!isCurrentlyActive) {
                 container.classList.add('is-active');
                 activeTopicContainer = container;
-
-                // Find associated line and trigger pen swoop
-                var prevLine = container.previousElementSibling;
-                if (prevLine && prevLine.classList.contains('service-topic-line')) {
-                  var rect = prevLine.getBoundingClientRect();
-                  var targetX = rect.left + Math.min(rect.width * 0.25, 140);
-                  var targetY = rect.top;
-
-                  // Burst celebratory golden ink particles at nib
-                  spawnInkParticles(targetX, targetY, 3.5);
-                  spawnInkParticles(targetX + 20, targetY - 10, 2.0);
-                }
               } else {
                 activeTopicContainer = null;
               }
@@ -4646,16 +3577,15 @@
 
       // Hook LoopScroll per-frame updates
       loopScroll.onUpdate = function (progress, pos) {
-        updateServiceTopicLinesAndPen(progress, pos);
+        updateServiceTopicLines(progress, pos);
       };
 
-      // Initial placement of pen into hero upright slot
-      updateServiceTopicLinesAndPen(0, 0);
+      updateServiceTopicLines(0, 0);
       window.addEventListener('resize', function () {
         if (loopScroll && loopScroll.state) {
-          updateServiceTopicLinesAndPen(loopScroll.state.progress || 0, loopScroll.state.pos || 0);
+          updateServiceTopicLines(loopScroll.state.progress || 0, loopScroll.state.pos || 0);
         } else {
-          updateServiceTopicLinesAndPen(0, 0);
+          updateServiceTopicLines(0, 0);
         }
       });
 
