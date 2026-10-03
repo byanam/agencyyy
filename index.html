@@ -502,9 +502,11 @@
       aspect-ratio: 2048 / 1746;
       object-fit: contain !important;
       display: block !important;
-      filter: drop-shadow(0 32px 80px rgba(0, 0, 0, 0.98)) drop-shadow(0 15px 45px rgba(255, 195, 0, 0.16)) brightness(calc(1 + var(--umbrella-lightning, 0) * 0.45));
+      image-rendering: auto !important;
+      image-rendering: -webkit-optimize-contrast !important;
+      filter: drop-shadow(0 24px 50px rgba(0, 0, 0, 0.90)) drop-shadow(0 12px 30px rgba(255, 195, 0, 0.14)) brightness(calc(1 + var(--umbrella-lightning, 0) * 0.45));
       transition: filter 0.05s ease-out;
-      will-change: filter, transform;
+      will-change: filter;
       pointer-events: auto !important;
     }
 
@@ -4047,10 +4049,10 @@
               var u2 = u * u;
 
               // Wide open protective dome canopy surface
-              canopyY = ubRect.top + ubRect.height * (0.098 + 0.178 * u2 + 0.084 * u2 * u2) + 1.5;
+              canopyY = ubRect.top + ubRect.height * (0.095 + 0.193 * u2 + 0.068 * u2 * u2) + 1.5;
 
               if (Math.abs(u) < 0.032) {
-                canopyY = ubRect.top + ubRect.height * 0.063 + 1.5; // ferrule nub at center
+                canopyY = ubRect.top + ubRect.height * 0.061 + 1.5; // ferrule nub at center
               }
 
               // Raindrop touches the canopy directly on the cloth
