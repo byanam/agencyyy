@@ -1,0 +1,22 @@
+[
+  {
+    "num": "1",
+    "name": "Design",
+    "desc": "Design Systems, User Experience, Rapid Prototyping"
+  },
+  {
+    "num": "2",
+    "name": "Engineering",
+    "desc": "Full-Stack Development, React, Next.js, Headless APIs"
+  },
+  {
+    "num": "3",
+    "name": "Motion & 3D",
+    "desc": "Interactive Visuals, WebGL Shaders, Micro-Interactions"
+  },
+  {
+    "num": "4",
+    "name": "Strategy",
+    "desc": "Product Architecture, Conversion Optimization, SEO"
+  }
+]
