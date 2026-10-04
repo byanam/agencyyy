@@ -1,0 +1,11 @@
+.figma-noise-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 0);
+  background-size: 6px 6px;
+  mix-blend-mode: overlay;
+  z-index: 2;
+}
