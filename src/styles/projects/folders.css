@@ -1,0 +1,15 @@
+.folders-stage-container {
+  width: min(100%, 1050px);
+  min-height: clamp(520px, 60vw, 880px);
+  position: relative;
+  margin: 0 auto;
+  perspective: 1200px;
+}
+
+.folder-card-wrapper {
+  position: absolute;
+  cursor: pointer;
+  transform-origin: center center;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2), filter 0.35s ease;
+  will-change: transform;
+}
