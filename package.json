@@ -6,9 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node tests/runTests.js"
   },
   "devDependencies": {
     "vite": "^8.3.0"
-  }
+  },
+  "description": "legendary Agency \u2014 High-Performance Digital Design & Web Engineering Studio Portfolio",
+  "keywords": [
+    "portfolio",
+    "creative-agency",
+    "vite",
+    "web-design",
+    "figma-to-code"
+  ]
 }
