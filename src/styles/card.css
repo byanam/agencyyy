@@ -1,0 +1,20 @@
+.figma-main-card {
+  width: min(94.14vw, 1205px);
+  margin: 0 auto;
+  border-radius: var(--card-radius);
+  position: relative;
+  overflow: visible;
+  background: linear-gradient(
+    180deg,
+    #1e148b 0%,
+    #1a0ac5 28.37%,
+    #1805e2 42.79%,
+    #1600ff 50.48%,
+    #4800ff 59.62%,
+    #6200ff 68.75%,
+    #4b00a7 78.37%,
+    #43018e 86.54%,
+    #3c0181 90.38%
+  );
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.85);
+}
