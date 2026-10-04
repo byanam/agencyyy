@@ -315,38 +315,12 @@
     wrap.style.height=(2*Math.floor(H*s))+'px';
   }
   layout();window.scrollTo(0,1);
-  var SM={pos:window.scrollY,tgt:window.scrollY,last:window.scrollY};
+  /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP ---------- */
   addEventListener('scroll',function(){
     var y=window.scrollY,p=Math.floor(H*s);
-    if(y>=p){window.scrollTo(0,y-p);SM.pos-=p;SM.tgt-=p;SM.last-=p;}
-    else if(y<=0){window.scrollTo(0,y+p);SM.pos+=p;SM.tgt+=p;SM.last+=p;}
+    if(y>=p){window.scrollTo(0,Math.max(1,y-p));}
+    else if(y<=0){window.scrollTo(0,Math.min(p-1,y+p));}
   },{passive:true});
-  /* ---------- PREMIUM FAST SMOOTH SCROLL (inertial easing, wraps with the endless loop) ---------- */
-  (function smooth(){
-    var lt=performance.now();
-    addEventListener('wheel',function(e){
-      if(e.ctrlKey)return;
-      e.preventDefault();
-      if(Math.abs(SM.tgt-SM.pos)<1){SM.pos=SM.tgt=window.scrollY;}
-      var d=e.deltaMode===1?e.deltaY*34:e.deltaMode===2?e.deltaY*innerHeight:e.deltaY;
-      SM.tgt+=d*1.15;
-      SM.tgt=Math.max(SM.pos-3200,Math.min(SM.pos+3200,SM.tgt));
-    },{passive:false});
-    function loop(t){
-      var dt=Math.min(.05,Math.max(.001,(t-lt)/1000));lt=t;
-      var y=window.scrollY,p=Math.floor(H*s);
-      if(!isFinite(SM.pos)||!isFinite(SM.tgt)||Math.abs(y-SM.last)>2.5){SM.pos=SM.tgt=y;}
-      var diff=SM.tgt-SM.pos;
-      if(Math.abs(diff)>.05){
-        SM.pos+=diff*(1-Math.exp(-dt*13));
-        if(SM.pos>=p){SM.pos-=p;SM.tgt-=p;}else if(SM.pos<=0){SM.pos+=p;SM.tgt+=p;}
-        window.scrollTo(0,SM.pos);
-      }
-      SM.last=window.scrollY;
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
-  })();
   addEventListener('resize',function(){var r=window.scrollY/Math.floor(H*s);layout();window.scrollTo(0,r*Math.floor(H*s));});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
   /* ---------- RAIN: falls from under the top cloud, stops on the umbrella ---------- */
@@ -594,21 +568,59 @@
     requestAnimationFrame(frame);
   })();
 
-  /* ---------- FAST CLOUD JIGGLE + TITLE REVEAL ---------- */
+  /* ---------- CONTINUOUS CLOUD DRIFT (IDLE MOTION) + FAST JIGGLE + TITLE REVEAL ---------- */
   (function fx(){
-    var cl=copies.map(function(cp){return cp.querySelectorAll('.cld');}),tl=copies.map(function(cp){return cp.querySelectorAll('.ttl');}),ST=[],last=performance.now(),ly=window.scrollY,ltg=SM.tgt,v=0,n=cl[0].length;
-    for(var i=0;i<n;i++)ST.push({y:0,vy:0,k:55+((i*37)%55),c:4.2+((i*13)%4),a:.6+((i*29)%10)/10});
+    var cl=copies.map(function(cp){return cp.querySelectorAll('.cld');}),tl=copies.map(function(cp){return cp.querySelectorAll('.ttl');});
+    var last=performance.now(),ly=window.scrollY,v=0,n=cl[0].length;
+    var ST=[],DRIFT=[
+      // 0: 8bc30 footer center
+      {sx:0.28,ax:62,px:0.0,sy:0.35,ay:12,py:0.5,k:80,c:5.5,a:1.0},
+      // 1: de02e footer right
+      {sx:0.22,ax:75,px:2.3,sy:0.28,ay:14,py:1.8,k:65,c:4.8,a:1.2},
+      // 2: de02e footer left
+      {sx:0.32,ax:68,px:4.5,sy:0.38,ay:11,py:3.2,k:70,c:5.0,a:0.9},
+      // 3: 255d2 services 1
+      {sx:0.20,ax:54,px:1.2,sy:0.26,ay:10,py:0.8,k:75,c:5.2,a:1.0},
+      // 4: 255d2 services 2
+      {sx:0.26,ax:58,px:3.8,sy:0.33,ay:12,py:2.1,k:60,c:4.5,a:1.1},
+      // 5: 764ac folders
+      {sx:0.24,ax:70,px:5.4,sy:0.30,ay:15,py:4.2,k:85,c:5.8,a:0.8},
+      // 6: 20b2c projects left
+      {sx:0.21,ax:64,px:0.9,sy:0.27,ay:13,py:1.5,k:68,c:4.9,a:1.05},
+      // 7: 0b3fd projects right
+      {sx:0.29,ax:60,px:3.1,sy:0.36,ay:12,py:3.7,k:72,c:5.1,a:0.95},
+      // 8: 57e01 hero left base
+      {sx:0.18,ax:50,px:2.0,sy:0.25,ay:10,py:0.9,k:60,c:4.6,a:0.85},
+      // 9: 0d995 hero right base
+      {sx:0.23,ax:56,px:4.1,sy:0.31,ay:12,py:2.8,k:65,c:4.8,a:0.9},
+      // 10: 8bc30 hero top center (matches 0)
+      {sx:0.28,ax:62,px:0.0,sy:0.35,ay:12,py:0.5,k:80,c:5.5,a:1.0},
+      // 11: de02e hero top right (matches 1)
+      {sx:0.22,ax:75,px:2.3,sy:0.28,ay:14,py:1.8,k:65,c:4.8,a:1.2},
+      // 12: de02e hero top left (matches 2)
+      {sx:0.32,ax:68,px:4.5,sy:0.38,ay:11,py:3.2,k:70,c:5.0,a:0.9}
+    ];
+    for(var i=0;i<n;i++){
+      var D=DRIFT[i]||DRIFT[0];
+      ST.push({y:0,vy:0,k:D.k,c:D.c,a:D.a});
+    }
     function frame(t){
       var dt=Math.min(.05,Math.max(.001,(t-last)/1000));last=t;
+      var T=t/1000;
       var p=Math.floor(H*s),y=window.scrollY,dy=y-ly;ly=y;
       if(Math.abs(dy)>p/2)dy=0;
-      var dtg=SM.tgt-ltg;ltg=SM.tgt;if(Math.abs(dtg)>p/2)dtg=0;
-      var din=dtg!==0?dtg:(Math.abs(SM.tgt-SM.pos)<1?dy:0);
-      v+=((din/s/dt)-v)*Math.min(1,dt*14);
+      var targetV=dy/s/dt;
+      v+=(targetV-v)*Math.min(1,dt*20);
       for(var i=0;i<n;i++){
-        var S=ST[i],tg=Math.max(-60,Math.min(60,-v*.035*S.a));
+        var S=ST[i],D=DRIFT[i]||DRIFT[0];
+        var tg=Math.max(-70,Math.min(70,-v*.038*S.a));
         S.vy+=(S.k*(tg-S.y)-S.c*S.vy)*dt;S.y+=S.vy*dt;
-        var tr='translate3d(0,'+S.y.toFixed(2)+'px,0)';
+        // Idle organic atmospheric cloud drift (dual harmonic for natural wind breeze):
+        var driftX=Math.sin(T*D.sx+D.px)*D.ax+Math.sin(T*D.sx*0.45+D.px*1.5)*(D.ax*0.25);
+        var driftY=Math.cos(T*D.sy+D.py)*D.ay;
+        var totalX=driftX;
+        var totalY=S.y+driftY;
+        var tr='translate3d('+totalX.toFixed(2)+'px,'+totalY.toFixed(2)+'px,0)';
         for(var j=0;j<cl.length;j++)cl[j][i].style.transform=tr;
       }
       var vh=innerHeight/s;
@@ -657,8 +669,7 @@
   nav.addEventListener('click',function(e){
     var a=e.target.closest('a');if(!a)return;
     var p=Math.floor(H*s),base=Math.floor(window.scrollY/p)*p;
-    var targetY=base+SEC[+a.getAttribute('data-go')]*s;
-    SM.tgt=targetY;
+    window.scrollTo({top:targetY,behavior:'smooth'});
   });
   function navOn(){
     var p=Math.floor(H*s),y=((window.scrollY%p)/s)+300,i=y>=4300?3:y>=3250?2:y>=1150?1:0;
