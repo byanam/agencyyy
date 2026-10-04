@@ -50,7 +50,7 @@
 
   html{scroll-behavior:auto}
   .cld{will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translate3d(0,0,0)}
-  .cld img:not([style*="filter"]){filter:url(#sharp) contrast(1.05) saturate(1.06);image-rendering:auto}
+  .cld img:not([style*="filter"]){image-rendering:auto}
   .ttl{will-change:transform,opacity}
   .stage a.cta2,.stage a.row{pointer-events:auto;cursor:pointer;text-decoration:none;color:#fff}
   .stage a.cta2{display:flex;align-items:center;justify-content:center;transform:translateX(-50%);border-radius:40px;font-size:24px;font-weight:500;letter-spacing:-.5px;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.1));backdrop-filter:blur(14px) saturate(1.5);-webkit-backdrop-filter:blur(14px) saturate(1.5);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55),inset 0 -2px 4px rgba(255,255,255,.35),0 12px 36px rgba(10,0,70,.45);transition:transform .45s cubic-bezier(.2,.9,.3,1.25),background .3s ease,box-shadow .3s ease}
@@ -98,9 +98,6 @@
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<filter id="sharp" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-<feConvolveMatrix order="3" kernelMatrix="0 -0.4 0 -0.4 2.6 -0.4 0 -0.4 0" divisor="1" preserveAlpha="true" edgeMode="duplicate"/>
-</filter>
 <filter id="isA" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
 <feComponentTransfer in="SourceAlpha" result="inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
 <feOffset in="inv" dx="-2" dy="2" result="off"/>
@@ -281,14 +278,18 @@
   var W=1280,H=5216,P="https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc/";
   var wrap=document.getElementById('wrap'),stage=document.getElementById('stage'),copies=[stage],s=1;
   function load(img,k){
-    var list=['assets/'+k+'.webp','assets/'+k+'.png',P+k+'.png'],done=false;
     img.decoding='async';
     img.onload=function(){img.classList.add('on');};
-    list.forEach(function(src){
-      var t=new Image();
-      t.onload=function(){if(done)return;done=true;img.src=src;};
-      t.src=src;
-    });
+    var webp='assets/'+k+'.webp', png='assets/'+k+'.png', remote=P+k+'.png';
+    var t=new Image();
+    t.onload=function(){img.src=webp;};
+    t.onerror=function(){
+      var t2=new Image();
+      t2.onload=function(){img.src=png;};
+      t2.onerror=function(){img.src=remote;};
+      t2.src=png;
+    };
+    t.src=webp;
   }
   stage.querySelectorAll('img[data-k]').forEach(function(im){load(im,im.getAttribute('data-k'));});
   stage.querySelectorAll('.pnoise').forEach(function(e){
