@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Legendary Agency</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://www.figma.com">
 <link rel="preload" as="image" href="assets/8bc30.webp">
 <link rel="preload" as="image" href="assets/de02e.webp">
@@ -281,6 +285,8 @@
 </div></div>
 <div id="cur"><span>View</span></div>
 <nav id="nav"><a id="sndBtn" class="snd" title="Toggle music & sound" aria-label="Toggle music and sound"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle></svg><span class="sr-only">Toggle music and sound</span></a><a data-go="0">Hero</a><a data-go="1">Projects</a><a data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a></nav>
+<audio id="thunderAudio" src="assets/thunder.mp3" preload="auto" playsinline webkit-playsinline></audio>
+<audio id="bgMusic" src="assets/classical.mp3" preload="auto" loop playsinline webkit-playsinline></audio>
 <script>
 (function(){
   var W=1280,H=5216,P="https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc/";
@@ -879,8 +885,8 @@
 
   /* ---------- AUDIO SYSTEM: THUNDER SFX ON START + CLASSICAL MUSIC ---------- */
   (function audioSys(){
-    var thunder = new Audio('assets/thunder.mp3');
-    var music = new Audio('assets/classical.mp3');
+    var thunder = document.getElementById('thunderAudio') || new Audio('assets/thunder.mp3');
+    var music = document.getElementById('bgMusic') || new Audio('assets/classical.mp3');
     thunder.volume = 0.70;
     music.volume = 0.35;
     music.loop = true;
@@ -889,7 +895,9 @@
 
     var sndBtn = document.getElementById('sndBtn');
     var isMuted = false;
-    var started = false;
+    var isPlaying = false;
+    var playPending = false;
+    var userActivated = false;
 
     var svgOn = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle></svg>';
     var svgCut = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle><line x1="3" y1="3" x2="21" y2="21" stroke="#000" stroke-width="3.5" stroke-linecap="round" opacity="0.45"></line><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></line></svg>';
@@ -909,59 +917,81 @@
       }
     }
 
-    function startPlayback(){
-      if(isMuted) return;
-      try {
-        thunder.currentTime = 0;
-        music.currentTime = 0;
-      } catch(err){}
+    function playAudio(fromStart){
+      if(isMuted || playPending) return;
+      if(isPlaying && !music.paused) return;
+
+      playPending = true;
+      if(fromStart && !userActivated){
+        try {
+          thunder.currentTime = 0;
+          music.currentTime = 0;
+        } catch(e){}
+      }
+
       var pT = thunder.play();
       var pM = music.play();
-      if(window.__startStorm) window.__startStorm();
+
       if(pT && pT.catch) pT.catch(function(){});
+
       if(pM && pM.then){
         pM.then(function(){
-          detachGestures();
+          playPending = false;
+          isPlaying = true;
+          userActivated = true;
+          removeActivationListeners();
           updateBtn();
-        }).catch(function(){
-          // Autoplay blocked pending gesture; keeps isMuted = false and unmuted icon active
+          if(window.__startStorm && fromStart) window.__startStorm();
+        }).catch(function(err){
+          playPending = false;
+          isPlaying = false;
+          updateBtn();
         });
       } else {
-        detachGestures();
+        playPending = false;
+        isPlaying = true;
+        userActivated = true;
+        removeActivationListeners();
         updateBtn();
+        if(window.__startStorm && fromStart) window.__startStorm();
       }
     }
 
-    var GESTURES = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'keydown', 'wheel', 'scroll', 'pointermove'];
-    function onGesture(){
-      if(!music.paused || isMuted) return;
-      startPlayback();
+    var ACTIVATION_EVENTS = ['click', 'pointerdown', 'touchstart', 'keydown'];
+    function onUserGesture(){
+      if(isPlaying || isMuted) return;
+      playAudio(true);
     }
 
-    function attachGestures(){
-      GESTURES.forEach(function(ev){
-        window.addEventListener(ev, onGesture, {passive: true});
+    function addActivationListeners(){
+      ACTIVATION_EVENTS.forEach(function(ev){
+        window.addEventListener(ev, onUserGesture, { capture: true, passive: true });
+        document.addEventListener(ev, onUserGesture, { capture: true, passive: true });
       });
     }
 
-    function detachGestures(){
-      GESTURES.forEach(function(ev){
-        window.removeEventListener(ev, onGesture);
+    function removeActivationListeners(){
+      ACTIVATION_EVENTS.forEach(function(ev){
+        window.removeEventListener(ev, onUserGesture, { capture: true });
+        document.removeEventListener(ev, onUserGesture, { capture: true });
       });
     }
 
-    attachGestures();
-    startPlayback();
+    addActivationListeners();
+
+    // Trigger immediate playback on startup / refresh
+    playAudio(true);
+
     if(document.readyState !== 'complete'){
       window.addEventListener('load', function(){
-        if(music.paused && !isMuted) startPlayback();
+        if(!isPlaying && !isMuted) playAudio(true);
       }, {once: true});
     }
     window.addEventListener('focus', function(){
-      if(music.paused && !isMuted) startPlayback();
+      if(!isPlaying && !isMuted) playAudio(false);
     });
     document.addEventListener('visibilitychange', function(){
-      if(!document.hidden && music.paused && !isMuted) startPlayback();
+      if(!document.hidden && !isPlaying && !isMuted) playAudio(false);
     });
 
     if(sndBtn){
@@ -970,15 +1000,17 @@
         e.preventDefault();
         if(isMuted){
           isMuted = false;
-          startPlayback();
+          playAudio(false);
           updateBtn();
-        } else if(music.paused){
-          startPlayback();
+        } else if(!isPlaying || music.paused){
+          // If unmuted but blocked by browser autoplay, single click directly starts playback!
+          playAudio(true);
           updateBtn();
         } else {
           isMuted = true;
-          thunder.pause();
-          music.pause();
+          isPlaying = false;
+          try { thunder.pause(); } catch(err){}
+          try { music.pause(); } catch(err){}
           updateBtn();
         }
       });
