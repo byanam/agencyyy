@@ -451,42 +451,41 @@
       return 0;
     }
 
-    function drawGlow(cv, I){
+    var thunderImgs = [];
+    copies.forEach(function(cp){
+      cp.querySelectorAll('img[data-k="8bc30"], img[data-k="de02e"]').forEach(function(im){
+        thunderImgs.push(im);
+      });
+    });
+
+    function applyCloudLighting(I, t){
+      if(I <= 0.002){
+        for(var j=0; j<thunderImgs.length; j++){
+          if(thunderImgs[j]._lit){
+            thunderImgs[j].style.filter = '';
+            thunderImgs[j]._lit = false;
+          }
+        }
+        return;
+      }
+      // Illumination is strictly confined INSIDE the clouds (no external sky bleed)
+      for(var j=0; j<thunderImgs.length; j++){
+        var im = thunderImgs[j];
+        var k = im.getAttribute('data-k');
+        var flicker = 0.9 + 0.1 * Math.sin(t * 34 + j * 2.3);
+        var cloudI = Math.min(1.0, I * (k === '8bc30' ? 1.0 : flicker));
+        var b = (1 + 2.8 * cloudI).toFixed(3);
+        var c = (1 + 0.48 * cloudI).toFixed(3);
+        var s = (1 - 0.28 * cloudI).toFixed(3);
+        im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ')';
+        im._lit = true;
+      }
+    }
+
+    function drawGlow(cv){
       var c = cv.getContext('2d');
       c.setTransform(1, 0, 0, 1, 0, 0);
       c.clearRect(0, 0, cv.width, cv.height);
-      if(I < 0.005) return;
-
-      var w = cv.width, h = cv.height;
-      c.save();
-
-      var g = c.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, 'rgba(235, 245, 255, ' + (0.9 * I) + ')');
-      g.addColorStop(0.35, 'rgba(215, 235, 255, ' + (0.75 * I) + ')');
-      g.addColorStop(0.7, 'rgba(165, 205, 255, ' + (0.45 * I) + ')');
-      g.addColorStop(1, 'rgba(130, 175, 255, 0)');
-      c.fillStyle = g;
-      c.fillRect(0, 0, w, h);
-
-      var cx1 = w * 0.36, cy1 = h * 0.28;
-      var r1 = c.createRadialGradient(cx1, cy1, 10, cx1, cy1, w * 0.52);
-      r1.addColorStop(0, 'rgba(255, 255, 255, ' + (1.0 * I) + ')');
-      r1.addColorStop(0.25, 'rgba(240, 248, 255, ' + (0.85 * I) + ')');
-      r1.addColorStop(0.55, 'rgba(185, 215, 255, ' + (0.5 * I) + ')');
-      r1.addColorStop(1, 'rgba(130, 170, 255, 0)');
-      c.fillStyle = r1;
-      c.fillRect(0, 0, w, h);
-
-      var cx2 = w * 0.72, cy2 = h * 0.32;
-      var r2 = c.createRadialGradient(cx2, cy2, 10, cx2, cy2, w * 0.44);
-      r2.addColorStop(0, 'rgba(255, 255, 255, ' + (0.9 * I) + ')');
-      r2.addColorStop(0.3, 'rgba(230, 242, 255, ' + (0.7 * I) + ')');
-      r2.addColorStop(0.6, 'rgba(175, 210, 255, ' + (0.35 * I) + ')');
-      r2.addColorStop(1, 'rgba(130, 170, 255, 0)');
-      c.fillStyle = r2;
-      c.fillRect(0, 0, w, h);
-
-      c.restore();
     }
 
     var last=performance.now();
@@ -499,7 +498,7 @@
       if(e >= 0 && e <= 4.2){
         thunderI = getThunderIntensity(e);
       }
-      var currentI = thunderI;
+      applyCloudLighting(thunderI, t);
 
       if(e >= 5.0){
         storm.rainStarted = true;
@@ -607,7 +606,7 @@
           }
         }
       });
-      gcvs.forEach(function(g){if(!g)return;var r=g.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;drawGlow(g,currentI);});
+      gcvs.forEach(function(g){if(!g)return;drawGlow(g);});
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -764,23 +763,25 @@
 
     function updateBtn(){
       if(!sndBtn) return;
-      if(isMuted){
-        sndBtn.innerHTML = svgCut + '<span class="sr-only">Play music and sound</span>';
-        sndBtn.classList.add('off');
-        sndBtn.setAttribute('title', 'Play music & sound');
-        sndBtn.setAttribute('aria-label', 'Play music and sound');
-      } else {
+      var playing = !music.paused && !isMuted;
+      if(playing){
         sndBtn.innerHTML = svgOn + '<span class="sr-only">Mute music and sound</span>';
         sndBtn.classList.remove('off');
         sndBtn.setAttribute('title', 'Mute music & sound');
         sndBtn.setAttribute('aria-label', 'Mute music and sound');
+      } else {
+        sndBtn.innerHTML = svgCut + '<span class="sr-only">Play music and sound</span>';
+        sndBtn.classList.add('off');
+        sndBtn.setAttribute('title', 'Play music & sound');
+        sndBtn.setAttribute('aria-label', 'Play music and sound');
       }
     }
 
-    var GESTURES = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'keydown'];
+    music.addEventListener('play', updateBtn);
+    music.addEventListener('pause', updateBtn);
 
-    function playSynced(){
-      if(isMuted) return;
+    function startPlayback(){
+      isMuted = false;
       try {
         thunder.currentTime = 0;
         music.currentTime = 0;
@@ -791,54 +792,56 @@
       if(pT && pT.catch) pT.catch(function(){});
       if(pM && pM.then){
         pM.then(function(){
-          started = true;
-          detachEvents();
+          detachGestures();
+          updateBtn();
         }).catch(function(){
-          // Autoplay blocked by browser policy on start/refresh;
-          // Listeners remain attached until the first user interaction.
+          updateBtn();
         });
       } else {
-        started = true;
-        detachEvents();
+        detachGestures();
+        updateBtn();
       }
     }
 
+    var GESTURES = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'keydown'];
     function onGesture(){
-      if(started) return;
-      playSynced();
+      if(!music.paused && !isMuted) return;
+      startPlayback();
     }
 
-    function attachEvents(){
+    function attachGestures(){
       GESTURES.forEach(function(ev){
         window.addEventListener(ev, onGesture, {passive: true});
       });
     }
 
-    function detachEvents(){
+    function detachGestures(){
       GESTURES.forEach(function(ev){
         window.removeEventListener(ev, onGesture);
       });
     }
 
-    attachEvents();
-    playSynced();
+    attachGestures();
+    startPlayback();
     if(document.readyState !== 'complete'){
-      window.addEventListener('load', playSynced, {once: true});
+      window.addEventListener('load', function(){
+        if(music.paused && !isMuted) startPlayback();
+      }, {once: true});
     }
 
     if(sndBtn){
       sndBtn.addEventListener('click', function(e){
         e.stopPropagation();
         e.preventDefault();
-        isMuted = !isMuted;
-        if(isMuted){
+        // If music is not playing right now, first click immediately starts it!
+        if(music.paused || isMuted){
+          startPlayback();
+        } else {
+          isMuted = true;
           thunder.pause();
           music.pause();
-        } else {
-          started = true;
-          playSynced();
+          updateBtn();
         }
-        updateBtn();
       });
     }
   })();
