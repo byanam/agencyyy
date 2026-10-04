@@ -15,6 +15,8 @@
 <link rel="preload" as="image" href="assets/0d995.webp">
 <link rel="preload" as="image" href="assets/a59cf.webp">
 <link rel="preload" as="image" href="assets/a4a75.webp">
+<link rel="preload" as="fetch" href="assets/classical.mp3" crossorigin>
+<link rel="preload" as="fetch" href="assets/thunder.mp3" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@300&display=swap" rel="stylesheet">
@@ -695,40 +697,52 @@
       }
     }
 
-    function playThunder(){
+    var GESTURES = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'keydown'];
+
+    function playSynced(){
       if(isMuted) return;
-      thunder.currentTime = 0;
-      var p = thunder.play();
-      if(p && p.catch) p.catch(function(){});
-    }
-
-    function startAudio(){
-      if(started) return;
-      started = true;
-      if(!isMuted){
-        playThunder();
-        var p = music.play();
-        if(p && p.catch) p.catch(function(){});
-      }
-      ['click','keydown','touchstart','scroll','wheel'].forEach(function(ev){
-        removeEventListener(ev, startAudio);
-      });
-    }
-
-    var p0 = thunder.play();
-    if(p0 && p0.then){
-      p0.then(function(){
-        started = true;
-        music.play().catch(function(){});
-      }).catch(function(){
-        ['click','keydown','touchstart','scroll','wheel'].forEach(function(ev){
-          addEventListener(ev, startAudio, {passive:true, once:true});
+      try {
+        thunder.currentTime = 0;
+        music.currentTime = 0;
+      } catch(err){}
+      var pT = thunder.play();
+      var pM = music.play();
+      if(pT && pT.catch) pT.catch(function(){});
+      if(pM && pM.then){
+        pM.then(function(){
+          started = true;
+          detachEvents();
+        }).catch(function(){
+          // Autoplay blocked by browser policy on start/refresh;
+          // Listeners remain attached until the first user interaction.
         });
+      } else {
+        started = true;
+        detachEvents();
+      }
+    }
+
+    function onGesture(){
+      if(started) return;
+      playSynced();
+    }
+
+    function attachEvents(){
+      GESTURES.forEach(function(ev){
+        window.addEventListener(ev, onGesture, {passive: true});
       });
-    } else {
-      ['click','keydown','touchstart','scroll','wheel'].forEach(function(ev){
-        addEventListener(ev, startAudio, {passive:true, once:true});
+    }
+
+    function detachEvents(){
+      GESTURES.forEach(function(ev){
+        window.removeEventListener(ev, onGesture);
       });
+    }
+
+    attachEvents();
+    playSynced();
+    if(document.readyState !== 'complete'){
+      window.addEventListener('load', playSynced, {once: true});
     }
 
     if(sndBtn){
@@ -741,7 +755,7 @@
           music.pause();
         } else {
           started = true;
-          music.play().catch(function(){});
+          playSynced();
         }
         updateBtn();
       });
