@@ -1,0 +1,18 @@
+.cloud-transition-divider {
+  width: 100%;
+  position: relative;
+  margin-top: clamp(-40px, -5vw, -80px);
+  margin-bottom: clamp(-40px, -5vw, -80px);
+  z-index: 18;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+}
+
+.cloud-transition-img {
+  width: 125%;
+  max-width: 1580px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.5));
+}
