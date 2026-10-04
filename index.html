@@ -763,25 +763,21 @@
 
     function updateBtn(){
       if(!sndBtn) return;
-      var playing = !music.paused && !isMuted;
-      if(playing){
-        sndBtn.innerHTML = svgOn + '<span class="sr-only">Mute music and sound</span>';
-        sndBtn.classList.remove('off');
-        sndBtn.setAttribute('title', 'Mute music & sound');
-        sndBtn.setAttribute('aria-label', 'Mute music and sound');
-      } else {
+      if(isMuted){
         sndBtn.innerHTML = svgCut + '<span class="sr-only">Play music and sound</span>';
         sndBtn.classList.add('off');
         sndBtn.setAttribute('title', 'Play music & sound');
         sndBtn.setAttribute('aria-label', 'Play music and sound');
+      } else {
+        sndBtn.innerHTML = svgOn + '<span class="sr-only">Mute music and sound</span>';
+        sndBtn.classList.remove('off');
+        sndBtn.setAttribute('title', 'Mute music & sound');
+        sndBtn.setAttribute('aria-label', 'Mute music and sound');
       }
     }
 
-    music.addEventListener('play', updateBtn);
-    music.addEventListener('pause', updateBtn);
-
     function startPlayback(){
-      isMuted = false;
+      if(isMuted) return;
       try {
         thunder.currentTime = 0;
         music.currentTime = 0;
@@ -795,7 +791,7 @@
           detachGestures();
           updateBtn();
         }).catch(function(){
-          updateBtn();
+          // Autoplay blocked pending gesture; keeps isMuted = false and unmuted icon active
         });
       } else {
         detachGestures();
@@ -803,9 +799,9 @@
       }
     }
 
-    var GESTURES = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'keydown'];
+    var GESTURES = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'keydown', 'wheel', 'scroll', 'pointermove'];
     function onGesture(){
-      if(!music.paused && !isMuted) return;
+      if(!music.paused || isMuted) return;
       startPlayback();
     }
 
@@ -828,14 +824,24 @@
         if(music.paused && !isMuted) startPlayback();
       }, {once: true});
     }
+    window.addEventListener('focus', function(){
+      if(music.paused && !isMuted) startPlayback();
+    });
+    document.addEventListener('visibilitychange', function(){
+      if(!document.hidden && music.paused && !isMuted) startPlayback();
+    });
 
     if(sndBtn){
       sndBtn.addEventListener('click', function(e){
         e.stopPropagation();
         e.preventDefault();
-        // If music is not playing right now, first click immediately starts it!
-        if(music.paused || isMuted){
+        if(isMuted){
+          isMuted = false;
           startPlayback();
+          updateBtn();
+        } else if(music.paused){
+          startPlayback();
+          updateBtn();
         } else {
           isMuted = true;
           thunder.pause();
