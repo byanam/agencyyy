@@ -105,15 +105,27 @@
       overflow: hidden;
     }
 
+    /* Screen-reader utility for accessibility & SEO */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     /* =========================================================
        MAIN GRADIENT CARD (Figma "Rectangle 9", 1205px, radius 39px)
        ========================================================= */
     .figma-main-card {
-      width: min(100%, var(--max-card-width));
+      width: min(94.14vw, 1205px);
       margin: 0 auto;
       border-radius: var(--card-radius);
       position: relative;
-      z-index: 10;
       overflow: visible;
       background: linear-gradient(
         180deg,
@@ -137,99 +149,121 @@
       border-radius: inherit;
       pointer-events: none;
       opacity: 0.12;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
-      background-size: 8px 8px;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 0);
+      background-size: 6px 6px;
       mix-blend-mode: overlay;
       z-index: 2;
     }
 
     /* =========================================================
-       SECTION 1: HERO SECTION
+       SECTION 1: HERO SECTION (Exact Figma 1205 x 1450 coordinate box)
        ========================================================= */
     .figma-hero-section {
-      width: 100%;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: clamp(20px, 4vw, 60px);
-      padding-bottom: clamp(60px, 8vw, 120px);
+      width: 100%;
+      aspect-ratio: 1205 / 1450;
+      overflow: visible;
       z-index: 5;
     }
 
-    /* Top Storm Clouds Cutout */
-    .hero-top-clouds-wrap {
+    /* Base Storm Clouds (Figma Node 91:4):
+       Canvas: x=-313px, y=-491px, w=2241px, h=856px
+       Relative to Rect 9 (w=1205px, h=1450px): left=-29.13%, top=-33.86%, w=185.98%
+       Sits BEHIND text and rain canvas */
+    .hero-base-clouds-wrap {
       position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: max(100%, 1440px);
+      left: -29.13%;
+      top: -33.86%;
+      width: 185.98%;
       height: auto;
       pointer-events: none;
-      z-index: 30; /* above rain so rain emerges from inside */
-      overflow: visible;
+      z-index: 3;
+    }
+
+    .hero-base-clouds-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+      transition: filter 0.05s ease-out;
+    }
+
+    /* "legendary Agency" Main Headline (Figma Node 23:34):
+       Canvas: x=150px, y=199px, w=979px, h=486px
+       Relative to Rect 9: left=9.29% (centered), top=13.72%, w=81.24%
+       Layered between base clouds (z:3) and top clouds (z:20) */
+    .hero-headline-wrap {
+      position: absolute;
+      left: 9.29%;
+      top: 13.72%;
+      width: 81.24%;
+      max-width: 979px;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-headline {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      line-height: 0;
+    }
+
+    .hero-headline-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Hero Rain Simulation Canvas (z-index: 15):
+       Positioned directly over the hero section; rain emerges from inside the clouds */
+    .hero-rain-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    /* Top Storm Clouds (Figma Node 91:25):
+       Canvas: x=-289px, y=-400px, w=1891px, h=701px
+       Relative to Rect 9: left=-27.14%, top=-27.59%, w=156.93%
+       Sits in FRONT of text and rain (z:20), creating deep 3D layering */
+    .hero-top-clouds-wrap {
+      position: absolute;
+      left: -27.14%;
+      top: -27.59%;
+      width: 156.93%;
+      height: auto;
+      pointer-events: none;
+      z-index: 20;
     }
 
     .hero-top-clouds-img {
       width: 100%;
       height: auto;
       display: block;
-      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.65));
+      pointer-events: none;
       transition: filter 0.05s ease-out;
     }
 
-    /* "legendary Agency" Main Headline */
-    .hero-headline-wrap {
-      width: 100%;
-      max-width: 1000px;
-      margin: clamp(40px, 6vw, 90px) auto 0;
-      text-align: center;
-      position: relative;
-      z-index: 12;
-      padding: 0 20px;
-    }
-
-    .hero-headline {
-      font-family: var(--font-serif);
-      font-size: clamp(68px, 16vw, 220px);
-      font-weight: 400;
-      line-height: 0.72;
-      letter-spacing: -0.03em;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-    }
-
-    .hero-word-legendary {
-      color: #ffffff;
-      /* Figma linear gradient: #ffffff up to 65%, #ffd100 at 100% */
-      background: linear-gradient(180deg, #ffffff 0%, #ffffff 65%, #ffe666 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.35));
-      text-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
-    }
-
-    .hero-word-agency {
-      color: #ffd100;
-      background: linear-gradient(180deg, #fff080 0%, #ffd100 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.35));
-      margin-top: -0.05em;
-    }
-
-    /* Umbrella Stage (Figma Node 23:9, 1148x980) */
+    /* Yellow Umbrella (Figma Node 23:9):
+       Canvas: x=66px, y=589px, w=1148px, h=980px
+       Relative to Rect 9: left=2.32%, top=40.62%, w=95.27%
+       Sits directly beneath "Agency", receives interactive rainfall & ripples */
     .hero-umbrella-container {
-      width: min(94%, 960px);
-      margin: clamp(-30px, -4vw, -70px) auto 0;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 15;
+      position: absolute;
+      left: 2.32%;
+      top: 40.62%;
+      width: 95.27%;
+      max-width: 1148px;
+      z-index: 25;
+      pointer-events: auto;
     }
 
     .hero-umbrella-img {
@@ -245,52 +279,38 @@
       transform: scale(1.015) rotate(0.4deg);
     }
 
-    /* Sub-Blocks under Umbrella (Group 11 & Group 12) */
-    .hero-bottom-blocks {
-      width: min(92%, 1100px);
-      margin: clamp(20px, 3vw, 40px) auto 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: clamp(30px, 5vw, 70px);
-      position: relative;
-      z-index: 16;
+    /* Sub-Blocks under Umbrella (Figma Groups 11 & 12 at y=1079px / top=74.41%):
+       Flank the central umbrella pole */
+    .hero-subblocks-container {
+      position: absolute;
+      left: 0;
+      top: 74.41%;
+      width: 100%;
+      height: auto;
+      z-index: 26;
+      pointer-events: none;
     }
 
-    .hero-sub-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+    .hero-subblock-left {
+      position: absolute;
+      left: 3.73%;
+      top: 0;
+      width: 44.90%;
+      max-width: 541px;
     }
 
-    .hero-quote-heading {
-      font-family: var(--font-serif);
-      font-size: clamp(26px, 3.8vw, 56px);
-      font-weight: 400;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      color: var(--color-white);
-      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.35));
-      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
-      margin-bottom: clamp(16px, 2.5vw, 28px);
+    .hero-subblock-right {
+      position: absolute;
+      left: 52.53%;
+      top: 0;
+      width: 45.06%;
+      max-width: 543px;
     }
 
-    .hero-stats-lines {
-      font-family: var(--font-inter);
-      font-size: clamp(15px, 1.4vw, 20px);
-      font-weight: 300;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.92);
-      letter-spacing: 0.01em;
-    }
-
-    .hero-desc-copy {
-      font-family: var(--font-sans);
-      font-size: clamp(15px, 1.4vw, 20px);
-      font-weight: 400;
-      line-height: 1.45;
-      color: rgba(255, 255, 255, 0.92);
-      max-width: 440px;
+    .hero-subblock-img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     /* Cloud Transition Layer: Hero to Projects */
@@ -772,8 +792,6 @@
   <!-- Ambient Lightning Flash Layer -->
   <div class="lightning-ambient-flash" id="ambient-lightning"></div>
 
-  <!-- Full-Page Interactive Rain Simulation Canvas -->
-  <canvas id="rain-canvas"></canvas>
 
   <!-- SVG Filter Definitions for exact Figma Inner Shadows -->
   <svg width="0" height="0" style="position:absolute;visibility:hidden">
@@ -797,47 +815,76 @@
       <div class="figma-noise-overlay"></div>
 
       <!-- =========================================================
-           HERO SECTION
+           HERO SECTION (Exact 1:1 Figma Replication)
            ========================================================= -->
       <section class="figma-hero-section" id="hero">
-        <!-- Top Storm Clouds (Figma Node 91:25) -->
-        <div class="hero-top-clouds-wrap">
-          <img src="/images/figma/62_195_image_11_0.webp" alt="Storm Clouds Canopy" class="hero-top-clouds-img"
-            id="hero-top-clouds" fetchpriority="high" />
+        <!-- 1. Base Storm Clouds (Figma Node 91:4, sits behind headline & rain) -->
+        <div class="hero-base-clouds-wrap">
+          <img src="/images/figma/hero_base_clouds.webp"
+               alt="Storm Clouds Atmosphere"
+               class="hero-base-clouds-img"
+               id="hero-base-clouds"
+               width="2241"
+               height="856"
+               fetchpriority="high" />
         </div>
 
-        <!-- "legendary Agency" Main Headline -->
+        <!-- 2. "legendary Agency" Main Headline (Figma Node 23:34, Instrument Serif 300px + inner/drop shadows) -->
         <div class="hero-headline-wrap">
-          <h1 class="hero-headline">
-            <span class="hero-word-legendary">legendary</span>
-            <span class="hero-word-agency">Agency</span>
+          <h1 class="hero-headline" aria-label="legendary Agency">
+            <img src="/images/figma/hero_headline_text.webp"
+                 alt="legendary Agency"
+                 class="hero-headline-img"
+                 width="979"
+                 height="486"
+                 fetchpriority="high" />
+            <span class="sr-only">legendary Agency</span>
           </h1>
         </div>
 
-        <!-- Yellow Umbrella (Figma Node 23:9) -->
-        <div class="hero-umbrella-container" id="umbrella-wrap">
-          <img src="/images/figma/umbrella_2x.webp" alt="Yellow Umbrella" class="hero-umbrella-img"
-            id="hero-umbrella-img" width="1148" height="980" fetchpriority="high" />
+        <!-- 3. Storm Rain Simulation Canvas (z-index: 15, rain emerges from inside the clouds) -->
+        <canvas id="hero-rain-canvas" class="hero-rain-canvas"></canvas>
+
+        <!-- 4. Top Storm Clouds (Figma Node 91:25, foreground billows draped across text & rain) -->
+        <div class="hero-top-clouds-wrap">
+          <img src="/images/figma/hero_top_clouds.webp"
+               alt="Foreground Storm Clouds"
+               class="hero-top-clouds-img"
+               id="hero-top-clouds"
+               width="1891"
+               height="701"
+               fetchpriority="high" />
         </div>
 
-        <!-- Under Umbrella Content (Group 11 & Group 12) -->
-        <div class="hero-bottom-blocks">
-          <!-- Left Column (Group 11) -->
-          <div class="hero-sub-block">
-            <h2 class="hero-quote-heading">“First impressions are expensive to get wrong.”</h2>
-            <div class="hero-stats-lines">
-              <div>30 + Clients Served</div>
-              <div>10+ Businesses Scaled</div>
-              <div>4+ years of experience</div>
-            </div>
+        <!-- 5. Yellow Umbrella (Figma Node 23:9, 1148x980 directly beneath headline) -->
+        <div class="hero-umbrella-container" id="umbrella-wrap">
+          <img src="/images/figma/hero_umbrella.webp"
+               alt="Yellow Umbrella"
+               class="hero-umbrella-img"
+               id="hero-umbrella-img"
+               width="1148"
+               height="980"
+               fetchpriority="high" />
+        </div>
+
+        <!-- 6. Under Umbrella Content (Figma Groups 11 & 12 flanking the umbrella pole) -->
+        <div class="hero-subblocks-container">
+          <!-- Left Column (Group 11: Quote & Stats) -->
+          <div class="hero-subblock hero-subblock-left">
+            <img src="/images/figma/hero_left_subblock.webp"
+                 alt="“First impressions are expensive to get wrong.” — 30+ Clients Served, 10+ Businesses Scaled, 4+ years of experience"
+                 class="hero-subblock-img"
+                 width="541"
+                 height="273" />
           </div>
 
-          <!-- Right Column (Group 12) -->
-          <div class="hero-sub-block">
-            <h2 class="hero-quote-heading">Building high-impact digital experiences since 2022.</h2>
-            <p class="hero-desc-copy">
-              We are an independent studio in India, designing and developing websites for ambitious brands.
-            </p>
+          <!-- Right Column (Group 12: Heading & Studio Copy) -->
+          <div class="hero-subblock hero-subblock-right">
+            <img src="/images/figma/hero_right_subblock.webp"
+                 alt="Building high-impact digital experiences since 2022. We are an independent studio in India, designing and developing websites for ambitious brands."
+                 class="hero-subblock-img"
+                 width="543"
+                 height="286" />
           </div>
         </div>
       </section>
@@ -1016,16 +1063,18 @@
       'use strict';
 
       // -------------------------------------------------------------
-      // 1. Full-Page Storm Rain Simulation with Umbrella Barrier
+      // 1. Hero Storm Rain Simulation with Umbrella Barrier & Clouds
       // -------------------------------------------------------------
-      var canvas = document.getElementById('rain-canvas');
-      var ctx = canvas.getContext('2d');
-      var w = window.innerWidth;
-      var h = window.innerHeight;
+      var canvas = document.getElementById('hero-rain-canvas');
+      var heroSection = document.getElementById('hero');
+      var ctx = canvas ? canvas.getContext('2d') : null;
+      var w = 0;
+      var h = 0;
 
       function resizeCanvas() {
-        w = window.innerWidth;
-        h = window.innerHeight;
+        if (!canvas || !heroSection) return;
+        w = heroSection.clientWidth;
+        h = heroSection.clientHeight;
         canvas.width = w;
         canvas.height = h;
       }
@@ -1033,16 +1082,16 @@
       resizeCanvas();
 
       var drops = [];
-      var dropCount = Math.min(160, Math.floor(w * 0.12));
+      var dropCount = 130;
       var ripples = [];
       var splashes = [];
 
       for (var i = 0; i < dropCount; i++) {
         drops.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          speed: Math.random() * 9 + 14,
-          len: Math.random() * 18 + 14,
+          x: Math.random() * (w || 1200),
+          y: Math.random() * (h || 1450),
+          speed: Math.random() * 9 + 15,
+          len: Math.random() * 20 + 16,
           width: Math.random() * 0.8 + 0.8,
           alpha: Math.random() * 0.45 + 0.35
         });
@@ -1050,7 +1099,8 @@
 
       var umbrellaImg = document.getElementById('hero-umbrella-img');
       var lightningEl = document.getElementById('ambient-lightning');
-      var cloudsImg = document.getElementById('hero-top-clouds');
+      var topCloudsImg = document.getElementById('hero-top-clouds');
+      var baseCloudsImg = document.getElementById('hero-base-clouds');
 
       var lightningAlpha = 0;
       var lightningTarget = 0;
@@ -1077,24 +1127,31 @@
 
       function updateAndRenderRain() {
         requestAnimationFrame(updateAndRenderRain);
+        if (!ctx || !canvas) return;
         ctx.clearRect(0, 0, w, h);
 
         // Smooth lightning fade
         lightningAlpha += (lightningTarget - lightningAlpha) * 0.35;
         if (lightningAlpha < 0.01 && lightningTarget === 0) lightningAlpha = 0;
         if (lightningEl) lightningEl.style.opacity = lightningAlpha.toFixed(3);
-        if (cloudsImg) {
-          cloudsImg.style.filter = 'brightness(' + (1.0 + lightningAlpha * 1.2).toFixed(2) + ') drop-shadow(0 20px 40px rgba(0,0,0,0.65))';
+        if (topCloudsImg) {
+          topCloudsImg.style.filter = 'brightness(' + (1.0 + lightningAlpha * 1.3).toFixed(2) + ')';
+        }
+        if (baseCloudsImg) {
+          baseCloudsImg.style.filter = 'brightness(' + (1.0 + lightningAlpha * 1.15).toFixed(2) + ')';
         }
 
-        // Umbrella collision box in viewport coordinates
+        // Umbrella collision box relative to hero-rain-canvas
         var ubRect = umbrellaImg ? umbrellaImg.getBoundingClientRect() : null;
-        var hasUmbrella = ubRect && ubRect.bottom > 0 && ubRect.top < h;
+        var cvRect = canvas.getBoundingClientRect();
+        var hasUmbrella = ubRect && ubRect.bottom > cvRect.top && ubRect.top < cvRect.bottom;
         var ubCenterX = 0, ubHalfW = 0, ubTop = 0, ubHeight = 0;
         if (hasUmbrella) {
-          ubCenterX = ubRect.left + ubRect.width * 0.5;
+          var relLeft = ubRect.left - cvRect.left;
+          var relTop = ubRect.top - cvRect.top;
+          ubCenterX = relLeft + ubRect.width * 0.5;
           ubHalfW = ubRect.width * 0.48;
-          ubTop = ubRect.top;
+          ubTop = relTop;
           ubHeight = ubRect.height;
         }
 
@@ -1152,7 +1209,7 @@
                   x: drop.x,
                   y: canopyY,
                   r: 1.5,
-                  alpha: 0.8
+                  alpha: 0.85
                 });
               }
               // Spawn bouncing splash droplets
@@ -1167,15 +1224,16 @@
                   });
                 }
               }
-              // Reset drop above screen
-              drop.y = -drop.len - Math.random() * 40;
+              // Reset drop inside cloud bank
+              drop.y = Math.random() * (h * 0.15);
               drop.x = Math.random() * w;
               continue;
             }
           }
 
           if (drop.y > h + drop.len) {
-            drop.y = -drop.len - Math.random() * 40;
+            // Reset drop inside cloud bank at the top
+            drop.y = Math.random() * (h * 0.15);
             drop.x = Math.random() * w;
           }
 
