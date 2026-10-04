@@ -1,0 +1,20 @@
+[
+  {
+    "id": "saas",
+    "title": "SAAS Platforms & Cloud Infrastructure",
+    "category": "Enterprise Software",
+    "desc": "High-velocity web application design, design systems, and resilient frontend architecture for scalable cloud software."
+  },
+  {
+    "id": "b2b",
+    "title": "B2B Flagship Digital Experiences",
+    "category": "Corporate & Tech",
+    "desc": "Flagship digital brand touchpoints, conversion-engineered marketing sites, and high-impact visual storytelling."
+  },
+  {
+    "id": "ecom",
+    "title": "E-Commerce Luxury & High-Growth Retail",
+    "category": "Retail & Lifestyle",
+    "desc": "Next-generation DTC shopping platforms, headless storefronts, and immersive spatial micro-interactions."
+  }
+]
