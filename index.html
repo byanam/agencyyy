@@ -41,6 +41,7 @@
   .glowslot2 canvas{position:absolute;left:0;top:0;width:1280px;height:438px}
   .glowslot canvas{position:absolute;left:0;top:0;width:1280px;height:700px}
   .rainslot canvas{position:absolute;left:0;top:0;width:1280px;height:1750px}
+  .cld{will-change:transform}
   .stage .fold,.stage .fold *{pointer-events:auto}
   .fold,.flab{transform:rotate(var(--rot)) translateY(var(--ty,0px)) scale(var(--sc,1));transition:transform .5s cubic-bezier(.2,.9,.3,1.25),filter .4s ease}
   .fold{cursor:pointer;will-change:transform}
@@ -514,22 +515,46 @@
     requestAnimationFrame(frame);
   })();
 
-  /* ---------- CLOUD JIGGLE + TITLE REVEAL ---------- */
+  /* ---------- SILKY SMOOTH CLOUD PARALLAX & DRIFT (REDIS-STYLE) ---------- */
   (function fx(){
-    var cl=copies.map(function(cp){return cp.querySelectorAll('.cld');}),tl=copies.map(function(cp){return cp.querySelectorAll('.ttl');}),ST=[],last=performance.now(),ly=window.scrollY,v=0,n=cl[0].length;
-    for(var i=0;i<n;i++)ST.push({y:0,vy:0,k:50+((i*37)%55),c:4.5+((i*13)%5),a:.55+((i*29)%10)/10});
+    var cl=copies.map(function(cp){return cp.querySelectorAll('.cld');});
+    var tl=copies.map(function(cp){return cp.querySelectorAll('.ttl');});
+    var ST=[],last=performance.now(),ly=window.scrollY,smoothVel=0,n=cl[0].length;
+    for(var i=0;i<n;i++){
+      var el0=cl[0][i];
+      var baseTop=parseFloat(el0.style.top)||0;
+      var baseLeft=parseFloat(el0.style.left)||0;
+      var isLeft=baseLeft<400;
+      var speed=(isLeft?0.035:-0.028)*(1+((i%3)*0.22));
+      if(i%2===1)speed=-speed*0.8;
+      ST.push({
+        y:0,
+        baseTop:baseTop,
+        speed:speed,
+        inertia:isLeft?0.007:0.005,
+        freq:0.45+((i*19)%35)/100,
+        phase:(i*1.35)%6.28,
+        amp:3.5+(i%3)*1.5
+      });
+    }
     function frame(t){
       var dt=Math.min(.05,Math.max(.001,(t-last)/1000));last=t;
       var p=Math.floor(H*s),y=window.scrollY,dy=y-ly;ly=y;
       if(Math.abs(dy)>p/2)dy=0;
-      v+=((dy/s/dt)-v)*Math.min(1,dt*12);
+      smoothVel+=((dy/s/dt)-smoothVel)*Math.min(1,dt*3.5);
+      var vh=innerHeight/s;
+      var currentYNorm=(y/s)%H;
       for(var i=0;i<n;i++){
-        var S=ST[i],tg=Math.max(-60,Math.min(60,-v*.035*S.a));
-        S.vy+=(S.k*(tg-S.y)-S.c*S.vy)*dt;S.y+=S.vy*dt;
+        var S=ST[i];
+        var relY=((S.baseTop-currentYNorm+H*1.5)%H)-H/2;
+        var targetParallax=-Math.max(-36,Math.min(36,relY*S.speed));
+        var targetInertia=-Math.max(-14,Math.min(14,smoothVel*S.inertia));
+        var ambient=Math.sin((t/1000)*S.freq+S.phase)*S.amp;
+        var target=targetParallax+targetInertia+ambient;
+        S.y+=(target-S.y)*Math.min(1,dt*3.2);
         var tr='translateY('+S.y.toFixed(2)+'px)';
         for(var j=0;j<cl.length;j++)cl[j][i].style.transform=tr;
       }
-      var vh=innerHeight/s;
       for(var j=0;j<tl.length;j++){
         var rel=(y-j*p)/s;
         tl[j].forEach(function(el){
