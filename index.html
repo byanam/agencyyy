@@ -1,1334 +1,521 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>legendary Agency — Digital Products &amp; Scalable Web Platforms</title>
-  <meta name="description"
-    content="Building high-impact digital experiences and scalable web platforms for ambitious brands since 2022. Independent design and engineering studio." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://byanam.github.io/" />
-  <meta property="og:title" content="legendary Agency — High-Performance Digital Design &amp; Web Engineering" />
-  <meta property="og:description"
-    content="Building high-impact digital experiences and scalable web platforms for ambitious brands since 2022." />
-  <meta property="og:url" content="https://byanam.github.io/" />
-  <meta property="og:type" content="website" />
-  <link rel="icon" href="/favicon.ico?favicon.650258a0.ico" sizes="256x256" type="image/x-icon" />
-
-  <!-- Modular Design System Stylesheet -->
-  <link rel="stylesheet" href="/src/styles/main.css">
-
-  <!-- Google Fonts: Instrument Serif, Instrument Sans, Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
-
-  <style>
-    /* =========================================================
-       DESIGN SYSTEM TOKENS (FIGMA 1:1 REPLICATION)
-       ========================================================= */
-    :root {
-      --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-      --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-      --bg-page: #000000;
-      --color-white: #ffffff;
-      --color-gold-text: #ffd100;
-      --color-lime-text: #fffb35;
-      --color-purple-active: #5700b9;
-      --color-purple-card: rgba(43, 4, 77, 0.75);
-
-      --card-radius: 39px;
-      --max-card-width: 1205px;
-    }
-
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      background-color: var(--bg-page);
-      color: var(--color-white);
-      font-family: var(--font-sans);
-      overflow-x: hidden;
-    }
-
-    body {
-      background-color: var(--bg-page);
-      color: var(--color-white);
-      overflow-x: hidden;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      position: relative;
-    }
-
-    /* Ambient Lightning Flash Overlay across the entire page */
-    .lightning-ambient-flash {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.45) 0%, rgba(220, 235, 255, 0.25) 45%, rgba(255, 255, 255, 0) 80%);
-      pointer-events: none;
-      z-index: 100;
-      opacity: 0;
-      transition: opacity 0.05s ease-out;
-      mix-blend-mode: screen;
-    }
-
-    /* Full-screen Storm Rain Simulation Canvas */
-    #rain-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 25;
-      display: block;
-    }
-
-    /* Outer Stage Wrapper */
-    .figma-page-stage {
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      background-color: var(--bg-page);
-      overflow: hidden;
-    }
-
-    /* Screen-reader utility for accessibility & SEO */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* =========================================================
-       MAIN GRADIENT CARD (Figma "Rectangle 9", 1205px, radius 39px)
-       ========================================================= */
-    .figma-main-card {
-      width: min(94.14vw, 1205px);
-      margin: 0 auto;
-      border-radius: var(--card-radius);
-      position: relative;
-      overflow: visible;
-      background: linear-gradient(
-        180deg,
-        #1e148b 0%,
-        #1a0ac5 28.37%,
-        #1805e2 42.79%,
-        #1600ff 50.48%,
-        #4800ff 59.62%,
-        #6200ff 68.75%,
-        #4b00a7 78.37%,
-        #43018e 86.54%,
-        #3c0181 90.38%
-      );
-      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.85);
-    }
-
-    /* Subtle Film Grain Noise Texture (Figma monotone noise effect) */
-    .figma-noise-overlay {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      opacity: 0.12;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 0);
-      background-size: 6px 6px;
-      mix-blend-mode: overlay;
-      z-index: 2;
-    }
-
-    /* =========================================================
-       SECTION 1: HERO SECTION (Exact Figma 1205 x 1450 coordinate box)
-       ========================================================= */
-    .figma-hero-section {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1205 / 1450;
-      overflow: visible;
-      z-index: 5;
-    }
-
-    /* Base Storm Clouds (Figma Node 91:4):
-       Canvas: x=-313px, y=-491px, w=2241px, h=856px
-       Relative to Rect 9 (w=1205px, h=1450px): left=-29.13%, top=-33.86%, w=185.98%
-       Sits BEHIND text and rain canvas */
-    .hero-base-clouds-wrap {
-      position: absolute;
-      left: -29.13%;
-      top: -33.86%;
-      width: 185.98%;
-      height: auto;
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    .hero-base-clouds-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      pointer-events: none;
-      transition: filter 0.05s ease-out;
-    }
-
-    /* "legendary Agency" Main Headline (Figma Node 23:34):
-       Canvas: x=150px, y=199px, w=979px, h=486px
-       Relative to Rect 9: left=9.29% (centered), top=13.72%, w=81.24%
-       Layered between base clouds (z:3) and top clouds (z:20) */
-    .hero-headline-wrap {
-      position: absolute;
-      left: 9.29%;
-      top: 13.72%;
-      width: 81.24%;
-      max-width: 979px;
-      z-index: 10;
-      pointer-events: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .hero-headline {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      line-height: 0;
-    }
-
-    .hero-headline-img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Hero Rain Simulation Canvas (z-index: 15):
-       Positioned directly over the hero section; rain emerges from inside the clouds */
-    .hero-rain-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 15;
-    }
-
-    /* Top Storm Clouds (Figma Node 91:25):
-       Canvas: x=-289px, y=-400px, w=1891px, h=701px
-       Relative to Rect 9: left=-27.14%, top=-27.59%, w=156.93%
-       Sits in FRONT of text and rain (z:20), creating deep 3D layering */
-    .hero-top-clouds-wrap {
-      position: absolute;
-      left: -27.14%;
-      top: -27.59%;
-      width: 156.93%;
-      height: auto;
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    .hero-top-clouds-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      pointer-events: none;
-      transition: filter 0.05s ease-out;
-    }
-
-    /* Yellow Umbrella (Figma Node 23:9):
-       Canvas: x=66px, y=589px, w=1148px, h=980px
-       Relative to Rect 9: left=2.32%, top=40.62%, w=95.27%
-       Sits directly beneath "Agency", receives interactive rainfall & ripples */
-    .hero-umbrella-container {
-      position: absolute;
-      left: 2.32%;
-      top: 40.62%;
-      width: 95.27%;
-      max-width: 1148px;
-      z-index: 25;
-      pointer-events: auto;
-    }
-
-    .hero-umbrella-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.55));
-      transition: transform 0.4s ease-out;
-      will-change: transform;
-    }
-
-    .hero-umbrella-container:hover .hero-umbrella-img {
-      transform: scale(1.015) rotate(0.4deg);
-    }
-
-    /* Sub-Blocks under Umbrella (Figma Groups 11 & 12 at y=1079px / top=74.41%):
-       Flank the central umbrella pole */
-    .hero-subblocks-container {
-      position: absolute;
-      left: 0;
-      top: 74.41%;
-      width: 100%;
-      height: auto;
-      z-index: 26;
-      pointer-events: none;
-    }
-
-    .hero-subblock-left {
-      position: absolute;
-      left: 3.73%;
-      top: 0;
-      width: 44.90%;
-      max-width: 541px;
-    }
-
-    .hero-subblock-right {
-      position: absolute;
-      left: 52.53%;
-      top: 0;
-      width: 45.06%;
-      max-width: 543px;
-    }
-
-    .hero-subblock-img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Cloud Transition Layer: Hero to Projects */
-    .cloud-transition-divider {
-      width: 100%;
-      position: relative;
-      margin-top: clamp(-40px, -5vw, -80px);
-      margin-bottom: clamp(-40px, -5vw, -80px);
-      z-index: 18;
-      pointer-events: none;
-      display: flex;
-      justify-content: center;
-    }
-
-    .cloud-transition-img {
-      width: 125%;
-      max-width: 1580px;
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.5));
-    }
-
-    /* =========================================================
-       SECTION 2: PROJECTS SECTION (3D Glitter Folders)
-       ========================================================= */
-    .figma-projects-section {
-      width: 100%;
-      position: relative;
-      padding: clamp(60px, 8vw, 120px) clamp(20px, 4vw, 60px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 20;
-    }
-
-    .section-title-serif {
-      font-family: var(--font-serif);
-      font-size: clamp(56px, 12vw, 175px);
-      font-weight: 400;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      color: var(--color-white);
-      text-align: center;
-      margin-bottom: clamp(40px, 6vw, 90px);
-      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
-      text-shadow: -1px 4px 0 rgba(0, 0, 0, 0.6);
-      user-select: none;
-    }
-
-    /* Folders Trio Stage (Figma Node 31:146) */
-    .folders-stage-container {
-      width: min(100%, 1050px);
-      min-height: clamp(520px, 60vw, 880px);
-      position: relative;
-      margin: 0 auto;
-      perspective: 1200px;
-    }
-
-    /* Individual Floating Interactive Folder Cards */
-    .figma-folder-item {
-      position: absolute;
-      width: clamp(260px, 52vw, 620px);
-      cursor: pointer;
-      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s ease;
-      filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.55));
-    }
-
-    .figma-folder-item:hover {
-      filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.75)) brightness(1.06);
-      z-index: 35 !important;
-    }
-
-    /* SAAS Folder: Top Right */
-    .folder-saas {
-      top: 0;
-      right: clamp(20px, 4vw, 60px);
-      transform: rotate(3.2deg);
-      z-index: 22;
-    }
-
-    .folder-saas:hover {
-      transform: rotate(0deg) scale(1.04) translateY(-12px);
-    }
-
-    /* B2B Folder: Center Left */
-    .folder-b2b {
-      top: clamp(140px, 18vw, 240px);
-      left: clamp(10px, 3vw, 40px);
-      transform: rotate(-3.8deg);
-      z-index: 23;
-    }
-
-    .folder-b2b:hover {
-      transform: rotate(0deg) scale(1.04) translateY(-12px);
-    }
-
-    /* E-COM Folder: Bottom Right */
-    .folder-ecom {
-      bottom: 0;
-      right: clamp(10px, 3vw, 50px);
-      transform: rotate(2.4deg);
-      z-index: 24;
-    }
-
-    .folder-ecom:hover {
-      transform: rotate(0deg) scale(1.04) translateY(-12px);
-    }
-
-    .folder-render-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 20px;
-    }
-
-    /* =========================================================
-       SECTION 3: SERVICES & PROCESS (Figma Node 23:36)
-       ========================================================= */
-    .figma-services-section {
-      width: 100%;
-      position: relative;
-      padding: clamp(60px, 8vw, 130px) clamp(20px, 4vw, 50px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 22;
-    }
-
-    /* Interactive Services Card (Figma Node 23:33) */
-    .services-interactive-card {
-      width: min(100%, 1020px);
-      background: var(--color-purple-card);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 36px;
-      padding: clamp(20px, 3vw, 36px);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* Service List Row */
-    .service-row-item {
-      width: 100%;
-      min-height: clamp(68px, 8vw, 98px);
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 clamp(20px, 3.5vw, 44px);
-      cursor: pointer;
-      background: transparent;
-      border: 1px solid transparent;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .service-row-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    /* Active Highlighted Row (Figma "Rectangle 11", #5700b9) */
-    .service-row-item.is-active {
-      background: var(--color-purple-active);
-      box-shadow: 0 10px 30px rgba(87, 0, 185, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .service-row-title {
-      font-family: var(--font-sans);
-      font-size: clamp(22px, 3vw, 38px);
-      font-weight: 500;
-      color: var(--color-white);
-      letter-spacing: -0.02em;
-      flex-shrink: 0;
-    }
-
-    .service-row-desc {
-      font-family: var(--font-sans);
-      font-size: clamp(13px, 1.3vw, 18px);
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.88);
-      max-width: clamp(240px, 45vw, 520px);
-      text-align: right;
-      line-height: 1.35;
-      opacity: 0;
-      transform: translateX(12px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-    }
-
-    .service-row-item.is-active .service-row-desc {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* =========================================================
-       SECTION 4: CONTACT US (Figma Node 85:255)
-       ========================================================= */
-    .figma-contact-stage {
-      width: 100%;
-      background: #000000;
-      position: relative;
-      z-index: 15;
-      padding: clamp(70px, 9vw, 130px) clamp(20px, 5vw, 60px) clamp(80px, 10vw, 140px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .contact-inner-container {
-      width: min(100%, 1160px);
-      display: flex;
-      flex-direction: column;
-      gap: clamp(40px, 6vw, 70px);
-      position: relative;
-      z-index: 10;
-    }
-
-    /* Header Row: "Contact Us" + "Get in touch" Button */
-    .contact-header-row {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .contact-main-heading {
-      font-family: var(--font-serif);
-      font-size: clamp(52px, 10vw, 150px);
-      font-weight: 400;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      color: var(--color-white);
-      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
-    }
-
-    /* Pill Button (Figma "Rectangle 10", 169x41, radius 20.5) */
-    .contact-pill-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 28px;
-      height: 44px;
-      border-radius: 9999px;
-      border: 2px solid #ffffff;
-      background: transparent;
-      color: #ffffff;
-      font-family: var(--font-sans);
-      font-size: 16px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .contact-pill-btn:hover {
-      background: #ffffff;
-      color: #000000;
-      box-shadow: 0 0 24px rgba(255, 255, 255, 0.5);
-      transform: translateY(-2px);
-    }
-
-    /* Headline Block (Figma Node 65:202) */
-    .contact-headline-block {
-      max-width: 900px;
-    }
-
-    .contact-hero-quote {
-      font-family: var(--font-sans);
-      font-size: clamp(30px, 5.2vw, 64px);
-      font-weight: 400;
-      line-height: 1.15;
-      letter-spacing: -0.05em;
-    }
-
-    .quote-lime-part {
-      /* Figma Linear Gradient: #fffb35 to #999999 */
-      background: linear-gradient(180deg, #fffb35 0%, #d4e157 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline;
-    }
-
-    .quote-white-part {
-      background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline;
-    }
-
-    /* 4-Column Contact Details Grid */
-    .contact-details-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(24px, 4vw, 48px);
-      margin-top: clamp(20px, 3vw, 40px);
-      padding-top: clamp(30px, 4vw, 50px);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .contact-col-label {
-      font-family: var(--font-sans);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      color: #71717a;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    .contact-col-content {
-      font-family: var(--font-sans);
-      font-size: clamp(15px, 1.4vw, 18px);
-      line-height: 1.55;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .contact-col-content a {
-      color: #ffffff;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .contact-col-content a:hover {
-      color: var(--color-lime-text);
-    }
-
-    /* =========================================================
-       SECTION 5: FOOTER CLOUDS & SEAMLESS LOOP ANCHOR
-       ========================================================= */
-    .figma-footer-clouds-wrap {
-      width: 100%;
-      position: relative;
-      margin-top: clamp(-30px, -4vw, -60px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .footer-clouds-img {
-      width: max(100%, 1440px);
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 -15px 35px rgba(0, 0, 0, 0.7));
-      transition: transform 0.4s ease;
-    }
-
-    .figma-footer-clouds-wrap:hover .footer-clouds-img {
-      transform: scale(1.02);
-    }
-
-    .loop-prompt-hint {
-      position: absolute;
-      bottom: 24px;
-      font-family: var(--font-sans);
-      font-size: 13px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.5);
-      background: rgba(0, 0, 0, 0.45);
-      padding: 6px 16px;
-      border-radius: 9999px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      pointer-events: none;
-    }
-
-    /* Project Detail Modal */
-    .project-modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.82);
-      backdrop-filter: blur(16px);
-      z-index: 120;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      padding: 24px;
-    }
-
-    .project-modal-backdrop.is-open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .project-modal-card {
-      background: #141419;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 28px;
-      width: min(100%, 680px);
-      padding: clamp(24px, 4vw, 44px);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
-      transform: translateY(20px);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-    }
-
-    .project-modal-backdrop.is-open .project-modal-card {
-      transform: translateY(0);
-    }
-
-    .modal-close-btn {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: #ffffff;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    /* Responsive Queries */
-    @media (max-width: 900px) {
-      .hero-bottom-blocks {
-        grid-template-columns: 1fr;
-        gap: 36px;
-      }
-
-      .contact-details-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .service-row-item {
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 8px;
-        padding: 18px 24px;
-        min-height: auto;
-      }
-
-      .service-row-desc {
-        text-align: left;
-        max-width: 100%;
-      }
-    }
-
-    @media (max-width: 600px) {
-      :root {
-        --card-radius: 24px;
-      }
-
-      .contact-details-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .contact-header-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legendary Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --P:"https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc";
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#000;overflow-x:hidden}
+  #wrap{position:relative;width:100%;overflow:hidden;background:#000}
+  .stage{position:absolute;left:0;top:0;width:1280px;height:5218px;background:#000;overflow:hidden;transform-origin:0 0}
+  .stage *{position:absolute}
+  .stage span,.stage br{position:static}
+  .stage img{opacity:0;transition:opacity .4s}
+  .stage img.on{opacity:1}
+  .stage img{max-width:none;pointer-events:none;display:block}
+  .cover{inset:0;width:100%;height:100%;object-fit:cover}
+  .rb{display:flex;align-items:center;justify-content:center}
+  .r{position:relative !important;flex:none}
+  .r > img, .r > p{position:absolute}
+  .serif{font-family:'Instrument Serif',serif;font-weight:400;font-style:normal;line-height:1}
+  .sans{font-family:'Instrument Sans',sans-serif;font-variation-settings:"wdth" 100;line-height:1}
+  .h200{font-size:200px;letter-spacing:-6px;text-align:center;width:1216px;transform:translateX(-50%)}
+  .shA{filter:url(#isA)}
+  .shB{filter:url(#isB) drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+  .shC{filter:url(#isC) drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+  .rt{transform:translateX(-100%);text-align:right;font-size:20px;letter-spacing:-.6px;white-space:normal}
+  .lab{color:#646464;font-weight:600}
+  .val{color:#fff;font-weight:400}
+  .folder{font-size:200px;letter-spacing:-6px;color:#3994c4;text-align:center;width:589px;position:relative !important}
+  .svc{font-size:64px;letter-spacing:-1.92px;color:#fff;font-weight:600;width:757px;white-space:nowrap}
+  .grad{background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+
+  .stage,.stage *{pointer-events:none}
+  .glowslot2 canvas{position:absolute;left:0;top:0;width:1280px;height:438px}
+  .glowslot canvas{position:absolute;left:0;top:0;width:1280px;height:700px}
+  .rainslot canvas{position:absolute;left:0;top:0;width:1280px;height:1750px}
+  .stage .fold,.stage .fold *{pointer-events:auto}
+  .fold,.flab{transform:rotate(var(--rot)) translateY(var(--ty,0px)) scale(var(--sc,1));transition:transform .5s cubic-bezier(.2,.9,.3,1.25),filter .4s ease}
+  .fold{cursor:pointer;will-change:transform}
+  .fold.hov{--ty:-28px;--sc:1.07;filter:drop-shadow(0 34px 38px rgba(0,0,40,.55)) drop-shadow(0 0 28px rgba(120,200,255,.55)) brightness(1.1) saturate(1.15)}
+  .flab .folder{transition:color .35s ease,text-shadow .35s ease}
+  .flab.hov{--ty:-44px;--sc:1.12}
+  .flab.hov .folder{color:#b9e6ff;text-shadow:0 0 30px rgba(150,220,255,.9),0 8px 20px rgba(0,0,60,.4)}
+
+  .stage .srow{pointer-events:auto}
+  .svcbar,.svcdesc{transition:transform .55s cubic-bezier(.3,.9,.3,1)}
+  .svcdesc{transition:transform .55s cubic-bezier(.3,.9,.3,1),opacity .18s ease}
+  .svcdesc.out{opacity:0}
+  .svct{transition:transform .45s cubic-bezier(.3,.9,.3,1)}
+  .svct.act{transform:translateX(18px);opacity:1}
+
+  #nav{position:fixed;left:50%;top:18px;z-index:50;transform-origin:50% 0;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:7px 8px 7px 14px;border-radius:40px;
+    background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.07));backdrop-filter:blur(16px) saturate(1.6);-webkit-backdrop-filter:blur(16px) saturate(1.6);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 -2px 4px rgba(255,255,255,.35),0 14px 40px rgba(10,0,70,.35);font-family:'Instrument Sans',sans-serif;white-space:nowrap}
+  #nav a{color:#fff;text-decoration:none;font-size:20px;letter-spacing:-.6px;font-weight:500;padding:7px 16px;border-radius:30px;transition:background .25s ease,transform .25s ease;cursor:pointer}
+  #nav a:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
+  #nav a.cta{border:2px solid #fff;padding:5px 18px;margin-left:6px;font-weight:400}
+  #nav a.cta:hover{background:#fff;color:#2a0a9a}
+  #nav a.on{background:rgba(255,255,255,.26)}
+</style>
 </head>
-
 <body>
-  <!-- Ambient Lightning Flash Layer -->
-  <div class="lightning-ambient-flash" id="ambient-lightning"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<filter id="isA" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
+<feComponentTransfer in="SourceAlpha" result="inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
+<feOffset in="inv" dx="-2" dy="2" result="off"/>
+<feComposite in="off" in2="SourceAlpha" operator="in" result="inside"/>
+<feColorMatrix in="inside" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0" result="sh"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge>
+</filter>
+<filter id="isB" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
+<feComponentTransfer in="SourceAlpha" result="inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
+<feOffset in="inv" dx="-1" dy="4" result="off"/>
+<feComposite in="off" in2="SourceAlpha" operator="in" result="inside"/>
+<feColorMatrix in="inside" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0" result="sh"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge>
+</filter>
+<filter id="isC" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
+<feComponentTransfer in="SourceAlpha" result="inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
+<feOffset in="inv" dx="1" dy="1" result="off"/>
+<feComposite in="off" in2="SourceAlpha" operator="in" result="inside"/>
+<feColorMatrix in="inside" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0" result="sh"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge>
+</filter>
+<filter id="isD" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
+<feComponentTransfer in="SourceAlpha" result="inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
+<feOffset in="inv" dx="3" dy="4" result="off"/>
+<feComposite in="off" in2="SourceAlpha" operator="in" result="inside"/>
+<feColorMatrix in="inside" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.61 0" result="sh"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge>
+</filter>
+<filter id="nz6" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="1.0" numOctaves="1" seed="4" result="t"/>
+<feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.75 -0.22" result="n"/>
+<feComposite in="n" in2="SourceAlpha" operator="in" result="m"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="m"/></feMerge>
+</filter>
+<filter id="nz2" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="1" seed="9" result="t"/>
+<feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.75 -0.22" result="n"/>
+<feComposite in="n" in2="SourceAlpha" operator="in" result="m"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="m"/></feMerge>
+</filter>
+</defs></svg>
+<div id="wrap"><div id="stage" class="stage">
 
+  <!-- purple gradient panel -->
+  <div style="left:38px;top:0;width:1205px;height:4265px;border-radius:39px;background:linear-gradient(180deg,rgb(30,20,139) 0%,rgb(26,10,197) 28.365%,rgb(24,5,226) 42.788%,rgb(22,0,255) 50.481%,rgb(72,0,255) 59.615%,rgb(98,0,255) 68.75%,rgb(75,0,167) 78.365%,rgb(67,1,142) 86.538%,rgb(60,1,129) 90.385%)"></div>
+  <div class="pnoise" style="left:38px;top:0;width:1205px;height:4265px;border-radius:39px;background-size:307px 307px;image-rendering:pixelated"></div>
 
-  <!-- SVG Filter Definitions for exact Figma Inner Shadows -->
-  <svg width="0" height="0" style="position:absolute;visibility:hidden">
-    <defs>
-      <filter id="figma-inner-shadow-headline" x="-20%" y="-20%" width="140%" height="140%">
-        <feOffset dx="3" dy="4" />
-        <feGaussianBlur stdDeviation="0" result="offset-blur" />
-        <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
-        <feFlood flood-color="rgba(0, 0, 0, 0.61)" result="color" />
-        <feComposite operator="in" in="color" in2="inverse" result="shadow" />
-        <feComposite operator="over" in="shadow" in2="SourceGraphic" />
-      </filter>
-    </defs>
-  </svg>
+  <!-- footer clouds -->
+  <div class="rb" style="left:298px;top:4888px;width:849px;height:369px">
+    <div class="r" style="transform:rotate(90deg);width:369px;height:849px"><img class="cover" style="object-fit:fill" data-k="8bc30" alt=""></div>
+  </div>
+  <div class="rb" style="left:410.8px;top:4816px;width:1191.204px;height:700.88px">
+    <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover" data-k="de02e" alt=""></div>
+  </div>
+  <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt=""></div>
 
-  <!-- Outer Page Stage -->
-  <div class="figma-page-stage" id="scroll-stage">
+  <div class="glowslot2" style="left:0;top:4780px;width:1280px;height:438px;mix-blend-mode:screen"></div>
 
-    <!-- Figma Main Card ("Rectangle 9", 1205px wide, radius 39px) -->
-    <main class="figma-main-card" id="main-content-card">
-      <div class="figma-noise-overlay"></div>
+  <!-- contact -->
+  <p class="sans rt" style="left:1235px;top:4920px;width:1216px;color:#fff;font-weight:500;text-decoration:underline;text-decoration-thickness:8.5%;text-underline-position:from-font">anamrazzaque.work@gmail.com</p>
+  <p class="sans rt lab" style="left:1235px;top:4888px;width:1216px">EMAIL</p>
+  <p class="sans rt lab" style="left:1235px;top:4644px;width:157px">LOCATION</p>
+  <div class="sans rt val" style="left:1235px;top:4676px;width:279px;line-height:0"><p style="position:static;line-height:1">D Block Swarn Nagri</p><p style="position:static;line-height:1">Greater Noida</p><p style="position:static;line-height:1">Delhi NCR</p></div>
+  <p class="sans lab" style="left:49px;top:4843px;width:157px;font-size:20px;letter-spacing:-.6px">GENERAL</p>
+  <div class="sans val" style="left:49px;top:4871px;width:279px;font-size:20px;letter-spacing:-.6px;line-height:0"><p style="position:static;line-height:1">HERO</p><p style="position:static;line-height:1">PROJECTS</p><p style="position:static;line-height:1">SERVICES AND PRODUCTS</p></div>
+  <p class="sans rt lab" style="left:1235px;top:4800px;width:128px">CALL US</p>
+  <p class="sans rt val" style="left:1235px;top:4832px;width:221px">+91 9229542747</p>
 
-      <!-- =========================================================
-           HERO SECTION (Exact 1:1 Figma Replication)
-           ========================================================= -->
-      <section class="figma-hero-section" id="hero">
-        <!-- 1. Base Storm Clouds (Figma Node 91:4, sits behind headline & rain) -->
-        <div class="hero-base-clouds-wrap">
-          <img src="/images/figma/hero_base_clouds.webp"
-               alt="Storm Clouds Atmosphere"
-               class="hero-base-clouds-img"
-               id="hero-base-clouds"
-               width="2241"
-               height="856"
-               fetchpriority="high" />
-        </div>
+  <div class="sans grad" style="left:37px;top:4632px;padding:12px;width:1240px;font-size:64px;letter-spacing:-4.48px;line-height:0;white-space:pre-wrap;background-image:linear-gradient(180deg,#fffc35 12px,#999999 177px);height:189px">
+    <p style="position:static;line-height:.86">Let’s Start Creating :)</p>
+    <p style="position:static;line-height:.86">something that helps </p>
+    <p style="position:static;line-height:.86">bring peace to everyone</p>
+  </div>
+  <p class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
+  <p class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
 
-        <!-- 2. "legendary Agency" Main Headline (Figma Node 23:34, Instrument Serif 300px + inner/drop shadows) -->
-        <div class="hero-headline-wrap">
-          <h1 class="hero-headline" aria-label="legendary Agency">
-            <img src="/images/figma/hero_headline_text.webp"
-                 alt="legendary Agency"
-                 class="hero-headline-img"
-                 width="979"
-                 height="486"
-                 fetchpriority="high" />
-            <span class="sr-only">legendary Agency</span>
-          </h1>
-        </div>
+  <!-- services -->
+  <div class="svcbar" style="left:65px;top:3561px;width:1149px;height:132px;border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 40%,rgba(255,255,255,.14)),#5700b9;backdrop-filter:blur(10px) saturate(1.3);-webkit-backdrop-filter:blur(10px) saturate(1.3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 -2px 3px rgba(255,255,255,.4),inset 0 -26px 34px -18px rgba(190,140,255,.45),inset 0 10px 18px -12px rgba(255,255,255,.18)"></div>
+  <p class="sans svc svct" data-i="0" style="left:137px;top:3595px">Moodboarding</p>
+  <p class="sans svc svct" data-i="1" style="left:137px;top:3729px">Wireframing</p>
+  <p class="sans svc svct" data-i="2" style="left:140px;top:3863px">Product design</p>
+  <p class="sans svc svct" data-i="3" style="left:137px;top:3997px">Development</p>
+  <p class="sans svc svct" data-i="4" style="left:137px;top:4131px">Hosting</p>
+  <p class="sans svcdesc" style="left:640px;top:3610px;width:547px;font-size:20px;letter-spacing:-.6px;color:#fff;white-space:pre-wrap">is the process where the thing is tgreat but has a  bit of a problem with the built and you have to do it</p>
+  <div class="srow" data-i="0" style="left:65px;top:3561px;width:1149px;height:132px;cursor:pointer"></div><div class="srow" data-i="1" style="left:65px;top:3695px;width:1149px;height:132px;cursor:pointer"></div><div class="srow" data-i="2" style="left:65px;top:3829px;width:1149px;height:132px;cursor:pointer"></div><div class="srow" data-i="3" style="left:65px;top:3963px;width:1149px;height:132px;cursor:pointer"></div><div class="srow" data-i="4" style="left:65px;top:4097px;width:1149px;height:132px;cursor:pointer"></div>
+  <p class="serif h200 shB" style="left:640px;top:3327.01px;color:#fff;white-space:pre-wrap">Services &amp;  Process</p>
 
-        <!-- 3. Storm Rain Simulation Canvas (z-index: 15, rain emerges from inside the clouds) -->
-        <canvas id="hero-rain-canvas" class="hero-rain-canvas"></canvas>
-
-        <!-- 4. Top Storm Clouds (Figma Node 91:25, foreground billows draped across text & rain) -->
-        <div class="hero-top-clouds-wrap">
-          <img src="/images/figma/hero_top_clouds.webp"
-               alt="Foreground Storm Clouds"
-               class="hero-top-clouds-img"
-               id="hero-top-clouds"
-               width="1891"
-               height="701"
-               fetchpriority="high" />
-        </div>
-
-        <!-- 5. Yellow Umbrella (Figma Node 23:9, 1148x980 directly beneath headline) -->
-        <div class="hero-umbrella-container" id="umbrella-wrap">
-          <img src="/images/figma/hero_umbrella.webp"
-               alt="Yellow Umbrella"
-               class="hero-umbrella-img"
-               id="hero-umbrella-img"
-               width="1148"
-               height="980"
-               fetchpriority="high" />
-        </div>
-
-        <!-- 6. Under Umbrella Content (Figma Groups 11 & 12 flanking the umbrella pole) -->
-        <div class="hero-subblocks-container">
-          <!-- Left Column (Group 11: Quote & Stats) -->
-          <div class="hero-subblock hero-subblock-left">
-            <img src="/images/figma/hero_left_subblock.webp"
-                 alt="“First impressions are expensive to get wrong.” — 30+ Clients Served, 10+ Businesses Scaled, 4+ years of experience"
-                 class="hero-subblock-img"
-                 width="541"
-                 height="273" />
-          </div>
-
-          <!-- Right Column (Group 12: Heading & Studio Copy) -->
-          <div class="hero-subblock hero-subblock-right">
-            <img src="/images/figma/hero_right_subblock.webp"
-                 alt="Building high-impact digital experiences since 2022. We are an independent studio in India, designing and developing websites for ambitious brands."
-                 class="hero-subblock-img"
-                 width="543"
-                 height="286" />
-          </div>
-        </div>
-      </section>
-
-      <!-- Cloud Transition Divider: Hero to Projects -->
-      <div class="cloud-transition-divider">
-        <img src="/images/figma/76_229_main_cloud_0.webp" alt="Atmospheric Cloud Divider" class="cloud-transition-img" />
-      </div>
-
-      <!-- =========================================================
-           PROJECTS SECTION (3D Glitter Folders)
-           ========================================================= -->
-      <section class="figma-projects-section" id="projects">
-        <h2 class="section-title-serif">Projects</h2>
-
-        <div class="folders-stage-container">
-          <!-- SAAS Folder: Top Right -->
-          <div class="figma-folder-item folder-saas" data-category="SAAS" data-title="SaaS &amp; Web Platforms"
-            data-desc="Scalable cloud architectures, dashboard design systems, and conversion-optimized B2B applications.">
-            <img src="/images/figma/folder_saas_2x.webp" alt="SAAS Projects Folder" class="folder-render-img" />
-          </div>
-
-          <!-- B2B Folder: Center Left -->
-          <div class="figma-folder-item folder-b2b" data-category="B2B" data-title="B2B Enterprise Websites"
-            data-desc="Corporate digital presence, interactive product marketing websites, and high-trust landing pages.">
-            <img src="/images/figma/folder_b2b_2x.webp" alt="B2B Projects Folder" class="folder-render-img" />
-          </div>
-
-          <!-- E COM Folder: Bottom Right -->
-          <div class="figma-folder-item folder-ecom" data-category="E COM" data-title="E-Commerce Brand Flagships"
-            data-desc="Immersive direct-to-consumer storefronts, custom checkout funnels, and branded shopping experiences.">
-            <img src="/images/figma/folder_ecom_2x.webp" alt="E-Commerce Projects Folder" class="folder-render-img" />
-          </div>
-        </div>
-      </section>
-
-      <!-- Cloud Transition Divider: Projects to Services -->
-      <div class="cloud-transition-divider" style="margin-top: clamp(20px, 3vw, 50px);">
-        <img src="/images/figma/54_186_Moonlit_Cumulus_Cloudscape_3_0.webp" alt="Moonlit Cloud Transition"
-          class="cloud-transition-img" />
-      </div>
-
-      <!-- =========================================================
-           SERVICES & PROCESS SECTION
-           ========================================================= -->
-      <section class="figma-services-section" id="services">
-        <h2 class="section-title-serif">Services &amp; Process</h2>
-
-        <!-- Interactive Services Card (Figma Node 23:33) -->
-        <div class="services-interactive-card" id="services-card">
-          <!-- 1. Moodboarding (Default Active in Figma) -->
-          <div class="service-row-item is-active" data-service="moodboarding">
-            <span class="service-row-title">Moodboarding</span>
-            <span class="service-row-desc">is the process where the thing is tgreat but has a bit of a problem with the built and you have to do it</span>
-          </div>
-
-          <!-- 2. Wireframing -->
-          <div class="service-row-item" data-service="wireframing">
-            <span class="service-row-title">Wireframing</span>
-            <span class="service-row-desc">architecting structural clarity, responsive user flows, and wireframe scaffolding before high fidelity</span>
-          </div>
-
-          <!-- 3. Product design -->
-          <div class="service-row-item" data-service="product-design">
-            <span class="service-row-title">Product design</span>
-            <span class="service-row-desc">crafting world-class design systems, bespoke typography, and high-impact digital experiences</span>
-          </div>
-
-          <!-- 4. Development -->
-          <div class="service-row-item" data-service="development">
-            <span class="service-row-title">Development</span>
-            <span class="service-row-desc">engineering ultra-fast modern web applications with frictionless animation physics and clean code</span>
-          </div>
-
-          <!-- 5. Hosting -->
-          <div class="service-row-item" data-service="hosting">
-            <span class="service-row-title">Hosting</span>
-            <span class="service-row-desc">deploying resilient cloud infrastructure, edge CDN caching, SSL security, and 99.99% uptime guarantees</span>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- =========================================================
-         SECTION 4: CONTACT US (Figma Node 85:255)
-         ========================================================= -->
-    <footer class="figma-contact-stage" id="contact">
-      <div class="contact-inner-container">
-        <!-- Header Row: "Contact Us" + "Get in touch" Button -->
-        <div class="contact-header-row">
-          <h2 class="contact-main-heading">Contact Us</h2>
-          <a href="mailto:anamrazzaque.work@gmail.com" class="contact-pill-btn">Get in touch</a>
-        </div>
-
-        <!-- Headline Block (Figma Node 65:202) -->
-        <div class="contact-headline-block">
-          <p class="contact-hero-quote">
-            <span class="quote-lime-part">Let’s Start Creating :)</span><br />
-            <span class="quote-white-part">something that helps bring peace to everyone</span>
-          </p>
-        </div>
-
-        <!-- 4-Column Contact Details Grid -->
-        <div class="contact-details-grid">
-          <!-- Column 1: GENERAL -->
-          <div class="contact-col">
-            <div class="contact-col-label">General</div>
-            <div class="contact-col-content">
-              <a href="#hero">HERO</a>
-              <a href="#projects">PROJECTS</a>
-              <a href="#services">SERVICES AND PRODUCTS</a>
-            </div>
-          </div>
-
-          <!-- Column 2: LOCATION -->
-          <div class="contact-col">
-            <div class="contact-col-label">Location</div>
-            <div class="contact-col-content">
-              <div>D Block Swarn Nagri</div>
-              <div>Greater Noida</div>
-              <div>Delhi NCR</div>
-            </div>
-          </div>
-
-          <!-- Column 3: CALL US -->
-          <div class="contact-col">
-            <div class="contact-col-label">Call Us</div>
-            <div class="contact-col-content">
-              <a href="tel:+919229542747">+91 9229542747</a>
-            </div>
-          </div>
-
-          <!-- Column 4: EMAIL -->
-          <div class="contact-col">
-            <div class="contact-col-label">Email</div>
-            <div class="contact-col-content">
-              <a href="mailto:anamrazzaque.work@gmail.com">anamrazzaque.work@gmail.com</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- =========================================================
-           SECTION 5: FOOTER CLOUDS & SEAMLESS INFINITE LOOP
-           ========================================================= -->
-      <div class="figma-footer-clouds-wrap" id="loop-anchor" title="Click to loop back to top">
-        <img src="/images/figma/footer_clouds_2x.webp" alt="Seamless Looping Cloud Formations"
-          class="footer-clouds-img" />
-        <div class="loop-prompt-hint">Loop to Top &uarr;</div>
-      </div>
-    </footer>
+  <div class="rb" style="left:-213px;top:2761px;width:1329.324px;height:655.03px">
+    <div class="r" style="transform:rotate(10.8deg);width:1272.389px;height:424.13px;opacity:.6"><img class="cover" data-k="255d2" alt=""></div>
+  </div>
+  <div class="rb" style="left:200px;top:3011px;width:1315.963px;height:468.581px">
+    <div class="r" style="transform:rotate(-178.52deg);width:1305.175px;height:435.058px;opacity:.6"><img class="cover" data-k="255d2" alt=""></div>
   </div>
 
-  <!-- Project Details Modal Popup -->
-  <div class="project-modal-backdrop" id="project-modal">
-    <div class="project-modal-card">
-      <button class="modal-close-btn" id="modal-close" aria-label="Close modal">&times;</button>
-      <div style="font-family: var(--font-sans); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: #ffd100; text-transform: uppercase; margin-bottom: 8px;"
-        id="modal-category">PROJECT CATEGORY</div>
-      <h3 style="font-family: var(--font-serif); font-size: clamp(28px, 4vw, 48px); margin-bottom: 16px; color: #ffffff;"
-        id="modal-title">Project Title</h3>
-      <p style="font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: #d1d5db; margin-bottom: 28px;"
-        id="modal-desc">Project description...</p>
-      <div style="display: flex; gap: 14px;">
-        <a href="mailto:anamrazzaque.work@gmail.com?subject=Project%20Inquiry" class="contact-pill-btn"
-          style="background: #ffd100; color: #000000; border-color: #ffd100; font-weight: 600;">Inquire for this work &rarr;</a>
-      </div>
+  <!-- projects: folders -->
+  <div class="rb" style="left:441px;top:1869px;width:739.293px;height:544.142px">
+    <div class="r fold" data-f="1" style="--rot:7.76deg;width:684.014px;height:456.009px"><img class="cover" style="filter:url(#nz6)" data-k="a4a75" alt=""></div>
+  </div>
+  <div class="rb" style="left:506.13px;top:2023px;width:609.851px;height:274.183px">
+    <div class="r flab" data-f="1" style="--rot:7.4deg"><p class="serif folder">SAAS</p></div>
+  </div>
+  <div class="rb" style="left:72px;top:2126px;width:739.001px;height:543.64px">
+    <div class="r fold" data-f="2" style="--rot:-7.71deg;width:684.014px;height:456.009px"><img class="cover" style="filter:url(#nz6)" data-k="a4a75" alt=""></div>
+  </div>
+  <div class="rb" style="left:137px;top:2288px;width:608.904px;height:269.94px">
+    <div class="r flab" data-f="2" style="--rot:-6.96deg"><p class="serif folder">B2B</p></div>
+  </div>
+  <div class="rb" style="left:477.51px;top:2495.15px;width:740.263px;height:545.806px">
+    <div class="r fold" data-f="3" style="--rot:7.91deg;width:684.014px;height:456.009px"><img class="cover" style="filter:url(#nz6)" data-k="a4a75" alt=""></div>
+  </div>
+  <div class="rb" style="left:543.0px;top:2657px;width:610.874px;height:278.94px">
+    <div class="r flab" data-f="3" style="--rot:7.89deg"><p class="serif folder">E COM</p></div>
+  </div>
+
+  <!-- main cloud over folders -->
+  <div class="rb" style="left:-323.31px;top:2854.91px;width:1681.784px;height:606.857px">
+    <div class="r" style="transform:rotate(-1.79deg);width:1665.25px;height:555.083px"><img class="cover" data-k="764ac" alt=""></div>
+  </div>
+
+  <!-- umbrella -->
+  <div style="left:66px;top:589px;width:1148px;height:980px"><img class="cover" data-k="a59cf" alt=""></div>
+
+  <!-- projects clouds + title -->
+  <div class="rb" style="left:-236px;top:1251px;width:1580.482px;height:639.669px">
+    <div class="r" style="transform:rotate(4.72deg);width:1543.396px;height:514.465px;opacity:.53"><img class="cover" data-k="20b2c" alt=""></div>
+  </div>
+  <p class="serif h200 shB" style="left:657px;top:1631px;color:#fff">Projects</p>
+  <div class="rb" style="left:141px;top:1370px;width:1007.163px;height:347.353px">
+    <div class="r" style="transform:rotate(-179.25deg) scale(1,-1);width:1002.886px;height:334.296px"><img class="cover" data-k="0b3fd" alt=""></div>
+  </div>
+
+  <!-- hero text -->
+  <p class="serif shC" style="left:353.5px;top:1079px;width:541px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">“First impressions are<br>expensive to get wrong.”</p>
+  <div style="left:353.5px;top:1226px;width:427px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:0;line-height:0">
+    <p style="position:static;margin:0"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px;color:#efc305">30 +</span><span style="font-size:20px;line-height:34px"> </span><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px">Clients Served</span></p>
+    <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px"><span style="color:#efc305">10+</span> Businesses Scaled</p>
+    <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px"><span style="color:#efc305">4+ </span><span style="color:#fff">years</span> of experience</p>
+  </div>
+  <p class="sans" style="left:942.5px;top:1278px;width:447px;height:87px;transform:translateX(-50%);font-size:20px;line-height:normal;text-align:center;color:#fff">We are an independent studio in India, designing and developing websites for ambitious brands.</p>
+  <p class="serif shC" style="left:942.5px;top:1079px;width:543px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">Building high-impact<br>digital experiences since<br>2022.</p>
+
+  <!-- hero base clouds -->
+  <div class="rb" style="left:-313px;top:-443px;width:1280px;height:808px">
+    <div class="r" style="transform:scaleY(-1);width:1280px;height:808px;opacity:.44"><img class="cover" style="filter:url(#nz2)" data-k="57e01" alt=""></div>
+  </div>
+  <div class="rb" style="left:519px;top:-491px;width:1409px;height:829px">
+    <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1409px;height:829px;opacity:.5"><img class="cover" data-k="0d995" alt=""></div>
+  </div>
+
+  <!-- rain slot: above base clouds, below text + top clouds -->
+  <div class="rainslot" style="left:0;top:0;width:1280px;height:1750px"></div>
+
+  <!-- legendary Agency -->
+  <div style="left:639.5px;top:199px;width:979px;height:390px;transform:translateX(-50%);filter:url(#isD) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
+    <div class="serif grad" style="position:relative;width:1059px;margin:-80px -40px;padding:80px 40px;font-size:300px;letter-spacing:-9px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60.56%,#ffd000 85.45%,#ffd000 100%)">
+      <p style="position:static;line-height:.65">legendary</p>
+      <p style="position:static;line-height:.65">Agency</p>
     </div>
   </div>
 
-  <!-- =========================================================
-       SCRIPT: RAIN SIMULATION, LIGHTNING, INTERACTIVITY & LOOP
-       ========================================================= -->
-  <script>
-    (function () {
-      'use strict';
+  <!-- top clouds -->
+  <div class="rb" style="left:298px;top:-328px;width:849px;height:369px">
+    <div class="r" style="transform:rotate(90deg);width:369px;height:849px"><img class="cover" style="object-fit:fill" data-k="8bc30" alt=""></div>
+  </div>
+  <div class="rb" style="left:410.8px;top:-400px;width:1191.204px;height:700.88px">
+    <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover" data-k="de02e" alt=""></div>
+  </div>
+  <div style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt=""></div>
 
-      // -------------------------------------------------------------
-      // 1. Hero Storm Rain Simulation with Umbrella Barrier & Clouds
-      // -------------------------------------------------------------
-      var canvas = document.getElementById('hero-rain-canvas');
-      var heroSection = document.getElementById('hero');
-      var ctx = canvas ? canvas.getContext('2d') : null;
-      var w = 0;
-      var h = 0;
+  <!-- thunder glow over the clouds -->
+  <div class="glowslot" style="left:0;top:0;width:1280px;height:700px;mix-blend-mode:screen"></div>
 
-      function resizeCanvas() {
-        if (!canvas || !heroSection) return;
-        w = heroSection.clientWidth;
-        h = heroSection.clientHeight;
-        canvas.width = w;
-        canvas.height = h;
+</div></div>
+<nav id="nav"><a data-go="0">Hero</a><a data-go="1">Projects</a><a data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a></nav>
+<script>
+(function(){
+  var W=1280,H=5216,P="https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc/";
+  var wrap=document.getElementById('wrap'),stage=document.getElementById('stage'),copies=[stage],s=1;
+  function load(img,k){
+    var list=['/assets/'+k+'.webp','/assets/'+k+'.png','assets/'+k+'.webp','assets/'+k+'.png',P+k+'.png'],i=0;
+    img.decoding='async';
+    img.onload=function(){img.classList.add('on');};
+    img.onerror=function(){i++;if(i<list.length)img.src=list[i];};
+    img.src=list[0];
+  }
+  stage.querySelectorAll('img[data-k]').forEach(function(im){load(im,im.getAttribute('data-k'));});
+  stage.querySelectorAll('.pnoise').forEach(function(e){
+    var n=document.createElement('canvas');n.width=n.height=256;var x=n.getContext('2d'),d=x.createImageData(256,256);
+    for(var i=0;i<d.data.length;i+=4){var r=Math.random();d.data[i]=d.data[i+1]=d.data[i+2]=0;d.data[i+3]=Math.round(r*r*150);}
+    x.putImageData(d,0,0);e.style.backgroundImage='url('+n.toDataURL()+')';
+  });
+  var c=stage.cloneNode(true);c.removeAttribute('id');wrap.appendChild(c);copies.push(c);
+  c.querySelectorAll('img').forEach(function(im){var k=im.getAttribute('data-k');load(im,k);});
+  function layout(){
+    s=document.documentElement.clientWidth/W;
+    copies.forEach(function(e,i){e.style.transform='translateY('+(i*Math.floor(H*s))+'px) scale('+s+')';});
+    wrap.style.height=(2*Math.floor(H*s))+'px';
+  }
+  layout();window.scrollTo(0,1);
+  addEventListener('scroll',function(){
+    var y=window.scrollY,p=Math.floor(H*s);
+    if(y>=p)window.scrollTo(0,y-p);
+    else if(y<=0)window.scrollTo(0,y+p);
+  },{passive:true});
+  addEventListener('resize',function(){var r=window.scrollY/Math.floor(H*s);layout();window.scrollTo(0,r*Math.floor(H*s));});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
+  /* ---------- RAIN: falls from under the top cloud, stops on the umbrella ---------- */
+  (function rain(){
+    var CH=1750,UL=66,UT=589,UW=1148,UH=980;
+    var top=new Float32Array(1280),xs=[];
+    function setFallback(){
+      xs=[];
+      for(var x=0;x<1280;x++){
+        var u=(x-640)/560;
+        if(Math.abs(u)<1){top[x]=640+330*(1-Math.sqrt(1-u*u));xs.push(x);}else top[x]=0;
       }
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas();
+    }
+    setFallback();
+    function fromImage(im){
+      var cv=document.createElement('canvas');cv.width=UW;cv.height=UH;var c=cv.getContext('2d');
+      var sc=Math.max(UW/im.naturalWidth,UH/im.naturalHeight),w=im.naturalWidth*sc,hh=im.naturalHeight*sc;
+      c.drawImage(im,(UW-w)/2,(UH-hh)/2,w,hh);
+      var d=c.getImageData(0,0,UW,UH).data,nx=[],nt=new Float32Array(1280);
+      for(var x=0;x<1280;x++){
+        var ix=x-UL;nt[x]=0;if(ix<0||ix>=UW)continue;
+        for(var y=0;y<UH-2;y++){
+          if(d[(y*UW+ix)*4+3]>150&&d[((y+2)*UW+ix)*4+3]>150){nt[x]=UT+y;nx.push(x);break;}
+        }
+      }
+      if(nx.length>200){top=nt;xs=nx;return true;}
+      return false;
+    }
+    (function tryImg(list,i){
+      if(i>=list.length)return;
+      var im=new Image();im.crossOrigin='anonymous';
+      im.onload=function(){try{if(!fromImage(im))tryImg(list,i+1);}catch(e){tryImg(list,i+1);}};
+      im.onerror=function(){tryImg(list,i+1);};
+      im.src=list[i];
+    })(['/assets/a59cf.webp','/assets/a59cf.png','assets/a59cf.webp','assets/a59cf.png',P+'a59cf.png'],0);
 
-      var drops = [];
-      var dropCount = 130;
-      var ripples = [];
-      var splashes = [];
+    var N=240,drops=[],parts=[],runs=[],drips=[];
+    function spawn(d,first){
+      d.x=xs[(Math.random()*xs.length)|0]+Math.random();
+      d.sy=120+Math.random()*90;
+      d.y=first?d.sy-Math.random()*1300:d.sy;
+      d.v=720+Math.random()*420;
+      d.len=22+Math.random()*26;
+      d.a=.35+Math.random()*.4;
+      d.hit=false;
+    }
+    for(var i=0;i<N;i++){var d={};spawn(d,true);d.hit=d.y>=top[d.x|0];if(d.hit)spawn(d,true);drops.push(d);}
+    var cvs=[];
+    function makeCanvases(){
+      var k=Math.min(2,(window.devicePixelRatio||1)*s);
+      copies.forEach(function(c,i){
+        var slot=c.querySelector('.rainslot');if(!slot)return;
+        var cv=cvs[i];
+        if(!cv){cv=document.createElement('canvas');slot.appendChild(cv);cvs[i]=cv;}
+        cv.width=Math.round(1280*k);cv.height=Math.round(CH*k);cv.k=k;
+      });
+    }
+    makeCanvases();
+    addEventListener('resize',makeCanvases);
 
-      for (var i = 0; i < dropCount; i++) {
-        drops.push({
-          x: Math.random() * (w || 1200),
-          y: Math.random() * (h || 1450),
-          speed: Math.random() * 9 + 15,
-          len: Math.random() * 20 + 16,
-          width: Math.random() * 0.8 + 0.8,
-          alpha: Math.random() * 0.45 + 0.35
+    /* ---------- THUNDER ---------- */
+    var gcvs=[],LT={start:-1,next:performance.now()/1000+.6,I:0,bolt:null,fx:640,tx:640,ty:700};
+    function makeGlow(){
+      copies.forEach(function(c,i){
+        [['.glowslot',700,0],['.glowslot2',438,436]].forEach(function(d,j){
+          var slot=c.querySelector(d[0]);if(!slot)return;
+          var key=i*2+j,cv=gcvs[key];
+          if(!cv){cv=document.createElement('canvas');slot.appendChild(cv);gcvs[key]=cv;}
+          cv.width=640;cv.height=d[1]/2;cv.off=d[2];
         });
+      });
+    }
+    makeGlow();
+    function pulse(e,s0,rise,dec){if(e<s0)return 0;if(e<s0+rise)return (e-s0)/rise;return Math.exp(-(e-s0-rise)/dec*3);}
+    function intens(e){return Math.max(pulse(e,0,.04,.16),.7*pulse(e,.2,.03,.12),pulse(e,.36,.04,.5));}
+    function jag(x0,y0,x1,y1,d,out){
+      if(d===0||Math.hypot(x1-x0,y1-y0)<14){out.push([x1,y1]);return;}
+      var mx=(x0+x1)/2+(Math.random()-.5)*Math.hypot(x1-x0,y1-y0)*.35,my=(y0+y1)/2+(Math.random()-.5)*12;
+      jag(x0,y0,mx,my,d-1,out);jag(mx,my,x1,y1,d-1,out);
+    }
+    function makeBolt(){
+      var fx=260+Math.random()*760,tx=Math.max(1,Math.min(1278,fx+(Math.random()-.5)*160))|0;
+      var ty=top[tx]||700;
+      if(!top[tx]){var best=xs[(Math.random()*xs.length)|0];tx=best|0;ty=top[tx];}
+      var main=[[fx,150]];jag(fx,150,tx,ty,6,main);
+      var br=[];
+      for(var b=0;b<3;b++){
+        var k=(main.length*(.25+.5*Math.random()))|0,p=main[k],ex=p[0]+(Math.random()<.5?-1:1)*(60+Math.random()*120),ey=Math.min(ty-30,p[1]+90+Math.random()*160);
+        var seg=[p];jag(p[0],p[1],ex,ey,4,seg);br.push(seg);
+      }
+      LT.bolt={main:main,br:br};LT.fx=fx;LT.tx=tx;LT.ty=ty;
+    }
+    function drawBolt(c,I){
+      var B=LT.bolt;if(!B)return;
+      c.save();c.lineJoin='round';c.lineCap='round';
+      c.shadowColor='rgba(150,190,255,'+I+')';c.shadowBlur=26;
+      function line(pts,w,a){c.lineWidth=w;c.strokeStyle='rgba(235,243,255,'+(a*I)+')';c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(var i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();}
+      line(B.main,5,.55);line(B.main,2.2,1);
+      B.br.forEach(function(s){line(s,3,.45);line(s,1.2,.9);});
+      c.restore();
+      // impact flash on the umbrella
+      var g=c.createRadialGradient(LT.tx,LT.ty,2,LT.tx,LT.ty,170);
+      g.addColorStop(0,'rgba(235,245,255,'+(.75*I)+')');g.addColorStop(1,'rgba(150,190,255,0)');
+      c.fillStyle=g;c.fillRect(LT.tx-170,LT.ty-170,340,340);
+    }
+    function drawGlow(cv,I){
+      var c=cv.getContext('2d');c.setTransform(.5,0,0,.5,0,0);c.clearRect(0,0,1280,900);
+      if(I<.01)return;
+      c.setTransform(.5,0,0,.5,0,.5*cv.off);   /* draw in "cloud space": y=0 is the page top, the cloud body runs from y=-420 to 330 */
+      var g=c.createLinearGradient(0,-420,0,330);
+      g.addColorStop(0,'rgba(160,195,255,0)');g.addColorStop(.3,'rgba(165,198,255,'+(.3*I)+')');
+      g.addColorStop(.5,'rgba(190,215,255,'+(.5*I)+')');g.addColorStop(.8,'rgba(165,198,255,'+(.32*I)+')');g.addColorStop(1,'rgba(160,195,255,0)');
+      c.fillStyle=g;c.fillRect(-100,-420,1480,750);
+      c.save();c.translate(LT.fx,-60);c.scale(1,.55);
+      var r=c.createRadialGradient(0,0,10,0,0,720);
+      r.addColorStop(0,'rgba(240,248,255,'+(.85*I)+')');r.addColorStop(.35,'rgba(170,200,255,'+(.4*I)+')');r.addColorStop(1,'rgba(120,150,255,0)');
+      c.fillStyle=r;c.fillRect(-1400,-1200,2800,2400);c.restore();
+    }
+    var last=performance.now();
+    function frame(t){
+      var dt=Math.min(.05,(t-last)/1000);last=t;
+      for(var i=0;i<drops.length;i++){
+        var d=drops[i],tp=top[d.x|0]||1e9;
+        d.y+=d.v*dt;
+        if(!d.hit&&d.y>=tp){
+          d.hit=true;
+          if(Math.random()<.16&&runs.length<34)runs.push({x:d.x,y:tp,dir:(d.x<630?-1:(d.x>650?1:(Math.random()<.5?-1:1))),sp:35+Math.random()*45,tr:[],hang:0,st:0});
+          for(var j=0;j<3;j++)parts.push({x:d.x,y:tp,vx:(Math.random()-.5)*160,vy:-(70+Math.random()*120),l:.32+Math.random()*.2,m:.5});
+        }
+        if(d.y-d.len>=tp)spawn(d,false);
       }
 
-      var umbrellaImg = document.getElementById('hero-umbrella-img');
-      var lightningEl = document.getElementById('ambient-lightning');
-      var topCloudsImg = document.getElementById('hero-top-clouds');
-      var baseCloudsImg = document.getElementById('hero-base-clouds');
-
-      var lightningAlpha = 0;
-      var lightningTarget = 0;
-
-      function triggerLightning() {
-        lightningTarget = Math.random() * 0.7 + 0.3;
-        setTimeout(function () {
-          lightningTarget = 0.05;
-          setTimeout(function () {
-            lightningTarget = Math.random() * 0.95 + 0.05;
-            setTimeout(function () {
-              lightningTarget = 0;
-              scheduleLightning();
-            }, 80);
-          }, 60);
-        }, 90);
+      var now=t/1000;
+      if(LT.start<0&&now>=LT.next){LT.start=now;makeBolt();}
+      if(LT.start>=0){var e=now-LT.start;LT.I=intens(e);if(e>1.3){LT.start=-1;LT.I=0;LT.next=now+4+Math.random()*5;}}
+      for(var ri=runs.length-1;ri>=0;ri--){
+        var R=runs[ri];
+        if(R.st===0){
+          R.sp+=70*dt;R.x+=R.dir*R.sp*dt;
+          var xi=R.x|0,ty=top[xi];
+          if(!ty||Math.abs(ty-R.y)>38||xi<1||xi>1278){R.st=1;R.hang=.3+Math.random()*.5;R.tr.length=0;}
+          else{R.y=ty;R.tr.push([R.x,R.y]);if(R.tr.length>18)R.tr.shift();}
+        }else{
+          R.hang-=dt;
+          if(R.hang<=0){drips.push({x:R.x,y:R.y,vy:20});runs.splice(ri,1);}
+        }
       }
-
-      function scheduleLightning() {
-        var delay = Math.random() * 6000 + 4500;
-        setTimeout(triggerLightning, delay);
+      for(var di=drips.length-1;di>=0;di--){
+        var D=drips[di];D.vy+=1100*dt;D.y+=D.vy*dt;if(D.y>CH+30)drips.splice(di,1);
       }
-      scheduleLightning();
-
-      function updateAndRenderRain() {
-        requestAnimationFrame(updateAndRenderRain);
-        if (!ctx || !canvas) return;
-        ctx.clearRect(0, 0, w, h);
-
-        // Smooth lightning fade
-        lightningAlpha += (lightningTarget - lightningAlpha) * 0.35;
-        if (lightningAlpha < 0.01 && lightningTarget === 0) lightningAlpha = 0;
-        if (lightningEl) lightningEl.style.opacity = lightningAlpha.toFixed(3);
-        if (topCloudsImg) {
-          topCloudsImg.style.filter = 'brightness(' + (1.0 + lightningAlpha * 1.3).toFixed(2) + ')';
-        }
-        if (baseCloudsImg) {
-          baseCloudsImg.style.filter = 'brightness(' + (1.0 + lightningAlpha * 1.15).toFixed(2) + ')';
-        }
-
-        // Umbrella collision box relative to hero-rain-canvas
-        var ubRect = umbrellaImg ? umbrellaImg.getBoundingClientRect() : null;
-        var cvRect = canvas.getBoundingClientRect();
-        var hasUmbrella = ubRect && ubRect.bottom > cvRect.top && ubRect.top < cvRect.bottom;
-        var ubCenterX = 0, ubHalfW = 0, ubTop = 0, ubHeight = 0;
-        if (hasUmbrella) {
-          var relLeft = ubRect.left - cvRect.left;
-          var relTop = ubRect.top - cvRect.top;
-          ubCenterX = relLeft + ubRect.width * 0.5;
-          ubHalfW = ubRect.width * 0.48;
-          ubTop = relTop;
-          ubHeight = ubRect.height;
+      for(var p=parts.length-1;p>=0;p--){
+        var q=parts[p];q.vy+=520*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.l-=dt;if(q.l<=0)parts.splice(p,1);
+      }
+      cvs.forEach(function(cv){
+        if(!cv)return;
+        var r=cv.getBoundingClientRect();
+        if(r.bottom<0||r.top>innerHeight)return;
+        var c=cv.getContext('2d'),k=cv.k;
+        c.setTransform(k,0,0,k,0,0);c.clearRect(0,0,1280,CH);
+        c.lineCap='round';c.lineWidth=1.6;
+        if(LT.I>.02)drawBolt(c,LT.I);
+        for(var i=0;i<drops.length;i++){
+          var d=drops[i],tp=top[d.x|0]||1e9,y1=Math.min(d.y,tp),y0=d.y-d.len;
+          if(y0>=y1)continue;
+          var fade=Math.min(1,Math.max(0,(d.y-d.sy)/90));
+          c.strokeStyle='rgba(205,228,255,'+(d.a*fade)+')';
+          c.beginPath();c.moveTo(d.x,y0);c.lineTo(d.x,y1);c.stroke();
         }
 
-        // Render ripples on umbrella canopy
-        for (var rIdx = ripples.length - 1; rIdx >= 0; rIdx--) {
-          var rip = ripples[rIdx];
-          rip.r += 0.8;
-          rip.alpha -= 0.035;
-          if (rip.alpha <= 0) {
-            ripples.splice(rIdx, 1);
-            continue;
-          }
-          ctx.beginPath();
-          ctx.ellipse(rip.x, rip.y, rip.r * 1.5, rip.r * 0.5, 0, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(255, 255, 255, ' + rip.alpha.toFixed(2) + ')';
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-        }
-
-        // Render splashes
-        for (var sIdx = splashes.length - 1; sIdx >= 0; sIdx--) {
-          var sp = splashes[sIdx];
-          sp.x += sp.vx;
-          sp.y += sp.vy;
-          sp.vy += 0.3; // gravity
-          sp.alpha -= 0.04;
-          if (sp.alpha <= 0) {
-            splashes.splice(sIdx, 1);
-            continue;
-          }
-          ctx.beginPath();
-          ctx.arc(sp.x, sp.y, 1.2, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 255, 255, ' + sp.alpha.toFixed(2) + ')';
-          ctx.fill();
-        }
-
-        // Render raindrops
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineCap = 'round';
-
-        for (var d = 0; d < drops.length; d++) {
-          var drop = drops[d];
-          var prevY = drop.y;
-          drop.y += drop.speed;
-
-          // Umbrella collision check
-          if (hasUmbrella && drop.x >= (ubCenterX - ubHalfW) && drop.x <= (ubCenterX + ubHalfW)) {
-            var normX = (drop.x - ubCenterX) / ubHalfW;
-            var canopyY = ubTop + ubHeight * (0.09 + 0.22 * normX * normX);
-
-            if (prevY <= canopyY && drop.y >= canopyY) {
-              // Spawn ripple on canopy
-              if (ripples.length < 25) {
-                ripples.push({
-                  x: drop.x,
-                  y: canopyY,
-                  r: 1.5,
-                  alpha: 0.85
-                });
-              }
-              // Spawn bouncing splash droplets
-              if (splashes.length < 40) {
-                for (var s = 0; s < 2; s++) {
-                  splashes.push({
-                    x: drop.x,
-                    y: canopyY,
-                    vx: (Math.random() - 0.5) * 3 + normX * 1.5,
-                    vy: -(Math.random() * 2.5 + 1.5),
-                    alpha: 0.9
-                  });
-                }
-              }
-              // Reset drop inside cloud bank
-              drop.y = Math.random() * (h * 0.15);
-              drop.x = Math.random() * w;
-              continue;
+        for(var ri=0;ri<runs.length;ri++){
+          var R=runs[ri];
+          if(R.st===0){
+            c.lineWidth=2;c.lineCap='round';
+            for(var k2=1;k2<R.tr.length;k2++){
+              c.strokeStyle='rgba(215,235,255,'+(.55*k2/R.tr.length)+')';
+              c.beginPath();c.moveTo(R.tr[k2-1][0],R.tr[k2-1][1]);c.lineTo(R.tr[k2][0],R.tr[k2][1]);c.stroke();
             }
-          }
-
-          if (drop.y > h + drop.len) {
-            // Reset drop inside cloud bank at the top
-            drop.y = Math.random() * (h * 0.15);
-            drop.x = Math.random() * w;
-          }
-
-          var alpha = drop.alpha + lightningAlpha * 0.45;
-          ctx.lineWidth = drop.width;
-          ctx.strokeStyle = 'rgba(220, 235, 255, ' + Math.min(1.0, alpha).toFixed(2) + ')';
-          ctx.beginPath();
-          ctx.moveTo(drop.x, drop.y);
-          ctx.lineTo(drop.x, drop.y + drop.len);
-          ctx.stroke();
-        }
-      }
-      requestAnimationFrame(updateAndRenderRain);
-
-      // -------------------------------------------------------------
-      // 2. Interactive Services & Process Row Selection
-      // -------------------------------------------------------------
-      var serviceRows = document.querySelectorAll('.service-row-item');
-      serviceRows.forEach(function (row) {
-        row.addEventListener('click', function () {
-          serviceRows.forEach(function (r) { r.classList.remove('is-active'); });
-          row.classList.add('is-active');
-        });
-      });
-
-      // -------------------------------------------------------------
-      // 3. Interactive Project Folders & Modal Showcase
-      // -------------------------------------------------------------
-      var modal = document.getElementById('project-modal');
-      var modalCategory = document.getElementById('modal-category');
-      var modalTitle = document.getElementById('modal-title');
-      var modalDesc = document.getElementById('modal-desc');
-      var modalClose = document.getElementById('modal-close');
-
-      var folderItems = document.querySelectorAll('.figma-folder-item');
-      folderItems.forEach(function (item) {
-        item.addEventListener('click', function () {
-          var cat = item.getAttribute('data-category');
-          var title = item.getAttribute('data-title');
-          var desc = item.getAttribute('data-desc');
-
-          if (modalCategory) modalCategory.textContent = cat + ' Portfolio Case';
-          if (modalTitle) modalTitle.textContent = title;
-          if (modalDesc) modalDesc.textContent = desc;
-
-          if (modal) modal.classList.add('is-open');
-        });
-      });
-
-      if (modalClose) {
-        modalClose.addEventListener('click', function () {
-          if (modal) modal.classList.remove('is-open');
-        });
-      }
-
-      if (modal) {
-        modal.addEventListener('click', function (e) {
-          if (e.target === modal) modal.classList.remove('is-open');
-        });
-      }
-
-      // -------------------------------------------------------------
-      // 4. Seamless Looping Mechanism (Infinite Loop at End)
-      // -------------------------------------------------------------
-      var loopAnchor = document.getElementById('loop-anchor');
-      if (loopAnchor) {
-        loopAnchor.addEventListener('click', function () {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-      }
-
-      // Continuous loop scroll listener: smoothly wraps around at the bottom
-      var isLooping = false;
-      window.addEventListener('scroll', function () {
-        var scrollPos = window.scrollY || window.pageYOffset;
-        var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
-        if (maxScroll > 600 && scrollPos >= maxScroll - 8) {
-          if (!isLooping) {
-            isLooping = true;
-            setTimeout(function () {
-              window.scrollTo({ top: 4, behavior: 'smooth' });
-              setTimeout(function () { isLooping = false; }, 800);
-            }, 300);
+            c.fillStyle='rgba(235,246,255,.95)';c.beginPath();c.arc(R.x,R.y,2.3,0,6.283);c.fill();
+          }else{
+            var rr=2+Math.min(1.4,(.8-R.hang)*2.2);
+            c.fillStyle='rgba(235,246,255,.95)';c.beginPath();c.ellipse(R.x,R.y+rr*.6,rr*.8,rr*1.2,0,0,6.283);c.fill();
           }
         }
-      }, { passive: true });
+        for(var di=0;di<drips.length;di++){
+          var D=drips[di],fa=D.y>1500?Math.max(0,1-(D.y-1500)/220):1;
+          c.strokeStyle='rgba(225,240,255,'+(.9*fa)+')';c.lineWidth=2.2;
+          c.beginPath();c.moveTo(D.x,D.y-Math.min(26,D.vy*.03));c.lineTo(D.x,D.y);c.stroke();
+        }
+        c.lineWidth=1.6;
+        c.fillStyle='rgba(225,240,255,.8)';
+        for(var p=0;p<parts.length;p++){var q=parts[p];c.globalAlpha=Math.max(0,q.l/.5);c.beginPath();c.arc(q.x,q.y,1.5,0,6.283);c.fill();}
+        c.globalAlpha=1;
+      });
+      gcvs.forEach(function(g){if(!g)return;var r=g.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;drawGlow(g,LT.I);});
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
 
-    })();
-  </script>
-  <!-- Modular Application Entrypoint -->
-  <script type="module" src="/src/js/app.js"></script>
+  /* ---------- SERVICES: interactive list ---------- */
+  var SD=["is the process where the thing is tgreat but has a  bit of a problem with the built and you have to do it",
+    "is where we sketch the structure of every page, so the layout and the flow are clear before any design begins",
+    "turns the wireframes into a clean, polished interface with the right colours, type and details for your brand",
+    "brings the design to life as a fast, responsive website, built exactly as designed and tested on every screen",
+    "gets your site live on secure, quick servers, with ongoing care so it stays online and up to date"];
+  var cur=0;
+  function setSvc(i,force){
+    if(i===cur&&!force)return;cur=i;
+    copies.forEach(function(c){
+      c.querySelector('.svcbar').style.transform='translateY('+(i*134)+'px)';
+            var d=c.querySelector('.svcdesc');d.style.transform='translateY('+(i*134)+'px)';
+      d.classList.add('out');
+      setTimeout(function(){d.textContent=SD[i];d.classList.remove('out');},170);
+      c.querySelectorAll('.svct').forEach(function(t){t.classList.toggle('act',+t.getAttribute('data-i')===i);});
+    });
+  }
+  copies.forEach(function(c){c.querySelectorAll('.svct')[0].classList.add('act');});
+  wrap.addEventListener('mouseover',function(e){var r=e.target.closest&&e.target.closest('.srow');if(r)setSvc(+r.getAttribute('data-i'));});
+  wrap.addEventListener('click',function(e){var r=e.target.closest&&e.target.closest('.srow');if(r)setSvc(+r.getAttribute('data-i'));});
+
+  /* ---------- floating navigation ---------- */
+  var nav=document.getElementById('nav'),SEC=[2,1150,3250,4300];
+  function navFit(){nav.style.transform='translateX(-50%) scale('+s+')';nav.style.top=(18*s)+'px';}
+  navFit();addEventListener('resize',navFit);
+  nav.addEventListener('click',function(e){
+    var a=e.target.closest('a');if(!a)return;
+    var p=Math.floor(H*s),base=Math.floor(window.scrollY/p)*p;
+    window.scrollTo({top:base+SEC[+a.getAttribute('data-go')]*s,behavior:'smooth'});
+  });
+  function navOn(){
+    var p=Math.floor(H*s),y=((window.scrollY%p)/s)+300,i=y>=4300?3:y>=3250?2:y>=1150?1:0;
+    nav.querySelectorAll('a').forEach(function(a,k){a.classList.toggle('on',k===i&&k<3);});
+  }
+  addEventListener('scroll',navOn,{passive:true});navOn();
+
+  function hov(e,on){
+    var f=e.target.closest&&e.target.closest('.fold');if(!f)return;
+    if(!on&&e.relatedTarget&&f.contains(e.relatedTarget))return;
+    var st=f.closest('.stage');
+    st.querySelectorAll('[data-f="'+f.getAttribute('data-f')+'"]').forEach(function(x){x.classList.toggle('hov',on);});
+  }
+  wrap.addEventListener('mouseover',function(e){hov(e,true);});
+  wrap.addEventListener('mouseout',function(e){hov(e,false);});
+})();
+</script>
 </body>
-
 </html>
