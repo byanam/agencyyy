@@ -94,9 +94,12 @@
   #nav a:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
   #nav a.cta{border:2px solid #fff;padding:5px 18px;margin-left:6px;font-weight:400}
   #nav a.on{background:rgba(255,255,255,.26)}
-  #nav a.snd{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:30px;font-size:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);margin-left:4px}
-  #nav a.snd:hover{background:rgba(255,255,255,.22)}
-  #nav a.snd.off{opacity:.55;text-decoration:line-through}
+  #nav a.snd{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;border-radius:50%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.28);margin-left:6px;transition:background .25s ease,transform .25s ease,opacity .25s ease;flex:none}
+  #nav a.snd:hover{background:rgba(255,255,255,.25);transform:scale(1.08)}
+  #nav a.snd.off{opacity:.55}
+  #nav a.snd.off:hover{opacity:.9;transform:scale(1.08)}
+  #nav a.snd svg{display:block;width:18px;height:18px;pointer-events:none}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
@@ -275,7 +278,7 @@
 
 </div></div>
 <div id="cur"><span>View</span></div>
-<nav id="nav"><a data-go="0">Hero</a><a data-go="1">Projects</a><a data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a><a id="sndBtn" class="snd" title="Toggle audio"><span id="sndIcon">♫</span> <span id="sndTxt">Sound</span></a></nav>
+<nav id="nav"><a data-go="0">Hero</a><a data-go="1">Projects</a><a data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a><a id="sndBtn" class="snd" title="Toggle music & sound" aria-label="Toggle music and sound"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle></svg><span class="sr-only">Toggle music and sound</span></a></nav>
 <script>
 (function(){
   var W=1280,H=5216,P="https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc/";
@@ -671,10 +674,26 @@
     thunder.preload = 'auto';
 
     var sndBtn = document.getElementById('sndBtn');
-    var sndIcon = document.getElementById('sndIcon');
-    var sndTxt = document.getElementById('sndTxt');
     var isMuted = false;
     var started = false;
+
+    var svgOn = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle></svg>';
+    var svgCut = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle><line x1="3" y1="3" x2="21" y2="21" stroke="#000" stroke-width="3.5" stroke-linecap="round" opacity="0.45"></line><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></line></svg>';
+
+    function updateBtn(){
+      if(!sndBtn) return;
+      if(isMuted){
+        sndBtn.innerHTML = svgCut + '<span class="sr-only">Play music and sound</span>';
+        sndBtn.classList.add('off');
+        sndBtn.setAttribute('title', 'Play music & sound');
+        sndBtn.setAttribute('aria-label', 'Play music and sound');
+      } else {
+        sndBtn.innerHTML = svgOn + '<span class="sr-only">Mute music and sound</span>';
+        sndBtn.classList.remove('off');
+        sndBtn.setAttribute('title', 'Mute music & sound');
+        sndBtn.setAttribute('aria-label', 'Mute music and sound');
+      }
+    }
 
     function playThunder(){
       if(isMuted) return;
@@ -720,16 +739,11 @@
         if(isMuted){
           thunder.pause();
           music.pause();
-          sndBtn.classList.add('off');
-          if(sndIcon) sndIcon.textContent = '✕';
-          if(sndTxt) sndTxt.textContent = 'Muted';
         } else {
           started = true;
-          sndBtn.classList.remove('off');
-          if(sndIcon) sndIcon.textContent = '♫';
-          if(sndTxt) sndTxt.textContent = 'Sound';
           music.play().catch(function(){});
         }
+        updateBtn();
       });
     }
   })();
