@@ -1,0 +1,31 @@
+.hero-subblocks-container {
+  position: absolute;
+  left: 0;
+  top: 74.41%;
+  width: 100%;
+  height: auto;
+  z-index: 26;
+  pointer-events: none;
+}
+
+.hero-subblock-left {
+  position: absolute;
+  left: 3.73%;
+  top: 0;
+  width: 44.90%;
+  max-width: 541px;
+}
+
+.hero-subblock-right {
+  position: absolute;
+  left: 52.53%;
+  top: 0;
+  width: 45.06%;
+  max-width: 543px;
+}
+
+.hero-subblock-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
