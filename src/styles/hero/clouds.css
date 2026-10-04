@@ -1,0 +1,35 @@
+.hero-base-clouds-wrap {
+  position: absolute;
+  left: -29.13%;
+  top: -33.86%;
+  width: 185.98%;
+  height: auto;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hero-base-clouds-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: filter 0.05s ease-out;
+}
+
+.hero-top-clouds-wrap {
+  position: absolute;
+  left: -27.14%;
+  top: -27.59%;
+  width: 156.93%;
+  height: auto;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.hero-top-clouds-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: filter 0.05s ease-out;
+}
