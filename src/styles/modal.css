@@ -1,0 +1,36 @@
+.project-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.project-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.project-modal-card {
+  width: min(100%, 640px);
+  background: #12093a;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  padding: clamp(28px, 5vw, 48px);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.project-modal-backdrop.is-open .project-modal-card {
+  transform: translateY(0);
+}
