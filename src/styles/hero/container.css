@@ -1,0 +1,7 @@
+.figma-hero-section {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1205 / 1450;
+  overflow: visible;
+  z-index: 5;
+}
