@@ -93,8 +93,10 @@
   #nav a{color:#fff;text-decoration:none;font-size:20px;letter-spacing:-.6px;font-weight:500;padding:7px 16px;border-radius:30px;transition:background .25s ease,transform .25s ease;cursor:pointer}
   #nav a:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
   #nav a.cta{border:2px solid #fff;padding:5px 18px;margin-left:6px;font-weight:400}
-  #nav a.cta:hover{background:rgba(255,255,255,.22);color:#fff}
   #nav a.on{background:rgba(255,255,255,.26)}
+  #nav a.snd{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:30px;font-size:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);margin-left:4px}
+  #nav a.snd:hover{background:rgba(255,255,255,.22)}
+  #nav a.snd.off{opacity:.55;text-decoration:line-through}
 </style>
 </head>
 <body>
@@ -273,7 +275,7 @@
 
 </div></div>
 <div id="cur"><span>View</span></div>
-<nav id="nav"><a data-go="0">Hero</a><a data-go="1">Projects</a><a data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a></nav>
+<nav id="nav"><a data-go="0">Hero</a><a data-go="1">Projects</a><a data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a><a id="sndBtn" class="snd" title="Toggle audio"><span id="sndIcon">♫</span> <span id="sndTxt">Sound</span></a></nav>
 <script>
 (function(){
   var W=1280,H=5216,P="https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc/";
@@ -417,51 +419,9 @@
       }
       return {main:main,br:br,fx:fx,tx:tx,ty:ty};
     }
-    function makeBolt(){
-      /* two bolts, one on each half of the cloud */
-      var left=Math.random()<.5;
-      var f1=left?(160+Math.random()*320):(800+Math.random()*320);
-      var f2=left?(800+Math.random()*320):(160+Math.random()*320);
-      LT.bolts=[buildBolt(f1),buildBolt(f2)];
-      /* light pockets spread edge to edge so the entire cloud flashes */
-      LT.lobes=[0,320,640,960,1280].map(function(x){return {x:x,w:.6+Math.random()*.4};});
-    }
-    function drawBolt(c,I){
-      var Bs=LT.bolts;if(!Bs)return;
-      Bs.forEach(function(B,bi){
-        var BI=bi?I*.85:I;
-        c.save();c.lineJoin='round';c.lineCap='round';
-        c.shadowColor='rgba(150,190,255,'+BI+')';c.shadowBlur=26;
-        function line(pts,w,a){c.lineWidth=w;c.strokeStyle='rgba(235,243,255,'+(a*BI)+')';c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(var i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();}
-        line(B.main,5,.55);line(B.main,2.2,1);
-        B.br.forEach(function(s){line(s,3,.45);line(s,1.2,.9);});
-        c.restore();
-        var g=c.createRadialGradient(B.tx,B.ty,2,B.tx,B.ty,170);
-        g.addColorStop(0,'rgba(235,245,255,'+(.75*BI)+')');g.addColorStop(1,'rgba(150,190,255,0)');
-        c.fillStyle=g;c.fillRect(B.tx-170,B.ty-170,340,340);
-      });
-    }
-    function drawGlow(cv,I){
-      var c=cv.getContext('2d');c.setTransform(.5,0,0,.5,0,0);c.clearRect(0,0,1280,900);
-      if(I<.01||!LT.bolts)return;
-      c.setTransform(.5,0,0,.5,0,.5*cv.off);
-      /* full-width base wash */
-      var g=c.createLinearGradient(0,-420,0,330);
-      g.addColorStop(0,'rgba(160,195,255,0)');g.addColorStop(.3,'rgba(170,200,255,'+(.42*I)+')');
-      g.addColorStop(.5,'rgba(195,218,255,'+(.65*I)+')');g.addColorStop(.8,'rgba(170,200,255,'+(.45*I)+')');g.addColorStop(1,'rgba(160,195,255,0)');
-      c.fillStyle=g;c.fillRect(-100,-420,1480,750);
-      /* soft pockets across the whole width + hot spots at each bolt */
-      var spots=LT.lobes.map(function(l){return {x:l.x,a:.5*l.w,r:560};})
-        .concat(LT.bolts.map(function(B){return {x:B.fx,a:.85,r:720};}));
-      spots.forEach(function(sp){
-        c.save();c.translate(sp.x,-60);c.scale(1,.55);
-        var r=c.createRadialGradient(0,0,10,0,0,sp.r);
-        r.addColorStop(0,'rgba(240,248,255,'+(sp.a*I)+')');
-        r.addColorStop(.35,'rgba(170,200,255,'+(.45*sp.a*I)+')');
-        r.addColorStop(1,'rgba(120,150,255,0)');
-        c.fillStyle=r;c.fillRect(-1400,-1200,2800,2400);c.restore();
-      });
-    }
+    function makeBolt(){}
+    function drawBolt(c,I){}
+    function drawGlow(cv,I){}
     var last=performance.now();
     function frame(t){
       var dt=Math.min(.05,(t-last)/1000);last=t;
@@ -574,31 +534,31 @@
     var last=performance.now(),ly=window.scrollY,v=0,n=cl[0].length;
     var ST=[],DRIFT=[
       // 0: 8bc30 footer center
-      {sx:0.28,ax:62,px:0.0,sy:0.35,ay:12,py:0.5,k:80,c:5.5,a:1.0},
+      {sx:0.11,ax:56,px:0.0,sy:0.15,ay:10,py:0.5,k:80,c:5.5,a:1.0},
       // 1: de02e footer right
-      {sx:0.22,ax:75,px:2.3,sy:0.28,ay:14,py:1.8,k:65,c:4.8,a:1.2},
+      {sx:0.09,ax:68,px:2.3,sy:0.12,ay:12,py:1.8,k:65,c:4.8,a:1.2},
       // 2: de02e footer left
-      {sx:0.32,ax:68,px:4.5,sy:0.38,ay:11,py:3.2,k:70,c:5.0,a:0.9},
+      {sx:0.13,ax:62,px:4.5,sy:0.16,ay:9,py:3.2,k:70,c:5.0,a:0.9},
       // 3: 255d2 services 1
-      {sx:0.20,ax:54,px:1.2,sy:0.26,ay:10,py:0.8,k:75,c:5.2,a:1.0},
+      {sx:0.08,ax:48,px:1.2,sy:0.11,ay:8,py:0.8,k:75,c:5.2,a:1.0},
       // 4: 255d2 services 2
-      {sx:0.26,ax:58,px:3.8,sy:0.33,ay:12,py:2.1,k:60,c:4.5,a:1.1},
+      {sx:0.10,ax:52,px:3.8,sy:0.14,ay:10,py:2.1,k:60,c:4.5,a:1.1},
       // 5: 764ac folders
-      {sx:0.24,ax:70,px:5.4,sy:0.30,ay:15,py:4.2,k:85,c:5.8,a:0.8},
+      {sx:0.09,ax:60,px:5.4,sy:0.13,ay:12,py:4.2,k:85,c:5.8,a:0.8},
       // 6: 20b2c projects left
-      {sx:0.21,ax:64,px:0.9,sy:0.27,ay:13,py:1.5,k:68,c:4.9,a:1.05},
+      {sx:0.08,ax:54,px:0.9,sy:0.12,ay:10,py:1.5,k:68,c:4.9,a:1.05},
       // 7: 0b3fd projects right
-      {sx:0.29,ax:60,px:3.1,sy:0.36,ay:12,py:3.7,k:72,c:5.1,a:0.95},
+      {sx:0.12,ax:50,px:3.1,sy:0.15,ay:10,py:3.7,k:72,c:5.1,a:0.95},
       // 8: 57e01 hero left base
-      {sx:0.18,ax:50,px:2.0,sy:0.25,ay:10,py:0.9,k:60,c:4.6,a:0.85},
+      {sx:0.07,ax:42,px:2.0,sy:0.10,ay:8,py:0.9,k:60,c:4.6,a:0.85},
       // 9: 0d995 hero right base
-      {sx:0.23,ax:56,px:4.1,sy:0.31,ay:12,py:2.8,k:65,c:4.8,a:0.9},
+      {sx:0.09,ax:48,px:4.1,sy:0.13,ay:10,py:2.8,k:65,c:4.8,a:0.9},
       // 10: 8bc30 hero top center (matches 0)
-      {sx:0.28,ax:62,px:0.0,sy:0.35,ay:12,py:0.5,k:80,c:5.5,a:1.0},
+      {sx:0.11,ax:56,px:0.0,sy:0.15,ay:10,py:0.5,k:80,c:5.5,a:1.0},
       // 11: de02e hero top right (matches 1)
-      {sx:0.22,ax:75,px:2.3,sy:0.28,ay:14,py:1.8,k:65,c:4.8,a:1.2},
+      {sx:0.09,ax:68,px:2.3,sy:0.12,ay:12,py:1.8,k:65,c:4.8,a:1.2},
       // 12: de02e hero top left (matches 2)
-      {sx:0.32,ax:68,px:4.5,sy:0.38,ay:11,py:3.2,k:70,c:5.0,a:0.9}
+      {sx:0.13,ax:62,px:4.5,sy:0.16,ay:9,py:3.2,k:70,c:5.0,a:0.9}
     ];
     for(var i=0;i<n;i++){
       var D=DRIFT[i]||DRIFT[0];
@@ -668,12 +628,14 @@
   navFit();addEventListener('resize',navFit);
   nav.addEventListener('click',function(e){
     var a=e.target.closest('a');if(!a)return;
+    if(a.id==='sndBtn')return;
     var p=Math.floor(H*s),base=Math.floor(window.scrollY/p)*p;
+    var targetY=base+SEC[+a.getAttribute('data-go')]*s;
     window.scrollTo({top:targetY,behavior:'smooth'});
   });
   function navOn(){
     var p=Math.floor(H*s),y=((window.scrollY%p)/s)+300,i=y>=4300?3:y>=3250?2:y>=1150?1:0;
-    nav.querySelectorAll('a').forEach(function(a,k){a.classList.toggle('on',k===i&&k<3);});
+    nav.querySelectorAll('a[data-go]').forEach(function(a,k){a.classList.toggle('on',k===i&&k<3);});
   }
   addEventListener('scroll',navOn,{passive:true});navOn();
 
@@ -697,6 +659,80 @@
   }
   wrap.addEventListener('mouseover',function(e){hov(e,true);});
   wrap.addEventListener('mouseout',function(e){hov(e,false);});
+
+  /* ---------- AUDIO SYSTEM: THUNDER SFX ON START + CLASSICAL MUSIC ---------- */
+  (function audioSys(){
+    var thunder = new Audio('assets/thunder.mp3');
+    var music = new Audio('assets/classical.mp3');
+    thunder.volume = 0.70;
+    music.volume = 0.35;
+    music.loop = true;
+    music.preload = 'auto';
+    thunder.preload = 'auto';
+
+    var sndBtn = document.getElementById('sndBtn');
+    var sndIcon = document.getElementById('sndIcon');
+    var sndTxt = document.getElementById('sndTxt');
+    var isMuted = false;
+    var started = false;
+
+    function playThunder(){
+      if(isMuted) return;
+      thunder.currentTime = 0;
+      var p = thunder.play();
+      if(p && p.catch) p.catch(function(){});
+    }
+
+    function startAudio(){
+      if(started) return;
+      started = true;
+      if(!isMuted){
+        playThunder();
+        var p = music.play();
+        if(p && p.catch) p.catch(function(){});
+      }
+      ['click','keydown','touchstart','scroll','wheel'].forEach(function(ev){
+        removeEventListener(ev, startAudio);
+      });
+    }
+
+    var p0 = thunder.play();
+    if(p0 && p0.then){
+      p0.then(function(){
+        started = true;
+        music.play().catch(function(){});
+      }).catch(function(){
+        ['click','keydown','touchstart','scroll','wheel'].forEach(function(ev){
+          addEventListener(ev, startAudio, {passive:true, once:true});
+        });
+      });
+    } else {
+      ['click','keydown','touchstart','scroll','wheel'].forEach(function(ev){
+        addEventListener(ev, startAudio, {passive:true, once:true});
+      });
+    }
+
+    if(sndBtn){
+      sndBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        isMuted = !isMuted;
+        if(isMuted){
+          thunder.pause();
+          music.pause();
+          sndBtn.classList.add('off');
+          if(sndIcon) sndIcon.textContent = '✕';
+          if(sndTxt) sndTxt.textContent = 'Muted';
+        } else {
+          started = true;
+          sndBtn.classList.remove('off');
+          if(sndIcon) sndIcon.textContent = '♫';
+          if(sndTxt) sndTxt.textContent = 'Sound';
+          music.play().catch(function(){});
+        }
+      });
+    }
+  })();
 })();
 </script>
 </body>
