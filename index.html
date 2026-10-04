@@ -426,29 +426,117 @@
       if(storm.startTime < 0) startStorm();
     }, 2500);
 
-    function getThunderIntensity(e){
-      if(e < 0.1 || e > 4.2) return 0;
-      if(e >= 0.12 && e < 0.35){
-        var u1 = (e - 0.12) / 0.23;
-        return Math.sin(u1 * Math.PI) * 0.45;
+    /* Fast single-cloud lightning stutters matching thunder sound with minimal gaps */
+    function getThunderFlash(e){
+      if(e < 0.08 || e >= 1.76) return { cloud: -1, intensity: 0 };
+
+      // Cloud 2 (Right): Fast initial electric pre-strike stutter [0.08s - 0.42s]
+      if(e >= 0.08 && e < 0.42){
+        var t1 = e - 0.08;
+        var chatter = Math.abs(Math.sin(t1 * 58));
+        var pA = Math.max(0, 1 - Math.abs(t1 - 0.10) / 0.08);
+        var pB = Math.max(0, 1 - Math.abs(t1 - 0.25) / 0.11);
+        var env = Math.max(pA * 0.88, pB * 0.96);
+        var val = env * (0.35 + 0.65 * chatter);
+        return { cloud: 2, intensity: Math.min(1.0, Math.max(0, val)) };
       }
-      if(e >= 0.6 && e < 1.9){
-        var t2 = e - 0.6;
-        if(t2 < 0.08) return (t2 / 0.08) * 0.96;
-        if(t2 < 0.22) return 0.96 - (t2 - 0.08) * 2.2;
-        if(t2 < 0.36) return 0.65 + ((t2 - 0.22) / 0.14) * 0.35;
-        var dec = Math.exp(-(t2 - 0.36) * 2.6);
-        var rumble = 1.0 + 0.22 * Math.sin(t2 * 26);
-        return Math.min(1.0, Math.max(0, dec * rumble * 0.92));
+
+      // Micro gap: 0.42s - 0.44s (instant transfer)
+      if(e < 0.44) return { cloud: -1, intensity: 0 };
+
+      // Cloud 1 (Center): Main thunderbolt detonation with intense electrical stutter [0.44s - 1.08s]
+      if(e >= 0.44 && e < 1.08){
+        var t2 = e - 0.44;
+        var s1 = t2 < 0.04 ? (t2 / 0.04) : Math.exp(-(t2 - 0.04) * 14);
+        var s2 = (t2 >= 0.15 && t2 < 0.35) ? Math.max(0, 1 - Math.abs(t2 - 0.22) / 0.09) * 0.95 : 0;
+        var s3 = (t2 >= 0.35 && t2 < 0.64) ? Math.max(0, 1 - Math.abs(t2 - 0.46) / 0.14) * 0.82 : 0;
+        var env2 = Math.max(s1, Math.max(s2, s3));
+        var chatter2 = 0.45 + 0.55 * Math.abs(Math.sin(t2 * 72));
+        var val2 = env2 * chatter2;
+        if(s1 > 0.85 || s2 > 0.82) val2 = Math.max(val2, 0.98);
+        return { cloud: 1, intensity: Math.min(1.0, Math.max(0, val2)) };
       }
-      if(e >= 2.3 && e < 3.8){
-        var t3 = e - 2.3;
-        if(t3 < 0.14) return (t3 / 0.14) * 0.72;
-        var dec3 = Math.exp(-(t3 - 0.14) * 1.9);
-        var rumble3 = 1.0 + 0.24 * Math.sin(t3 * 20);
-        return Math.min(0.75, Math.max(0, dec3 * rumble3 * 0.68));
+
+      // Micro gap: 1.08s - 1.10s (instant transfer)
+      if(e < 1.10) return { cloud: -1, intensity: 0 };
+
+      // Cloud 0 (Left): Secondary rolling thunder arc with stutters [1.10s - 1.74s]
+      if(e >= 1.10 && e < 1.74){
+        var t3 = e - 1.10;
+        var r1 = Math.max(0, 1 - Math.abs(t3 - 0.08) / 0.08) * 0.90;
+        var r2 = Math.max(0, 1 - Math.abs(t3 - 0.28) / 0.11) * 0.84;
+        var r3 = Math.max(0, 1 - Math.abs(t3 - 0.50) / 0.13) * 0.78;
+        var env3 = Math.max(r1, Math.max(r2, r3));
+        var chatter3 = 0.4 + 0.6 * Math.abs(Math.sin(t3 * 52));
+        var val3 = env3 * chatter3;
+        if(r1 > 0.75 || r2 > 0.72) val3 = Math.max(val3, 0.88);
+        return { cloud: 0, intensity: Math.min(1.0, Math.max(0, val3)) };
       }
-      return 0;
+
+      return { cloud: -1, intensity: 0 };
+    }
+
+    /* Dynamic variable rain cycle: fast squall -> really fast downpour -> slow drizzle -> stopped -> resume */
+    function getRainWeather(eRain){
+      if(eRain < 0) return { speed: 0, density: 0, lenMul: 1, splashBoost: 0 };
+
+      // Weather cycle period: 36 seconds
+      var cycle = 36;
+      var p = eRain % cycle;
+
+      var speed, density, lenMul, splashBoost;
+
+      if(p < 4){
+        // 0 -> 4s: Initial squall accelerates
+        var u = p / 4;
+        speed = 1.0 + 0.85 * u;          // 1.0 -> 1.85x
+        density = 0.6 + 0.4 * u;         // 0.6 -> 1.0
+        lenMul = 1.0 + 0.6 * u;          // 1.0 -> 1.6
+        splashBoost = 1.0 + 0.65 * u;
+      } else if(p < 14){
+        // 4 -> 14s: "Really fast" heavy storm! (10s duration)
+        var u = (p - 4) / 10;
+        speed = 1.85 + 0.25 * Math.sin(u * Math.PI * 2); // 1.85 ~ 2.1x
+        density = 1.0;
+        lenMul = 1.6 + 0.2 * Math.sin(u * Math.PI * 2);  // 1.6 ~ 1.8x
+        splashBoost = 1.65;
+      } else if(p < 20){
+        // 14 -> 20s: "Slows down" - smooth deceleration into peaceful drizzle (6s duration)
+        var u = (p - 14) / 6;
+        var ease = 0.5 - 0.5 * Math.cos(u * Math.PI);
+        speed = 1.85 - (1.85 - 0.46) * ease; // 1.85 -> 0.46x
+        density = 1.0 - 0.55 * ease;         // 1.0 -> 0.45
+        lenMul = 1.6 - 0.85 * ease;          // 1.6 -> 0.75
+        splashBoost = 1.65 - 1.15 * ease;
+      } else if(p < 23){
+        // 20 -> 23s: Rain stops spawning, active drops fall and clear (3s)
+        var u = (p - 20) / 3;
+        speed = 0.46;
+        density = 0.45 * (1 - u);            // 0.45 -> 0.0
+        lenMul = 0.75;
+        splashBoost = 0.5 * (1 - u);
+      } else if(p < 29){
+        // 23 -> 29s: "Stops" - Rain completely stopped! Umbrella is dry and calm (6s)
+        speed = 0.5;
+        density = 0.0;                       // 0 drops spawned
+        lenMul = 0.75;
+        splashBoost = 0;
+      } else {
+        // 29 -> 36s: Resuming gently and building up for the next storm cycle (7s)
+        var u = (p - 29) / 7;
+        var ease = 0.5 - 0.5 * Math.cos(u * Math.PI);
+        speed = 0.5 + 0.5 * ease;            // 0.5 -> 1.0x
+        density = 0.6 * ease;                // 0.0 -> 0.6
+        lenMul = 0.75 + 0.25 * ease;         // 0.75 -> 1.0
+        splashBoost = 0.3 + 0.7 * ease;
+      }
+
+      return {
+        speed: speed,
+        density: density,
+        lenMul: lenMul,
+        splashBoost: splashBoost
+      };
     }
 
     var cloudGroups = [[], [], []];
@@ -472,15 +560,17 @@
     function applyCloudLighting(activeIdx, I){
       for(var g=0; g<3; g++){
         var group = cloudGroups[g];
-        var isTarget = (g === activeIdx && I > 0.002);
+        var isTarget = (g === activeIdx && I > 0.005);
         for(var j=0; j<group.length; j++){
           var im = group[j];
           if(isTarget){
-            // Soft, natural cloud highlight (not harsh or blown out)
-            var b = (1 + 0.55 * I).toFixed(3);
-            var c = (1 + 0.15 * I).toFixed(3);
-            var s = (1 - 0.08 * I).toFixed(3);
-            im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ')';
+            // Vibrant, high-contrast lightning illumination with electric alpha contour glow
+            var b = (1 + 2.35 * I).toFixed(3);
+            var c = (1 + 0.45 * I).toFixed(3);
+            var s = (1 - 0.18 * I).toFixed(3);
+            var d1 = (22 * I).toFixed(1);
+            var d2 = (10 * I).toFixed(1);
+            im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ') drop-shadow(0 0 ' + d1 + 'px rgba(220,242,255,0.85)) drop-shadow(0 0 ' + d2 + 'px rgba(255,255,255,0.92))';
             im._lit = true;
           } else if(im._lit){
             im.style.filter = '';
@@ -502,60 +592,57 @@
 
       var e = storm.startTime > 0 ? (t - storm.startTime) / 1000 : -1;
 
-      var activeCloud = -1;
-      var thunderI = 0;
+      // Fast single-cloud lightning stutters matching thunder sound
+      var flash = getThunderFlash(e);
+      applyCloudLighting(flash.cloud, flash.intensity);
 
-      // Thunder strikes only ONE cloud at a time:
-      // 0.12s - 0.35s: Right cloud only (index 2) - subtle pre-rumble
-      if(e >= 0.12 && e < 0.35){
-        activeCloud = 2;
-        var u1 = (e - 0.12) / 0.23;
-        thunderI = Math.sin(u1 * Math.PI) * 0.40;
-      }
-      // 0.6s - 1.9s: Center cloud only (index 1) - main thunder strike
-      else if(e >= 0.6 && e < 1.9){
-        activeCloud = 1;
-        var t2 = e - 0.6;
-        if(t2 < 0.08) thunderI = (t2 / 0.08) * 0.85;
-        else if(t2 < 0.22) thunderI = 0.85 - (t2 - 0.08) * 1.8;
-        else if(t2 < 0.36) thunderI = 0.55 + ((t2 - 0.22) / 0.14) * 0.30;
-        else {
-          var dec = Math.exp(-(t2 - 0.36) * 2.6);
-          var rumble = 1.0 + 0.18 * Math.sin(t2 * 26);
-          thunderI = Math.min(0.85, Math.max(0, dec * rumble * 0.80));
-        }
-      }
-      // 2.3s - 3.8s: Left cloud only (index 0) - secondary rolling thunder
-      else if(e >= 2.3 && e < 3.8){
-        activeCloud = 0;
-        var t3 = e - 2.3;
-        if(t3 < 0.14) thunderI = (t3 / 0.14) * 0.60;
-        else {
-          var dec3 = Math.exp(-(t3 - 0.14) * 1.9);
-          var rumble3 = 1.0 + 0.18 * Math.sin(t3 * 20);
-          thunderI = Math.min(0.60, Math.max(0, dec3 * rumble3 * 0.55));
-        }
-      }
-
-      applyCloudLighting(activeCloud, thunderI);
-
-      if(e >= 5.0){
+      if(e >= 2.15){
         storm.rainStarted = true;
       }
 
       if(storm.rainStarted){
-        storm.rainFade = Math.min(1, storm.rainFade + dt / 1.5);
+        storm.rainFade = Math.min(1, storm.rainFade + dt / 1.2);
+        var eRain = Math.max(0, e - 2.15);
+        var weather = getRainWeather(eRain);
+        var activeLimit = Math.floor(N * weather.density);
+
         for(var i=0;i<drops.length;i++){
-          var d=drops[i],tp=top[d.x|0]||1e9;
-          d.y+=d.v*dt;
-          if(!d.hit&&d.y>=tp){
-            d.hit=true;
-            if(Math.random()<.07&&runs.length<10)runs.push({x:d.x,y:tp,dir:(d.x<630?-1:(d.x>650?1:(Math.random()<.5?-1:1))),sp:30+Math.random()*40,tr:[],hang:0,h0:1,st:0,w:1.5+Math.random()*1.2});
-            if(rips.length<90)rips.push({x:d.x,y:tp,l:.38,m:.38,r:5+Math.random()*5});
-            if(parts.length<700)for(var j=0;j<6;j++){var ang=-Math.PI/2+(Math.random()-.5)*2.1,sp2=90+Math.random()*190;
-              parts.push({x:d.x,y:tp,vx:Math.cos(ang)*sp2,vy:Math.sin(ang)*sp2,l:.34+Math.random()*.26,m:.6,w:.7+Math.random()*.8});}
+          var d=drops[i];
+          var tp=top[d.x|0]||1e9;
+
+          if(d.y < -100){
+            if(i < activeLimit){
+              spawn(d, false);
+            }
+            continue;
           }
-          if(d.y-d.len>=tp)spawn(d,false);
+
+          d.y += d.v * weather.speed * dt;
+          if(!d.hit && d.y >= tp){
+            d.hit = true;
+            var sb = weather.splashBoost;
+            if(sb > 0.05){
+              if(Math.random() < 0.07 * sb && runs.length < 10) runs.push({x:d.x,y:tp,dir:(d.x<630?-1:(d.x>650?1:(Math.random()<.5?-1:1))),sp:30+Math.random()*40,tr:[],hang:0,h0:1,st:0,w:1.5+Math.random()*1.2});
+              if(rips.length < 90) rips.push({x:d.x,y:tp,l:.38,m:.38,r:(5+Math.random()*5)*Math.max(0.6, sb)});
+              if(parts.length < 700){
+                var nP = Math.round(6 * Math.min(1.5, Math.max(0.3, sb)));
+                for(var j=0;j<nP;j++){
+                  var ang=-Math.PI/2+(Math.random()-.5)*2.1,sp2=(90+Math.random()*190)*Math.min(1.6, Math.max(0.5, sb));
+                  parts.push({x:d.x,y:tp,vx:Math.cos(ang)*sp2,vy:Math.sin(ang)*sp2,l:.34+Math.random()*.26,m:.6,w:.7+Math.random()*.8});
+                }
+              }
+            }
+          }
+
+          var effLen = d.len * weather.lenMul;
+          if(d.y - effLen >= tp){
+            if(i < activeLimit){
+              spawn(d, false);
+            } else {
+              d.y = -9999;
+              d.hit = true;
+            }
+          }
         }
 
         for(var ri=runs.length-1;ri>=0;ri--){
@@ -595,8 +682,15 @@
 
         if(storm.rainStarted && storm.rainFade > 0){
           var rf = storm.rainFade;
+          var eRain = Math.max(0, e - 2.15);
+          var weather = getRainWeather(eRain);
+
           for(var i=0;i<drops.length;i++){
-            var d=drops[i],tp=top[d.x|0]||1e9,y1=Math.min(d.y,tp),y0=d.y-d.len;
+            var d=drops[i];
+            if(d.y < -100) continue;
+            var tp=top[d.x|0]||1e9;
+            var effLen = d.len * weather.lenMul;
+            var y1=Math.min(d.y,tp),y0=d.y-effLen;
             if(y0>=y1)continue;
             var fade=Math.min(1,Math.max(0,(d.y-d.sy)/90));
             c.strokeStyle='rgba(205,228,255,'+(d.a*fade*rf)+')';
