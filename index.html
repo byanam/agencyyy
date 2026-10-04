@@ -23,7 +23,8 @@
     --P:"https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc";
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:#000;overflow-x:hidden}
+  html,body{background:#000;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
+  html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   #wrap{position:relative;width:100%;overflow:hidden;background:#000}
   .stage{position:absolute;left:0;top:0;width:1280px;height:5218px;background:#000;overflow:hidden;transform-origin:0 0}
   .stage *{position:absolute}
