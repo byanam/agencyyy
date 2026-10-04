@@ -451,34 +451,42 @@
       return 0;
     }
 
-    var thunderImgs = [];
+    var cloudGroups = [[], [], []];
     copies.forEach(function(cp){
-      cp.querySelectorAll('img[data-k="8bc30"], img[data-k="de02e"]').forEach(function(im){
-        thunderImgs.push(im);
-      });
+      var leftTop = cp.querySelector('div[style*="-325.81px"] img');
+      var leftBot = cp.querySelector('div[style*="4890.19px"] img');
+      if(leftTop) cloudGroups[0].push(leftTop);
+      if(leftBot) cloudGroups[0].push(leftBot);
+
+      var midTop = cp.querySelector('.rb[style*="-328px"] img');
+      var midBot = cp.querySelector('.rb[style*="4888px"] img');
+      if(midTop) cloudGroups[1].push(midTop);
+      if(midBot) cloudGroups[1].push(midBot);
+
+      var rightTop = cp.querySelector('.rb[style*="-400px"] img');
+      var rightBot = cp.querySelector('.rb[style*="4816px"] img');
+      if(rightTop) cloudGroups[2].push(rightTop);
+      if(rightBot) cloudGroups[2].push(rightBot);
     });
 
-    function applyCloudLighting(I, t){
-      if(I <= 0.002){
-        for(var j=0; j<thunderImgs.length; j++){
-          if(thunderImgs[j]._lit){
-            thunderImgs[j].style.filter = '';
-            thunderImgs[j]._lit = false;
+    function applyCloudLighting(activeIdx, I){
+      for(var g=0; g<3; g++){
+        var group = cloudGroups[g];
+        var isTarget = (g === activeIdx && I > 0.002);
+        for(var j=0; j<group.length; j++){
+          var im = group[j];
+          if(isTarget){
+            // Soft, natural cloud highlight (not harsh or blown out)
+            var b = (1 + 0.55 * I).toFixed(3);
+            var c = (1 + 0.15 * I).toFixed(3);
+            var s = (1 - 0.08 * I).toFixed(3);
+            im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ')';
+            im._lit = true;
+          } else if(im._lit){
+            im.style.filter = '';
+            im._lit = false;
           }
         }
-        return;
-      }
-      // Illumination is strictly confined INSIDE the clouds (no external sky bleed)
-      for(var j=0; j<thunderImgs.length; j++){
-        var im = thunderImgs[j];
-        var k = im.getAttribute('data-k');
-        var flicker = 0.9 + 0.1 * Math.sin(t * 34 + j * 2.3);
-        var cloudI = Math.min(1.0, I * (k === '8bc30' ? 1.0 : flicker));
-        var b = (1 + 2.8 * cloudI).toFixed(3);
-        var c = (1 + 0.48 * cloudI).toFixed(3);
-        var s = (1 - 0.28 * cloudI).toFixed(3);
-        im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ')';
-        im._lit = true;
       }
     }
 
@@ -494,11 +502,42 @@
 
       var e = storm.startTime > 0 ? (t - storm.startTime) / 1000 : -1;
 
+      var activeCloud = -1;
       var thunderI = 0;
-      if(e >= 0 && e <= 4.2){
-        thunderI = getThunderIntensity(e);
+
+      // Thunder strikes only ONE cloud at a time:
+      // 0.12s - 0.35s: Right cloud only (index 2) - subtle pre-rumble
+      if(e >= 0.12 && e < 0.35){
+        activeCloud = 2;
+        var u1 = (e - 0.12) / 0.23;
+        thunderI = Math.sin(u1 * Math.PI) * 0.40;
       }
-      applyCloudLighting(thunderI, t);
+      // 0.6s - 1.9s: Center cloud only (index 1) - main thunder strike
+      else if(e >= 0.6 && e < 1.9){
+        activeCloud = 1;
+        var t2 = e - 0.6;
+        if(t2 < 0.08) thunderI = (t2 / 0.08) * 0.85;
+        else if(t2 < 0.22) thunderI = 0.85 - (t2 - 0.08) * 1.8;
+        else if(t2 < 0.36) thunderI = 0.55 + ((t2 - 0.22) / 0.14) * 0.30;
+        else {
+          var dec = Math.exp(-(t2 - 0.36) * 2.6);
+          var rumble = 1.0 + 0.18 * Math.sin(t2 * 26);
+          thunderI = Math.min(0.85, Math.max(0, dec * rumble * 0.80));
+        }
+      }
+      // 2.3s - 3.8s: Left cloud only (index 0) - secondary rolling thunder
+      else if(e >= 2.3 && e < 3.8){
+        activeCloud = 0;
+        var t3 = e - 2.3;
+        if(t3 < 0.14) thunderI = (t3 / 0.14) * 0.60;
+        else {
+          var dec3 = Math.exp(-(t3 - 0.14) * 1.9);
+          var rumble3 = 1.0 + 0.18 * Math.sin(t3 * 20);
+          thunderI = Math.min(0.60, Math.max(0, dec3 * rumble3 * 0.55));
+        }
+      }
+
+      applyCloudLighting(activeCloud, thunderI);
 
       if(e >= 5.0){
         storm.rainStarted = true;
