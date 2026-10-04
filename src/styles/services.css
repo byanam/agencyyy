@@ -1,0 +1,42 @@
+.figma-services-section {
+  width: 100%;
+  position: relative;
+  padding: clamp(60px, 8vw, 120px) clamp(20px, 4vw, 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 20;
+}
+
+.services-list-container {
+  width: min(100%, 1050px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 auto;
+}
+
+.service-row-item {
+  width: 100%;
+  border-radius: 9999px;
+  background: var(--color-purple-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 16px clamp(24px, 4vw, 48px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 80px;
+  text-decoration: none;
+}
+
+.service-row-item:hover,
+.service-row-item.is-active {
+  background: var(--color-purple-active);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 40px rgba(87, 0, 185, 0.45);
+  transform: translateY(-2px);
+}
