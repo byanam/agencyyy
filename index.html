@@ -747,13 +747,10 @@
       z-index: 1000;
       overflow: hidden;
       background: transparent;
-      opacity: 0;
       pointer-events: none;
-      transition: opacity 0.35s ease;
     }
 
     .rc-modal-overlay.open {
-      opacity: 1;
       pointer-events: auto;
     }
 
@@ -765,40 +762,13 @@
       height: 698px;
       transform-origin: top right;
       transform: scale(var(--s, 1)) translate3d(0, calc(100vh + 120px), 0);
-      opacity: 0;
-      transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
-      will-change: transform, opacity;
+      transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
       pointer-events: auto;
     }
 
     .rc-modal-overlay.open .rc-modal-card {
       transform: scale(var(--s, 1)) translate3d(0, 0, 0);
-      opacity: 1;
-    }
-
-    .rc-modal-close {
-      position: absolute;
-      top: -14px;
-      left: -14px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(22, 22, 32, 0.92);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .rc-modal-close:hover {
-      transform: scale(1.1);
-      background: rgba(45, 45, 65, 0.98);
-      border-color: rgba(255, 255, 255, 0.7);
     }
   </style>
 </head>
@@ -1183,15 +1153,9 @@
 
     </div>
   </div>
-  <!-- RECEIPT MODAL OVERLAY (SLIDES IN FROM SIDE ON GET IN TOUCH) -->
+  <!-- RECEIPT MODAL OVERLAY (POPS UP FROM BOTTOM ON GET IN TOUCH) -->
   <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Contact Receipt Form">
     <div class="rc-modal-card">
-      <button class="rc-modal-close" aria-label="Close receipt modal">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
       <div class="rc"
         style="position:relative;left:0;top:0;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate;box-shadow:-14px 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.08)">
         <p class="sans"
@@ -1956,7 +1920,7 @@
       }
       if (rcModal) {
         rcModal.addEventListener('click', function (e) {
-          if (!e.target.closest('.rc-modal-card') || (e.target.closest && e.target.closest('.rc-modal-close'))) {
+          if (!e.target.closest('.rc-modal-card')) {
             closeRcModal();
           }
         });
