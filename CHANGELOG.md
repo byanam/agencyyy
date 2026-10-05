@@ -96,3 +96,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add text-rendering:optimizeLegibility to heading sele -->
 
 <!-- micro-improvement: perf: defer non-critical pnoise canvas generation with reque -->
+
+<!-- micro-improvement: style: clamp h200 font-size with CSS clamp() for fluid scali -->
