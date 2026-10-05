@@ -28,6 +28,7 @@
   <style>
     :root {
       --P: "https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc";
+      --s: 1;
     }
 
     * {
@@ -55,7 +56,25 @@
       position: relative;
       width: 100%;
       overflow: hidden;
-      background: #000
+      background: #000;
+      transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: filter;
+    }
+
+    body.rc-open #wrap {
+      filter: blur(14px) saturate(110%);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    body.rc-open #nav {
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    body.rc-open #cur {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .stage {
@@ -495,7 +514,8 @@
       border: 1px solid rgba(255, 255, 255, 0.36);
       box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.18), 0 10px 30px -4px rgba(0, 0, 30, 0.35), 0 4px 12px 0 rgba(0, 0, 0, 0.16);
       font-family: 'Instrument Sans', sans-serif;
-      white-space: nowrap
+      white-space: nowrap;
+      transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
     }
 
     #nav::before {
@@ -614,8 +634,13 @@
       align-items: center;
       justify-content: center;
       border-radius: 30px;
-      background: rgba(217, 217, 217, .2);
-      color: #f2f2f2;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.11) 100%);
+      backdrop-filter: blur(22px) saturate(190%) contrast(105%);
+      -webkit-backdrop-filter: blur(22px) saturate(190%) contrast(105%);
+      isolation: isolate;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.18), 0 10px 30px -4px rgba(0, 0, 30, 0.35), 0 4px 12px 0 rgba(0, 0, 0, 0.16);
+      color: rgba(255, 255, 255, 0.95);
       font-size: 20px;
       font-weight: 600;
       letter-spacing: -.6px;
@@ -623,12 +648,27 @@
       text-transform: capitalize;
       pointer-events: auto;
       cursor: pointer;
-      transition: background .3s, transform .3s
+      transition: background .25s ease, transform .25s ease, border-color .25s ease, box-shadow .25s ease, color .25s ease
+    }
+
+    .stage .bm::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 30px;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.03) 48%, transparent 75%);
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
+      mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
+      z-index: -1;
     }
 
     .stage .bm:hover {
-      background: rgba(217, 217, 217, .34);
-      transform: scale(1.02)
+      color: #fff;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.18) 100%);
+      border-color: rgba(255, 255, 255, 0.55);
+      box-shadow: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.18), 0 14px 38px -4px rgba(0, 0, 40, 0.45), 0 6px 16px 0 rgba(0, 0, 0, 0.2);
+      transform: scale(1.02) translateY(-2px)
     }
 
     .rc .rt2 {
@@ -686,6 +726,74 @@
     .rc .rcSend:hover {
       background: #000;
       color: #f3f3f3
+    }
+
+    .rc * {
+      position: absolute
+    }
+
+    .rc [style*="position:static"] {
+      position: static !important
+    }
+
+    .rc-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      overflow: hidden;
+      background: transparent;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .rc-modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .rc-modal-card {
+      position: fixed;
+      right: calc(37px * var(--s, 1));
+      top: calc(88px * var(--s, 1));
+      width: 427px;
+      height: 698px;
+      transform-origin: top right;
+      transform: scale(var(--s, 1)) translate3d(calc(100% + 80px), 0, 0);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      will-change: transform, opacity;
+      pointer-events: auto;
+    }
+
+    .rc-modal-overlay.open .rc-modal-card {
+      transform: scale(var(--s, 1)) translate3d(0, 0, 0);
+      opacity: 1;
+    }
+
+    .rc-modal-close {
+      position: absolute;
+      top: -14px;
+      left: -14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(22, 22, 32, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .rc-modal-close:hover {
+      transform: scale(1.1);
+      background: rgba(45, 45, 65, 0.98);
+      border-color: rgba(255, 255, 255, 0.7);
     }
   </style>
 </head>
@@ -771,18 +879,17 @@
       <div class="pnoise"
         style="left:38px;top:0;width:1205px;height:5216px;border-radius:39px;background-size:256px 256px"></div>
 
-      <!-- footer clouds -->
-      <div class="rb" style="left:298px;top:4888px;width:849px;height:369px">
+      <!-- footer clouds (layered on top of receipt) -->
+      <div class="rb" style="left:298px;top:4888px;width:849px;height:369px;z-index:20;pointer-events:none">
         <div class="r" style="transform:rotate(90deg);width:369px;height:849px"><img class="cover"
             style="object-fit:fill" data-k="8bc30" alt=""></div>
       </div>
-      <div class="rb" style="left:410.8px;top:4816px;width:1191.204px;height:700.88px">
+      <div class="rb" style="left:410.8px;top:4816px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover"
             data-k="de02e" alt=""></div>
       </div>
-      <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt="">
+      <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img class="cover" data-k="de02e" alt="">
       </div>
-
 
       <!-- contact -->
       <p class="serif"
@@ -792,7 +899,7 @@
         style="left:75px;top:4558px;width:697px;height:279px;font-size:64px;line-height:.86;letter-spacing:-4.48px;text-align:center">
         Whether you have a project or just an idea, we’d love to hear about it. :D</p>
       <p class="sans"
-        style="left:290px;top:4754px;width:267px;font-size:20px;line-height:.86;letter-spacing:-1.4px;color:#f2f2f2;white-space:pre-wrap">
+        style="left:423.5px;top:4754px;transform:translateX(-50%);font-size:20px;line-height:.86;letter-spacing:-1.4px;color:#f2f2f2;text-align:center;white-space:nowrap">
         TEAM LEAD <b style="font-weight:600;position:static">ANAM RAZZAQUE</b></p>
       <p class="sans"
         style="left:423px;top:4779px;width:308px;transform:translateX(-50%);font-size:20px;line-height:.86;letter-spacing:-1.4px;color:#646464;text-align:center">
@@ -800,7 +907,7 @@
       <a class="bm sans" href="mailto:anamrazzaque.work@gmail.com?subject=Meeting%20request"
         style="left:176px;top:4834px;width:495px;height:60px">Book A Meeting</a>
       <div class="rc"
-        style="left:816px;top:4337px;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate">
+        style="left:816px;top:4337px;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate;z-index:1">
         <p class="sans"
           style="left:213.5px;top:41px;width:457.5px;transform:translateX(-50%) ;font-weight:700;font-size:80px;line-height:.68;letter-spacing:-5.6px;color:red;text-align:center;opacity:.7;mix-blend-mode:overlay;white-space:pre-wrap">
           LEGENDAIRY<br>STUDIO</p>
@@ -922,7 +1029,7 @@
       </div>
 
       <div class="sans"
-        style="left:640px;top:5070px;transform:translateX(-50%);width:1149px;text-align:center;font-size:13px;letter-spacing:1.5px;font-weight:500;color:rgba(255,255,255,0.45);text-transform:uppercase;white-space:nowrap;pointer-events:none">
+        style="left:640px;top:5070px;transform:translateX(-50%);width:1149px;text-align:center;font-size:13px;letter-spacing:1.5px;font-weight:500;color:rgba(255,255,255,0.45);text-transform:uppercase;white-space:nowrap;pointer-events:none;z-index:21">
         © 2026 LEGENDARY AGENCY • INDEPENDENT DESIGN &amp; WEB STUDIO • DELHI NCR, INDIA</div>
 
       <!-- services -->
@@ -1057,18 +1164,150 @@
       </div>
 
       <!-- top clouds -->
-      <div class="rb" style="left:298px;top:-328px;width:849px;height:369px">
+      <div class="rb" style="left:298px;top:-328px;width:849px;height:369px;z-index:20;pointer-events:none">
         <div class="r" style="transform:rotate(90deg);width:369px;height:849px"><img class="cover"
             style="object-fit:fill" data-k="8bc30" alt=""></div>
       </div>
-      <div class="rb" style="left:410.8px;top:-400px;width:1191.204px;height:700.88px">
+      <div class="rb" style="left:410.8px;top:-400px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover"
             data-k="de02e" alt=""></div>
       </div>
-      <div style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt="">
+      <div style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img class="cover" data-k="de02e" alt="">
       </div>
 
 
+    </div>
+  </div>
+  <!-- RECEIPT MODAL OVERLAY (SLIDES IN FROM SIDE ON GET IN TOUCH) -->
+  <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Contact Receipt Form">
+    <div class="rc-modal-card">
+      <button class="rc-modal-close" aria-label="Close receipt modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="rc"
+        style="position:relative;left:0;top:0;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate;box-shadow:-14px 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.08)">
+        <p class="sans"
+          style="left:213.5px;top:41px;width:457.5px;transform:translateX(-50%) ;font-weight:700;font-size:80px;line-height:.68;letter-spacing:-5.6px;color:red;text-align:center;opacity:.7;mix-blend-mode:overlay;white-space:pre-wrap">
+          LEGENDAIRY<br>STUDIO</p>
+        <p class="serif"
+          style="left:213.5px;top:25px;width:427px;transform:translateX(-50%);font-size:48px;line-height:.65;letter-spacing:-1.44px;color:#000;text-align:center">
+          legendary Agency</p>
+        <div class="sans rt2" style="left:214px;top:70px;transform:translateX(-50%);text-align:center;white-space:nowrap">
+          <p style="position:static">D196, D block, Swarn Nagri</p>
+          <p style="position:static">Greater Noida, UP</p>
+        </div>
+        <p class="sans rt2" style="left:214px;top:114px;transform:translateX(-50%);font-weight:500;white-space:nowrap">(+91)
+          9229542747</p>
+        <p class="sans rt2"
+          style="left:325px;top:142px;transform:translateX(-100%);font-weight:500;white-space:nowrap">
+          anamrazzaque@gmail.com</p>
+        <div style="left:24px;top:170px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
+        <p class="sans rt2" style="left:23px;top:190px;">DATE</p>
+        <p class="sans rt2" style="left:23px;top:212px;">TIME</p>
+        <p class="sans rt2" style="left:23px;top:234px;">BASED</p>
+        <p class="sans rt2" style="left:169px;top:190px;">:</p>
+        <p class="sans rt2" style="left:169px;top:212px;">:</p>
+        <p class="sans rt2" style="left:169px;top:234px;">:</p>
+        <p class="sans rt2 rcDate" style="left:404px;top:190px;transform:translateX(-100%);white-space:nowrap">05/10/2026
+        </p>
+        <p class="sans rt2 rcTime" style="left:404px;top:212px;transform:translateX(-100%);white-space:nowrap">04:45:21 PM
+        </p>
+        <p class="sans rt2" style="left:404px;top:234px;transform:translateX(-100%)">INDIA</p>
+        <div style="left:24px;top:271px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
+        <input class="sans rcN" placeholder="[YOUR NAME]" style="left:24px;top:285px;width:380px;height:26px"
+          autocomplete="off" aria-label="Your Name">
+        <div style="left:24px;top:313px;width:380px;height:0;border-top:1px dashed rgba(0,0,0,.7)"></div>
+        <input class="sans rcE" type="email" placeholder="[YOUR MAIL]"
+          style="left:24px;top:314px;width:380px;height:26px" autocomplete="off" aria-label="Your Email">
+        <div style="left:24px;top:340px;width:380px;height:0;border-top:1px dashed rgba(0,0,0,.7)"></div>
+        <textarea class="sans rcM" placeholder="[ABOUT THE PROJECT]"
+          style="left:24px;top:345px;width:380px;height:72px" aria-label="About the project"></textarea>
+        <div style="left:24px;top:422px;width:380px;height:0;border-top:1px dashed rgba(0,0,0,.7)"></div>
+        <label class="sans rt2 rcAtt"
+          style="left:24px;top:425px;width:380px;height:22px;display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;overflow:hidden"><svg
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"
+            stroke-linecap="round" style="flex:none">
+            <path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7L14 4.5a3.3 3.3 0 0 1 4.7 4.7L10 18a1.7 1.7 0 0 1-2.4-2.4L15 8" />
+          </svg><span class="rcFn">ATTACH A PDF/DOC FILE, 10 MB MAX</span><input type="file" class="rcFile"
+            accept=".pdf,.doc,.docx" style="display:none" aria-label="Attach a document"></label>
+        <div style="left:24px;top:447px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
+        <button class="sans rcSend" style="left:24px;top:449px;width:380px;height:44px">[SUBMIT]</button>
+        <div style="left:24px;top:495px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
+        <p class="sans rt2" style="left:82px;top:500px;white-space:nowrap">We reply within the first 24 hours</p>
+        <div style="left:24px;top:522px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
+        <div style="left:35px;top:553px;width:357.6px;height:101px"><svg viewBox="0 0 357.6 101" width="357.6"
+            height="101">
+            <rect x="0.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="4.0" y="0" width="3" height="101" fill="#000" />
+            <rect x="8.5" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="11.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="15.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="21.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="24.0" y="0" width="3" height="101" fill="#000" />
+            <rect x="31.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="34.5" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="40.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="43.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="46.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="54.5" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="58.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="61.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="67.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="71.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="78.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="84.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="87.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="91.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="96.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="102.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="108.0" y="0" width="3" height="101" fill="#000" />
+            <rect x="115.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="121.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="129.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="134.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="138.0" y="0" width="5" height="101" fill="#000" />
+            <rect x="145.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="149.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="157.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="163.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="167.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="172.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="177.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="183.5" y="0" width="3" height="101" fill="#000" />
+            <rect x="188.0" y="0" width="5" height="101" fill="#000" />
+            <rect x="194.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="201.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="206.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="214.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="222.5" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="225.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="231.5" y="0" width="5" height="101" fill="#000" />
+            <rect x="238.0" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="242.5" y="0" width="5" height="101" fill="#000" />
+            <rect x="251.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="257.5" y="0" width="5" height="101" fill="#000" />
+            <rect x="265.5" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="271.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="275.0" y="0" width="4" height="101" fill="#000" />
+            <rect x="280.5" y="0" width="3" height="101" fill="#000" />
+            <rect x="285.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="290.0" y="0" width="2" height="101" fill="#000" />
+            <rect x="294.0" y="0" width="3" height="101" fill="#000" />
+            <rect x="301.0" y="0" width="3" height="101" fill="#000" />
+            <rect x="305.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="311.5" y="0" width="3" height="101" fill="#000" />
+            <rect x="317.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="323.5" y="0" width="4" height="101" fill="#000" />
+            <rect x="330.5" y="0" width="5" height="101" fill="#000" />
+            <rect x="339.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="345.5" y="0" width="2" height="101" fill="#000" />
+            <rect x="349.5" y="0" width="1.5" height="101" fill="#000" />
+            <rect x="353.0" y="0" width="2" height="101" fill="#000" />
+          </svg></div>
+      </div>
     </div>
   </div>
   <div id="cur"><span>View</span></div>
@@ -1118,6 +1357,7 @@
       }
       function layout() {
         s = document.documentElement.clientWidth / W;
+        document.documentElement.style.setProperty('--s', s);
         copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * Math.floor(H * s)) + 'px) scale(' + s + ')'; });
         wrap.style.height = (2 * Math.floor(H * s)) + 'px';
       }
@@ -1647,6 +1887,15 @@
         if (a.id === 'sndBtn') return;
         var p = Math.floor(H * s), base = Math.floor(window.scrollY / p) * p;
         var targetY = base + SEC[+a.getAttribute('data-go')] * s;
+        if (a.classList.contains('cta') || a.getAttribute('data-go') === '3') {
+          e.preventDefault();
+          if (rcModal && rcModal.classList.contains('open')) {
+            closeRcModal();
+          } else {
+            openRcModal();
+          }
+          return;
+        }
         window.scrollTo({ top: targetY, behavior: 'smooth' });
       });
       function navOn() {
@@ -1687,7 +1936,35 @@
       wrap.addEventListener('mouseover', function (e) { hov(e, true); });
       wrap.addEventListener('mouseout', function (e) { hov(e, false); });
 
-      /* ---------- CONTACT receipt: live date/time + form ---------- */
+      /* ---------- CONTACT receipt: live date/time + form + modal popup ---------- */
+      var rcModal = document.getElementById('rcModal');
+      function openRcModal() {
+        if (!rcModal) return;
+        document.body.classList.add('rc-open');
+        rcModal.classList.add('open');
+        rcModal.setAttribute('aria-hidden', 'false');
+        var inp = rcModal.querySelector('.rcN');
+        if (inp) setTimeout(function () { inp.focus(); }, 400);
+      }
+      function closeRcModal() {
+        if (!rcModal) return;
+        document.body.classList.remove('rc-open');
+        rcModal.classList.remove('open');
+        rcModal.setAttribute('aria-hidden', 'true');
+      }
+      if (rcModal) {
+        rcModal.addEventListener('click', function (e) {
+          if (!e.target.closest('.rc-modal-card') || (e.target.closest && e.target.closest('.rc-modal-close'))) {
+            closeRcModal();
+          }
+        });
+      }
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && rcModal && rcModal.classList.contains('open')) {
+          closeRcModal();
+        }
+      });
+
       (function receipt() {
         function tick() {
           var d = new Date(), tz = { timeZone: 'Asia/Kolkata' };
@@ -1697,12 +1974,12 @@
           document.querySelectorAll('.rcTime').forEach(function (e) { e.textContent = ts; });
         }
         tick(); setInterval(tick, 1000);
-        wrap.addEventListener('change', function (e) {
+        document.addEventListener('change', function (e) {
           if (!e.target.classList || !e.target.classList.contains('rcFile')) return;
           var f = e.target.files[0], lab = e.target.closest('.rcAtt').querySelector('.rcFn');
           lab.textContent = f ? f.name.toUpperCase() : 'ATTACH A PDF/DOC FILE, 10 MB MAX';
         });
-        wrap.addEventListener('click', function (e) {
+        document.addEventListener('click', function (e) {
           var b = e.target.closest && e.target.closest('.rcSend'); if (!b) return;
           var r = b.closest('.rc'), n = r.querySelector('.rcN').value, em = r.querySelector('.rcE').value, m = r.querySelector('.rcM').value, f = r.querySelector('.rcFile').files[0];
           if (!n || !em) { (n ? r.querySelector('.rcE') : r.querySelector('.rcN')).focus(); return; }
