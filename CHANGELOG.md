@@ -100,3 +100,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: clamp h200 font-size with CSS clamp() for fluid scali -->
 
 <!-- micro-improvement: a11y: set tabIndex=-1 on loader-screen so keyboard focus ski -->
+
+<!-- micro-improvement: style: increase inner-shadow opacity in shB filter from 0.6  -->
