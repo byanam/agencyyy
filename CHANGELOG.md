@@ -74,3 +74,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add overflow:hidden to loader-screen to clip any over -->
 
 <!-- micro-improvement: perf: set fetchpriority=high on thunder.mp3 preload to prior -->
+
+<!-- micro-improvement: style: reduce nav gap from 6px to 5px for slightly tighter s -->
