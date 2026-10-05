@@ -240,21 +240,33 @@
       transition: transform .35s ease
     }
 
+    .stage a.cta2 .cta-arr {
+      display: inline-block;
+      font-size: 24px;
+      line-height: 1;
+      margin-left: 8px;
+      transition: transform .35s cubic-bezier(.2, .9, .3, 1.25);
+    }
+
     .stage a.cta2:hover {
       transform: translateX(-50%) translateY(-5px) scale(1.06);
       background: linear-gradient(180deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .2));
       box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), inset 0 -2px 4px rgba(255, 255, 255, .5), 0 18px 46px rgba(255, 255, 255, .22)
     }
 
-    .stage a.cta2:hover span {
-      transform: translateX(6px)
+    .stage a.cta2:hover span:not(.cta-arr) {
+      transform: translateX(4px)
+    }
+
+    .stage a.cta2:hover .cta-arr {
+      transform: translate3d(5px, -4px, 0);
     }
 
     .stage a.row {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: 0 24px;
+      padding: 0 28px;
       border-radius: 20px;
       font-family: 'Instrument Sans', sans-serif;
       transition: background .3s ease, box-shadow .3s ease
@@ -262,11 +274,12 @@
 
     .stage a.row .k {
       display: block;
-      font-size: 12px;
-      letter-spacing: 1.8px;
+      font-size: 11px;
+      letter-spacing: 2px;
       font-weight: 600;
-      color: rgba(255, 255, 255, .5);
-      margin-bottom: 6px
+      color: rgba(255, 255, 255, .48);
+      margin-bottom: 4px;
+      text-transform: uppercase;
     }
 
     .stage a.row .v {
@@ -278,6 +291,16 @@
       transition: transform .35s cubic-bezier(.2, .9, .3, 1.2)
     }
 
+    .stage a.row .s {
+      display: block;
+      font-size: 12px;
+      letter-spacing: -.2px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, .4);
+      margin-top: 4px;
+      transition: color .3s ease;
+    }
+
     .stage a.row:hover {
       background: rgba(255, 255, 255, .15);
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3)
@@ -287,12 +310,16 @@
       transform: translateX(8px)
     }
 
+    .stage a.row:hover .s {
+      color: rgba(255, 255, 255, .65);
+    }
+
     #contact-bar {
       position: absolute;
       left: 65px;
-      top: 4900px;
+      top: 4850px;
       width: 1149px;
-      height: 104px;
+      height: 112px;
       border-radius: 30px;
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.11) 100%);
       backdrop-filter: blur(22px) saturate(190%) contrast(105%);
@@ -314,6 +341,87 @@
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.03) 48%, transparent 75%);
       -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
       mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
+    }
+
+    .avail-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 18px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulseDot 2.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .contact-pitch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      font-family: 'Instrument Sans', sans-serif;
+    }
+
+    .contact-pitch * {
+      position: static;
+    }
+
+    .pitch-lead {
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -2px;
+      line-height: 1.15;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+      margin-bottom: 12px;
+    }
+
+    .pitch-body {
+      font-size: 21px;
+      font-weight: 400;
+      letter-spacing: -.5px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.72);
+      max-width: 660px;
+      text-align: center;
+    }
+
+    .studio-meta {
+      width: 1149px;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 2.2px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.42);
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     .stage,
@@ -699,36 +807,49 @@
 
 
       <!-- contact -->
-      <div class="sans grad"
-        style="left:0;top:4546px;padding:12px;width:1280px;font-size:64px;letter-spacing:-4.48px;line-height:0;text-align:center;white-space:pre-wrap;background-image:linear-gradient(180deg,#fffc35 12px,#bdbdbd 177px);height:189px">
-        <p style="position:static;line-height:.86">Got an idea worth building?</p>
-        <p style="position:static;line-height:.86">Tell us about it. We reply within a day</p>
-        <p style="position:static;line-height:.86">and turn it into something remarkable.</p>
+      <div class="avail-badge sans"
+        style="left:640px;top:4305px;transform:translateX(-50%)">
+        <span class="status-dot"></span>
+        <span>ACCEPTING NEW COMMISSIONS • 2026/2027</span>
       </div>
-      <a class="cta2 sans" href="mailto:anamrazzaque.work@gmail.com"
-        style="left:640px;top:4778px;width:300px;height:70px">Start a project</a>
+
+      <p class="serif h200 shA" style="left:640px;top:4356px;color:#fff">Contact Us</p>
+      <p class="serif h200 shA" style="left:640px;top:4356px;color:#fff">Contact Us</p>
+
+      <div class="contact-pitch"
+        style="left:640px;top:4560px;transform:translateX(-50%);width:960px;text-align:center">
+        <p class="pitch-lead sans">Got an idea worth building?</p>
+        <p class="pitch-body sans">Tell us about it. We reply within a day and turn it into something remarkable.</p>
+      </div>
+
+      <a class="cta2 sans" href="mailto:anamrazzaque.work@gmail.com?subject=Project%20Inquiry%20%E2%80%94%20Legendary%20Agency"
+        style="left:640px;top:4720px;width:300px;height:66px"><span>Start a project</span><span class="cta-arr">↗</span></a>
+
       <div id="contact-bar"></div>
       <div
-        style="left:453px;top:4920px;width:1px;height:64px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))">
+        style="left:450px;top:4868px;width:1px;height:76px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))">
       </div>
       <div
-        style="left:823px;top:4920px;width:1px;height:64px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))">
+        style="left:825px;top:4868px;width:1px;height:76px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))">
       </div>
-      <a class="row" href="tel:+919229542747" style="left:85px;top:4910px;width:366px;height:84px"><span
-          class="rl"><span class="k">CALL US</span><span class="v">+91 9229542747</span></span></a>
+      <a class="row" href="tel:+919229542747" style="left:75px;top:4854px;width:370px;height:104px"><span
+          class="rl"><span class="k">CALL US • DIRECT LINE</span><span class="v">+91 9229542747</span><span
+            class="s">Phone &amp; WhatsApp • Mon–Sat</span></span></a>
       <a class="row" href="mailto:anamrazzaque.work@gmail.com"
-        style="left:455px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">EMAIL</span><span
-            class="v">anamrazzaque.work@gmail.com</span></span></a>
+        style="left:455px;top:4854px;width:365px;height:104px"><span class="rl"><span class="k">EMAIL • INQUIRIES</span><span
+            class="v">anamrazzaque.work@gmail.com</span><span class="s">Reply within 24 hours</span></span></a>
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=Swarn+Nagri+Greater+Noida"
-        target="_blank" rel="noopener" style="left:825px;top:4910px;width:366px;height:84px"><span class="rl"><span
-            class="k">GREATER NOIDA, DELHI NCR</span><span class="v">D Block Swarn Nagri</span></span></a>
+        target="_blank" rel="noopener" style="left:830px;top:4854px;width:370px;height:104px"><span class="rl"><span
+            class="k">STUDIO • DELHI NCR</span><span class="v">D Block, Swarn Nagri</span><span
+            class="s">Greater Noida, India • IST</span></span></a>
+
+      <div class="studio-meta sans"
+        style="left:640px;top:4985px;transform:translateX(-50%)">
+        DELHI NCR, INDIA • 24-HOUR RESPONSE PROMISE • AVAILABLE WORLDWIDE</div>
 
       <div class="sans"
-        style="left:640px;top:5040px;transform:translateX(-50%);width:1149px;text-align:center;font-size:13px;letter-spacing:1.5px;font-weight:500;color:rgba(255,255,255,0.45);text-transform:uppercase;white-space:nowrap;pointer-events:none">
+        style="left:640px;top:5040px;transform:translateX(-50%);width:1149px;text-align:center;font-size:12px;letter-spacing:1.8px;font-weight:500;color:rgba(255,255,255,0.45);text-transform:uppercase;white-space:nowrap;pointer-events:none">
         © 2026 LEGENDARY AGENCY • INDEPENDENT DESIGN &amp; WEB STUDIO • DELHI NCR, INDIA</div>
-
-      <p class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
-      <p class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
 
       <!-- services -->
       <div class="svcbar"
