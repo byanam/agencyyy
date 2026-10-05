@@ -82,3 +82,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: increase cta button border-radius from inheriting 30p -->
 
 <!-- micro-improvement: style: reduce nav padding from 6px 8px to 5px 7px for compac -->
+
+<!-- micro-improvement: perf: convert audio error handler to use loadeddata event fo -->
