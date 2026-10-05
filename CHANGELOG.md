@@ -94,3 +94,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: reduce loader fade-out duration from 0.65s to 0.55s f -->
 
 <!-- micro-improvement: style: add text-rendering:optimizeLegibility to heading sele -->
+
+<!-- micro-improvement: perf: defer non-critical pnoise canvas generation with reque -->
