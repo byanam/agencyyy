@@ -614,21 +614,26 @@
       align-items: center;
       justify-content: center;
       border-radius: 30px;
-      background: rgba(217, 217, 217, .2);
-      color: #f2f2f2;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, .1));
+      backdrop-filter: blur(14px) saturate(1.5);
+      -webkit-backdrop-filter: blur(14px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, .38);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, .6), 0 8px 24px rgba(0, 0, 30, .25);
+      color: #fff;
       font-size: 20px;
       font-weight: 600;
-      letter-spacing: -.6px;
+      letter-spacing: -.5px;
       text-decoration: none;
       text-transform: capitalize;
       pointer-events: auto;
       cursor: pointer;
-      transition: background .3s, transform .3s
+      transition: background .3s ease, transform .3s cubic-bezier(.2, .9, .3, 1.2), box-shadow .3s ease
     }
 
     .stage .bm:hover {
-      background: rgba(217, 217, 217, .34);
-      transform: scale(1.02)
+      background: linear-gradient(180deg, rgba(255, 255, 255, .4), rgba(255, 255, 255, .18));
+      box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, .8), 0 12px 32px rgba(120, 190, 255, .3);
+      transform: scale(1.03) translateY(-2px);
     }
 
     .rc .rt2 {
@@ -789,16 +794,21 @@
         style="left:39px;top:4337px;font-size:200px;line-height:.86;letter-spacing:-14px;color:#fff;white-space:nowrap">
         Ready to talk?</p>
       <p class="sans grad cloudtxt"
-        style="left:75px;top:4558px;width:697px;height:279px;font-size:64px;line-height:.86;letter-spacing:-4.48px;text-align:center">
+        style="left:75px;top:4540px;width:697px;font-size:58px;line-height:1.1;letter-spacing:-2.8px;text-align:center">
         Whether you have a project or just an idea, we’d love to hear about it. :D</p>
-      <p class="sans"
-        style="left:290px;top:4754px;width:267px;font-size:20px;line-height:.86;letter-spacing:-1.4px;color:#f2f2f2;white-space:pre-wrap">
-        TEAM LEAD <b style="font-weight:600;position:static">ANAM RAZZAQUE</b></p>
-      <p class="sans"
-        style="left:423px;top:4779px;width:308px;transform:translateX(-50%);font-size:20px;line-height:.86;letter-spacing:-1.4px;color:#646464;text-align:center">
-        will answer your questions and schedule a meeting.</p>
+      <div
+        style="left:423.5px;top:4715px;transform:translateX(-50%);width:620px;text-align:center;pointer-events:none">
+        <p class="sans"
+          style="position:static;font-size:18px;line-height:1.2;letter-spacing:1.8px;font-weight:600;color:rgba(255,255,255,0.6);text-transform:uppercase;margin:0 0 10px 0">
+          TEAM LEAD &nbsp;<span style="color:#fff;font-weight:600">ANAM RAZZAQUE</span>
+        </p>
+        <p class="sans"
+          style="position:static;font-size:20px;line-height:1.35;letter-spacing:-0.4px;font-weight:400;color:rgba(255,255,255,0.65);margin:0">
+          will answer your questions and schedule a meeting.
+        </p>
+      </div>
       <a class="bm sans" href="mailto:anamrazzaque.work@gmail.com?subject=Meeting%20request"
-        style="left:176px;top:4834px;width:495px;height:60px">Book A Meeting</a>
+        style="left:176px;top:4830px;width:495px;height:62px">Book A Meeting</a>
       <div class="rc"
         style="left:816px;top:4337px;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate">
         <p class="sans"
