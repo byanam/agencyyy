@@ -32,3 +32,5 @@ All notable changes to this portfolio project are documented in this file.
 ### Changed
 - Refactored monolithic index.html styles into 20+ specialized domain stylesheets.
 - Modularized storm rain canvas simulation and canopy collision mathematics.
+
+<!-- micro-improvement: perf: add font-display swap hint comment for Instrument Sans -->
