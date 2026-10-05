@@ -102,3 +102,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: a11y: set tabIndex=-1 on loader-screen so keyboard focus ski -->
 
 <!-- micro-improvement: style: increase inner-shadow opacity in shB filter from 0.6  -->
+
+<!-- micro-improvement: perf: use passive:true on all scroll listeners in title drop -->
