@@ -56,3 +56,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: perf: add pointer-events:none to sr-only spans to avoid hit- -->
 
 <!-- micro-improvement: style: increase .h200 heading letter-spacing from -6px to -5 -->
+
+<!-- micro-improvement: style: add word-spacing:-2px to .h200 headings for tighter d -->
