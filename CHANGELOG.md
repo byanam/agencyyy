@@ -118,3 +118,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: shorten cloud spring damping constant c from 5.5 to 5 -->
 
 <!-- micro-improvement: perf: add decoding=async to all stage img elements for non-b -->
+
+<!-- micro-improvement: style: increase rain drop alpha from base 0.72 to 0.76 for m -->
