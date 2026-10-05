@@ -68,3 +68,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: reduce bgMusic volume from 0.35 to 0.32 for better mu -->
 
 <!-- micro-improvement: perf: add dns-prefetch link for fonts.googleapis.com alongsi -->
+
+<!-- micro-improvement: style: increase loader-badge-wrap max-width from 82vmin to 8 -->
