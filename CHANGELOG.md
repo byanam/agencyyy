@@ -42,3 +42,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: perf: add contain:strict to loader-screen to isolate paint a -->
 
 <!-- micro-improvement: style: soften loader-ring-bg track opacity from 0.18 to 0.15 -->
+
+<!-- micro-improvement: a11y: add aria-live=polite to loader-screen so screen reader -->
