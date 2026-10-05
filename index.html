@@ -52,6 +52,83 @@
       height: 0
     }
 
+    /* ---------- LUXURY STUDIO LOADING SCREEN ---------- */
+    .loader-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: radial-gradient(circle at 50% 45%, #1e148b 0%, #0d0638 55%, #03000b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: all;
+      user-select: none;
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .loader-screen.hidden {
+      opacity: 0;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .loader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .loader-logo {
+      font-size: clamp(44px, 6vw, 76px);
+      letter-spacing: -2px;
+      line-height: 0.95;
+      background: linear-gradient(180deg, #fff 0%, #fff 60%, #ffd000 90%, #ffd000 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
+    }
+
+    .loader-sub {
+      font-size: 13px;
+      letter-spacing: 3px;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 34px;
+    }
+
+    .loader-bar-wrap {
+      width: 220px;
+      height: 3px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .loader-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #7822ff 0%, #a855f7 50%, #ffd000 100%);
+      border-radius: 6px;
+      box-shadow: 0 0 14px rgba(255, 208, 0, 0.65);
+      transition: width 0.1s linear;
+    }
+
+    .loader-pct {
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+
     #wrap {
       position: relative;
       width: 100%;
@@ -808,6 +885,18 @@
 </head>
 
 <body>
+  <!-- LOADING SCREEN (COVERS ASSETS POPPING IN ONE BY ONE) -->
+  <div id="loaderScreen" class="loader-screen" aria-label="Loading Legendary Agency" role="status">
+    <div class="loader-content">
+      <div class="loader-logo serif">legendary Agency</div>
+      <div class="loader-sub sans">Independent Design &amp; Web Studio</div>
+      <div class="loader-bar-wrap">
+        <div id="loaderBar" class="loader-bar"></div>
+      </div>
+      <div id="loaderPct" class="loader-pct sans">0%</div>
+    </div>
+  </div>
+
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <filter id="isA" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
@@ -1207,12 +1296,103 @@
     (function () {
       var W = 1280, H = 5216;
       var wrap = document.getElementById('wrap'), stage = document.getElementById('stage'), copies = [stage], s = 1;
+      /* ---------- PRELOADER: TRACK ASSETS & COVER INDIVIDUAL POP-IN ---------- */
+      var loaderScreen = document.getElementById('loaderScreen');
+      var loaderBar = document.getElementById('loaderBar');
+      var loaderPct = document.getElementById('loaderPct');
+      var stageImgs = Array.from(stage.querySelectorAll('img[data-k]'));
+      var totalAssets = stageImgs.length;
+      var loadedAssets = 0;
+      var targetPct = 0;
+      var displayPct = 0;
+      var loaderDone = false;
+      var minDuration = 800; // minimum duration in ms for smooth feedback
+      var loaderStart = performance.now();
+
+      function updateLoader(pct) {
+        if (loaderBar) loaderBar.style.width = pct + '%';
+        if (loaderPct) loaderPct.textContent = pct + '%';
+      }
+
+      function assetLoaded() {
+        loadedAssets++;
+        targetPct = Math.min(100, Math.round((loadedAssets / totalAssets) * 92));
+      }
+
+      function finishLoader() {
+        if (loaderDone) return;
+        loaderDone = true;
+        
+        // Ensure all images are made visible so stage is 100% loaded when revealed
+        document.querySelectorAll('.stage img').forEach(function (im) {
+          im.classList.add('on');
+        });
+
+        // Smoothly accelerate to 100%
+        var finishTimer = setInterval(function () {
+          displayPct += Math.max(2, Math.ceil((100 - displayPct) * 0.35));
+          if (displayPct >= 100) {
+            displayPct = 100;
+            updateLoader(100);
+            clearInterval(finishTimer);
+            setTimeout(function () {
+              if (loaderScreen) {
+                loaderScreen.classList.add('hidden');
+                setTimeout(function () {
+                  loaderScreen.style.display = 'none';
+                }, 750);
+              }
+            }, 180);
+          } else {
+            updateLoader(displayPct);
+          }
+        }, 16);
+      }
+
+      var progressInterval = setInterval(function () {
+        if (loaderDone) {
+          clearInterval(progressInterval);
+          return;
+        }
+        var elapsed = performance.now() - loaderStart;
+        var timePct = Math.min(90, Math.round((elapsed / minDuration) * 90));
+        var currentGoal = Math.max(targetPct, timePct * 0.65);
+
+        if (displayPct < currentGoal) {
+          displayPct += Math.max(1, Math.round((currentGoal - displayPct) * 0.22));
+          updateLoader(displayPct);
+        }
+
+        if (loadedAssets >= totalAssets && elapsed >= minDuration) {
+          clearInterval(progressInterval);
+          finishLoader();
+        }
+      }, 25);
+
+      setTimeout(function () {
+        if (!loaderDone) {
+          clearInterval(progressInterval);
+          finishLoader();
+        }
+      }, 2500);
+
       function load(img, k) {
         img.decoding = 'async';
-        img.onload = function () { img.classList.add('on'); };
+        var done = false;
+        function onDone() {
+          if (done) return;
+          done = true;
+          img.classList.add('on');
+          assetLoaded();
+        }
+        img.onload = onDone;
+        img.onerror = onDone;
         img.src = 'assets/' + k + '.webp';
+        if (img.complete) {
+          onDone();
+        }
       }
-      stage.querySelectorAll('img[data-k]').forEach(function (im) { load(im, im.getAttribute('data-k')); });
+      stageImgs.forEach(function (im) { load(im, im.getAttribute('data-k')); });
       stage.querySelectorAll('.pnoise').forEach(function (e) {
         var n = document.createElement('canvas'); n.width = n.height = 512; var x = n.getContext('2d'), d = x.createImageData(512, 512);
         for (var i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.random() < .98 ? Math.round(Math.random() * 80) : 0; }
