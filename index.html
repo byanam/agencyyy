@@ -943,7 +943,7 @@
 
     function playAudio(fromStart){
       if(isMuted || playPending) return;
-      if(isPlaying && !music.paused) return;
+      if(isPlaying && !music.paused && !music.muted) return;
 
       playPending = true;
       if(fromStart && !userActivated){
@@ -968,8 +968,18 @@
           if(window.__startStorm && fromStart) window.__startStorm();
         }).catch(function(err){
           playPending = false;
-          isPlaying = false;
-          updateBtn();
+          // If unmuted autoplay blocked by browser policy, start muted immediately!
+          if(!userActivated && !isMuted){
+            try {
+              thunder.muted = true;
+              music.muted = true;
+              thunder.play().catch(function(){});
+              music.play().then(function(){
+                isPlaying = true;
+                updateBtn();
+              }).catch(function(){});
+            } catch(e){}
+          }
         });
       } else {
         playPending = false;
@@ -981,9 +991,15 @@
       }
     }
 
-    var ACTIVATION_EVENTS = ['click', 'pointerdown', 'touchstart', 'keydown'];
+    var ACTIVATION_EVENTS = ['click', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'wheel', 'scroll', 'mousemove', 'pointermove'];
     function onUserGesture(){
-      if(isPlaying || isMuted) return;
+      if(isMuted) return;
+      if(music.muted){
+        thunder.muted = false;
+        music.muted = false;
+        thunder.volume = 0.70;
+        music.volume = 0.35;
+      }
       playAudio(true);
     }
 
