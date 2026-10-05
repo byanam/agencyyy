@@ -80,3 +80,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add letter-spacing:-0.5px to nav anchor links for pre -->
 
 <!-- micro-improvement: style: increase cta button border-radius from inheriting 30p -->
+
+<!-- micro-improvement: style: reduce nav padding from 6px 8px to 5px 7px for compac -->
