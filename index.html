@@ -20,7 +20,8 @@
   <link rel="preload" as="image" href="assets/a4a75.webp">
   <link rel="preload" as="image" href="assets/764ac.webp">
   <link rel="preload" as="image" href="assets/255d2.webp">
-  <link rel="preload" as="fetch" href="assets/thunder.mp3" crossorigin>
+  <link rel="preload" as="audio" href="assets/classical.mp3" type="audio/mpeg">
+  <link rel="preload" as="audio" href="assets/thunder.mp3" type="audio/mpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -1279,8 +1280,14 @@
         <circle cx="18" cy="16" r="3" fill="currentColor"></circle>
       </svg><span class="sr-only">Toggle music and sound</span></a><a data-go="0">Hero</a><a data-go="1">Projects</a><a
       data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a></nav>
-  <audio id="thunderAudio" src="assets/thunder.mp3" preload="auto" playsinline webkit-playsinline></audio>
-  <audio id="bgMusic" src="assets/classical.mp3" preload="auto" loop playsinline webkit-playsinline></audio>
+  <audio id="thunderAudio" preload="auto" playsinline webkit-playsinline>
+    <source src="assets/thunder.mp3" type="audio/mpeg">
+    <source src="/assets/thunder.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="bgMusic" preload="auto" loop playsinline webkit-playsinline>
+    <source src="assets/classical.mp3" type="audio/mpeg">
+    <source src="/assets/classical.mp3" type="audio/mpeg">
+  </audio>
   <script>
     (function () {
       var W = 1280, H = 5216;
@@ -1335,6 +1342,7 @@
                   loaderScreen.style.display = 'none';
                 }, 700);
               }
+              if (window.__tryStartAudio) window.__tryStartAudio();
             }, 200);
           } else {
             updateLoader(displayPct);
@@ -2106,98 +2114,145 @@
 
       /* ---------- AUDIO SYSTEM: THUNDER SFX ON START + CLASSICAL MUSIC ---------- */
       (function audioSys() {
-        var thunder = document.getElementById('thunderAudio') || new Audio('assets/thunder.mp3');
-        var music = document.getElementById('bgMusic') || new Audio('assets/classical.mp3');
+        var thunder = document.getElementById('thunderAudio');
+        var music = document.getElementById('bgMusic');
+        if (!thunder) {
+          thunder = new Audio('assets/thunder.mp3');
+          thunder.id = 'thunderAudio';
+          document.body.appendChild(thunder);
+        }
+        if (!music) {
+          music = new Audio('assets/classical.mp3');
+          music.id = 'bgMusic';
+          document.body.appendChild(music);
+        }
         thunder.volume = 0.70;
         music.volume = 0.35;
         music.loop = true;
         music.preload = 'auto';
         thunder.preload = 'auto';
+        music.playsInline = true;
+        thunder.playsInline = true;
+        music.setAttribute('playsinline', '');
+        music.setAttribute('webkit-playsinline', '');
+        thunder.setAttribute('playsinline', '');
+        thunder.setAttribute('webkit-playsinline', '');
+
+        try {
+          thunder.load();
+          music.load();
+        } catch (e) { }
+
+        music.addEventListener('error', function () {
+          if (music.src && !music.src.includes('/assets/')) {
+            music.src = '/assets/classical.mp3';
+            music.load();
+            if (!isMuted && isPlaying) music.play().catch(function () { });
+          }
+        });
+        thunder.addEventListener('error', function () {
+          if (thunder.src && !thunder.src.includes('/assets/')) {
+            thunder.src = '/assets/thunder.mp3';
+            thunder.load();
+          }
+        });
 
         var sndBtn = document.getElementById('sndBtn');
         var isMuted = false;
         var isPlaying = false;
-        var playPending = false;
-        var userActivated = false;
+        var thunderPlayed = false;
+        var audioCtxUnlocked = false;
 
         var svgOn = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle></svg>';
         var svgCut = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3" fill="currentColor"></circle><circle cx="18" cy="16" r="3" fill="currentColor"></circle><line x1="3" y1="3" x2="21" y2="21" stroke="#000" stroke-width="3.5" stroke-linecap="round" opacity="0.45"></line><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></line></svg>';
 
+        function unlockAudioContext() {
+          if (audioCtxUnlocked) return;
+          try {
+            var Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) {
+              if (!window.__bgAudioCtx) window.__bgAudioCtx = new Ctx();
+              if (window.__bgAudioCtx.state === 'suspended') {
+                window.__bgAudioCtx.resume();
+              }
+              var buf = window.__bgAudioCtx.createBuffer(1, 1, 22050);
+              var src = window.__bgAudioCtx.createBufferSource();
+              src.buffer = buf;
+              src.connect(window.__bgAudioCtx.destination);
+              src.start(0);
+            }
+            audioCtxUnlocked = true;
+          } catch (err) { }
+        }
+
         function updateBtn() {
           if (!sndBtn) return;
-          if (isMuted) {
-            sndBtn.innerHTML = svgCut + '<span class="sr-only">Play music and sound</span>';
-            sndBtn.classList.add('off');
-            sndBtn.setAttribute('title', 'Play music & sound');
-            sndBtn.setAttribute('aria-label', 'Play music and sound');
-          } else {
+          var isAudible = isPlaying && !music.paused && !music.muted && !isMuted;
+          if (isAudible) {
             sndBtn.innerHTML = svgOn + '<span class="sr-only">Mute music and sound</span>';
             sndBtn.classList.remove('off');
             sndBtn.setAttribute('title', 'Mute music & sound');
             sndBtn.setAttribute('aria-label', 'Mute music and sound');
+          } else {
+            sndBtn.innerHTML = svgCut + '<span class="sr-only">Play music and sound</span>';
+            sndBtn.classList.add('off');
+            sndBtn.setAttribute('title', 'Play music & sound');
+            sndBtn.setAttribute('aria-label', 'Play music and sound');
           }
         }
 
-        function playAudio(fromStart) {
-          if (isMuted || playPending) return;
-          if (isPlaying && !music.paused && !music.muted) return;
+        function playThunder() {
+          if (isMuted) return;
+          try {
+            thunder.muted = false;
+            thunder.volume = 0.70;
+            thunder.currentTime = 0;
+            var pT = thunder.play();
+            if (pT && pT.catch) pT.catch(function () { });
+          } catch (e) { }
+          if (window.__startStorm) window.__startStorm();
+        }
 
-          playPending = true;
-          if (fromStart && !userActivated) {
-            try {
-              thunder.currentTime = 0;
-              music.currentTime = 0;
-            } catch (e) { }
-          }
+        function startPlayback(triggerThunder) {
+          if (isMuted) return;
+          unlockAudioContext();
 
-          var pT = thunder.play();
+          music.muted = false;
+          thunder.muted = false;
+          music.volume = 0.35;
+          thunder.volume = 0.70;
+
           var pM = music.play();
-
-          if (pT && pT.catch) pT.catch(function () { });
-
           if (pM && pM.then) {
             pM.then(function () {
-              playPending = false;
               isPlaying = true;
-              userActivated = true;
               removeActivationListeners();
               updateBtn();
-              if (window.__startStorm && fromStart) window.__startStorm();
-            }).catch(function (err) {
-              playPending = false;
-              // If unmuted autoplay blocked by browser policy, start muted immediately!
-              if (!userActivated && !isMuted) {
-                try {
-                  thunder.muted = true;
-                  music.muted = true;
-                  thunder.play().catch(function () { });
-                  music.play().then(function () {
-                    isPlaying = true;
-                    updateBtn();
-                  }).catch(function () { });
-                } catch (e) { }
+              if (triggerThunder && !thunderPlayed) {
+                thunderPlayed = true;
+                playThunder();
               }
+            }).catch(function (err) {
+              // Autoplay blocked without user gesture: wait for first tap / click
+              isPlaying = false;
+              updateBtn();
             });
           } else {
-            playPending = false;
             isPlaying = true;
-            userActivated = true;
             removeActivationListeners();
             updateBtn();
-            if (window.__startStorm && fromStart) window.__startStorm();
+            if (triggerThunder && !thunderPlayed) {
+              thunderPlayed = true;
+              playThunder();
+            }
           }
         }
 
-        var ACTIVATION_EVENTS = ['click', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'wheel', 'scroll', 'mousemove', 'pointermove'];
-        function onUserGesture() {
+        var ACTIVATION_EVENTS = ['click', 'touchstart', 'touchend', 'pointerdown', 'keydown'];
+        function onUserGesture(e) {
           if (isMuted) return;
-          if (music.muted) {
-            thunder.muted = false;
-            music.muted = false;
-            thunder.volume = 0.70;
-            music.volume = 0.35;
-          }
-          playAudio(true);
+          if (e && e.target && e.target.closest && e.target.closest('#sndBtn')) return;
+          startPlayback(true);
         }
 
         function addActivationListeners() {
@@ -2205,6 +2260,12 @@
             window.addEventListener(ev, onUserGesture, { capture: true, passive: true });
             document.addEventListener(ev, onUserGesture, { capture: true, passive: true });
           });
+          var loader = document.getElementById('loaderScreen');
+          if (loader) {
+            ACTIVATION_EVENTS.forEach(function (ev) {
+              loader.addEventListener(ev, onUserGesture, { passive: true });
+            });
+          }
         }
 
         function removeActivationListeners() {
@@ -2216,38 +2277,78 @@
 
         addActivationListeners();
 
-        // Trigger immediate playback on startup / refresh
-        playAudio(true);
+        // Attempt playback on startup
+        startPlayback(true);
+
+        window.__tryStartAudio = function () {
+          if (!isMuted && (!isPlaying || music.paused || music.muted)) {
+            startPlayback(true);
+          }
+        };
 
         if (document.readyState !== 'complete') {
           window.addEventListener('load', function () {
-            if (!isPlaying && !isMuted) playAudio(true);
+            if (!isMuted && (!isPlaying || music.paused)) startPlayback(true);
           }, { once: true });
         }
+
         window.addEventListener('focus', function () {
-          if (!isPlaying && !isMuted) playAudio(false);
+          if (!isMuted && (!isPlaying || music.paused) && audioCtxUnlocked) {
+            startPlayback(false);
+          }
         });
+
         document.addEventListener('visibilitychange', function () {
-          if (!document.hidden && !isPlaying && !isMuted) playAudio(false);
+          if (!document.hidden && !isMuted && (!isPlaying || music.paused) && audioCtxUnlocked) {
+            startPlayback(false);
+          }
         });
 
         if (sndBtn) {
           sndBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            if (isMuted) {
-              isMuted = false;
-              playAudio(false);
-              updateBtn();
-            } else if (!isPlaying || music.paused) {
-              // If unmuted but blocked by browser autoplay, single click directly starts playback!
-              playAudio(true);
-              updateBtn();
-            } else {
+            unlockAudioContext();
+
+            var isAudible = isPlaying && !music.paused && !music.muted && !isMuted;
+            if (isAudible) {
+              // User clicked to mute & pause
               isMuted = true;
               isPlaying = false;
-              try { thunder.pause(); } catch (err) { }
               try { music.pause(); } catch (err) { }
+              try { thunder.pause(); } catch (err) { }
+              updateBtn();
+            } else {
+              // User clicked to play & unmute
+              isMuted = false;
+              music.muted = false;
+              thunder.muted = false;
+              music.volume = 0.35;
+              thunder.volume = 0.70;
+
+              var pM = music.play();
+              if (pM && pM.then) {
+                pM.then(function () {
+                  isPlaying = true;
+                  removeActivationListeners();
+                  updateBtn();
+                  if (!thunderPlayed) {
+                    thunderPlayed = true;
+                    playThunder();
+                  }
+                }).catch(function (err) {
+                  console.warn('Playback error on button click:', err);
+                  updateBtn();
+                });
+              } else {
+                isPlaying = true;
+                removeActivationListeners();
+                updateBtn();
+                if (!thunderPlayed) {
+                  thunderPlayed = true;
+                  playThunder();
+                }
+              }
               updateBtn();
             }
           });
