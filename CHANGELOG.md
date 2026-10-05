@@ -70,3 +70,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: perf: add dns-prefetch link for fonts.googleapis.com alongsi -->
 
 <!-- micro-improvement: style: increase loader-badge-wrap max-width from 82vmin to 8 -->
+
+<!-- micro-improvement: style: add overflow:hidden to loader-screen to clip any over -->
