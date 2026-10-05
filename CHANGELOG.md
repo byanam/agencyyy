@@ -114,3 +114,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: perf: add loading=lazy attribute to all below-fold cloud img -->
 
 <!-- micro-improvement: style: reduce cloud drift jiggle maximum travel from 70px to -->
+
+<!-- micro-improvement: style: shorten cloud spring damping constant c from 5.5 to 5 -->
