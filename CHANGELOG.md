@@ -48,3 +48,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: increase nav border opacity from 0.36 to 0.40 for cri -->
 
 <!-- micro-improvement: style: tighten nav backdrop-filter blur from 22px to 20px fo -->
+
+<!-- micro-improvement: style: raise nav indicator border-radius from 30px to 32px f -->
