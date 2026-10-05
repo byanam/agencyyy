@@ -8,18 +8,16 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://www.figma.com">
-<link rel="preload" as="image" href="assets/8bc30.webp">
-<link rel="preload" as="image" href="assets/de02e.webp">
-<link rel="preload" as="image" href="assets/255d2.webp">
-<link rel="preload" as="image" href="assets/764ac.webp">
+<link rel="preload" as="image" href="assets/a59cf.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/8bc30.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/de02e.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/57e01.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/0d995.webp" fetchpriority="high">
 <link rel="preload" as="image" href="assets/20b2c.webp">
 <link rel="preload" as="image" href="assets/0b3fd.webp">
-<link rel="preload" as="image" href="assets/57e01.webp">
-<link rel="preload" as="image" href="assets/0d995.webp">
-<link rel="preload" as="image" href="assets/a59cf.webp">
 <link rel="preload" as="image" href="assets/a4a75.webp">
-<link rel="preload" as="fetch" href="assets/classical.mp3" crossorigin>
+<link rel="preload" as="image" href="assets/764ac.webp">
+<link rel="preload" as="image" href="assets/255d2.webp">
 <link rel="preload" as="fetch" href="assets/thunder.mp3" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,8 +68,6 @@
   .stage a.row:hover{background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
   .stage a.row:hover .v{transform:translateX(8px)}
   .stage,.stage *{pointer-events:none}
-  .glowslot2 canvas{position:absolute;left:0;top:0;width:1280px;height:438px}
-  .glowslot canvas{position:absolute;left:0;top:0;width:1280px;height:700px}
   .dripslot canvas{position:absolute;left:0;top:0;width:1280px;height:1750px}
   .rainslot canvas{position:absolute;left:0;top:0;width:1280px;height:1750px}
   .stage .fold,.stage .fold *{pointer-events:auto}
@@ -192,7 +188,6 @@
   </div>
   <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt=""></div>
 
-  <div class="glowslot2" style="left:0;top:4780px;width:1280px;height:438px;mix-blend-mode:screen"></div>
 
   <!-- contact -->
   <div class="sans grad" style="left:0;top:4546px;padding:12px;width:1280px;font-size:64px;letter-spacing:-4.48px;line-height:0;text-align:center;white-space:pre-wrap;background-image:linear-gradient(180deg,#fffc35 12px,#bdbdbd 177px);height:189px">
@@ -305,8 +300,6 @@
   </div>
   <div style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt=""></div>
 
-  <!-- thunder glow over the clouds -->
-  <div class="glowslot" style="left:0;top:0;width:1280px;height:700px;mix-blend-mode:screen"></div>
 
 </div></div>
 <div id="cur"><span>View</span></div>
@@ -315,28 +308,24 @@
 <audio id="bgMusic" src="assets/classical.mp3" preload="auto" loop playsinline webkit-playsinline></audio>
 <script>
 (function(){
-  var W=1280,H=5216,P="https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc/";
+  var W=1280,H=5216;
   var wrap=document.getElementById('wrap'),stage=document.getElementById('stage'),copies=[stage],s=1;
   function load(img,k){
     img.decoding='async';
     img.onload=function(){img.classList.add('on');};
-    var webp='assets/'+k+'.webp', png='assets/'+k+'.png', remote=P+k+'.png';
-    var t=new Image();
-    t.onload=function(){img.src=webp;};
-    t.onerror=function(){
-      var t2=new Image();
-      t2.onload=function(){img.src=png;};
-      t2.onerror=function(){img.src=remote;};
-      t2.src=png;
-    };
-    t.src=webp;
+    img.src='assets/'+k+'.webp';
   }
   stage.querySelectorAll('img[data-k]').forEach(function(im){load(im,im.getAttribute('data-k'));});
-  stage.querySelectorAll('.pnoise').forEach(function(e){
-    var n=document.createElement('canvas');n.width=n.height=512;var x=n.getContext('2d'),d=x.createImageData(512,512);
-    for(var i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=0;d.data[i+3]=Math.random()<.98?Math.round(Math.random()*80):0;}
-    x.putImageData(d,0,0);e.style.backgroundImage='url('+n.toDataURL()+')';
-  });
+  var noiseDataUrl;
+  function getNoise(){
+    if(!noiseDataUrl){
+      var n=document.createElement('canvas');n.width=n.height=128;var x=n.getContext('2d'),d=x.createImageData(128,128),b=d.data;
+      for(var i=3;i<b.length;i+=4){b[i]=Math.random()<.98?Math.round(Math.random()*80):0;}
+      x.putImageData(d,0,0);noiseDataUrl='url('+n.toDataURL()+')';
+    }
+    return noiseDataUrl;
+  }
+  stage.querySelectorAll('.pnoise').forEach(function(e){e.style.backgroundImage=getNoise();});
   var tP=stage.querySelector('.h200[style*="top:1631px"]'),tS=stage.querySelector('.h200[style*="3327.01"]'),sc0=stage.querySelector('.rb[style*="top:2761px"]');
   if(tS&&sc0)stage.insertBefore(tS,sc0);
   if(tP){tP.classList.add('ttl');tP.setAttribute('data-t','1631');tP.setAttribute('data-d','190');}
@@ -347,7 +336,10 @@
     if(CK.indexOf(im.getAttribute('data-k'))<0)return;
     var w=im.parentNode;if(w.classList.contains('r'))w=w.parentNode;w.classList.add('cld');
   });});
-  c.querySelectorAll('img').forEach(function(im){var k=im.getAttribute('data-k');load(im,k);});
+  c.querySelectorAll('img').forEach(function(im){
+    if(im.complete){im.classList.add('on');}
+    else{im.onload=function(){im.classList.add('on');};}
+  });
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
@@ -403,12 +395,9 @@
       if(nx.length>200){top=nt;xs=nx;return true;}
       return false;
     }
-    var got=false;
-    ['assets/a59cf.webp','assets/a59cf.png',P+'a59cf.png'].forEach(function(src){
-      var im=new Image();im.crossOrigin='anonymous';
-      im.onload=function(){if(got)return;try{if(fromImage(im))got=true;}catch(e){}};
-      im.src=src;
-    });
+    var im=new Image();
+    im.onload=function(){try{fromImage(im);}catch(e){}};
+    im.src='assets/a59cf.webp';
 
     var N=240,drops=[],parts=[],runs=[],drips=[],rips=[];
     function spawn(d,first){
@@ -437,19 +426,6 @@
     makeCanvases();
     addEventListener('resize',makeCanvases);
 
-    /* ---------- THUNDER & RAIN SEQUENCE ---------- */
-    var gcvs=[];
-    function makeGlow(){
-      copies.forEach(function(c,i){
-        [['.glowslot',700,0],['.glowslot2',438,436]].forEach(function(d,j){
-          var slot=c.querySelector(d[0]);if(!slot)return;
-          var key=i*2+j,cv=gcvs[key];
-          if(!cv){cv=document.createElement('canvas');slot.appendChild(cv);gcvs[key]=cv;}
-          cv.width=640;cv.height=d[1]/2;cv.off=d[2];
-        });
-      });
-    }
-    makeGlow();
 
     var storm = {
       startTime: -1,
@@ -627,15 +603,13 @@
       }
     }
 
-    function drawGlow(cv){
-      var c = cv.getContext('2d');
-      c.setTransform(1, 0, 0, 1, 0, 0);
-      c.clearRect(0, 0, cv.width, cv.height);
-    }
-
     var last=performance.now();
     function frame(t){
       var dt=Math.min(.05,(t-last)/1000);last=t;
+
+      var p=Math.floor(H*s);
+      var sy=window.scrollY%p;
+      var inView=(sy<1850*s)||(sy>(H-300)*s);
 
       var e = storm.startTime > 0 ? (t - storm.startTime) / 1000 : -1;
 
@@ -786,7 +760,10 @@
           }
         }
       });
-      gcvs.forEach(function(g){if(!g)return;drawGlow(g);});
+      if(!inView){
+        requestAnimationFrame(frame);
+        return;
+      }
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -854,14 +831,14 @@
           var T=+el.getAttribute('data-t'),D=+el.getAttribute('data-d')*1.15,vis=T-rel;
           if(el._st===undefined){el._st=0;el._p=0;}
           if(el._st===0&&vis<.72*vh&&vis>-.3*vh){el._st=1;el._t0=t;}
-          else if(el._st===2&&vis>1.2*vh){el._st=0;el._p=0;}
+          else if(el._st===2&&vis>1.2*vh){el._st=0;el._p=0;el.style.opacity='0';}
           if(el._st===1){
             el._p=Math.min(1,(t-el._t0)/1100);
-            if(el._p>=1)el._st=2;
+            if(el._p>=1){el._st=2;el._p=1;}
+            var pr=el._p,e=1-Math.pow(1-pr,3);
+            el.style.transform='translate3d(-50%,'+(-(1-e)*D).toFixed(1)+'px,0)';
+            el.style.opacity=Math.min(1,pr*4).toFixed(3);
           }
-          var pr=el._p,e=1-Math.pow(1-pr,3);
-          el.style.transform='translate3d(-50%,'+(-(1-e)*D).toFixed(1)+'px,0)';
-          el.style.opacity=Math.min(1,pr*4).toFixed(3);
         });
       }
       requestAnimationFrame(frame);
@@ -904,12 +881,23 @@
   addEventListener('scroll',navOn,{passive:true});navOn();
 
   (function cursor(){
-    var cur=document.getElementById('cur'),cx=-200,cy=-200,tx=-200,ty=-200;
+    var cur=document.getElementById('cur'),cx=-200,cy=-200,tx=-200,ty=-200,raf=0;
     if(!matchMedia('(hover:hover)').matches)return;
-    addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY;});
+    function cl(){
+      cx+=(tx-cx)*.22;cy+=(ty-cy)*.22;
+      cur.style.transform='translate3d('+cx.toFixed(1)+'px,'+cy.toFixed(1)+'px,0) translate(-50%,-50%)';
+      if(Math.abs(tx-cx)>0.2||Math.abs(ty-cy)>0.2){
+        raf=requestAnimationFrame(cl);
+      }else{
+        raf=0;
+      }
+    }
+    addEventListener('mousemove',function(e){
+      tx=e.clientX;ty=e.clientY;
+      if(!raf)raf=requestAnimationFrame(cl);
+    },{passive:true});
     wrap.addEventListener('mouseover',function(e){cur.classList.toggle('on',!!(e.target.closest&&e.target.closest('.fold')));});
     wrap.addEventListener('mouseout',function(e){var r=e.relatedTarget;if(!(r&&r.closest&&r.closest('.fold')))cur.classList.remove('on');});
-    (function cl(){cx+=(tx-cx)*.22;cy+=(ty-cy)*.22;cur.style.transform='translate3d('+cx.toFixed(1)+'px,'+cy.toFixed(1)+'px,0) translate(-50%,-50%)';requestAnimationFrame(cl);})();
   })();
   wrap.addEventListener('click',function(e){
     var r=e.target.closest&&e.target.closest('.row[data-go]');if(!r)return;
