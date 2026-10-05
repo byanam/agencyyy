@@ -108,3 +108,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add letter-spacing:-0.3px to .svc service list items  -->
 
 <!-- micro-improvement: style: increase service description line-height from 1.3 to  -->
+
+<!-- micro-improvement: style: add gap:2px to service rows for subtle breathing room -->
