@@ -118,49 +118,436 @@
   #nav a.snd svg{display:block;width:18px;height:18px;pointer-events:none}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
-  /* ---------- INTERACTIVE GLASS CONTACT MODAL & DYNAMIC ISLAND TOAST ---------- */
-  .cmodal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .32s cubic-bezier(.2,.8,.3,1);font-family:'Instrument Sans',sans-serif}
-  .cmodal.active{opacity:1;pointer-events:auto}
-  .cmodal-backdrop{position:absolute;inset:0;background:rgba(8,6,24,0.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .32s ease}
-  .cmodal-card{position:relative;z-index:2;width:92%;max-width:580px;max-height:92vh;overflow-y:auto;border-radius:32px;padding:34px 38px;
-    background:linear-gradient(145deg,rgba(255,255,255,0.2) 0%,rgba(255,255,255,0.06) 50%,rgba(255,255,255,0.11) 100%),rgba(18,14,52,0.85);
-    backdrop-filter:blur(28px) saturate(190%) contrast(105%);-webkit-backdrop-filter:blur(28px) saturate(190%) contrast(105%);
-    border:1px solid rgba(255,255,255,0.36);
-    box-shadow:inset 0 1px 1.5px 0 rgba(255,255,255,0.7),inset 0 -1px 2px 0 rgba(0,0,0,0.25),0 24px 60px -12px rgba(0,0,24,0.65),0 4px 16px 0 rgba(0,0,0,0.25);
-    transform:scale(0.92) translateY(20px);transition:transform .38s cubic-bezier(.18,.9,.3,1.18),opacity .32s ease;color:#fff;scrollbar-width:none}
-  .cmodal-card::-webkit-scrollbar{display:none}
-  .cmodal.active .cmodal-card{transform:scale(1) translateY(0)}
-  .cmodal-sheen{position:absolute;inset:0;border-radius:32px;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.3) 0%,rgba(255,255,255,0.03) 40%,transparent 65%);-webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 70%);mask-image:linear-gradient(180deg,#000 0%,transparent 70%)}
-  .cmodal-close{position:absolute;top:22px;right:22px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:#fff;cursor:pointer;transition:transform .2s ease,background .2s ease}
-  .cmodal-close:hover{background:rgba(255,255,255,0.25);transform:scale(1.08)}
-  .cmodal-badge{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.9);background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.45);padding:4px 12px;border-radius:20px;margin-bottom:14px}
-  .cmodal-badge .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e;animation:pulseDot 2s infinite ease-in-out}
+  /* ---------- REDESIGNED CONTACT COMPOSITION (.csec) ---------- */
+  .csec{
+    position:absolute !important;
+    left:64px;
+    top:4310px;
+    width:1152px;
+    z-index:30;
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+    font-family:'Instrument Sans',sans-serif;
+    color:#fff;
+  }
+  .csec, .csec *{
+    position:static !important;
+    box-sizing:border-box;
+    pointer-events:auto !important;
+  }
+
+  /* Header */
+  .csec-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    width:100%;
+    padding-bottom:12px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .csec-title-wrap{display:flex;align-items:baseline}
+  .csec-title{
+    font-family:'Instrument Serif',serif !important;
+    font-size:120px !important;
+    line-height:0.9 !important;
+    letter-spacing:-4px !important;
+    color:#fff;
+    margin:0;
+    text-shadow:0 10px 40px rgba(0,0,0,0.5);
+  }
+  .csec-status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 18px;
+    border-radius:40px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.18);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.25),0 10px 24px rgba(0,0,0,0.3);
+    font-size:13px;
+    font-weight:500;
+    color:rgba(255,255,255,0.9);
+  }
+  .csec-pulse{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 10px #22c55e;
+    animation:pulseDot 2s infinite ease-in-out;
+  }
   @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
-  .cmodal-title{font-size:36px;letter-spacing:-1px;line-height:1.15;margin-bottom:8px;color:#fff}
-  .cmodal-sub{font-size:16px;color:rgba(255,255,255,0.7);line-height:1.4;margin-bottom:24px}
-  .cmodal-form{display:flex;flex-direction:column;gap:18px}
-  .cmodal-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:540px){.cmodal-row2{grid-template-columns:1fr}}
-  .cmodal-field{display:flex;flex-direction:column;gap:7px}
-  .cmodal-field label{font-size:13px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,0.85);text-transform:uppercase}
-  .cmodal-field input,.cmodal-field textarea{width:100%;font-family:'Instrument Sans',sans-serif;font-size:16px;color:#fff;padding:12px 16px;border-radius:16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;outline:none}
-  .cmodal-field input::placeholder,.cmodal-field textarea::placeholder{color:rgba(255,255,255,0.4)}
-  .cmodal-field input:focus,.cmodal-field textarea:focus{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.85);box-shadow:0 0 0 3px rgba(255,255,255,0.15),inset 0 1px 3px rgba(0,0,0,0.3)}
-  .cmodal-field textarea{resize:vertical;min-height:85px}
-  .cmodal-pills{display:flex;flex-wrap:wrap;gap:8px}
-  .cpill{font-family:'Instrument Sans',sans-serif;font-size:14px;font-weight:500;color:rgba(255,255,255,0.85);padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:all .2s ease}
+  .csec-sep{opacity:0.4}
+  .csec-tz{color:rgba(255,255,255,0.65);font-size:12px}
+
+  /* Grid */
+  .csec-grid{
+    display:grid;
+    grid-template-columns:1fr 1.05fr;
+    gap:40px;
+    align-items:start;
+    width:100%;
+  }
+
+  /* Left Column */
+  .csec-col-left{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    padding-top:8px;
+  }
+  .csec-hero-msg{
+    display:flex;
+    flex-direction:column;
+    line-height:1.02;
+    letter-spacing:-2.5px;
+    font-size:52px;
+    font-weight:500;
+  }
+  .csec-line{display:block;margin:0}
+  .csec-grad{
+    background-image:linear-gradient(180deg,#fffc35 0%,#f0ca4d 100%);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 25px rgba(255,252,53,0.25));
+  }
+  .csec-white{color:#ffffff}
+  .csec-silver{color:rgba(255,255,255,0.55)}
+  .csec-manifesto{
+    font-size:17px;
+    line-height:1.5;
+    color:rgba(255,255,255,0.72);
+    max-width:480px;
+    margin:0;
+    letter-spacing:-0.2px;
+  }
+
+  /* Directory Card */
+  .csec-explore-card{
+    background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,rgba(255,255,255,0.02) 100%),rgba(10,10,18,0.55);
+    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter:blur(24px) saturate(180%);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.3),0 16px 40px rgba(0,0,0,0.35);
+    border-radius:24px;
+    padding:20px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .csec-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .csec-k{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.8px;
+    color:rgba(255,255,255,0.45);
+    text-transform:uppercase;
+  }
+  .csec-stat-badge{
+    font-size:11px;
+    font-weight:600;
+    padding:3px 8px;
+    border-radius:12px;
+    background:rgba(34,197,94,0.16);
+    border:1px solid rgba(34,197,94,0.4);
+    color:#4ade80;
+    letter-spacing:0.5px;
+  }
+  .csec-dir-links{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .csec-dir-item{
+    display:flex;
+    align-items:center;
+    padding:10px 14px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+    color:#fff;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .25s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .csec-dir-item:hover{
+    background:rgba(255,255,255,0.12);
+    border-color:rgba(255,255,255,0.3);
+    transform:translateX(5px);
+  }
+  .csec-dir-num{
+    font-size:12px;
+    font-weight:600;
+    color:rgba(255,255,255,0.4);
+    margin-right:12px;
+  }
+  .csec-dir-name{
+    font-size:15px;
+    font-weight:500;
+    flex:1;
+  }
+  .csec-dir-arr{
+    font-size:14px;
+    opacity:0.5;
+    transition:transform .2s ease;
+  }
+  .csec-dir-item:hover .csec-dir-arr{transform:translate(2px,-2px);opacity:1}
+
+  /* Right Column: Form Card */
+  .csec-col-right{
+    display:flex;
+    flex-direction:column;
+  }
+  .csec-form-card{
+    position:relative !important;
+    background:linear-gradient(135deg,rgba(255,255,255,0.14) 0%,rgba(255,255,255,0.03) 100%),rgba(12,12,20,0.7);
+    border:1px solid rgba(255,255,255,0.22);
+    backdrop-filter:blur(32px) saturate(190%) contrast(105%);
+    -webkit-backdrop-filter:blur(32px) saturate(190%) contrast(105%);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.5),inset 0 -2px 4px rgba(255,255,255,0.1),0 28px 70px rgba(0,0,0,0.55);
+    border-radius:28px;
+    padding:30px 32px;
+    overflow:hidden;
+  }
+  .csec-form-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:20px;
+  }
+  .csec-form-title{
+    font-family:'Instrument Serif',serif !important;
+    font-size:32px !important;
+    line-height:1.1 !important;
+    color:#fff;
+    margin-top:4px;
+  }
+  .csec-tag{
+    font-size:12px;
+    font-weight:600;
+    color:rgba(255,255,255,0.8);
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.2);
+    padding:4px 12px;
+    border-radius:20px;
+  }
+  .csec-form{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .csec-fields-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .csec-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .csec-field label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.7);
+  }
+  .csec-field input,.csec-field textarea{
+    width:100%;
+    font-family:'Instrument Sans',sans-serif;
+    font-size:15px;
+    color:#fff;
+    padding:11px 14px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+    transition:all .2s ease;
+    outline:none;
+  }
+  .csec-field input::placeholder,.csec-field textarea::placeholder{color:rgba(255,255,255,0.38)}
+  .csec-field input:focus,.csec-field textarea:focus{
+    background:rgba(255,255,255,0.12);
+    border-color:rgba(255,255,255,0.8);
+    box-shadow:0 0 0 3px rgba(255,255,255,0.15),inset 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .csec-field textarea{resize:vertical;min-height:74px}
+  .csec-pills{display:flex;flex-wrap:wrap;gap:8px}
+  .cpill{font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);padding:7px 14px;border-radius:20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:all .2s ease}
   .cpill:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.45);color:#fff}
-  .cpill.on{background:linear-gradient(135deg,rgba(255,255,255,0.3),rgba(255,255,255,0.12));border-color:rgba(255,255,255,0.9);color:#fff;box-shadow:inset 0 1px 1px rgba(255,255,255,0.6),0 4px 12px rgba(0,0,0,0.25)}
-  .cmodal-submit{display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Instrument Sans',sans-serif;font-size:17px;font-weight:600;color:#000;padding:14px 28px;border-radius:24px;border:none;cursor:pointer;background:linear-gradient(180deg,#fff 0%,#e2e8f0 100%);box-shadow:0 8px 24px rgba(255,255,255,0.3),inset 0 1px 1px #fff;transition:transform .25s cubic-bezier(.2,.9,.3,1.2),box-shadow .25s ease;margin-top:6px}
-  .cmodal-submit:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,255,255,0.45)}
-  .cmodal-submit:active{transform:translateY(0)}
-  .cmodal-success{display:none;flex-direction:column;align-items:center;text-align:center;padding:30px 10px}
-  .cmodal-success.active{display:flex}
-  .cmodal-check-ring{width:68px;height:68px;border-radius:50%;background:rgba(34,197,94,0.18);border:2px solid rgba(34,197,94,0.6);display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 0 24px rgba(34,197,94,0.4)}
-  .cmodal-success h3{font-size:32px;letter-spacing:-.8px;margin-bottom:10px;color:#fff}
-  .cmodal-success p{font-size:16px;color:rgba(255,255,255,0.75);line-height:1.4;max-width:380px;margin-bottom:24px}
-  .cmodal-done-btn{font-family:'Instrument Sans',sans-serif;font-size:16px;font-weight:600;color:#fff;padding:10px 32px;border-radius:20px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);cursor:pointer;transition:background .2s ease}
-  .cmodal-done-btn:hover{background:rgba(255,255,255,0.25)}
+  .cpill.on{background:linear-gradient(135deg,rgba(255,255,255,0.35),rgba(255,255,255,0.14));border-color:rgba(255,255,255,0.9);color:#fff;box-shadow:inset 0 1px 1px rgba(255,255,255,0.6),0 4px 12px rgba(0,0,0,0.25)}
+
+  .csec-submit-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family:'Instrument Sans',sans-serif;
+    font-size:16px;
+    font-weight:600;
+    color:#000;
+    padding:13px 24px;
+    border-radius:18px;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(180deg,#fff 0%,#e2e8f0 100%);
+    box-shadow:0 8px 24px rgba(255,255,255,0.25),inset 0 1px 1px #fff;
+    transition:transform .2s cubic-bezier(.2,.9,.3,1.2),box-shadow .2s ease;
+    margin-top:4px;
+  }
+  .csec-submit-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(255,255,255,0.4);
+  }
+  .csec-submit-btn:active{transform:translateY(0)}
+
+  /* Success View */
+  .csec-success-box{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:28px 12px;
+  }
+  .csec-success-box.active{display:flex}
+  .csec-check-bubble{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:rgba(34,197,94,0.18);
+    border:2px solid rgba(34,197,94,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:16px;
+    box-shadow:0 0 24px rgba(34,197,94,0.35);
+  }
+  .csec-success-box h4{
+    font-size:30px;
+    color:#fff;
+    margin-bottom:8px;
+  }
+  .csec-success-box p{
+    font-size:15px;
+    color:rgba(255,255,255,0.75);
+    line-height:1.45;
+    max-width:380px;
+    margin-bottom:20px;
+  }
+  .csec-reset-btn{
+    font-family:'Instrument Sans',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+    padding:8px 24px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.3);
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+  .csec-reset-btn:hover{background:rgba(255,255,255,0.22)}
+
+  /* Bottom Dock */
+  .csec-dock{
+    display:grid;
+    grid-template-columns:1fr 1.15fr 1fr;
+    gap:16px;
+    width:100%;
+    margin-top:6px;
+  }
+  .csec-dock-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 20px;
+    border-radius:24px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.14) 0%,rgba(255,255,255,0.04) 100%),rgba(10,10,18,0.55);
+    backdrop-filter:blur(24px) saturate(180%);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.35),0 16px 36px rgba(0,0,0,0.35);
+    color:#fff;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .3s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .csec-dock-item:hover{
+    background:linear-gradient(180deg,rgba(255,255,255,0.22) 0%,rgba(255,255,255,0.08) 100%),rgba(15,15,25,0.65);
+    border-color:rgba(255,255,255,0.45);
+    transform:translateY(-3px);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.6),0 22px 46px rgba(0,0,0,0.5);
+  }
+  .csec-dock-icon{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    flex-shrink:0;
+    transition:transform .25s ease,background .25s ease;
+  }
+  .csec-dock-item:hover .csec-dock-icon{
+    transform:scale(1.08);
+    background:rgba(255,255,255,0.16);
+    border-color:rgba(255,255,255,0.35);
+  }
+  .csec-dock-info{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    flex:1;
+    min-width:0;
+  }
+  .csec-dock-k{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    color:rgba(255,255,255,0.48);
+    text-transform:uppercase;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .csec-dock-v{
+    font-size:16px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    transition:transform .25s ease;
+  }
+  .csec-dock-item:hover .csec-dock-v{transform:translateX(3px)}
+  .csec-dock-badge{
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:rgba(255,255,255,0.8);
+    flex-shrink:0;
+    transition:all .2s ease;
+  }
+  .csec-dock-item:hover .csec-dock-badge{
+    background:#fff;
+    color:#000;
+    border-color:#fff;
+  }
 
   .toast{position:fixed;top:22px;left:50%;z-index:300;transform:translate3d(-50%,-100px,0) scale(0.9);opacity:0;pointer-events:none;display:flex;align-items:center;gap:10px;padding:9px 18px;border-radius:40px;background:rgba(18,18,24,0.88);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,0.24);box-shadow:0 12px 32px rgba(0,0,0,0.5),inset 0 1px 1px rgba(255,255,255,0.4);font-family:'Instrument Sans',sans-serif;font-size:14px;font-weight:500;color:#fff;transition:transform .35s cubic-bezier(.18,.9,.3,1.2),opacity .25s ease}
   .toast.show{transform:translate3d(-50%,0,0) scale(1);opacity:1}
@@ -227,20 +614,155 @@
 
   <div class="glowslot2" style="left:0;top:4780px;width:1280px;height:438px;mix-blend-mode:screen"></div>
 
-  <!-- contact -->
-  <div class="sans grad" style="left:0;top:4546px;padding:12px;width:1280px;font-size:64px;letter-spacing:-4.48px;line-height:0;text-align:center;white-space:pre-wrap;background-image:linear-gradient(180deg,#fffc35 12px,#bdbdbd 177px);height:189px">
-    <p style="position:static;line-height:.86">Got an idea worth building?</p>
-    <p style="position:static;line-height:.86">Tell us about it. We reply within a day</p>
-    <p style="position:static;line-height:.86">and turn it into something remarkable.</p>
-  </div>
-  <a class="cta2 sans" id="openContactModal" href="#contact" data-open-contact style="left:640px;top:4778px;width:300px;height:70px"><span>Start a project</span></a>
-  <div style="left:65px;top:4900px;width:1149px;height:104px;border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.05));backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.4),inset 0 -2px 4px rgba(255,255,255,.18),0 20px 50px rgba(0,0,40,.4);border:1px solid rgba(255,255,255,.25)"></div>
-  <div style="left:453px;top:4920px;width:1px;height:64px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))"></div><div style="left:823px;top:4920px;width:1px;height:64px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))"></div>
-  <a class="row" id="contactCall" href="tel:+919229542747" title="Click to copy phone number" data-copy="+91 9229542747" data-copy-label="Phone number copied to clipboard" style="left:85px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">CALL US · CLICK TO COPY</span><span class="v">+91 9229542747</span></span></a>
-  <a class="row" id="contactEmail" href="mailto:anamrazzaque.work@gmail.com" title="Click to copy email address" data-copy="anamrazzaque.work@gmail.com" data-copy-label="Email address copied to clipboard" style="left:455px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">EMAIL · CLICK TO COPY</span><span class="v">anamrazzaque.work@gmail.com</span></span></a>
-  <a class="row" id="contactLocation" href="https://www.google.com/maps/search/?api=1&amp;query=Swarn+Nagri+Greater+Noida" target="_blank" rel="noopener" title="Open Google Maps location" data-copy="D Block Swarn Nagri, Greater Noida, Delhi NCR" data-copy-label="Location copied to clipboard" style="left:825px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">GREATER NOIDA, DELHI NCR</span><span class="v">D Block Swarn Nagri</span></span></a>
+  <!-- contact section: redesigned editorial layout & glass suite -->
+  <section id="contact" class="csec" aria-label="Contact and Inquiries">
+    
+    <!-- Top Header Bar -->
+    <header class="csec-header">
+      <div class="csec-title-wrap">
+        <h2 class="serif csec-title shA">Contact Us</h2>
+      </div>
+      <div class="csec-status-pill">
+        <span class="csec-pulse"></span>
+        <span class="csec-status-txt">Available for select projects</span>
+        <span class="csec-sep">·</span>
+        <span class="csec-tz" id="liveTimeIST">Greater Noida (IST)</span>
+      </div>
+    </header>
 
-  <p id="contact" class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
+    <!-- Main Editorial 2-Column Grid -->
+    <div class="csec-grid">
+      
+      <!-- Left Column: Art Direction & General Directory -->
+      <div class="csec-col-left">
+        <div class="csec-hero-msg">
+          <p class="csec-line csec-grad">Let’s Start Creating :)</p>
+          <p class="csec-line csec-white">something that helps</p>
+          <p class="csec-line csec-silver">bring peace to everyone.</p>
+        </div>
+
+        <p class="csec-manifesto sans">
+          We craft high-performance digital identities, cinematic web apps, and bespoke interfaces that elevate visionary brands into unforgettable experiences.
+        </p>
+
+        <div class="csec-explore-card">
+          <div class="csec-card-header">
+            <span class="csec-k">STUDIO DIRECTORY</span>
+            <span class="csec-stat-badge">24H RESPONSE</span>
+          </div>
+          <div class="csec-dir-links">
+            <a class="csec-dir-item" data-go="0" title="Navigate to Hero section">
+              <span class="csec-dir-num">01</span>
+              <span class="csec-dir-name">Hero &amp; Manifesto</span>
+              <span class="csec-dir-arr">↗</span>
+            </a>
+            <a class="csec-dir-item" data-go="1" title="Navigate to Projects section">
+              <span class="csec-dir-num">02</span>
+              <span class="csec-dir-name">Featured Projects</span>
+              <span class="csec-dir-arr">↗</span>
+            </a>
+            <a class="csec-dir-item" data-go="2" title="Navigate to Services section">
+              <span class="csec-dir-num">03</span>
+              <span class="csec-dir-name">Services &amp; Process</span>
+              <span class="csec-dir-arr">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Inline Glass Inquiry Terminal -->
+      <div class="csec-col-right">
+        <div class="csec-form-card">
+          <div class="csec-form-head">
+            <div>
+              <span class="csec-k">PROJECT BRIEF</span>
+              <h3 class="csec-form-title serif">Start a conversation</h3>
+            </div>
+            <span class="csec-tag sans">Direct Studio Desk</span>
+          </div>
+
+          <form id="inlineContactForm" class="csec-form">
+            <div class="csec-fields-row">
+              <div class="csec-field">
+                <label for="icName">Your Name</label>
+                <input type="text" id="icName" name="name" required placeholder="Alex Rivera" autocomplete="name">
+              </div>
+              <div class="csec-field">
+                <label for="icEmail">Email Address</label>
+                <input type="email" id="icEmail" name="email" required placeholder="alex@company.com" autocomplete="email">
+              </div>
+            </div>
+
+            <div class="csec-field">
+              <label>Estimated Scope / Budget</label>
+              <div class="csec-pills" role="radiogroup" aria-label="Estimated Scope or Budget">
+                <button type="button" class="cpill on" data-budget="< $5k" role="radio" aria-checked="true">&lt; $5k</button>
+                <button type="button" class="cpill" data-budget="$5k – $15k" role="radio" aria-checked="false">$5k – $15k</button>
+                <button type="button" class="cpill" data-budget="$15k – $30k" role="radio" aria-checked="false">$15k – $30k</button>
+                <button type="button" class="cpill" data-budget="$30k+" role="radio" aria-checked="false">$30k+</button>
+              </div>
+            </div>
+
+            <div class="csec-field">
+              <label for="icMsg">Your Vision &amp; Goals</label>
+              <textarea id="icMsg" name="message" rows="3" required placeholder="Tell us about the project goals, deliverables, and launch timeline..."></textarea>
+            </div>
+
+            <button type="submit" id="icSubmit" class="csec-submit-btn">
+              <span>Send Project Inquiry</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </form>
+
+          <div id="inlineSuccess" class="csec-success-box">
+            <div class="csec-check-bubble">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h4 class="serif">Inquiry Transmitted!</h4>
+            <p class="sans">Thank you. Anam and the studio team will review your project brief and get back to you within 24 hours.</p>
+            <button type="button" class="csec-reset-btn" id="inlineResetBtn">Send Another Note</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Dock: Direct Touchpoint Cards -->
+    <div class="csec-dock">
+      <a class="csec-dock-item" id="dockCall" href="tel:+919229542747" title="Click to copy phone number" data-copy="+91 9229542747" data-copy-label="Phone number copied to clipboard">
+        <div class="csec-dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div class="csec-dock-info">
+          <span class="csec-dock-k">DIRECT CALL / WHATSAPP · CLICK TO COPY</span>
+          <span class="csec-dock-v">+91 9229542747</span>
+        </div>
+        <span class="csec-dock-badge">Copy</span>
+      </a>
+
+      <a class="csec-dock-item" id="dockEmail" href="mailto:anamrazzaque.work@gmail.com" title="Click to copy email address" data-copy="anamrazzaque.work@gmail.com" data-copy-label="Email address copied to clipboard">
+        <div class="csec-dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+        <div class="csec-dock-info">
+          <span class="csec-dock-k">STUDIO INQUIRIES · CLICK TO COPY</span>
+          <span class="csec-dock-v">anamrazzaque.work@gmail.com</span>
+        </div>
+        <span class="csec-dock-badge">Copy</span>
+      </a>
+
+      <a class="csec-dock-item" id="dockLocation" href="https://www.google.com/maps/search/?api=1&amp;query=Swarn+Nagri+Greater+Noida" target="_blank" rel="noopener" title="Open Google Maps location" data-copy="D Block Swarn Nagri, Greater Noida, Delhi NCR" data-copy-label="Location copied to clipboard">
+        <div class="csec-dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        </div>
+        <div class="csec-dock-info">
+          <span class="csec-dock-k">GREATER NOIDA, DELHI NCR</span>
+          <span class="csec-dock-v">D Block Swarn Nagri</span>
+        </div>
+        <span class="csec-dock-badge">Maps ↗</span>
+      </a>
+    </div>
+
+  </section>
 
   <!-- services -->
   <div class="svcbar" style="left:65px;top:3561px;width:1149px;height:132px;border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 40%,rgba(255,255,255,.14)),#5700b9;backdrop-filter:blur(10px) saturate(1.3);-webkit-backdrop-filter:blur(10px) saturate(1.3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 -2px 3px rgba(255,255,255,.4),inset 0 -26px 34px -18px rgba(190,140,255,.45),inset 0 10px 18px -12px rgba(255,255,255,.18)"></div>
@@ -1144,75 +1666,85 @@
       document.body.removeChild(ta);
     }
 
-    // Bind click-to-copy on contact rows
-    var contactRows = document.querySelectorAll('.stage a.row[data-copy]');
-    contactRows.forEach(function(row) {
-      row.addEventListener('click', function(e) {
-        var copyVal = row.getAttribute('data-copy');
-        var label = row.getAttribute('data-copy-label') || 'Copied to clipboard';
+  /* ---------- REDESIGNED CONTACT SYSTEM CONTROLLER ---------- */
+  (function initContactSystem(){
+    var form = document.getElementById('inlineContactForm');
+    var successBox = document.getElementById('inlineSuccess');
+    var resetBtn = document.getElementById('inlineResetBtn');
+    var submitBtn = document.getElementById('icSubmit');
+    var pills = document.querySelectorAll('.csec-pills .cpill');
+    var toast = document.getElementById('toast');
+    var toastMsg = document.getElementById('toastMsg');
+    var dockItems = document.querySelectorAll('.csec-dock-item[data-copy]');
+    var dirLinks = document.querySelectorAll('.csec-dir-item[data-go]');
+    var toastTimer = null;
+    var selectedBudget = '< $5k';
+
+    function showToast(msg) {
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2600);
+    }
+
+    function copyText(text, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          showToast(successMsg || 'Copied to clipboard');
+        }).catch(function() {
+          fallbackCopy(text, successMsg);
+        });
+      } else {
+        fallbackCopy(text, successMsg);
+      }
+    }
+
+    function fallbackCopy(text, successMsg) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg || 'Copied to clipboard');
+      } catch(err) {
+        showToast(text);
+      }
+      document.body.removeChild(ta);
+    }
+
+    // Dock quick-copy listeners
+    dockItems.forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        var copyVal = item.getAttribute('data-copy');
+        var label = item.getAttribute('data-copy-label') || 'Copied to clipboard';
         if (copyVal && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          copyText(copyVal, label);
-        }
-      });
-    });
-
-    function openModal() {
-      if (!modal) return;
-      lastFocused = document.activeElement;
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      setTimeout(function() {
-        var nameInput = document.getElementById('cfName');
-        if (nameInput) nameInput.focus();
-      }, 100);
-    }
-
-    function closeModal() {
-      if (!modal) return;
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      if (lastFocused && lastFocused.focus) {
-        try { lastFocused.focus(); } catch(e){}
-      }
-      setTimeout(function() {
-        if (form && successView) {
-          form.reset();
-          form.style.display = '';
-          successView.classList.remove('active');
-          var submitBtn = document.getElementById('cfSubmit');
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Send Inquiry</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+          if (item.getAttribute('href') && item.getAttribute('href').startsWith('https:')) {
+            copyText(copyVal, label);
+          } else {
+            e.preventDefault();
+            copyText(copyVal, label);
           }
-          pills.forEach(function(p, idx) {
-            p.classList.toggle('on', idx === 0);
-            p.setAttribute('aria-checked', idx === 0 ? 'true' : 'false');
-          });
-          activeBudget = '< $5k';
         }
-      }, 350);
-    }
-
-    openButtons.forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal();
       });
     });
 
-    if (backdrop) backdrop.addEventListener('click', closeModal);
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (doneBtn) doneBtn.addEventListener('click', closeModal);
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
-        closeModal();
-      }
+    // Directory jump links
+    dirLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var go = link.getAttribute('data-go');
+        var navLink = document.querySelector('#nav a[data-go="' + go + '"]');
+        if (navLink) navLink.click();
+      });
     });
 
+    // Budget pill selection
     pills.forEach(function(pill) {
       pill.addEventListener('click', function() {
         pills.forEach(function(p) {
@@ -1221,35 +1753,69 @@
         });
         pill.classList.add('on');
         pill.setAttribute('aria-checked', 'true');
-        activeBudget = pill.getAttribute('data-budget') || '< $5k';
+        selectedBudget = pill.getAttribute('data-budget') || '< $5k';
       });
     });
 
+    // Form submission
     if (form) {
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        var submitBtn = document.getElementById('cfSubmit');
-        var nameInput = document.getElementById('cfName');
-        var emailInput = document.getElementById('cfEmail');
-        var msgInput = document.getElementById('cfMsg');
+        var nameInput = document.getElementById('icName');
+        var emailInput = document.getElementById('icEmail');
+        var msgInput = document.getElementById('icMsg');
 
         if (!nameInput.value.trim() || !emailInput.value.trim() || !msgInput.value.trim()) {
-          showToast('Please fill in all fields');
+          showToast('Please fill in your name, email, and vision.');
           return;
         }
 
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.innerHTML = '<span>Sending...</span>';
+          submitBtn.innerHTML = '<span>Transmitting...</span>';
         }
 
         setTimeout(function() {
           form.style.display = 'none';
-          if (successView) successView.classList.add('active');
-          showToast('Inquiry sent successfully!');
-        }, 500);
+          if (successBox) successBox.classList.add('active');
+          showToast('Project inquiry transmitted successfully!');
+        }, 450);
       });
     }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function() {
+        if (form) {
+          form.reset();
+          form.style.display = 'flex';
+        }
+        if (successBox) successBox.classList.remove('active');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Send Project Inquiry</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+        }
+        pills.forEach(function(p, idx) {
+          p.classList.toggle('on', idx === 0);
+          p.setAttribute('aria-checked', idx === 0 ? 'true' : 'false');
+        });
+      });
+    }
+
+    // Live IST Clock
+    function updateLiveTime() {
+      var tzEl = document.getElementById('liveTimeIST');
+      if (!tzEl) return;
+      try {
+        var now = new Date();
+        var options = { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true };
+        var timeStr = now.toLocaleTimeString('en-US', options);
+        tzEl.textContent = 'Greater Noida · ' + timeStr + ' IST';
+      } catch(e) {
+        tzEl.textContent = 'Greater Noida (IST)';
+      }
+    }
+    updateLiveTime();
+    setInterval(updateLiveTime, 30000);
   })();
 })();
 </script>
@@ -1259,54 +1825,5 @@
   <span id="toastMsg" class="toast-txt">Copied to clipboard</span>
 </div>
 
-<div id="contactModal" class="cmodal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cmodalTitle">
-  <div class="cmodal-backdrop" id="cmodalBackdrop"></div>
-  <div class="cmodal-card">
-    <div class="cmodal-sheen"></div>
-    <button type="button" class="cmodal-close" id="cmodalClose" aria-label="Close inquiry form">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <div class="cmodal-badge"><span class="dot"></span> Available for new projects</div>
-    <h2 class="serif cmodal-title" id="cmodalTitle">Let’s build something remarkable</h2>
-    <p class="sans cmodal-sub">Tell us about your timeline and vision. We reply within 24 hours.</p>
-    <form id="contactForm" class="cmodal-form">
-      <div class="cmodal-row2">
-        <div class="cmodal-field">
-          <label for="cfName">Your Name</label>
-          <input type="text" id="cfName" name="name" required placeholder="Alex Rivera" autocomplete="name">
-        </div>
-        <div class="cmodal-field">
-          <label for="cfEmail">Email Address</label>
-          <input type="email" id="cfEmail" name="email" required placeholder="alex@company.com" autocomplete="email">
-        </div>
-      </div>
-      <div class="cmodal-field">
-        <label>Estimated Budget (USD)</label>
-        <div class="cmodal-pills" role="radiogroup" aria-label="Estimated Budget">
-          <button type="button" class="cpill on" data-budget="< $5k" role="radio" aria-checked="true">&lt; $5k</button>
-          <button type="button" class="cpill" data-budget="$5k – $15k" role="radio" aria-checked="false">$5k – $15k</button>
-          <button type="button" class="cpill" data-budget="$15k – $30k" role="radio" aria-checked="false">$15k – $30k</button>
-          <button type="button" class="cpill" data-budget="$30k+" role="radio" aria-checked="false">$30k+</button>
-        </div>
-      </div>
-      <div class="cmodal-field">
-        <label for="cfMsg">Project Details</label>
-        <textarea id="cfMsg" name="message" rows="3" required placeholder="Tell us about the project goals, scope, and ideal launch timeline..."></textarea>
-      </div>
-      <button type="submit" id="cfSubmit" class="cmodal-submit">
-        <span>Send Inquiry</span>
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-      </button>
-    </form>
-    <div id="cmodalSuccess" class="cmodal-success">
-      <div class="cmodal-check-ring">
-        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <h3 class="serif">Inquiry Sent!</h3>
-      <p class="sans">Thank you! We’ve received your message and will get back to you within 24 hours.</p>
-      <button type="button" class="cmodal-done-btn" id="cmodalDone">Done</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
