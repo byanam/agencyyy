@@ -86,3 +86,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: perf: convert audio error handler to use loadeddata event fo -->
 
 <!-- micro-improvement: style: add webkit-font-smoothing:antialiased globally for cr -->
+
+<!-- micro-improvement: style: add moz-osx-font-smoothing:grayscale for consistent t -->
