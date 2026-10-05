@@ -902,9 +902,11 @@
     var w=im.parentNode;if(w.classList.contains('r'))w=w.parentNode;w.classList.add('cld');
   });});
   c.querySelectorAll('img').forEach(function(im){var k=im.getAttribute('data-k');load(im,k);});
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
+  try {
+    if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  } catch(e){}
   function layout(){
     s=document.documentElement.clientWidth/W;
     copies.forEach(function(e,i){e.style.transform='translateY('+(i*Math.floor(H*s))+'px) scale('+s+')';});
@@ -1276,7 +1278,7 @@
       cvs.forEach(function(cv){
         if(!cv)return;
         var r=cv.getBoundingClientRect();
-        if(r.bottom<0||r.top>innerHeight)return;
+        if(r.bottom<0||r.top>(window.innerHeight||800))return;
         var c=cv.getContext('2d'),k=cv.k;
         c.setTransform(k,0,0,k,0,0);c.clearRect(0,0,1280,CH);
         c.lineCap='round';c.lineWidth=1.6;
@@ -1327,7 +1329,7 @@
       dcvs.forEach(function(cv){
         if(!cv)return;
         var r=cv.getBoundingClientRect();
-        if(r.bottom<0||r.top>innerHeight)return;
+        if(r.bottom<0||r.top>(window.innerHeight||800))return;
         var c=cv.getContext('2d');
         c.setTransform(cv.k,0,0,cv.k,0,0);c.clearRect(0,0,1280,CH);c.lineCap='round';
         if(storm.rainStarted && storm.rainFade > 0){
@@ -1401,7 +1403,7 @@
         var tr='translate3d('+totalX.toFixed(2)+'px,'+totalY.toFixed(2)+'px,0)';
         for(var j=0;j<cl.length;j++)cl[j][i].style.transform=tr;
       }
-      var vh=innerHeight/s;
+      var vh=(window.innerHeight||800)/s;
       for(var j=0;j<tl.length;j++){
         var rel=(y-j*p)/s;
         tl[j].forEach(function(el){
@@ -1429,14 +1431,17 @@
   function setSvc(i,force){
     if(i===cur&&!force)return;cur=i;
     copies.forEach(function(c){
-      c.querySelector('.svcbar').style.transform='translateY('+(i*134)+'px)';
-      var d=c.querySelector('.svcdesc');d.style.transform='translateY('+(i*134)+'px)';
-      d.classList.add('out');
-      setTimeout(function(){d.textContent=SD[i];d.classList.remove('out');},170);
+      var sb=c.querySelector('.svcbar');if(sb)sb.style.transform='translateY('+(i*134)+'px)';
+      var d=c.querySelector('.svcdesc');
+      if(d){
+        d.style.transform='translateY('+(i*134)+'px)';
+        d.classList.add('out');
+        setTimeout(function(){d.textContent=SD[i];d.classList.remove('out');},170);
+      }
       c.querySelectorAll('.svct').forEach(function(t){t.classList.toggle('act',+t.getAttribute('data-i')===i);});
     });
   }
-  copies.forEach(function(c){c.querySelectorAll('.svct')[0].classList.add('act');});
+  copies.forEach(function(c){var el=c.querySelectorAll('.svct')[0];if(el)el.classList.add('act');});
   wrap.addEventListener('mouseover',function(e){var r=e.target.closest&&e.target.closest('.srow');if(r)setSvc(+r.getAttribute('data-i'));});
   wrap.addEventListener('click',function(e){var r=e.target.closest&&e.target.closest('.srow');if(r)setSvc(+r.getAttribute('data-i'));});
 
@@ -1611,60 +1616,6 @@
       });
     }
   })();
-
-  /* ---------- INTERACTIVE CONTACT MODAL & DYNAMIC ISLAND TOAST ---------- */
-  (function initContactSystem(){
-    var modal = document.getElementById('contactModal');
-    var backdrop = document.getElementById('cmodalBackdrop');
-    var closeBtn = document.getElementById('cmodalClose');
-    var form = document.getElementById('contactForm');
-    var successView = document.getElementById('cmodalSuccess');
-    var doneBtn = document.getElementById('cmodalDone');
-    var pills = document.querySelectorAll('.cpill');
-    var openButtons = document.querySelectorAll('[data-open-contact]');
-    var toast = document.getElementById('toast');
-    var toastMsg = document.getElementById('toastMsg');
-    var activeBudget = '< $5k';
-    var toastTimer = null;
-    var lastFocused = null;
-
-    function showToast(msg) {
-      if (!toast || !toastMsg) return;
-      toastMsg.textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function() {
-        toast.classList.remove('show');
-      }, 2600);
-    }
-
-    function copyText(text, successMsg) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function() {
-          showToast(successMsg || 'Copied to clipboard');
-        }).catch(function() {
-          fallbackCopy(text, successMsg);
-        });
-      } else {
-        fallbackCopy(text, successMsg);
-      }
-    }
-
-    function fallbackCopy(text, successMsg) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand('copy');
-        showToast(successMsg || 'Copied to clipboard');
-      } catch(err) {
-        showToast(text);
-      }
-      document.body.removeChild(ta);
-    }
 
   /* ---------- REDESIGNED CONTACT SYSTEM CONTROLLER ---------- */
   (function initContactSystem(){
