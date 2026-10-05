@@ -126,3 +126,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: perf: call cancelAnimationFrame before re-queuing in rain lo -->
 
 <!-- micro-improvement: style: increase footer cloud opacity from 1.0 to inherit for -->
+
+<!-- micro-improvement: docs: add inline JSDoc comments to audioSys isMuted, isPlayi -->
