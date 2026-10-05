@@ -52,3 +52,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: raise nav indicator border-radius from 30px to 32px f -->
 
 <!-- micro-improvement: style: reduce snd button margin-right from 6px to 4px for ti -->
+
+<!-- micro-improvement: perf: add pointer-events:none to sr-only spans to avoid hit- -->
