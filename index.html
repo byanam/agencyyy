@@ -53,81 +53,70 @@
       height: 0
     }
 
-    /* ---------- LUXURY STUDIO LOADING SCREEN ---------- */
+    /* ---------- BRAND UMBRELLA ROTATING STROKE LOADING SCREEN ---------- */
     .loader-screen {
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: radial-gradient(circle at 50% 45%, #1e148b 0%, #0d0638 55%, #03000b 100%);
+      background: #1102b8 url('/assets/loader-bg.webp') center / cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
       pointer-events: all;
       user-select: none;
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
 
     .loader-screen.hidden {
       opacity: 0;
-      transform: scale(1.03);
+      transform: scale(1.04);
       pointer-events: none;
     }
 
-    .loader-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 30px;
-    }
-
-    .loader-logo {
-      font-size: clamp(44px, 6vw, 76px);
-      letter-spacing: -2px;
-      line-height: 0.95;
-      background: linear-gradient(180deg, #fff 0%, #fff 60%, #ffd000 90%, #ffd000 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 14px;
-      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
-    }
-
-    .loader-sub {
-      font-size: 13px;
-      letter-spacing: 3px;
-      font-weight: 500;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.5);
-      margin-bottom: 34px;
-    }
-
-    .loader-bar-wrap {
-      width: 220px;
-      height: 3px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.12);
-      overflow: hidden;
+    .loader-badge-wrap {
       position: relative;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+      width: clamp(230px, 51vh, 310px);
+      height: clamp(230px, 51vh, 310px);
+      max-width: 82vmin;
+      max-height: 82vmin;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 16px 44px rgba(0, 0, 0, 0.45));
     }
 
-    .loader-bar {
-      width: 0%;
+    .loader-ring-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, #7822ff 0%, #a855f7 50%, #ffd000 100%);
-      border-radius: 6px;
-      box-shadow: 0 0 14px rgba(255, 208, 0, 0.65);
-      transition: width 0.1s linear;
+      pointer-events: none;
     }
 
-    .loader-pct {
-      font-size: 13px;
-      letter-spacing: 1.5px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 14px;
-      font-variant-numeric: tabular-nums;
+    .loader-ring-bg {
+      stroke: rgba(255, 255, 255, 0.18);
+    }
+
+    .loader-ring-stroke {
+      stroke: #ffffff;
+      stroke-linecap: round;
+      stroke-dasharray: 873.36;
+      stroke-dashoffset: 873.36;
+      transition: stroke-dashoffset 0.1s linear;
+      will-change: stroke-dashoffset;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+    }
+
+    .loader-favicon {
+      position: absolute;
+      width: calc(100% - 32px);
+      height: calc(100% - 32px);
+      border-radius: 50%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
     }
 
     #wrap {
@@ -886,15 +875,14 @@
 </head>
 
 <body>
-  <!-- LOADING SCREEN (COVERS ASSETS POPPING IN ONE BY ONE) -->
+  <!-- LOADING SCREEN: UMBRELLA BADGE & ROTATING WHITE STROKE -->
   <div id="loaderScreen" class="loader-screen" aria-label="Loading Legendary Agency" role="status">
-    <div class="loader-content">
-      <div class="loader-logo serif">legendary Agency</div>
-      <div class="loader-sub sans">Independent Design &amp; Web Studio</div>
-      <div class="loader-bar-wrap">
-        <div id="loaderBar" class="loader-bar"></div>
-      </div>
-      <div id="loaderPct" class="loader-pct sans">0%</div>
+    <div class="loader-badge-wrap">
+      <svg class="loader-ring-svg" viewBox="0 0 294 294">
+        <circle class="loader-ring-bg" cx="147" cy="147" r="139" fill="none" stroke-width="16" />
+        <circle id="loaderRingProgress" class="loader-ring-stroke" cx="147" cy="147" r="139" fill="none" stroke-width="16" stroke-linecap="round" stroke-dasharray="873.36" stroke-dashoffset="873.36" transform="rotate(-90 147 147)" />
+      </svg>
+      <img src="favicon.png" class="loader-favicon" alt="Legendary Agency">
     </div>
   </div>
 
@@ -1297,22 +1285,24 @@
     (function () {
       var W = 1280, H = 5216;
       var wrap = document.getElementById('wrap'), stage = document.getElementById('stage'), copies = [stage], s = 1;
-      /* ---------- PRELOADER: TRACK ASSETS & COVER INDIVIDUAL POP-IN ---------- */
+      /* ---------- PRELOADER: ROTATING WHITE STROKE AROUND FAVICON ---------- */
       var loaderScreen = document.getElementById('loaderScreen');
-      var loaderBar = document.getElementById('loaderBar');
-      var loaderPct = document.getElementById('loaderPct');
+      var loaderRing = document.getElementById('loaderRingProgress');
+      var ringCircumference = 873.36;
       var stageImgs = Array.from(stage.querySelectorAll('img[data-k]'));
       var totalAssets = stageImgs.length;
       var loadedAssets = 0;
       var targetPct = 0;
       var displayPct = 0;
       var loaderDone = false;
-      var minDuration = 800; // minimum duration in ms for smooth feedback
+      var minDuration = 1000; // minimum duration in ms for smooth full circle rotation
       var loaderStart = performance.now();
 
       function updateLoader(pct) {
-        if (loaderBar) loaderBar.style.width = pct + '%';
-        if (loaderPct) loaderPct.textContent = pct + '%';
+        if (loaderRing) {
+          var offset = ringCircumference * (1 - pct / 100);
+          loaderRing.style.strokeDashoffset = offset.toFixed(2);
+        }
       }
 
       function assetLoaded() {
@@ -1323,27 +1313,29 @@
       function finishLoader() {
         if (loaderDone) return;
         loaderDone = true;
-        
-        // Ensure all images are made visible so stage is 100% loaded when revealed
+
+        // Ensure all stage images are made visible so page is 100% rendered when revealed
         document.querySelectorAll('.stage img').forEach(function (im) {
           im.classList.add('on');
         });
 
-        // Smoothly accelerate to 100%
+        // Smoothly accelerate the stroke to complete the full 360 degree circle (100%)
         var finishTimer = setInterval(function () {
-          displayPct += Math.max(2, Math.ceil((100 - displayPct) * 0.35));
+          displayPct += Math.max(2, Math.ceil((100 - displayPct) * 0.3));
           if (displayPct >= 100) {
             displayPct = 100;
             updateLoader(100);
             clearInterval(finishTimer);
+
+            // Once rotation is completed, pause briefly then smoothly reveal the page
             setTimeout(function () {
               if (loaderScreen) {
                 loaderScreen.classList.add('hidden');
                 setTimeout(function () {
                   loaderScreen.style.display = 'none';
-                }, 750);
+                }, 700);
               }
-            }, 180);
+            }, 200);
           } else {
             updateLoader(displayPct);
           }
@@ -1357,10 +1349,10 @@
         }
         var elapsed = performance.now() - loaderStart;
         var timePct = Math.min(90, Math.round((elapsed / minDuration) * 90));
-        var currentGoal = Math.max(targetPct, timePct * 0.65);
+        var currentGoal = Math.max(targetPct, timePct * 0.7);
 
         if (displayPct < currentGoal) {
-          displayPct += Math.max(1, Math.round((currentGoal - displayPct) * 0.22));
+          displayPct += Math.max(1, Math.round((currentGoal - displayPct) * 0.2));
           updateLoader(displayPct);
         }
 
@@ -1375,7 +1367,7 @@
           clearInterval(progressInterval);
           finishLoader();
         }
-      }, 2500);
+      }, 2600);
 
       function load(img, k) {
         img.decoding = 'async';
