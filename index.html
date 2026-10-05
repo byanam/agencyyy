@@ -315,7 +315,9 @@
     }
 
     .ttl {
-      will-change: transform, opacity
+      will-change: transform, opacity;
+      transform: translate3d(-50%, -220px, 0);
+      opacity: 0;
     }
 
     .stage a.cta2,
@@ -1401,8 +1403,20 @@
       });
       var tP = stage.querySelector('.h200[style*="top:1631px"]'), tS = stage.querySelector('.h200[style*="3327.01"]'), sc0 = stage.querySelector('.rb[style*="top:2761px"]');
       if (tS && sc0) stage.insertBefore(tS, sc0);
-      if (tP) { tP.classList.add('ttl'); tP.setAttribute('data-t', '1631'); tP.setAttribute('data-d', '190'); }
-      if (tS) { tS.classList.add('ttl'); tS.setAttribute('data-t', '3327'); tS.setAttribute('data-d', '210'); }
+      if (tP) {
+        tP.classList.add('ttl');
+        tP.setAttribute('data-t', '1631');
+        tP.setAttribute('data-d', '190');
+        tP.style.transform = 'translate3d(-50%, -218.5px, 0)';
+        tP.style.opacity = '0';
+      }
+      if (tS) {
+        tS.classList.add('ttl');
+        tS.setAttribute('data-t', '3327');
+        tS.setAttribute('data-d', '210');
+        tS.style.transform = 'translate3d(-50%, -241.5px, 0)';
+        tS.style.opacity = '0';
+      }
       var c = stage.cloneNode(true); c.removeAttribute('id'); wrap.appendChild(c); copies.push(c);
       var CK = ['8bc30', 'de02e', '255d2', '764ac', '20b2c', '0b3fd', '57e01', '0d995'];
       copies.forEach(function (cp) {
@@ -1904,15 +1918,49 @@
             var rel = (y - j * p) / s;
             tl[j].forEach(function (el) {
               var T = +el.getAttribute('data-t'), D = +el.getAttribute('data-d') * 1.15, vis = T - rel;
-              if (el._st === undefined) { el._st = 0; el._p = 0; }
-              if (el._st === 0 && vis < .72 * vh && vis > -.3 * vh) { el._st = 1; el._t0 = t; }
-              else if (el._st === 2 && vis > 1.2 * vh) { el._st = 0; el._p = 0; el.style.opacity = '0'; }
+              if (el._st === undefined) {
+                if (vis <= 0.25 * vh) {
+                  el._st = 2; el._p = 1;
+                  el.style.transform = 'translate3d(-50%,0,0)';
+                  el.style.opacity = '1';
+                } else {
+                  el._st = 0; el._p = 0;
+                  el.style.transform = 'translate3d(-50%,' + (-D).toFixed(1) + 'px,0)';
+                  el.style.opacity = '0';
+                }
+              }
+              if (el._st === 0 && vis <= 0.88 * vh) {
+                if (vis <= 0.25 * vh) {
+                  el._st = 2; el._p = 1;
+                  el.style.transform = 'translate3d(-50%,0,0)';
+                  el.style.opacity = '1';
+                } else {
+                  el._st = 1;
+                  el._t0 = t;
+                }
+              } else if (el._st === 2 && vis > 1.25 * vh) {
+                el._st = 0;
+                el._p = 0;
+                el.style.transform = 'translate3d(-50%,' + (-D).toFixed(1) + 'px,0)';
+                el.style.opacity = '0';
+              }
               if (el._st === 1) {
-                el._p = Math.min(1, (t - el._t0) / 1100);
-                if (el._p >= 1) { el._st = 2; el._p = 1; }
-                var pr = el._p, e = 1 - Math.pow(1 - pr, 3);
-                el.style.transform = 'translate3d(-50%,' + (-(1 - e) * D).toFixed(1) + 'px,0)';
-                el.style.opacity = Math.min(1, pr * 4).toFixed(3);
+                if (vis <= 0.1 * vh) {
+                  el._st = 2; el._p = 1;
+                  el.style.transform = 'translate3d(-50%,0,0)';
+                  el.style.opacity = '1';
+                } else {
+                  el._p = Math.min(1, (t - el._t0) / 600);
+                  if (el._p >= 1) {
+                    el._st = 2; el._p = 1;
+                    el.style.transform = 'translate3d(-50%,0,0)';
+                    el.style.opacity = '1';
+                  } else {
+                    var pr = el._p, e = 1 - Math.pow(1 - pr, 3);
+                    el.style.transform = 'translate3d(-50%,' + (-(1 - e) * D).toFixed(1) + 'px,0)';
+                    el.style.opacity = Math.min(1, pr * 3.5).toFixed(3);
+                  }
+                }
               }
             });
           }
