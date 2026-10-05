@@ -60,3 +60,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add word-spacing:-2px to .h200 headings for tighter d -->
 
 <!-- micro-improvement: a11y: add role=img and aria-hidden=true to all decorative cl -->
+
+<!-- micro-improvement: perf: mark audio elements with crossorigin=anonymous for COR -->
