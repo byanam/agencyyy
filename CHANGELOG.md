@@ -62,3 +62,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: a11y: add role=img and aria-hidden=true to all decorative cl -->
 
 <!-- micro-improvement: perf: mark audio elements with crossorigin=anonymous for COR -->
+
+<!-- micro-improvement: style: boost thunder audio volume from 0.70 to 0.72 for punc -->
