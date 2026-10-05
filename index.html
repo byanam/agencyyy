@@ -62,9 +62,14 @@
     }
 
     body.rc-open #wrap {
-      filter: blur(14px) saturate(110%);
+      filter: blur(10px);
       pointer-events: none;
       user-select: none;
+    }
+
+    body.rc-open .stage .rc {
+      opacity: 0;
+      transition: opacity 0.25s ease;
     }
 
     body.rc-open #nav {
@@ -759,9 +764,9 @@
       width: 427px;
       height: 698px;
       transform-origin: top right;
-      transform: scale(var(--s, 1)) translate3d(calc(100% + 80px), 0, 0);
+      transform: scale(var(--s, 1)) translate3d(0, calc(100vh + 120px), 0);
       opacity: 0;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
       will-change: transform, opacity;
       pointer-events: auto;
     }
@@ -1602,13 +1607,10 @@
             for (var j = 0; j < group.length; j++) {
               var im = group[j];
               if (isTarget) {
-                // Vibrant, high-contrast lightning illumination with electric alpha contour glow
                 var b = (1 + 2.35 * I).toFixed(3);
                 var c = (1 + 0.45 * I).toFixed(3);
                 var s = (1 - 0.18 * I).toFixed(3);
-                var d1 = (22 * I).toFixed(1);
-                var d2 = (10 * I).toFixed(1);
-                im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ') drop-shadow(0 0 ' + d1 + 'px rgba(220,242,255,0.85)) drop-shadow(0 0 ' + d2 + 'px rgba(255,255,255,0.92))';
+                im.style.filter = 'brightness(' + b + ') contrast(' + c + ') saturate(' + s + ')';
                 im._lit = true;
               } else if (im._lit) {
                 im.style.filter = '';
