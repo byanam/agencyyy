@@ -122,3 +122,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: increase rain drop alpha from base 0.72 to 0.76 for m -->
 
 <!-- micro-improvement: style: reduce rain drop length minimum from 12px to 10px for -->
+
+<!-- micro-improvement: perf: call cancelAnimationFrame before re-queuing in rain lo -->
