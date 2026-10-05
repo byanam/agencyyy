@@ -88,3 +88,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add webkit-font-smoothing:antialiased globally for cr -->
 
 <!-- micro-improvement: style: add moz-osx-font-smoothing:grayscale for consistent t -->
+
+<!-- micro-improvement: perf: add will-change:opacity to .loader-screen.hidden for G -->
