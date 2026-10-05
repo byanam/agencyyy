@@ -316,16 +316,11 @@
     img.src='assets/'+k+'.webp';
   }
   stage.querySelectorAll('img[data-k]').forEach(function(im){load(im,im.getAttribute('data-k'));});
-  var noiseDataUrl;
-  function getNoise(){
-    if(!noiseDataUrl){
-      var n=document.createElement('canvas');n.width=n.height=128;var x=n.getContext('2d'),d=x.createImageData(128,128),b=d.data;
-      for(var i=3;i<b.length;i+=4){b[i]=Math.random()<.98?Math.round(Math.random()*80):0;}
-      x.putImageData(d,0,0);noiseDataUrl='url('+n.toDataURL()+')';
-    }
-    return noiseDataUrl;
-  }
-  stage.querySelectorAll('.pnoise').forEach(function(e){e.style.backgroundImage=getNoise();});
+  stage.querySelectorAll('.pnoise').forEach(function(e){
+    var n=document.createElement('canvas');n.width=n.height=512;var x=n.getContext('2d'),d=x.createImageData(512,512);
+    for(var i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=0;d.data[i+3]=Math.random()<.98?Math.round(Math.random()*80):0;}
+    x.putImageData(d,0,0);e.style.backgroundImage='url('+n.toDataURL()+')';
+  });
   var tP=stage.querySelector('.h200[style*="top:1631px"]'),tS=stage.querySelector('.h200[style*="3327.01"]'),sc0=stage.querySelector('.rb[style*="top:2761px"]');
   if(tS&&sc0)stage.insertBefore(tS,sc0);
   if(tP){tP.classList.add('ttl');tP.setAttribute('data-t','1631');tP.setAttribute('data-d','190');}
