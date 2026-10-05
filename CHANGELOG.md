@@ -34,3 +34,5 @@ All notable changes to this portfolio project are documented in this file.
 - Modularized storm rain canvas simulation and canopy collision mathematics.
 
 <!-- micro-improvement: perf: add font-display swap hint comment for Instrument Sans -->
+
+<!-- micro-improvement: style: tighten loader ring transition from 0.1s to 0.08s for -->
