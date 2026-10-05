@@ -57,16 +57,42 @@
   .cld{will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translate3d(0,0,0)}
   .cld img:not([style*="filter"]){image-rendering:auto}
   .ttl{will-change:transform,opacity}
-  .stage a.cta2,.stage a.row{pointer-events:auto;cursor:pointer;text-decoration:none;color:#fff}
-  .stage a.cta2{display:flex;align-items:center;justify-content:center;transform:translateX(-50%);border-radius:40px;font-size:24px;font-weight:500;letter-spacing:-.5px;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.1));backdrop-filter:blur(14px) saturate(1.5);-webkit-backdrop-filter:blur(14px) saturate(1.5);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55),inset 0 -2px 4px rgba(255,255,255,.35),0 12px 36px rgba(10,0,70,.45);transition:transform .45s cubic-bezier(.2,.9,.3,1.25),background .3s ease,box-shadow .3s ease}
+  .stage a.cta2,.stage a.row,.stage a.c-card{pointer-events:auto;cursor:pointer;text-decoration:none;color:#fff}
+  .stage a.cta2{display:flex;align-items:center;justify-content:center;transform:translateX(-50%);border-radius:40px;font-size:22px;font-weight:500;letter-spacing:-.5px;
+    background:linear-gradient(135deg,rgba(255,255,255,0.24) 0%,rgba(255,255,255,0.06) 50%,rgba(255,255,255,0.12) 100%);
+    backdrop-filter:blur(22px) saturate(190%) contrast(105%);
+    -webkit-backdrop-filter:blur(22px) saturate(190%) contrast(105%);
+    border:1px solid rgba(255,255,255,0.38);
+    box-shadow:inset 0 1px 1.5px 0 rgba(255,255,255,0.7),inset 0 -1.5px 2px 0 rgba(0,0,0,0.2),0 14px 36px -4px rgba(0,0,40,0.4),0 0 36px rgba(150,215,255,0.3);
+    transition:transform .45s cubic-bezier(.2,.9,.3,1.25),background .3s ease,box-shadow .35s ease,border-color .3s ease}
   .stage a.cta2 span{display:inline-block;transition:transform .35s ease}
-  .stage a.cta2:hover{transform:translateX(-50%) translateY(-5px) scale(1.06);background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.2));box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9),inset 0 -2px 4px rgba(255,255,255,.5),0 18px 46px rgba(255,255,255,.22)}
-  .stage a.cta2:hover span{transform:translateX(6px)}
-  .stage a.row{display:flex;align-items:center;justify-content:flex-start;padding:0 24px;border-radius:20px;font-family:'Instrument Sans',sans-serif;transition:background .3s ease,box-shadow .3s ease}
-  .stage a.row .k{display:block;font-size:12px;letter-spacing:1.8px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:6px}
-  .stage a.row .v{display:block;font-size:21px;letter-spacing:-.5px;font-weight:500;white-space:nowrap;transition:transform .35s cubic-bezier(.2,.9,.3,1.2)}
-  .stage a.row:hover{background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
-  .stage a.row:hover .v{transform:translateX(8px)}
+  .stage a.cta2 svg{transition:transform .35s cubic-bezier(.2,.9,.3,1.2)}
+  .stage a.cta2:hover{transform:translateX(-50%) translateY(-4px) scale(1.04);
+    background:linear-gradient(135deg,rgba(255,255,255,0.34) 0%,rgba(255,255,255,0.12) 50%,rgba(255,255,255,0.18) 100%);
+    border-color:rgba(255,255,255,0.65);
+    box-shadow:inset 0 1px 2px 0 rgba(255,255,255,0.9),inset 0 -1.5px 2px 0 rgba(0,0,0,0.2),0 20px 48px -4px rgba(0,0,40,0.5),0 0 46px rgba(150,215,255,0.5)}
+  .stage a.cta2:hover span{transform:translateX(-2px)}
+  .stage a.cta2:hover svg{transform:translateX(5px)}
+
+  .stage a.c-card{display:flex;flex-direction:column;justify-content:center;padding:24px 28px;border-radius:26px;
+    background:linear-gradient(145deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.04) 50%,rgba(255,255,255,0.08) 100%);
+    backdrop-filter:blur(22px) saturate(180%);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.26);
+    box-shadow:inset 0 1px 1.5px rgba(255,255,255,0.5),inset 0 -1.5px 2px rgba(0,0,0,0.2),0 16px 36px -8px rgba(0,0,30,0.45);
+    font-family:'Instrument Sans',sans-serif;
+    isolation:isolate;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    transition:transform .4s cubic-bezier(.2,.9,.3,1.2),background .3s ease,border-color .3s ease,box-shadow .35s ease}
+  .stage a.c-card:hover{transform:translateY(-5px) scale(1.02);
+    background:linear-gradient(145deg,rgba(255,255,255,0.24) 0%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.14) 100%);
+    border-color:rgba(255,255,255,0.55);
+    box-shadow:inset 0 1px 2px rgba(255,255,255,0.8),inset 0 -1.5px 2px rgba(0,0,0,0.2),0 22px 48px -6px rgba(80,180,255,0.3)}
+  .c-card .c-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .c-card .c-tag{font-size:11px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.52);text-transform:uppercase}
+  .c-card .c-icon{width:22px;height:22px;color:rgba(255,255,255,0.65);transition:transform .3s ease,color .3s ease}
+  .c-card:hover .c-icon{transform:translateX(3px);color:#fff}
+  .c-card .c-val{font-size:20px;font-weight:600;letter-spacing:-.5px;color:#fff;white-space:nowrap;margin-bottom:4px}
+  .c-card .c-sub{font-size:13px;font-weight:400;color:rgba(255,255,255,0.48);letter-spacing:-.2px}
   .stage,.stage *{pointer-events:none}
   .dripslot canvas{position:absolute;left:0;top:0;width:1280px;height:1750px}
   .rainslot canvas{position:absolute;left:0;top:0;width:1280px;height:1750px}
@@ -189,21 +215,54 @@
   <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px"><img class="cover" data-k="de02e" alt=""></div>
 
 
-  <!-- contact -->
-  <div class="sans grad" style="left:0;top:4546px;padding:12px;width:1280px;font-size:64px;letter-spacing:-4.48px;line-height:0;text-align:center;white-space:pre-wrap;background-image:linear-gradient(180deg,#fffc35 12px,#bdbdbd 177px);height:189px">
-    <p style="position:static;line-height:.86">Got an idea worth building?</p>
-    <p style="position:static;line-height:.86">Tell us about it. We reply within a day</p>
-    <p style="position:static;line-height:.86">and turn it into something remarkable.</p>
+  <!-- contact section -->
+  <div class="sans" style="left:640px;top:4306px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px 18px;border-radius:30px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.85);text-transform:uppercase">
+    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#ffd000;box-shadow:0 0 10px #ffd000"></span>Available for new projects • 2026
   </div>
-  <a class="cta2 sans" href="mailto:anamrazzaque.work@gmail.com" style="left:640px;top:4778px;width:300px;height:70px">Start a project</a>
-  <div style="left:65px;top:4900px;width:1149px;height:104px;border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 -2px 4px rgba(255,255,255,.18),0 20px 50px rgba(0,0,40,.4)"></div>
-  <div style="left:453px;top:4920px;width:1px;height:64px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))"></div><div style="left:823px;top:4920px;width:1px;height:64px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0))"></div>
-  <a class="row" href="tel:+919229542747" style="left:85px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">CALL US</span><span class="v">+91 9229542747</span></span></a>
-  <a class="row" href="mailto:anamrazzaque.work@gmail.com" style="left:455px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">EMAIL</span><span class="v">anamrazzaque.work@gmail.com</span></span></a>
-  <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=Swarn+Nagri+Greater+Noida" target="_blank" rel="noopener" style="left:825px;top:4910px;width:366px;height:84px"><span class="rl"><span class="k">GREATER NOIDA, DELHI NCR</span><span class="v">D Block Swarn Nagri</span></span></a>
 
-  <p class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
-  <p class="serif h200 shA" style="left:627px;top:4356px;color:#fff">Contact Us</p>
+  <p class="serif h200 shA" style="left:640px;top:4348px;color:#fff">Contact Us</p>
+
+  <div class="sans" style="left:640px;top:4550px;transform:translateX(-50%);width:960px;text-align:center">
+    <p class="serif" style="font-size:46px;line-height:1.2;font-weight:400;letter-spacing:-1px;color:#fff;margin-bottom:12px">Got an idea worth building?</p>
+    <p class="sans" style="font-size:20px;line-height:1.45;font-weight:400;letter-spacing:-.3px;color:rgba(255,255,255,0.72);max-width:640px;margin:0 auto">Tell us about your brand, vision, or product. We reply within 24 hours and turn ambitious visions into remarkable digital reality.</p>
+  </div>
+
+  <a class="cta2 sans" href="mailto:anamrazzaque.work@gmail.com" aria-label="Start a project with us" style="left:640px;top:4670px;width:320px;height:72px">
+    <span>Start a project</span>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-left:10px;pointer-events:none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+  </a>
+
+  <!-- 3 floating luxury cards -->
+  <a class="c-card" href="tel:+919229542747" aria-label="Call us directly at +91 9229542747" style="left:70px;top:4770px;width:360px;height:124px">
+    <div class="c-top">
+      <span class="c-tag">DIRECT LINE</span>
+      <div class="c-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+    </div>
+    <div class="c-val">+91 9229542747</div>
+    <div class="c-sub">Mon – Sat • 10:00 AM – 7:00 PM IST</div>
+  </a>
+
+  <a class="c-card" href="mailto:anamrazzaque.work@gmail.com" aria-label="Send us an email at anamrazzaque.work@gmail.com" style="left:460px;top:4770px;width:360px;height:124px">
+    <div class="c-top">
+      <span class="c-tag">DIRECT EMAIL</span>
+      <div class="c-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></div>
+    </div>
+    <div class="c-val">anamrazzaque.work@gmail.com</div>
+    <div class="c-sub">Fast response • Within 24 hours</div>
+  </a>
+
+  <a class="c-card" href="https://www.google.com/maps/search/?api=1&amp;query=Swarn+Nagri+Greater+Noida" target="_blank" rel="noopener" aria-label="Find our studio headquarters on Google Maps" style="left:850px;top:4770px;width:360px;height:124px">
+    <div class="c-top">
+      <span class="c-tag">STUDIO LOCATION</span>
+      <div class="c-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+    </div>
+    <div class="c-val">Delhi NCR, India</div>
+    <div class="c-sub">D Block, Swarn Nagri, Greater Noida</div>
+  </a>
+
+  <div class="sans" style="left:640px;top:4925px;transform:translateX(-50%);width:960px;text-align:center;font-size:13px;letter-spacing:1px;font-weight:500;color:rgba(255,255,255,0.45);text-transform:uppercase">
+    © 2026 legendary Agency • Independent Design &amp; Web Studio • Delhi NCR, India
+  </div>
 
   <!-- services -->
   <div class="svcbar" style="left:65px;top:3561px;width:1149px;height:132px;border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 40%,rgba(255,255,255,.14)),#5700b9;backdrop-filter:blur(10px) saturate(1.3);-webkit-backdrop-filter:blur(10px) saturate(1.3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),inset 0 -2px 3px rgba(255,255,255,.4),inset 0 -26px 34px -18px rgba(190,140,255,.45),inset 0 10px 18px -12px rgba(255,255,255,.18)"></div>
