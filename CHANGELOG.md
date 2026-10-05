@@ -112,3 +112,5 @@ All notable changes to this portfolio project are documented in this file.
 <!-- micro-improvement: style: add gap:2px to service rows for subtle breathing room -->
 
 <!-- micro-improvement: perf: add loading=lazy attribute to all below-fold cloud img -->
+
+<!-- micro-improvement: style: reduce cloud drift jiggle maximum travel from 70px to -->
