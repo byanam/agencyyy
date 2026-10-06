@@ -1,0 +1,12 @@
+.cloud-layer {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cloud-layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
