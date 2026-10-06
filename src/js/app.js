@@ -1,9 +1,16 @@
-import { StormRainEngine } from './rain/StormRainEngine.js';
-import { LightningEngine } from './effects/LightningEngine.js';
-import { InfiniteScrollLoop } from './controllers/InfiniteScrollLoop.js';
-import { KeyboardNavigator } from './controllers/KeyboardNavigator.js';
+import { findClosestSectionY } from './controllers/nav.js';
+import { calculateSmoothedVelocity, computeCloudDrift } from './effects/clouds.js';
+import { RainDropPool } from './rain/particles.js';
+import { initModal } from './components/modal.js';
+import { formatKolkataTime } from './controllers/ticker.js';
+import { checkInfiniteScrollWrap } from './controllers/scroll.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const loop = new InfiniteScrollLoop();
-  loop.init();
-});
+export {
+  findClosestSectionY,
+  calculateSmoothedVelocity,
+  computeCloudDrift,
+  RainDropPool,
+  initModal,
+  formatKolkataTime,
+  checkInfiniteScrollWrap
+};
