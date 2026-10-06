@@ -1,18 +1,19 @@
-export function debounce(fn, wait = 100) {
-  let timeout;
+export function rafThrottle(fn) {
+  let queued = false;
   return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn.apply(this, args), wait);
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      fn.apply(this, args);
+      queued = false;
+    });
   };
 }
 
-export function throttle(fn, limit = 100) {
-  let inThrottle;
+export function debounce(fn, ms = 100) {
+  let timer;
   return function (...args) {
-    if (!inThrottle) {
-      fn.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), ms);
   };
 }
