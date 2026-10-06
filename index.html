@@ -1305,7 +1305,7 @@
       var targetPct = 0;
       var displayPct = 0;
       var loaderDone = false;
-      var minDuration = 1000; // minimum duration in ms for smooth full circle rotation
+      var minDuration = 600; // minimum duration in ms so it doesn't jarringly flash if cached
       var loaderStart = performance.now();
 
       function updateLoader(pct) {
@@ -1317,7 +1317,7 @@
 
       function assetLoaded() {
         loadedAssets++;
-        targetPct = Math.min(100, Math.round((loadedAssets / totalAssets) * 92));
+        targetPct = Math.round((loadedAssets / totalAssets) * 100);
       }
 
       function finishLoader() {
@@ -1331,7 +1331,7 @@
 
         // Smoothly accelerate the stroke to complete the full 360 degree circle (100%)
         var finishTimer = setInterval(function () {
-          displayPct += Math.max(2, Math.ceil((100 - displayPct) * 0.3));
+          displayPct += Math.max(3, Math.ceil((100 - displayPct) * 0.35));
           if (displayPct >= 100) {
             displayPct = 100;
             updateLoader(100);
@@ -1346,7 +1346,7 @@
                 }, 700);
               }
               if (window.__tryStartAudio) window.__tryStartAudio();
-            }, 200);
+            }, 180);
           } else {
             updateLoader(displayPct);
           }
@@ -1359,29 +1359,29 @@
           return;
         }
         var elapsed = performance.now() - loaderStart;
-        var timePct = Math.min(90, Math.round((elapsed / minDuration) * 90));
-        var currentGoal = Math.max(targetPct, timePct * 0.7);
 
-        if (displayPct < currentGoal) {
-          displayPct += Math.max(1, Math.round((currentGoal - displayPct) * 0.2));
+        // Progress smoothly chases the actual loaded asset percentage
+        if (displayPct < targetPct) {
+          displayPct += Math.max(1, Math.round((targetPct - displayPct) * 0.25));
           updateLoader(displayPct);
         }
 
+        // Only finish when 100% of the assets are truly loaded & decoded, and minDuration elapsed
         if (loadedAssets >= totalAssets && elapsed >= minDuration) {
           clearInterval(progressInterval);
           finishLoader();
         }
       }, 25);
 
+      // Failsafe only: 45s safety net in case network drops entirely, never cutting off prematurely
       setTimeout(function () {
         if (!loaderDone) {
           clearInterval(progressInterval);
           finishLoader();
         }
-      }, 2600);
+      }, 45000);
 
       function load(img, k) {
-        img.decoding = 'async';
         var done = false;
         function onDone() {
           if (done) return;
@@ -1389,11 +1389,24 @@
           img.classList.add('on');
           assetLoaded();
         }
-        img.onload = onDone;
-        img.onerror = onDone;
+
         img.src = 'assets/' + k + '.webp';
+
         if (img.complete) {
-          onDone();
+          if ('decode' in img) {
+            img.decode().then(onDone).catch(onDone);
+          } else {
+            onDone();
+          }
+        } else {
+          img.onload = function () {
+            if ('decode' in img) {
+              img.decode().then(onDone).catch(onDone);
+            } else {
+              onDone();
+            }
+          };
+          img.onerror = onDone;
         }
       }
       stageImgs.forEach(function (im) { load(im, im.getAttribute('data-k')); });
