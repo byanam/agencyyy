@@ -2321,7 +2321,8 @@
 
       (function receipt() {
         function tick() {
-          var d = new Date(), tz = { timeZone: 'Asia/Kolkata' };
+          var TZ_OPTS = { timeZone: 'Asia/Kolkata' };
+          var d = new Date(), tz = TZ_OPTS;
           var ds = d.toLocaleDateString('en-GB', Object.assign({ day: '2-digit', month: '2-digit', year: 'numeric' }, tz));
           var ts = d.toLocaleTimeString('en-US', Object.assign({ hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }, tz));
           document.querySelectorAll('.rcDate').forEach(function (e) { e.textContent = ds; });
