@@ -1301,6 +1301,9 @@
       var stageImgs = Array.from(stage.querySelectorAll('img[data-k]'));
       var totalAssets = stageImgs.length;
       var loadedAssets = 0;
+      var loaderDone = false;
+      var loaderStart = performance.now();
+      var minDuration = 500;
       var currentOffset = ringCircumference;
       var targetOffset = ringCircumference;
       var finishing = false;
@@ -1313,11 +1316,9 @@
 
         if (finishing) {
           // Smoothly close the remaining gap to 100%
-          currentOffset += (0 - currentOffset) * 0.18;
-          if (loaderRing) {
-            loaderRing.style.strokeDashoffset = currentOffset.toFixed(2);
-          }
-          if (currentOffset <= 1.5) {
+          var diff = 0 - currentOffset;
+          currentOffset += Math.min(diff * 0.16, -1.8);
+          if (currentOffset <= 1.0) {
             currentOffset = 0;
             if (loaderRing) loaderRing.style.strokeDashoffset = '0';
             loaderDone = true;
@@ -1330,22 +1331,26 @@
                 }, 700);
               }
               if (window.__tryStartAudio) window.__tryStartAudio();
-            }, 160);
+            }, 140);
             return;
+          }
+          if (loaderRing) {
+            loaderRing.style.strokeDashoffset = currentOffset.toFixed(2);
           }
         } else {
           // Calculate target offset based on actual loaded assets
           targetOffset = ringCircumference * (1 - progressRatio);
 
           // Smooth lerp towards target offset at 60fps
-          currentOffset += (targetOffset - currentOffset) * 0.12;
+          var diff = targetOffset - currentOffset;
+          currentOffset += diff * 0.10;
 
           if (loaderRing) {
             loaderRing.style.strokeDashoffset = currentOffset.toFixed(2);
           }
 
-          // When all assets are fully ready and min duration has elapsed, enter finishing phase
-          if (loadedAssets >= totalAssets && elapsed >= minDuration) {
+          // When all assets are fully ready, smoothly transition into completion
+          if (loadedAssets >= totalAssets && elapsed >= minDuration && Math.abs(currentOffset - targetOffset) < 15) {
             finishing = true;
             document.querySelectorAll('.stage img').forEach(function (im) {
               im.classList.add('on');
