@@ -1,5 +1,6 @@
-# Micro-Interactions & Choreography
+# Animations Specification
 
-- **Lightning Flash**: Randomized 3-pulse flash sequence every 4.5–10.5 seconds.
-- **Folder Hover**: Dynamic tilt transform (`scale(1.025) rotate(...)`) with z-index elevation.
-- **Service Rows**: Horizontal translate (`translateX(12px) -> 0`) with smooth cubic bezier curve.
+## Cloud Physics
+- Dual harmonic sinusoidal drift: `sin(T * sx + px) * ax + sin(T * sx * 0.45 + px * 1.5) * (ax * 0.25)`
+- Spring damper inertia matching user scroll velocity
+- Clamped touch velocity on mobile devices to prevent violent oscillations
