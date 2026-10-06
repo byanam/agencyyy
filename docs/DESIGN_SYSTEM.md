@@ -1,14 +1,14 @@
-# Design System Specifications
-
-## Typography
-- **Headings & Serif Accents**: `Instrument Serif`, Regular (400).
-- **Body & Interfaces**: `Instrument Sans` / `Inter`, Regular (400) & Light (300).
+# Design System Tokens
 
 ## Color Palette
-- Canvas Background: `#000000` (Pure Black).
-- Hero Card Gradient: 9-stop linear gradient from Deep Indigo (`#1e148b`) down to Purple Noir (`#3c0181`).
-- Accents: Gold (`#ffd100`), Lime (`#fffb35`).
+- Deep Royal Blue: `#1102b8`
+- Electric Indigo: `#2200ff`
+- Golden Accent: `#ffd000` / `#efc305`
+- Pure Black: `#000000`
+- Pure White: `#ffffff`
+- Glassmorphism Border: `rgba(255, 255, 255, 0.36)`
 
-## Radii & Proportions
-- Main Card Radius: `39px`.
-- Aspect Ratio (Hero): `1205 / 1450` (`1.2033`).
+## Typography
+- Display Serif: Instrument Serif (Normal / Italic)
+- Interface Sans: Instrument Sans
+- Auxiliary: Inter
