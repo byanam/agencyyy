@@ -1,22 +1,19 @@
-[
-  {
-    "num": "1",
-    "name": "Design",
-    "desc": "Design Systems, User Experience, Rapid Prototyping"
-  },
-  {
-    "num": "2",
-    "name": "Engineering",
-    "desc": "Full-Stack Development, React, Next.js, Headless APIs"
-  },
-  {
-    "num": "3",
-    "name": "Motion & 3D",
-    "desc": "Interactive Visuals, WebGL Shaders, Micro-Interactions"
-  },
-  {
-    "num": "4",
-    "name": "Strategy",
-    "desc": "Product Architecture, Conversion Optimization, SEO"
-  }
-]
+{
+  "categories": [
+    {
+      "id": 0,
+      "name": "Design",
+      "lead": "Design that shapes perception."
+    },
+    {
+      "id": 1,
+      "name": "Engineering",
+      "lead": "Fast, secure, scalable code."
+    },
+    {
+      "id": 2,
+      "name": "Branding",
+      "lead": "Identities that demand attention."
+    }
+  ]
+}
