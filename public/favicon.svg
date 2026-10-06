@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="circleGrad" cx="50%" cy="35%" r="65%" fx="50%" fy="20%">
+      <stop offset="0%" stop-color="#ffe566"/>
+      <stop offset="55%" stop-color="#f5b800"/>
+      <stop offset="100%" stop-color="#d48a00"/>
+    </radialGradient>
+    <!-- Inner highlight gloss -->
+    <radialGradient id="gloss" cx="50%" cy="25%" r="50%">
+      <stop offset="0%" stop-color="#fff9d6" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#fff9d6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Outer circle -->
+  <circle cx="256" cy="256" r="248" fill="url(#circleGrad)"/>
+  <!-- Gloss overlay -->
+  <circle cx="256" cy="256" r="248" fill="url(#gloss)"/>
+
+  <!-- Umbrella canopy -->
+  <!-- Main arc: large semicircle top -->
+  <path d="
+    M 88 268
+    A 168 168 0 0 1 424 268
+    Z
+  " fill="white"/>
+
+  <!-- Three inner scallop cutouts on canopy bottom edge -->
+  <path d="
+    M 88 268
+    Q 144 230 200 268
+    Q 256 230 312 268
+    Q 368 230 424 268
+    Z
+  " fill="url(#circleGrad)"/>
+
+  <!-- Umbrella handle — vertical stem -->
+  <rect x="244" y="268" width="24" height="110" rx="12" fill="white"/>
+  <!-- Curved handle -->
+  <path d="M 244 370 Q 244 420 210 420 Q 178 420 178 390" fill="none" stroke="white" stroke-width="24" stroke-linecap="round"/>
+
+  <!-- Small top knob -->
+  <circle cx="256" cy="138" r="14" fill="white"/>
+</svg>
