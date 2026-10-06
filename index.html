@@ -1510,11 +1510,14 @@
         }
       }
       stageImgs.forEach(function (im) { load(im, im.getAttribute('data-k')); });
-      stage.querySelectorAll('.pnoise').forEach(function (e) {
-        var n = document.createElement('canvas'); n.width = n.height = 512; var x = n.getContext('2d'), d = x.createImageData(512, 512);
-        for (var i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.random() < .98 ? Math.round(Math.random() * 80) : 0; }
-        x.putImageData(d, 0, 0); e.style.backgroundImage = 'url(' + n.toDataURL() + ')';
-      });
+      var initNoise = function () {
+        stage.querySelectorAll('.pnoise').forEach(function (e) {
+          var n = document.createElement('canvas'); n.width = n.height = 512; var x = n.getContext('2d'), d = x.createImageData(512, 512);
+          for (var i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.random() < .98 ? Math.round(Math.random() * 80) : 0; }
+          x.putImageData(d, 0, 0); e.style.backgroundImage = 'url(' + n.toDataURL() + ')';
+        });
+      };
+      if ('requestIdleCallback' in window) { requestIdleCallback(initNoise, { timeout: 2000 }); } else { setTimeout(initNoise, 50); }
       var tP = stage.querySelector('.h200[style*="top:1631px"]'), tS = stage.querySelector('.h200[style*="3327.01"]'), sc0 = stage.querySelector('.rb[style*="top:2761px"]');
       if (tS && sc0) stage.insertBefore(tS, sc0);
       if (tP) {
