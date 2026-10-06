@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Legendary Agency</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="preload" as="image" href="favicon.svg" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/loader-bg.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/a59cf.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/8bc30.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/de02e.webp" fetchpriority="high">
@@ -60,7 +61,7 @@
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: #1102b8 url('/assets/loader-bg.webp') center / cover no-repeat;
+      background: #1102b8 url('assets/loader-bg.webp') center / cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -191,7 +192,8 @@
       transition: opacity .4s
     }
 
-    .stage img.on {
+    .stage img.on,
+    .page-loaded .stage img {
       opacity: 1
     }
 
@@ -851,11 +853,18 @@
       inset: 0;
       z-index: 1000;
       overflow: hidden;
-      background: transparent;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
       pointer-events: none;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
     }
 
     .rc-modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
       pointer-events: auto;
     }
 
@@ -866,14 +875,93 @@
       width: 427px;
       height: 698px;
       transform-origin: top right;
-      transform: scale(var(--s, 1)) translate3d(0, calc(100vh + 120px), 0);
-      transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(var(--s, 1)) translate3d(0, calc((100vh + 300px) / var(--s, 1)), 0);
+      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform;
       pointer-events: auto;
     }
 
     .rc-modal-overlay.open .rc-modal-card {
       transform: scale(var(--s, 1)) translate3d(0, 0, 0);
+    }
+
+    .rc-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      font-size: 22px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .rc-close-btn:hover {
+      background: #fff;
+      transform: scale(1.08);
+    }
+
+    @media (pointer: coarse), (hover: none) {
+      #cur {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #nav {
+        top: 10px;
+        padding: 4px 6px;
+        gap: 2px;
+        max-width: calc(100vw - 12px);
+      }
+
+      #nav a {
+        font-size: clamp(12px, 3.3vw, 15px);
+        padding: 5px 8px;
+        letter-spacing: -0.3px;
+      }
+
+      #nav a.snd {
+        width: 30px;
+        height: 30px;
+        margin-right: 2px;
+      }
+
+      #nav a.snd svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      #nav a.cta {
+        padding: 5px 10px;
+        margin-left: 2px;
+      }
+
+      .rc-modal-card {
+        right: auto;
+        left: 50%;
+        top: 50%;
+        transform-origin: center center;
+        transform: translate3d(-50%, 150vh, 0) scale(min(0.85, calc((100vw - 24px) / 427)));
+        max-height: 92vh;
+      }
+
+      .rc-modal-overlay.open .rc-modal-card {
+        transform: translate3d(-50%, -50%, 0) scale(min(0.85, calc((100vw - 24px) / 427)));
+      }
+
+      .stage img[style*="filter:url(#nz"] {
+        filter: none !important;
+      }
     }
   </style>
 </head>
@@ -1151,6 +1239,7 @@
   <!-- RECEIPT MODAL OVERLAY (POPS UP FROM BOTTOM ON GET IN TOUCH) -->
   <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Contact Receipt Form">
     <div class="rc-modal-card">
+      <button type="button" class="rc-close-btn" id="rcCloseBtn" aria-label="Close modal">&times;</button>
       <div class="rc"
         style="position:relative;left:0;top:0;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate;box-shadow:-14px 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.08)">
         <p class="sans"
@@ -1323,6 +1412,7 @@
       function finishLoader() {
         if (loaderDone) return;
         loaderDone = true;
+        document.body.classList.add('page-loaded');
 
         // Ensure all stage images are made visible so page is 100% rendered when revealed
         document.querySelectorAll('.stage img').forEach(function (im) {
@@ -1367,7 +1457,8 @@
           updateLoader(displayPct);
         }
 
-        if (loadedAssets >= totalAssets && elapsed >= minDuration) {
+        if ((loadedAssets >= totalAssets && elapsed >= minDuration) ||
+            (loadedAssets >= Math.ceil(totalAssets * 0.85) && elapsed >= 2000)) {
           clearInterval(progressInterval);
           finishLoader();
         }
@@ -1378,7 +1469,7 @@
           clearInterval(progressInterval);
           finishLoader();
         }
-      }, 2600);
+      }, 4500);
 
       function load(img, k) {
         img.decoding = 'async';
@@ -1427,8 +1518,12 @@
         });
       });
       c.querySelectorAll('img').forEach(function (im) {
+        im.decoding = 'async';
         if (im.complete) { im.classList.add('on'); }
-        else { im.onload = function () { im.classList.add('on'); }; }
+        else {
+          im.onload = function () { im.classList.add('on'); };
+          im.onerror = function () { im.classList.add('on'); };
+        }
       });
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
@@ -1458,7 +1553,21 @@
         if (p <= 0) return;
         if (y >= p) { window.scrollTo(0, y - p); }
       }, { passive: true });
-      addEventListener('resize', function () { var r = window.scrollY / Math.floor(H * s); layout(); window.scrollTo(0, r * Math.floor(H * s)); });
+      var lastW = document.documentElement.clientWidth;
+      addEventListener('resize', function () {
+        var curW = document.documentElement.clientWidth;
+        if (curW === lastW) return; // Prevent mobile address bar height fluctuations from resetting scroll
+        lastW = curW;
+        var r = window.scrollY / Math.max(1, Math.floor(H * s));
+        layout();
+        window.scrollTo(0, r * Math.floor(H * s));
+      });
+      addEventListener('orientationchange', function () {
+        setTimeout(function () {
+          lastW = document.documentElement.clientWidth;
+          layout();
+        }, 120);
+      });
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
       /* ---------- RAIN: falls from under the top cloud, stops on the umbrella ---------- */
       (function rain() {
@@ -1517,7 +1626,19 @@
           });
         }
         makeCanvases();
-        addEventListener('resize', makeCanvases);
+        var lastCvW = document.documentElement.clientWidth;
+        addEventListener('resize', function () {
+          var curW = document.documentElement.clientWidth;
+          if (curW === lastCvW) return;
+          lastCvW = curW;
+          makeCanvases();
+        });
+        addEventListener('orientationchange', function () {
+          setTimeout(function () {
+            lastCvW = document.documentElement.clientWidth;
+            makeCanvases();
+          }, 120);
+        });
 
 
         var storm = {
@@ -1900,7 +2021,8 @@
           var T = t / 1000;
           var p = Math.floor(H * s), y = window.scrollY, dy = y - ly; ly = y;
           if (Math.abs(dy) > p / 2) dy = 0;
-          var targetV = dy / s / dt;
+          var targetV = (dy / Math.max(0.65, s)) / dt;
+          targetV = Math.max(-1500, Math.min(1500, targetV));
           v += (targetV - v) * Math.min(1, dt * 20);
           for (var i = 0; i < n; i++) {
             var S = ST[i], D = DRIFT[i] || DRIFT[0];
@@ -2132,6 +2254,13 @@
             closeRcModal();
           }
         });
+        var rcCloseBtn = document.getElementById('rcCloseBtn');
+        if (rcCloseBtn) {
+          rcCloseBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeRcModal();
+          });
+        }
       }
       window.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && rcModal && rcModal.classList.contains('open')) {
