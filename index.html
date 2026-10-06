@@ -1383,7 +1383,7 @@
   <script>
     (function () {
       var W = 1280, H = 5216;
-      var wrap = document.getElementById('wrap'), stage = document.getElementById('stage'), copies = [stage], s = 1;
+      var wrap = document.getElementById('wrap'), stage = document.getElementById('stage'), copies = [stage], s = 1, isNavClickScrolling = false;
       /* ---------- PRELOADER: ROTATING WHITE STROKE AROUND FAVICON ---------- */
       var loaderScreen = document.getElementById('loaderScreen');
       var loaderRing = document.getElementById('loaderRingProgress');
@@ -1509,7 +1509,8 @@
         tS.style.transform = 'translate3d(-50%, -241.5px, 0)';
         tS.style.opacity = '0';
       }
-      var c = stage.cloneNode(true); c.removeAttribute('id'); wrap.appendChild(c); copies.push(c);
+      var c1 = stage.cloneNode(true); c1.removeAttribute('id'); wrap.appendChild(c1); copies.push(c1);
+      var c2 = stage.cloneNode(true); c2.removeAttribute('id'); wrap.appendChild(c2); copies.push(c2);
       var CK = ['8bc30', 'de02e', '255d2', '764ac', '20b2c', '0b3fd', '57e01', '0d995'];
       copies.forEach(function (cp) {
         cp.querySelectorAll('img[data-k]').forEach(function (im) {
@@ -1517,13 +1518,15 @@
           var w = im.parentNode; if (w.classList.contains('r')) w = w.parentNode; w.classList.add('cld');
         });
       });
-      c.querySelectorAll('img').forEach(function (im) {
-        im.decoding = 'async';
-        if (im.complete) { im.classList.add('on'); }
-        else {
-          im.onload = function () { im.classList.add('on'); };
-          im.onerror = function () { im.classList.add('on'); };
-        }
+      [c1, c2].forEach(function (cp) {
+        cp.querySelectorAll('img').forEach(function (im) {
+          im.decoding = 'async';
+          if (im.complete) { im.classList.add('on'); }
+          else {
+            im.onload = function () { im.classList.add('on'); };
+            im.onerror = function () { im.classList.add('on'); };
+          }
+        });
       });
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
@@ -1531,36 +1534,44 @@
       function layout() {
         s = document.documentElement.clientWidth / W;
         document.documentElement.style.setProperty('--s', s);
-        copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * Math.floor(H * s)) + 'px) scale(' + s + ')'; });
-        wrap.style.height = (2 * Math.floor(H * s)) + 'px';
+        var p = Math.floor(H * s);
+        copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')'; });
+        wrap.style.height = (copies.length * p) + 'px';
+      }
+      function resetToHero() {
+        var p = Math.floor(H * s);
+        window.scrollTo(0, p);
       }
       layout();
-      window.scrollTo(0, 0);
+      resetToHero();
 
       /* Reset scroll to Hero on page refresh/show */
-      window.addEventListener('pageshow', function () {
-        window.scrollTo(0, 0);
-      });
+      window.addEventListener('pageshow', resetToHero);
       if (document.readyState !== 'complete') {
-        window.addEventListener('load', function () {
-          window.scrollTo(0, 0);
-        });
+        window.addEventListener('load', resetToHero);
       }
 
-      /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP ---------- */
+      /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP (BIDIRECTIONAL) ---------- */
       addEventListener('scroll', function () {
+        if (isNavClickScrolling) return;
         var y = window.scrollY, p = Math.floor(H * s);
         if (p <= 0) return;
-        if (y >= p) { window.scrollTo(0, y - p); }
+        if (y >= 2 * p) {
+          window.scrollTo(0, y - p);
+        } else if (y < 0.5 * p) {
+          window.scrollTo(0, y + p);
+        }
       }, { passive: true });
       var lastW = document.documentElement.clientWidth;
       addEventListener('resize', function () {
         var curW = document.documentElement.clientWidth;
         if (curW === lastW) return; // Prevent mobile address bar height fluctuations from resetting scroll
         lastW = curW;
-        var r = window.scrollY / Math.max(1, Math.floor(H * s));
+        var oldP = Math.max(1, Math.floor(H * s));
+        var rel = window.scrollY / oldP;
         layout();
-        window.scrollTo(0, r * Math.floor(H * s));
+        var newP = Math.floor(H * s);
+        window.scrollTo(0, rel * newP);
       });
       addEventListener('orientationchange', function () {
         setTimeout(function () {
@@ -1819,7 +1830,7 @@
           var dt = Math.min(.05, (t - last) / 1000); last = t;
 
           var p = Math.floor(H * s);
-          var sy = window.scrollY % p;
+          var sy = ((window.scrollY % p) + p) % p;
           var inView = (sy < 1850 * s) || (sy > (H - 300) * s);
 
           var e = storm.startTime > 0 ? (t - storm.startTime) / 1000 : -1;
@@ -2157,9 +2168,20 @@
       nav.addEventListener('click', function (e) {
         var a = e.target.closest('a'); if (!a) return;
         if (a.id === 'sndBtn') return;
-        var p = Math.floor(H * s), base = Math.floor(window.scrollY / p) * p;
+        var p = Math.floor(H * s);
         var targetIdx = +a.getAttribute('data-go');
-        var targetY = base + SEC[targetIdx] * s;
+        var off = SEC[targetIdx] * s;
+        var candidates = [off, p + off, 2 * p + off];
+        var curY = window.scrollY;
+        var targetY = candidates[1];
+        var minDiff = Infinity;
+        candidates.forEach(function (cand) {
+          var diff = Math.abs(cand - curY);
+          if (diff < minDiff) {
+            minDiff = diff;
+            targetY = cand;
+          }
+        });
         if (a.classList.contains('cta') || targetIdx === 3) {
           e.preventDefault();
           if (rcModal && rcModal.classList.contains('open')) {
@@ -2191,7 +2213,9 @@
 
       function navOn() {
         if (isNavClickScrolling) return;
-        var p = Math.floor(H * s), y = ((window.scrollY % p) / s) + 300;
+        var p = Math.floor(H * s);
+        var normY = ((window.scrollY % p) + p) % p;
+        var y = (normY / s) + 300;
         var i = y >= 4300 ? 3 : y >= 3250 ? 2 : y >= 1150 ? 1 : 0;
         if (i !== currentNavIndex) {
           setNavIndex(i, false);
