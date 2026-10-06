@@ -1,0 +1,12 @@
+@media print {
+  #loaderScreen, #nav, #cur, canvas {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .stage {
+    position: relative !important;
+  }
+}
