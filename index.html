@@ -2286,6 +2286,7 @@
 
       /* ---------- CONTACT receipt: live date/time + form + modal popup ---------- */
       var rcModal = document.getElementById('rcModal');
+      var rcBackdropCached = rcModal;
       function openRcModal() {
         if (!rcModal) return;
         document.body.classList.add('rc-open');
