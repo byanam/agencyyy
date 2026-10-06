@@ -1573,6 +1573,7 @@
 
       /* Reset scroll to Hero on page refresh/show */
       window.addEventListener('pageshow', resetToHero);
+      window.addEventListener('pagehide', function () { if (music) music.pause(); });
       if (document.readyState !== 'complete') {
         window.addEventListener('load', resetToHero);
       }
