@@ -1,10 +1,18 @@
-# Architecture Overview
+# Architecture Diagram
 
-This project is a high-performance portfolio website replicating the Figma 'legendary Agency' design system.
-
-## Structure
-- `src/styles/`: Modular CSS tokens, resets, component styles, and animations.
-- `src/js/`: Modular JavaScript physics simulation, controllers, and utility modules.
-- `src/data/`: Structured design tokens, project catalog, and services copy.
-- `src/templates/`: Component partials for maintainability and templating.
-- `tests/`: Automated unit tests and accessibility audits.
+```
+[ Window Viewport ]
+       │
+       ▼
+ [ HTML Page ]
+   ├── Preloader (#loaderScreen)
+   │     └── Smooth SVG circle stroke + favicon
+   ├── Navigation (#nav)
+   │     └── Responsive glassmorphism pill
+   ├── Stage Wrapper (#wrap, Height: 3p)
+   │     ├── Copy 0 (0..p): Upward buffer
+   │     ├── Copy 1 (p..2p): Primary stage (starts here)
+   │     └── Copy 2 (2p..3p): Downward buffer
+   └── Receipt Modal (#rcModal)
+         └── Contact form dialog with live ticker
+```
