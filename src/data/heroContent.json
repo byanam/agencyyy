@@ -1,6 +1,19 @@
 {
-  "headline": "legendary Agency",
-  "leftQuote": "First impressions are expensive to get wrong.",
-  "rightHeading": "Building high-impact digital experiences since 2022.",
-  "rightCopy": "We are an independent studio in India, designing and developing websites for ambitious brands."
+  "title": "legendary Agency",
+  "quote": "First impressions are expensive to get wrong.",
+  "stats": [
+    {
+      "value": "30+",
+      "label": "Clients Served"
+    },
+    {
+      "value": "10+",
+      "label": "Businesses Scaled"
+    },
+    {
+      "value": "4+",
+      "label": "Years of experience"
+    }
+  ],
+  "bio": "Building high-impact digital experiences since 2022."
 }
