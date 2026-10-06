@@ -1,5 +1,5 @@
-const fs = require('fs');
-const assert = require('assert');
+import fs from 'node:fs';
+import assert from 'node:assert';
 
 const dir = 'public/assets';
 const files = fs.readdirSync(dir);

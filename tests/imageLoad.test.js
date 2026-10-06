@@ -1,5 +1,5 @@
-const fs = require('fs');
-const assert = require('assert');
+import fs from 'node:fs';
+import assert from 'node:assert';
 
 const assets = [
   '0b3fd.webp', '0d995.webp', '20b2c.webp', '255d2.webp',

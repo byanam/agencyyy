@@ -1,4 +1,4 @@
-const assert = require('assert');
+import assert from 'node:assert';
 
 function simulateScroll(initialY, p, delta, steps) {
   let y = initialY;

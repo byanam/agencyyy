@@ -1,4 +1,4 @@
-const assert = require('assert');
+import assert from 'node:assert';
 
 function isInsideUmbrella(px, py, cx, cy, rx, ry) {
   const dx = (px - cx) / rx;

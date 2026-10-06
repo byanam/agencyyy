@@ -1,4 +1,4 @@
-const assert = require('assert');
+import assert from 'node:assert';
 
 function testFrameBudget() {
   const budgetMs = 16.67; // 60fps

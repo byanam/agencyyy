@@ -1,5 +1,5 @@
-const fs = require('fs');
-const assert = require('assert');
+import fs from 'node:fs';
+import assert from 'node:assert';
 
 const html = fs.readFileSync('index.html', 'utf8');
 const cssMatch = html.match(/<style>([\s\S]*?)<\/style>/);

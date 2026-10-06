@@ -1,4 +1,4 @@
-const assert = require('assert');
+import assert from 'node:assert';
 
 const d = new Date('2026-10-07T04:30:00Z');
 const tz = { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true };

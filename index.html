@@ -28,8 +28,6 @@
   <link rel="preload" as="image" href="assets/a4a75.webp">
   <link rel="preload" as="image" href="assets/764ac.webp">
   <link rel="preload" as="image" href="assets/255d2.webp">
-  <link rel="preload" as="audio" href="assets/classical.mp3" type="audio/mpeg">
-  <link rel="preload" as="audio" href="assets/thunder.mp3" type="audio/mpeg">
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +36,6 @@
     rel="stylesheet">
   <style>
     :root {
-      --P: "https://www.figma.com/api/mcp/asset/dbf04b9c-f1af-46bc-8306-d762551a6dcc";
       --s: 1;
     }
 
@@ -72,7 +69,7 @@
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: #1102b8 url('assets/loader-bg.webp') center / cover no-repeat;
+      background: #1102b8 url('/assets/loader-bg.webp') center / cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -743,7 +740,7 @@
     }
 
     .cloudtxt {
-      background-image: url("/assets/f1022.webp"), url("https://www.figma.com/api/mcp/asset/3d4d10ea-ff70-4ca1-9bce-7c20e2f322af/f1022.png"), linear-gradient(180deg, #fff 0%, #ffd000 55%, #fff 100%);
+      background-image: url("/assets/f1022.webp"), linear-gradient(180deg, #fff 0%, #ffd000 55%, #fff 100%);
       background-size: cover;
       background-position: center;
       filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .25))
@@ -1386,7 +1383,7 @@
     </div>
   </div>
   <div id="cur"><span>View</span></div>
-  <nav id="nav"><div class="nav-indicator" id="navIndicator" aria-hidden="true"></div><a id="sndBtn" class="snd" title="Toggle music & sound" aria-label="Toggle music and sound"><svg
+  <nav id="nav" role="navigation"><div class="nav-indicator" id="navIndicator" aria-hidden="true"></div><a id="sndBtn" class="snd" title="Toggle music & sound" aria-label="Toggle music and sound"><svg
         viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 18V5l12-2v13"></path>
@@ -1398,7 +1395,7 @@
     <source src="assets/thunder.mp3" type="audio/mpeg">
     <source src="/assets/thunder.mp3" type="audio/mpeg">
   </audio>
-  <audio id="bgMusic" preload="auto" loop playsinline webkit-playsinline>
+  <audio id="bgMusic" preload="none" loop playsinline webkit-playsinline>
     <source src="assets/classical.mp3" type="audio/mpeg">
     <source src="/assets/classical.mp3" type="audio/mpeg">
   </audio>
@@ -1504,17 +1501,23 @@
         }
         img.onload = onDone;
         img.onerror = onDone;
-        img.src = 'assets/' + k + '.webp';
-        if (img.complete) {
+        if (img.complete && img.naturalWidth > 0) {
           onDone();
+        } else {
+          img.src = 'assets/' + k + '.webp';
+          if (img.complete && img.naturalWidth > 0) {
+            onDone();
+          }
         }
       }
       stageImgs.forEach(function (im) { load(im, im.getAttribute('data-k')); });
       var initNoise = function () {
-        stage.querySelectorAll('.pnoise').forEach(function (e) {
-          var n = document.createElement('canvas'); n.width = n.height = 512; var x = n.getContext('2d'), d = x.createImageData(512, 512);
-          for (var i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.random() < .98 ? Math.round(Math.random() * 80) : 0; }
-          x.putImageData(d, 0, 0); e.style.backgroundImage = 'url(' + n.toDataURL() + ')';
+        var n = document.createElement('canvas'); n.width = n.height = 512; var x = n.getContext('2d'), d = x.createImageData(512, 512);
+        for (var i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.random() < .98 ? Math.round(Math.random() * 80) : 0; }
+        x.putImageData(d, 0, 0);
+        var noiseUrl = 'url(' + n.toDataURL() + ')';
+        document.querySelectorAll('.pnoise').forEach(function (e) {
+          e.style.backgroundImage = noiseUrl;
         });
       };
       if ('requestIdleCallback' in window) { requestIdleCallback(initNoise, { timeout: 2000 }); } else { setTimeout(initNoise, 50); }
@@ -1943,76 +1946,74 @@
             for (var rr2 = rips.length - 1; rr2 >= 0; rr2--) { rips[rr2].l -= dt; if (rips[rr2].l <= 0) rips.splice(rr2, 1); }
           }
 
-          cvs.forEach(function (cv) {
-            if (!cv) return;
-            var r = cv.getBoundingClientRect();
-            if (r.bottom < 0 || r.top > innerHeight) return;
-            var c = cv.getContext('2d'), k = cv.k;
-            c.setTransform(k, 0, 0, k, 0, 0); c.clearRect(0, 0, 1280, CH);
-            c.lineCap = 'round'; c.lineWidth = 1.6;
+          if (inView) {
+            cvs.forEach(function (cv) {
+              if (!cv) return;
+              var r = cv.getBoundingClientRect();
+              if (r.bottom < 0 || r.top > innerHeight) return;
+              var c = cv.getContext('2d'), k = cv.k;
+              c.setTransform(k, 0, 0, k, 0, 0); c.clearRect(0, 0, 1280, CH);
+              c.lineCap = 'round'; c.lineWidth = 1.6;
 
-            if (storm.rainStarted && storm.rainFade > 0) {
-              var rf = storm.rainFade;
-              var eRain = Math.max(0, e - 2.15);
-              var weather = getRainWeather(eRain);
+              if (storm.rainStarted && storm.rainFade > 0) {
+                var rf = storm.rainFade;
+                var eRain = Math.max(0, e - 2.15);
+                var weather = getRainWeather(eRain);
 
-              for (var i = 0; i < drops.length; i++) {
-                var d = drops[i];
-                if (d.y < -100) continue;
-                var tp = top[d.x | 0] || 1e9;
-                var effLen = d.len * weather.lenMul;
-                var y1 = Math.min(d.y, tp), y0 = d.y - effLen;
-                if (y0 >= y1) continue;
-                var fade = Math.min(1, Math.max(0, (d.y - d.sy) / 90));
-                c.strokeStyle = 'rgba(205,228,255,' + (d.a * fade * rf) + ')';
-                c.beginPath(); c.moveTo(d.x, y0); c.lineTo(d.x, y1); c.stroke();
-              }
+                for (var i = 0; i < drops.length; i++) {
+                  var d = drops[i];
+                  if (d.y < -100) continue;
+                  var tp = top[d.x | 0] || 1e9;
+                  var effLen = d.len * weather.lenMul;
+                  var y1 = Math.min(d.y, tp), y0 = d.y - effLen;
+                  if (y0 >= y1) continue;
+                  var fade = Math.min(1, Math.max(0, (d.y - d.sy) / 90));
+                  c.strokeStyle = 'rgba(205,228,255,' + (d.a * fade * rf) + ')';
+                  c.beginPath(); c.moveTo(d.x, y0); c.lineTo(d.x, y1); c.stroke();
+                }
 
-              for (var ri = 0; ri < runs.length; ri++) {
-                var R = runs[ri];
-                if (R.st === 0) {
-                  c.lineCap = 'round';
-                  for (var k2 = 1; k2 < R.tr.length; k2++) {
-                    var fr = k2 / R.tr.length;
-                    c.lineWidth = R.w * (.4 + .9 * fr); c.strokeStyle = 'rgba(215,235,255,' + (.5 * fr * rf) + ')';
-                    c.beginPath(); c.moveTo(R.tr[k2 - 1][0], R.tr[k2 - 1][1]); c.lineTo(R.tr[k2][0], R.tr[k2][1]); c.stroke();
+                for (var ri = 0; ri < runs.length; ri++) {
+                  var R = runs[ri];
+                  if (R.st === 0) {
+                    c.lineCap = 'round';
+                    for (var k2 = 1; k2 < R.tr.length; k2++) {
+                      var fr = k2 / R.tr.length;
+                      c.lineWidth = R.w * (.4 + .9 * fr); c.strokeStyle = 'rgba(215,235,255,' + (.5 * fr * rf) + ')';
+                      c.beginPath(); c.moveTo(R.tr[k2 - 1][0], R.tr[k2 - 1][1]); c.lineTo(R.tr[k2][0], R.tr[k2][1]); c.stroke();
+                    }
                   }
                 }
+                for (var ri2 = 0; ri2 < rips.length; ri2++) {
+                  var Q = rips[ri2], pr = 1 - Q.l / Q.m, al = (1 - pr) * (1 - pr) * rf;
+                  c.strokeStyle = 'rgba(215,236,255,' + (.55 * al) + ')'; c.lineWidth = 1.1;
+                  c.beginPath(); c.ellipse(Q.x, Q.y, Q.r * (.4 + pr * 2.2), Q.r * (.4 + pr * 2.2) * .28, 0, 0, TWO_PI); c.stroke();
+                  var sg = c.createRadialGradient(Q.x, Q.y, 0, Q.x, Q.y, 10);
+                  sg.addColorStop(0, 'rgba(235,246,255,' + (.5 * al) + ')'); sg.addColorStop(1, 'rgba(235,246,255,0)');
+                  c.fillStyle = sg; c.fillRect(Q.x - 10, Q.y - 10, 20, 20);
+                }
+                c.lineCap = 'round';
+                c.lineWidth = 1.6;
+                c.strokeStyle = 'rgba(228,242,255,1)';
+                for (var p = 0; p < parts.length; p++) { var q = parts[p]; c.globalAlpha = Math.max(0, Math.min(1, q.l / q.m)) * .85 * rf; c.lineWidth = q.w; c.beginPath(); c.moveTo(q.x, q.y); c.lineTo(q.x - q.vx * .028, q.y - q.vy * .028); c.stroke(); }
+                c.globalAlpha = 1;
               }
-              for (var ri2 = 0; ri2 < rips.length; ri2++) {
-                var Q = rips[ri2], pr = 1 - Q.l / Q.m, al = (1 - pr) * (1 - pr) * rf;
-                c.strokeStyle = 'rgba(215,236,255,' + (.55 * al) + ')'; c.lineWidth = 1.1;
-                c.beginPath(); c.ellipse(Q.x, Q.y, Q.r * (.4 + pr * 2.2), Q.r * (.4 + pr * 2.2) * .28, 0, 0, TWO_PI); c.stroke();
-                var sg = c.createRadialGradient(Q.x, Q.y, 0, Q.x, Q.y, 10);
-                sg.addColorStop(0, 'rgba(235,246,255,' + (.5 * al) + ')'); sg.addColorStop(1, 'rgba(235,246,255,0)');
-                c.fillStyle = sg; c.fillRect(Q.x - 10, Q.y - 10, 20, 20);
+            });
+            dcvs.forEach(function (cv) {
+              if (!cv) return;
+              var r = cv.getBoundingClientRect();
+              if (r.bottom < 0 || r.top > innerHeight) return;
+              var c = cv.getContext('2d');
+              c.setTransform(cv.k, 0, 0, cv.k, 0, 0); c.clearRect(0, 0, 1280, CH); c.lineCap = 'round';
+              if (storm.rainStarted && storm.rainFade > 0) {
+                var rf = storm.rainFade;
+                for (var di = 0; di < drips.length; di++) {
+                  var D = drips[di]; if (D.delay > 0) continue;
+                  var fa = D.y > 1500 ? Math.max(0, 1 - (D.y - 1500) / 220) : 1;
+                  c.strokeStyle = 'rgba(205,228,255,' + (D.a * fa * rf) + ')'; c.lineWidth = 1.6;
+                  c.beginPath(); c.moveTo(D.x, D.y - D.len); c.lineTo(D.x, D.y); c.stroke();
+                }
               }
-              c.lineCap = 'round';
-              c.lineWidth = 1.6;
-              c.strokeStyle = 'rgba(228,242,255,1)';
-              for (var p = 0; p < parts.length; p++) { var q = parts[p]; c.globalAlpha = Math.max(0, Math.min(1, q.l / q.m)) * .85 * rf; c.lineWidth = q.w; c.beginPath(); c.moveTo(q.x, q.y); c.lineTo(q.x - q.vx * .028, q.y - q.vy * .028); c.stroke(); }
-              c.globalAlpha = 1;
-            }
-          });
-          dcvs.forEach(function (cv) {
-            if (!cv) return;
-            var r = cv.getBoundingClientRect();
-            if (r.bottom < 0 || r.top > innerHeight) return;
-            var c = cv.getContext('2d');
-            c.setTransform(cv.k, 0, 0, cv.k, 0, 0); c.clearRect(0, 0, 1280, CH); c.lineCap = 'round';
-            if (storm.rainStarted && storm.rainFade > 0) {
-              var rf = storm.rainFade;
-              for (var di = 0; di < drips.length; di++) {
-                var D = drips[di]; if (D.delay > 0) continue;
-                var fa = D.y > 1500 ? Math.max(0, 1 - (D.y - 1500) / 220) : 1;
-                c.strokeStyle = 'rgba(205,228,255,' + (D.a * fa * rf) + ')'; c.lineWidth = 1.6;
-                c.beginPath(); c.moveTo(D.x, D.y - D.len); c.lineTo(D.x, D.y); c.stroke();
-              }
-            }
-          });
-          if (!inView) {
-            requestAnimationFrame(frame);
-            return;
+            });
           }
           requestAnimationFrame(frame);
         }
