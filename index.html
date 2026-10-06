@@ -971,6 +971,11 @@
         filter: none !important;
       }
     }
+    @media print {
+      #loaderScreen, #nav, #cur { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      .stage { position: relative !important; }
+    }
   </style>
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Legendary Agency">
