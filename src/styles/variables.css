@@ -1,15 +1,14 @@
 :root {
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-  --bg-page: #000000;
-  --color-white: #ffffff;
-  --color-gold-text: #ffd100;
-  --color-lime-text: #fffb35;
-  --color-purple-active: #5700b9;
-  --color-purple-card: rgba(43, 4, 77, 0.75);
-
-  --card-radius: 39px;
-  --max-card-width: 1205px;
+  --color-primary: #1102b8;
+  --color-gold: #ffd000;
+  --color-gold-alt: #efc305;
+  --color-text-light: #ffffff;
+  --color-text-dim: #646464;
+  --color-bg-dark: #000000;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --stage-width: 1280px;
+  --stage-height: 5216px;
+  --s: 1;
 }
