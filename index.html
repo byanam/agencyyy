@@ -1980,7 +1980,7 @@
               for (var ri2 = 0; ri2 < rips.length; ri2++) {
                 var Q = rips[ri2], pr = 1 - Q.l / Q.m, al = (1 - pr) * (1 - pr) * rf;
                 c.strokeStyle = 'rgba(215,236,255,' + (.55 * al) + ')'; c.lineWidth = 1.1;
-                c.beginPath(); c.ellipse(Q.x, Q.y, Q.r * (.4 + pr * 2.2), Q.r * (.4 + pr * 2.2) * .28, 0, 0, 6.283); c.stroke();
+                c.beginPath(); c.ellipse(Q.x, Q.y, Q.r * (.4 + pr * 2.2), Q.r * (.4 + pr * 2.2) * .28, 0, 0, TWO_PI); c.stroke();
                 var sg = c.createRadialGradient(Q.x, Q.y, 0, Q.x, Q.y, 10);
                 sg.addColorStop(0, 'rgba(235,246,255,' + (.5 * al) + ')'); sg.addColorStop(1, 'rgba(235,246,255,0)');
                 c.fillStyle = sg; c.fillRect(Q.x - 10, Q.y - 10, 20, 20);
