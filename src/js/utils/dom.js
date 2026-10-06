@@ -1,7 +1,7 @@
-export function qs(selector, scope = document) {
-  return scope.querySelector(selector);
-}
+export const $ = (selector, context = document) => context.querySelector(selector);
+export const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
 
-export function qsa(selector, scope = document) {
-  return Array.from(scope.querySelectorAll(selector));
+export function on(element, event, handler, options = {}) {
+  element.addEventListener(event, handler, options);
+  return () => element.removeEventListener(event, handler, options);
 }
