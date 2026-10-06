@@ -1608,6 +1608,7 @@
       /* ---------- RAIN: falls from under the top cloud, stops on the umbrella ---------- */
       (function rain() {
         var CH = 1750, UL = 66, UT = 589, UW = 1148, UH = 980;
+        var PI = Math.PI, TWO_PI = Math.PI * 2;
         var top = new Float32Array(1280), xs = [];
         function setFallback() {
           xs = [];
