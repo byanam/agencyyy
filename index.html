@@ -106,7 +106,6 @@
       stroke-linecap: butt;
       stroke-dasharray: 873.36;
       stroke-dashoffset: 873.36;
-      transition: stroke-dashoffset 0.1s linear;
       will-change: stroke-dashoffset;
       filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
     }
@@ -1302,42 +1301,27 @@
       var stageImgs = Array.from(stage.querySelectorAll('img[data-k]'));
       var totalAssets = stageImgs.length;
       var loadedAssets = 0;
-      var targetPct = 0;
-      var displayPct = 0;
-      var loaderDone = false;
-      var minDuration = 600; // minimum duration in ms so it doesn't jarringly flash if cached
-      var loaderStart = performance.now();
+      var currentOffset = ringCircumference;
+      var targetOffset = ringCircumference;
+      var finishing = false;
 
-      function updateLoader(pct) {
-        if (loaderRing) {
-          var offset = ringCircumference * (1 - pct / 100);
-          loaderRing.style.strokeDashoffset = offset.toFixed(2);
-        }
-      }
-
-      function assetLoaded() {
-        loadedAssets++;
-        targetPct = Math.round((loadedAssets / totalAssets) * 100);
-      }
-
-      function finishLoader() {
+      function renderFrame() {
         if (loaderDone) return;
-        loaderDone = true;
 
-        // Ensure all stage images are made visible so page is 100% rendered when revealed
-        document.querySelectorAll('.stage img').forEach(function (im) {
-          im.classList.add('on');
-        });
+        var elapsed = performance.now() - loaderStart;
+        var progressRatio = totalAssets > 0 ? (loadedAssets / totalAssets) : 0;
 
-        // Smoothly accelerate the stroke to complete the full 360 degree circle (100%)
-        var finishTimer = setInterval(function () {
-          displayPct += Math.max(3, Math.ceil((100 - displayPct) * 0.35));
-          if (displayPct >= 100) {
-            displayPct = 100;
-            updateLoader(100);
-            clearInterval(finishTimer);
+        if (finishing) {
+          // Smoothly close the remaining gap to 100%
+          currentOffset += (0 - currentOffset) * 0.18;
+          if (loaderRing) {
+            loaderRing.style.strokeDashoffset = currentOffset.toFixed(2);
+          }
+          if (currentOffset <= 1.5) {
+            currentOffset = 0;
+            if (loaderRing) loaderRing.style.strokeDashoffset = '0';
+            loaderDone = true;
 
-            // Once rotation is completed, pause briefly then smoothly reveal the page
             setTimeout(function () {
               if (loaderScreen) {
                 loaderScreen.classList.add('hidden');
@@ -1346,38 +1330,41 @@
                 }, 700);
               }
               if (window.__tryStartAudio) window.__tryStartAudio();
-            }, 180);
-          } else {
-            updateLoader(displayPct);
+            }, 160);
+            return;
           }
-        }, 16);
+        } else {
+          // Calculate target offset based on actual loaded assets
+          targetOffset = ringCircumference * (1 - progressRatio);
+
+          // Smooth lerp towards target offset at 60fps
+          currentOffset += (targetOffset - currentOffset) * 0.12;
+
+          if (loaderRing) {
+            loaderRing.style.strokeDashoffset = currentOffset.toFixed(2);
+          }
+
+          // When all assets are fully ready and min duration has elapsed, enter finishing phase
+          if (loadedAssets >= totalAssets && elapsed >= minDuration) {
+            finishing = true;
+            document.querySelectorAll('.stage img').forEach(function (im) {
+              im.classList.add('on');
+            });
+          }
+        }
+
+        requestAnimationFrame(renderFrame);
       }
 
-      var progressInterval = setInterval(function () {
-        if (loaderDone) {
-          clearInterval(progressInterval);
-          return;
-        }
-        var elapsed = performance.now() - loaderStart;
+      requestAnimationFrame(renderFrame);
 
-        // Progress smoothly chases the actual loaded asset percentage
-        if (displayPct < targetPct) {
-          displayPct += Math.max(1, Math.round((targetPct - displayPct) * 0.25));
-          updateLoader(displayPct);
-        }
-
-        // Only finish when 100% of the assets are truly loaded & decoded, and minDuration elapsed
-        if (loadedAssets >= totalAssets && elapsed >= minDuration) {
-          clearInterval(progressInterval);
-          finishLoader();
-        }
-      }, 25);
-
-      // Failsafe only: 45s safety net in case network drops entirely, never cutting off prematurely
+      // Failsafe fallback in case of network issue
       setTimeout(function () {
         if (!loaderDone) {
-          clearInterval(progressInterval);
-          finishLoader();
+          finishing = true;
+          document.querySelectorAll('.stage img').forEach(function (im) {
+            im.classList.add('on');
+          });
         }
       }, 45000);
 
