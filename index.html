@@ -1537,9 +1537,10 @@
       var c1 = stage.cloneNode(true); c1.removeAttribute('id'); wrap.appendChild(c1); copies.push(c1);
       var c2 = stage.cloneNode(true); c2.removeAttribute('id'); wrap.appendChild(c2); copies.push(c2);
       var CK = ['8bc30', 'de02e', '255d2', '764ac', '20b2c', '0b3fd', '57e01', '0d995'];
+      var CK_SET = new Set(CK);
       copies.forEach(function (cp) {
         cp.querySelectorAll('img[data-k]').forEach(function (im) {
-          if (CK.indexOf(im.getAttribute('data-k')) < 0) return;
+          if (!CK_SET.has(im.getAttribute('data-k'))) return;
           var w = im.parentNode; if (w.classList.contains('r')) w = w.parentNode; w.classList.add('cld');
         });
       });
