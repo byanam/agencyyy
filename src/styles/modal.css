@@ -1,36 +1,36 @@
-.project-modal-backdrop {
+.rc-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  z-index: 1000;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
-.project-modal-backdrop.is-open {
+.rc-modal-overlay.open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
-.project-modal-card {
-  width: min(100%, 640px);
-  background: #12093a;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 28px;
-  padding: clamp(28px, 5vw, 48px);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
-  transform: translateY(20px);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
+.rc-modal-card {
+  position: fixed;
+  right: calc(37px * var(--s, 1));
+  top: calc(88px * var(--s, 1));
+  width: 427px;
+  height: 698px;
+  transform-origin: top right;
+  transform: scale(var(--s, 1)) translate3d(0, calc((100vh + 300px) / var(--s, 1)), 0);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  pointer-events: auto;
 }
 
-.project-modal-backdrop.is-open .project-modal-card {
-  transform: translateY(0);
+.rc-modal-overlay.open .rc-modal-card {
+  transform: scale(var(--s, 1)) translate3d(0, 0, 0);
 }
