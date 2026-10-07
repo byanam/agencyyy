@@ -53,6 +53,7 @@
       -moz-osx-font-smoothing: grayscale;
       background: #000;
       overflow-x: hidden;
+      overscroll-behavior: none;
       scrollbar-width: none;
       -ms-overflow-style: none
     }
@@ -198,12 +199,13 @@
 
     .stage img {
       opacity: 0;
-      transition: opacity .4s
+      transition: opacity .3s ease;
     }
 
     .stage img.on,
     .page-loaded .stage img {
-      opacity: 1
+      opacity: 1 !important;
+      transition: none !important;
     }
 
     .stage img {
@@ -1478,7 +1480,9 @@
               if (loaderScreen) {
                 loaderScreen.classList.add('hidden');
                 setTimeout(function () {
-                  loaderScreen.style.display = 'none';
+                  if (loaderScreen && loaderScreen.parentNode) {
+                    loaderScreen.parentNode.removeChild(loaderScreen);
+                  }
                 }, 500);
               }
               if (window.__tryStartAudio) window.__tryStartAudio();
@@ -1619,20 +1623,25 @@
       }
 
       /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP (BIDIRECTIONAL) ---------- */
+      var isLoopWrapping = false;
       addEventListener('scroll', function () {
         if (isNavClickScrolling) return;
         var y = window.scrollY, p = Math.floor(H * s);
         if (p <= 0) return;
         if (y >= 2 * p) {
+          isLoopWrapping = true;
           window.scrollTo(0, y - p);
-        } else if (y < 0.5 * p) {
+          setTimeout(function () { isLoopWrapping = false; }, 50);
+        } else if (y <= 0) {
+          isLoopWrapping = true;
           window.scrollTo(0, y + p);
+          setTimeout(function () { isLoopWrapping = false; }, 50);
         }
       }, { passive: true });
       var lastW = document.documentElement.clientWidth;
       addEventListener('resize', function () {
         var curW = document.documentElement.clientWidth;
-        if (curW === lastW) return; // Prevent mobile address bar height fluctuations from resetting scroll
+        if (Math.abs(curW - lastW) < 2) return; // Prevent mobile address bar show/hide height fluctuations from resetting scroll
         lastW = curW;
         var oldP = Math.max(1, Math.floor(H * s));
         var rel = window.scrollY / oldP;
@@ -1644,7 +1653,7 @@
         setTimeout(function () {
           lastW = document.documentElement.clientWidth;
           layout();
-        }, 120);
+        }, 150);
       });
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
       /* ---------- RAIN: falls from under the top cloud, stops on the umbrella ---------- */
@@ -1874,6 +1883,7 @@
         });
 
         function applyCloudLighting(activeIdx, I) {
+          if (isMobileDevice) return; // Skip dynamic CSS filter modulation on mobile to eliminate GPU redraw glitches
           for (var g = 0; g < 3; g++) {
             var group = cloudGroups[g];
             var isTarget = (g === activeIdx && I > 0.005);
@@ -2097,13 +2107,15 @@
           var dt = Math.min(.05, Math.max(.001, (t - last) / 1000)); last = t;
           var T = t / 1000;
           var p = Math.floor(H * s), y = window.scrollY, dy = y - ly; ly = y;
-          if (Math.abs(dy) > p / 2) dy = 0;
+          if (isLoopWrapping || Math.abs(dy) > p * 0.25) dy = 0;
+          var maxV = isMobileDevice ? 800 : 1500;
           var targetV = (dy / Math.max(0.65, s)) / dt;
-          targetV = Math.max(-1500, Math.min(1500, targetV));
-          v += (targetV - v) * Math.min(1, dt * 20);
+          targetV = Math.max(-maxV, Math.min(maxV, targetV));
+          v += (targetV - v) * Math.min(1, dt * (isMobileDevice ? 12 : 20));
           for (var i = 0; i < n; i++) {
             var S = ST[i], D = DRIFT[i] || DRIFT[0];
-            var tg = Math.max(-70, Math.min(70, -v * .038 * S.a));
+            var maxDisplacement = isMobileDevice ? 40 : 70;
+            var tg = Math.max(-maxDisplacement, Math.min(maxDisplacement, -v * (isMobileDevice ? 0.025 : 0.038) * S.a));
             S.vy += (S.k * (tg - S.y) - S.c * S.vy) * dt; S.y += S.vy * dt;
             // Idle organic atmospheric cloud drift (dual harmonic for natural wind breeze):
             var driftX = Math.sin(T * D.sx + D.px) * D.ax + Math.sin(T * D.sx * 0.45 + D.px * 1.5) * (D.ax * 0.25);
