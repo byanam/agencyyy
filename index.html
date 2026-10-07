@@ -53,7 +53,6 @@
       -moz-osx-font-smoothing: grayscale;
       background: #000;
       overflow-x: hidden;
-      overscroll-behavior: none;
       scrollbar-width: none;
       -ms-overflow-style: none
     }
@@ -1633,11 +1632,11 @@
         if (y >= 2 * p) {
           isLoopWrapping = true;
           window.scrollTo(0, y - p);
-          setTimeout(function () { isLoopWrapping = false; }, 50);
-        } else if (y <= 0) {
+          setTimeout(function () { isLoopWrapping = false; }, 60);
+        } else if (y < 0.5 * p) {
           isLoopWrapping = true;
           window.scrollTo(0, y + p);
-          setTimeout(function () { isLoopWrapping = false; }, 50);
+          setTimeout(function () { isLoopWrapping = false; }, 60);
         }
       }, { passive: true });
       var lastW = document.documentElement.clientWidth;
@@ -2516,8 +2515,26 @@
                 playThunder();
               }
             }).catch(function (err) {
-              isPlaying = false;
-              updateBtn();
+              console.warn('Playback error:', err);
+              // Retry on the root src if relative path failed in browser
+              if (!music.src.endsWith('/assets/classical.mp3')) {
+                music.src = '/assets/classical.mp3';
+                music.load();
+                music.play().then(function () {
+                  isPlaying = true;
+                  updateBtn();
+                  if (triggerThunder && !thunderPlayed) {
+                    thunderPlayed = true;
+                    playThunder();
+                  }
+                }).catch(function () {
+                  isPlaying = false;
+                  updateBtn();
+                });
+              } else {
+                isPlaying = false;
+                updateBtn();
+              }
             });
           } else {
             isPlaying = true;
@@ -2532,7 +2549,6 @@
         updateBtn();
 
         window.__tryStartAudio = function () {
-          // Keep audio off by default; only plays when explicitly turned on by user
           if (!isMuted && (!isPlaying || music.paused || music.muted)) {
             startPlayback(true);
           }
@@ -2554,46 +2570,20 @@
           sndBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            unlockAudioContext();
 
-            var isAudible = isPlaying && !music.paused && !music.muted && !isMuted;
-            if (isAudible) {
-              // User clicked to mute & pause
+            if (!isMuted && isPlaying && !music.paused) {
+              // Turn audio OFF
               isMuted = true;
               isPlaying = false;
               try { music.pause(); } catch (err) { }
               try { thunder.pause(); } catch (err) { }
               updateBtn();
             } else {
-              // User clicked to play & unmute
+              // Turn audio ON
               isMuted = false;
-              music.muted = false;
-              thunder.muted = false;
-              music.volume = 0.35;
-              thunder.volume = 0.70;
-
-              var pM = music.play();
-              if (pM && pM.then) {
-                pM.then(function () {
-                  isPlaying = true;
-                  updateBtn();
-                  if (!thunderPlayed) {
-                    thunderPlayed = true;
-                    playThunder();
-                  }
-                }).catch(function (err) {
-                  console.warn('Playback error on button click:', err);
-                  updateBtn();
-                });
-              } else {
-                isPlaying = true;
-                updateBtn();
-                if (!thunderPlayed) {
-                  thunderPlayed = true;
-                  playThunder();
-                }
-              }
-              updateBtn();
+              isPlaying = false;
+              unlockAudioContext();
+              startPlayback(true);
             }
           });
         }
