@@ -826,7 +826,33 @@
     }
 
     .rc .rcAtt {
-      pointer-events: auto
+      pointer-events: auto;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      text-decoration: none;
+    }
+
+    .rc .rcAtt * {
+      position: static !important;
+      float: none !important;
+    }
+
+    .rc .rcAtt svg {
+      flex: 0 0 16px !important;
+      width: 16px !important;
+      height: 16px !important;
+      position: static !important;
+    }
+
+    .rc .rcAtt .rcFn {
+      font-size: 16px;
+      letter-spacing: -1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: static !important;
+      line-height: 1;
     }
 
     .rc .rcSend {
@@ -1299,11 +1325,11 @@
           style="left:24px;top:345px;width:380px;height:72px" aria-label="About the project"></textarea>
         <div style="left:24px;top:422px;width:380px;height:0;border-top:1px dashed rgba(0,0,0,.7)"></div>
         <label class="sans rt2 rcAtt"
-          style="left:24px;top:425px;width:380px;height:22px;display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;overflow:hidden"><svg
+          style="left:24px;top:425px;width:380px;height:22px;display:flex;align-items:center;gap:10px;cursor:pointer;white-space:nowrap;overflow:hidden"><svg
             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"
-            stroke-linecap="round" style="flex:none">
+            stroke-linecap="round" style="flex:none;position:static">
             <path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7L14 4.5a3.3 3.3 0 0 1 4.7 4.7L10 18a1.7 1.7 0 0 1-2.4-2.4L15 8" />
-          </svg><span class="rcFn">ATTACH A PDF/DOC FILE, 10 MB MAX</span><input type="file" class="rcFile"
+          </svg><span class="rcFn" style="position:static">ATTACH A PDF/DOC FILE, 10 MB MAX</span><input type="file" class="rcFile"
             accept=".pdf,.doc,.docx" style="display:none" aria-label="Attach a document"></label>
         <div style="left:24px;top:447px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
         <button class="sans rcSend" style="left:24px;top:449px;width:380px;height:44px">[SUBMIT]</button>
@@ -1413,7 +1439,8 @@
       var targetPct = 0;
       var displayPct = 0;
       var loaderDone = false;
-      var minDuration = 1000; // minimum duration in ms for smooth full circle rotation
+      var isMobileDevice = window.innerWidth <= 768 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      var minDuration = isMobileDevice ? 500 : 900; // Fast and snappy rotation on mobile devices
       var loaderStart = performance.now();
 
       function updateLoader(pct) {
@@ -1440,22 +1467,22 @@
 
         // Smoothly accelerate the stroke to complete the full 360 degree circle (100%)
         var finishTimer = setInterval(function () {
-          displayPct += Math.max(2, Math.ceil((100 - displayPct) * 0.3));
+          displayPct += Math.max(3, Math.ceil((100 - displayPct) * 0.35));
           if (displayPct >= 100) {
             displayPct = 100;
             updateLoader(100);
             clearInterval(finishTimer);
 
-            // Once rotation is completed, pause briefly then smoothly reveal the page
+            // Once rotation is completed, smoothly reveal the page without hesitation
             setTimeout(function () {
               if (loaderScreen) {
                 loaderScreen.classList.add('hidden');
                 setTimeout(function () {
                   loaderScreen.style.display = 'none';
-                }, 700);
+                }, 500);
               }
               if (window.__tryStartAudio) window.__tryStartAudio();
-            }, 200);
+            }, isMobileDevice ? 100 : 180);
           } else {
             updateLoader(displayPct);
           }
@@ -1472,12 +1499,14 @@
         var currentGoal = Math.max(targetPct, timePct * 0.7);
 
         if (displayPct < currentGoal) {
-          displayPct += Math.max(1, Math.round((currentGoal - displayPct) * 0.2));
+          displayPct += Math.max(1, Math.round((currentGoal - displayPct) * 0.25));
           updateLoader(displayPct);
         }
 
+        var threshold = isMobileDevice ? 0.75 : 0.85;
+        var timeLimit = isMobileDevice ? 1200 : 1800;
         if ((loadedAssets >= totalAssets && elapsed >= minDuration) ||
-            (loadedAssets >= Math.ceil(totalAssets * 0.85) && elapsed >= 2000)) {
+            (loadedAssets >= Math.ceil(totalAssets * threshold) && elapsed >= timeLimit)) {
           clearInterval(progressInterval);
           finishLoader();
         }
@@ -1488,7 +1517,7 @@
           clearInterval(progressInterval);
           finishLoader();
         }
-      }, 4500);
+      }, isMobileDevice ? 2000 : 3500);
 
       function load(img, k) {
         img.decoding = 'async';
@@ -1567,18 +1596,26 @@
         copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')'; });
         wrap.style.height = (copies.length * p) + 'px';
       }
-      function resetToHero() {
+      var userHasScrolled = false;
+      function recordUserInteraction() {
+        userHasScrolled = true;
+      }
+      addEventListener('touchstart', recordUserInteraction, { passive: true, once: true });
+      addEventListener('wheel', recordUserInteraction, { passive: true, once: true });
+
+      function resetToHero(force) {
+        if (!force && userHasScrolled) return;
         var p = Math.floor(H * s);
         window.scrollTo(0, p);
       }
       layout();
-      resetToHero();
+      resetToHero(true);
 
       /* Reset scroll to Hero on page refresh/show */
-      window.addEventListener('pageshow', resetToHero);
+      window.addEventListener('pageshow', function () { resetToHero(true); });
       window.addEventListener('pagehide', function () { if (music) music.pause(); });
       if (document.readyState !== 'complete') {
-        window.addEventListener('load', resetToHero);
+        window.addEventListener('load', function () { resetToHero(false); });
       }
 
       /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP (BIDIRECTIONAL) ---------- */
