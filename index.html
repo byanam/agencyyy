@@ -1411,13 +1411,15 @@
     </div>
   </div>
   <div id="cur"><span>View</span></div>
-  <nav id="nav" role="navigation"><div class="nav-indicator" id="navIndicator" aria-hidden="true"></div><a id="sndBtn" class="snd" title="Toggle music & sound" aria-label="Toggle music and sound"><svg
+  <nav id="nav" role="navigation"><div class="nav-indicator" id="navIndicator" aria-hidden="true"></div><a id="sndBtn" class="snd off" title="Play music & sound" aria-label="Play music and sound"><svg
         viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 18V5l12-2v13"></path>
         <circle cx="6" cy="18" r="3" fill="currentColor"></circle>
         <circle cx="18" cy="16" r="3" fill="currentColor"></circle>
-      </svg><span class="sr-only">Toggle music and sound</span></a><a data-go="0">Hero</a><a data-go="1">Projects</a><a
+        <line x1="3" y1="3" x2="21" y2="21" stroke="#000" stroke-width="3.5" stroke-linecap="round" opacity="0.45"></line>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></line>
+      </svg><span class="sr-only">Play music and sound</span></a><a data-go="0">Hero</a><a data-go="1">Projects</a><a
       data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a></nav>
   <audio id="thunderAudio" preload="auto" playsinline webkit-playsinline>
     <source src="assets/thunder.mp3" type="audio/mpeg">
@@ -2440,7 +2442,7 @@
         });
 
         var sndBtn = document.getElementById('sndBtn');
-        var isMuted = false;
+        var isMuted = true;
         var isPlaying = false;
         var thunderPlayed = false;
         var audioCtxUnlocked = false;
@@ -2508,20 +2510,17 @@
           if (pM && pM.then) {
             pM.then(function () {
               isPlaying = true;
-              removeActivationListeners();
               updateBtn();
               if (triggerThunder && !thunderPlayed) {
                 thunderPlayed = true;
                 playThunder();
               }
             }).catch(function (err) {
-              // Autoplay blocked without user gesture: wait for first tap / click
               isPlaying = false;
               updateBtn();
             });
           } else {
             isPlaying = true;
-            removeActivationListeners();
             updateBtn();
             if (triggerThunder && !thunderPlayed) {
               thunderPlayed = true;
@@ -2530,49 +2529,14 @@
           }
         }
 
-        var ACTIVATION_EVENTS = ['click', 'touchstart', 'touchend', 'pointerdown', 'keydown'];
-        function onUserGesture(e) {
-          if (isMuted) return;
-          if (e && e.target && e.target.closest && e.target.closest('#sndBtn')) return;
-          startPlayback(true);
-        }
-
-        function addActivationListeners() {
-          ACTIVATION_EVENTS.forEach(function (ev) {
-            window.addEventListener(ev, onUserGesture, { capture: true, passive: true });
-            document.addEventListener(ev, onUserGesture, { capture: true, passive: true });
-          });
-          var loader = document.getElementById('loaderScreen');
-          if (loader) {
-            ACTIVATION_EVENTS.forEach(function (ev) {
-              loader.addEventListener(ev, onUserGesture, { passive: true });
-            });
-          }
-        }
-
-        function removeActivationListeners() {
-          ACTIVATION_EVENTS.forEach(function (ev) {
-            window.removeEventListener(ev, onUserGesture, { capture: true });
-            document.removeEventListener(ev, onUserGesture, { capture: true });
-          });
-        }
-
-        addActivationListeners();
-
-        // Attempt playback on startup
-        startPlayback(true);
+        updateBtn();
 
         window.__tryStartAudio = function () {
+          // Keep audio off by default; only plays when explicitly turned on by user
           if (!isMuted && (!isPlaying || music.paused || music.muted)) {
             startPlayback(true);
           }
         };
-
-        if (document.readyState !== 'complete') {
-          window.addEventListener('load', function () {
-            if (!isMuted && (!isPlaying || music.paused)) startPlayback(true);
-          }, { once: true });
-        }
 
         window.addEventListener('focus', function () {
           if (!isMuted && (!isPlaying || music.paused) && audioCtxUnlocked) {
@@ -2612,7 +2576,6 @@
               if (pM && pM.then) {
                 pM.then(function () {
                   isPlaying = true;
-                  removeActivationListeners();
                   updateBtn();
                   if (!thunderPlayed) {
                     thunderPlayed = true;
@@ -2624,7 +2587,6 @@
                 });
               } else {
                 isPlaying = true;
-                removeActivationListeners();
                 updateBtn();
                 if (!thunderPlayed) {
                   thunderPlayed = true;

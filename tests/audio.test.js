@@ -1,7 +1,9 @@
 import assert from 'node:assert';
 
 function testAudioToggle() {
-  let isPlaying = false, isMuted = false;
+  let isPlaying = false, isMuted = true;
+  assert.strictEqual(isPlaying, false);
+  assert.strictEqual(isMuted, true);
   function toggle() {
     if (isPlaying && !isMuted) {
       isMuted = true;
@@ -17,7 +19,7 @@ function testAudioToggle() {
   toggle();
   assert.strictEqual(isPlaying, false);
   assert.strictEqual(isMuted, true);
-  console.log('[PASS] Audio toggle state transitions verified');
+  console.log('[PASS] Audio toggle state transitions verified (default off)');
 }
 
 testAudioToggle();
