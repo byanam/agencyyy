@@ -948,36 +948,29 @@
       }
     }
 
+    #mstage {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 402px;
+      height: 874px;
+      overflow: hidden;
+      transform-origin: 0 0;
+      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%);
+      z-index: 25;
+    }
+
+    .mrain canvas,
+    .mglow canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+
     @media (max-width: 768px) {
-      #nav {
-        top: 10px;
-        padding: 4px 6px;
-        gap: 2px;
-        max-width: calc(100vw - 12px);
-      }
-
-      #nav a {
-        font-size: clamp(12px, 3.3vw, 15px);
-        padding: 5px 8px;
-        letter-spacing: -0.3px;
-      }
-
-      #nav a.snd {
-        width: 30px;
-        height: 30px;
-        margin-right: 2px;
-      }
-
-      #nav a.snd svg {
-        width: 14px;
-        height: 14px;
-      }
-
-      #nav a.cta {
-        padding: 5px 10px;
-        margin-left: 2px;
-      }
-
       .rc-modal-card {
         right: auto;
         left: 50%;
@@ -1069,6 +1062,18 @@
         <feOffset in="inv" dx="3" dy="4" result="off" />
         <feComposite in="off" in2="SourceAlpha" operator="in" result="inside" />
         <feColorMatrix in="inside" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.61 0" result="sh" />
+        <feMerge>
+          <feMergeNode in="SourceGraphic" />
+          <feMergeNode in="sh" />
+        </feMerge>
+      </filter>
+      <filter id="isE" x="-5%" y="-12%" width="110%" height="124%" color-interpolation-filters="sRGB">
+        <feComponentTransfer in="SourceAlpha" result="inv">
+          <feFuncA type="table" tableValues="1 0" />
+        </feComponentTransfer>
+        <feOffset in="inv" dx="1.3" dy="1.7" result="off" />
+        <feComposite in="off" in2="SourceAlpha" operator="in" result="inside" />
+        <feColorMatrix in="inside" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .61 0" result="sh" />
         <feMerge>
           <feMergeNode in="SourceGraphic" />
           <feMergeNode in="sh" />
@@ -1281,6 +1286,50 @@
 
 
     </div>
+    <div id="mstage" class="stage mstage" aria-hidden="true">
+      <div class="pnoise" style="left:0;top:0;width:402px;height:874px;background-size:256px 256px"></div>
+      <div class="rb" style="left:-159px;top:-66.51px;width:439.804px;height:277.626px">
+        <div class="r" style="transform:scaleY(-1);width:439.804px;height:277.626px;opacity:.44">
+          <img class="cover" style="filter:url(#nz2)" decoding="async" src="assets/57e01.webp" data-k="57e01" alt="">
+        </div>
+      </div>
+      <div class="rb" style="left:126.88px;top:-83px;width:484.12px;height:284.846px">
+        <div class="r" style="transform:rotate(180deg) scale(1,-1);width:484.12px;height:284.846px;opacity:.5">
+          <img class="cover" decoding="async" src="assets/0d995.webp" data-k="0d995" alt="">
+        </div>
+      </div>
+      <div class="mrain" style="left:0;top:0;width:402px;height:874px"></div>
+      <div style="left:201px;top:233px;width:510px;height:166px;transform:translateX(-50%);filter:url(#isE) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
+        <div class="serif grad" style="position:relative;width:550px;margin:-40px -20px;padding:40px 20px;font-size:128px;letter-spacing:-3.84px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60%,#ffd000 83.7%,#ffd000 100%)">
+          <p style="position:static;line-height:.65">legendary</p>
+          <p style="position:static;line-height:.65">Studio</p>
+        </div>
+      </div>
+      <div class="rb" style="left:51.69px;top:-63.26px;width:291.714px;height:126.787px">
+        <div class="r" style="transform:rotate(90deg);width:126.787px;height:291.714px">
+          <img class="cover" style="object-fit:fill" decoding="async" src="assets/8bc30.webp" data-k="8bc30" alt="">
+        </div>
+      </div>
+      <div class="rb" style="left:90.45px;top:-88px;width:409.294px;height:240.82px">
+        <div class="r" style="transform:rotate(180deg) scale(1,-1);width:409.294px;height:240.82px">
+          <img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+        </div>
+      </div>
+      <div style="left:-150px;top:-62.51px;width:366.04px;height:215.37px">
+        <img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+      </div>
+      <div style="left:-4px;top:495px;width:410px;height:350px">
+        <img class="cover" decoding="async" src="assets/a59cf.webp" data-k="a59cf" alt="">
+      </div>
+      <div style="left:201px;top:670px;width:194px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:20px;line-height:0;white-space:nowrap;text-shadow:-2px 4px 3.3px rgba(0,0,0,.43)">
+        <p style="position:static"><span style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px;color:#efc305">30 +</span><span style="line-height:24px"> </span><span style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px">Clients Served</span></p>
+        <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic"><span style="line-height:24px;color:#efc305">10+</span><span style="line-height:24px"> Businesses Scaled</span></p>
+        <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic"><span style="line-height:24px;color:#efc305">4+ </span><span style="line-height:24px">years</span><span style="line-height:24px"> of experience</span></p>
+      </div>
+      <p class="serif" style="left:201px;top:423px;width:366px;height:155px;transform:translateX(-50%);font-size:36px;letter-spacing:-1.08px;line-height:1;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.5)">Building high-impact<br>digital experiences<br>since 2022.</p>
+      <p class="serif" style="left:201px;top:778px;width:384px;height:87px;transform:translateX(-50%);font-size:24px;font-style:italic;line-height:normal;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.48)">We are an independent studio in India, designing and developing websites for ambitious brands.</p>
+      <div class="mglow" style="left:0;top:0;width:402px;height:300px;mix-blend-mode:screen"></div>
+    </div>
   </div>
   <!-- RECEIPT MODAL OVERLAY (POPS UP FROM BOTTOM ON GET IN TOUCH) -->
   <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Contact Receipt Form">
@@ -1430,8 +1479,13 @@
   </audio>
   <script>
     (function () {
+      var MOB = innerWidth < 768;
+      var Y0 = 1590;
       const W = 1280, H = 5216;
       var wrap = document.getElementById('wrap'), stage = document.getElementById('stage'), copies = [stage], s = 1, isNavClickScrolling = false;
+      function mTop() {
+        return Math.round(874 * (document.documentElement.clientWidth / 402) - Y0 * s);
+      }
       /* ---------- PRELOADER: ROTATING WHITE STROKE AROUND FAVICON ---------- */
       var loaderScreen = document.getElementById('loaderScreen');
       var loaderRing = document.getElementById('loaderRingProgress');
@@ -1591,12 +1645,45 @@
           }
         });
       });
+      document.querySelectorAll('#mstage img').forEach(function (im) {
+        im.decoding = 'async';
+        if (im.complete) { im.classList.add('on'); }
+        else {
+          im.onload = function () { im.classList.add('on'); };
+          im.onerror = function () { im.classList.add('on'); };
+        }
+      });
+      document.querySelectorAll('.pnoise').forEach(function (e) {
+        var n = document.createElement('canvas'); n.width = n.height = 256; var x = n.getContext('2d'), d = x.createImageData(256, 256);
+        for (var i = 0; i < d.data.length; i += 4) { var r = Math.random(); d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.round(r * r * 150); }
+        x.putImageData(d, 0, 0); e.style.backgroundImage = 'url(' + n.toDataURL() + ')';
+      });
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
       function layout() {
         s = document.documentElement.clientWidth / W;
         document.documentElement.style.setProperty('--s', s);
+        var mstage = document.getElementById('mstage');
+        if (MOB) {
+          var m = document.documentElement.clientWidth / 402;
+          if (mstage) {
+            mstage.style.display = 'block';
+            mstage.style.transform = 'scale(' + m + ')';
+          }
+          copies[0].style.transform = 'translateY(' + mTop() + 'px) scale(' + s + ')';
+          for (var ci = 1; ci < copies.length; ci++) {
+            copies[ci].style.display = 'none';
+          }
+          wrap.style.height = (874 * m + (H - Y0) * s) + 'px';
+          return;
+        }
+        if (mstage) {
+          mstage.style.display = 'none';
+        }
+        for (var ci = 1; ci < copies.length; ci++) {
+          copies[ci].style.display = '';
+        }
         var p = Math.floor(H * s);
         copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')'; });
         wrap.style.height = (copies.length * p) + 'px';
@@ -1610,6 +1697,10 @@
 
       function resetToHero(force) {
         if (!force && userHasScrolled) return;
+        if (MOB) {
+          window.scrollTo(0, 0);
+          return;
+        }
         var p = Math.floor(H * s);
         window.scrollTo(0, p);
       }
@@ -1626,6 +1717,7 @@
       /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP (BIDIRECTIONAL) ---------- */
       var isLoopWrapping = false;
       addEventListener('scroll', function () {
+        if (MOB) return;
         if (isNavClickScrolling) return;
         var y = window.scrollY, p = Math.floor(H * s);
         if (p <= 0) return;
@@ -1643,12 +1735,22 @@
       addEventListener('resize', function () {
         var curW = document.documentElement.clientWidth;
         if (Math.abs(curW - lastW) < 2) return; // Prevent mobile address bar show/hide height fluctuations from resetting scroll
+        var wasMob = MOB;
+        MOB = innerWidth < 768;
+        if (wasMob !== MOB) {
+          location.reload();
+          return;
+        }
         lastW = curW;
-        var oldP = Math.max(1, Math.floor(H * s));
-        var rel = window.scrollY / oldP;
-        layout();
-        var newP = Math.floor(H * s);
-        window.scrollTo(0, rel * newP);
+        if (MOB) {
+          layout();
+        } else {
+          var oldP = Math.max(1, Math.floor(H * s));
+          var rel = window.scrollY / oldP;
+          layout();
+          var newP = Math.floor(H * s);
+          window.scrollTo(0, rel * newP);
+        }
       });
       addEventListener('orientationchange', function () {
         setTimeout(function () {
@@ -1659,6 +1761,7 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
       /* ---------- RAIN: falls from under the top cloud, stops on the umbrella ---------- */
       (function rain() {
+        if (MOB) return;
         var CH = 1750, UL = 66, UT = 589, UW = 1148, UH = 980;
         var PI = Math.PI, TWO_PI = Math.PI * 2;
         var top = new Float32Array(1280), xs = [];
@@ -2200,7 +2303,7 @@
       wrap.addEventListener('click', function (e) { var r = e.target.closest && e.target.closest('.srow'); if (r) setSvc(+r.getAttribute('data-i')); });
 
       /* ---------- floating navigation with smooth sliding indicator ---------- */
-      var nav = document.getElementById('nav'), SEC = [2, 1150, 3250, 4300];
+      var nav = document.getElementById('nav'), SEC = [2, MOB ? Y0 : 1150, 3250, 4300];
       var navIndicator = document.getElementById('navIndicator');
       var navLinks = nav.querySelectorAll('a[data-go]');
       var currentNavIndex = -1;
@@ -2234,8 +2337,9 @@
       }
 
       function navFit() {
-        nav.style.transform = 'translate3d(-50%,0,0) scale(' + s + ')';
-        nav.style.top = (18 * s) + 'px';
+        var ns = MOB ? Math.min(1, document.documentElement.clientWidth / 540) : s;
+        nav.style.transform = 'translate3d(-50%,0,0) scale(' + ns + ')';
+        nav.style.top = (18 * ns) + 'px';
         updateNavIndicator(currentNavIndex, true);
       }
       navFit();
@@ -2247,8 +2351,30 @@
       nav.addEventListener('click', function (e) {
         var a = e.target.closest('a'); if (!a) return;
         if (a.id === 'sndBtn') return;
-        var p = Math.floor(H * s);
         var targetIdx = +a.getAttribute('data-go');
+        if (a.classList.contains('cta') || targetIdx === 3) {
+          e.preventDefault();
+          if (rcModal && rcModal.classList.contains('open')) {
+            closeRcModal();
+          } else {
+            openRcModal();
+          }
+          return;
+        }
+        if (MOB) {
+          var targetY = targetIdx === 0 ? 0 : (mTop() + SEC[targetIdx] * s);
+          if (targetIdx < 3) {
+            setNavIndex(targetIdx, false);
+            isNavClickScrolling = true;
+            clearTimeout(navClickTimer);
+            navClickTimer = setTimeout(function () {
+              isNavClickScrolling = false;
+            }, 900);
+          }
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+          return;
+        }
+        var p = Math.floor(H * s);
         var off = SEC[targetIdx] * s;
         var candidates = [off, p + off, 2 * p + off];
         var curY = window.scrollY;
@@ -2261,15 +2387,6 @@
             targetY = cand;
           }
         });
-        if (a.classList.contains('cta') || targetIdx === 3) {
-          e.preventDefault();
-          if (rcModal && rcModal.classList.contains('open')) {
-            closeRcModal();
-          } else {
-            openRcModal();
-          }
-          return;
-        }
         if (targetIdx < 3) {
           setNavIndex(targetIdx, false);
           isNavClickScrolling = true;
@@ -2292,9 +2409,14 @@
 
       function navOn() {
         if (isNavClickScrolling) return;
-        var p = Math.floor(H * s);
-        var normY = ((window.scrollY % p) + p) % p;
-        var y = (normY / s) + 300;
+        var y;
+        if (MOB) {
+          y = ((window.scrollY - mTop()) / s) + 300;
+        } else {
+          var p = Math.floor(H * s);
+          var normY = ((window.scrollY % p) + p) % p;
+          y = (normY / s) + 300;
+        }
         var i = y >= 4300 ? 3 : y >= 3250 ? 2 : y >= 1150 ? 1 : 0;
         if (i !== currentNavIndex) {
           setNavIndex(i, false);
@@ -2302,6 +2424,150 @@
       }
       addEventListener('scroll', navOn, { passive: true });
       setNavIndex(0, true);
+
+      /* ---------- MOBILE HERO (Figma 402px layout) ---------- */
+      if (MOB) {
+        (function initMobileHero() {
+          var ms = document.getElementById('mstage');
+          if (!ms) return;
+          var UL = -4, UT = 495, UW = 410, UH = 350, top = new Float32Array(402), xs = [], i, x;
+          function fb() {
+            xs = [];
+            for (x = 0; x < 402; x++) {
+              var u = (x - 201) / 200;
+              if (Math.abs(u) < 1) {
+                top[x] = 520 + 110 * (1 - Math.sqrt(1 - u * u));
+                xs.push(x);
+              } else {
+                top[x] = 0;
+              }
+            }
+          }
+          fb();
+          (function tryImg(l, k) {
+            if (k >= l.length) return;
+            var im = new Image();
+            im.crossOrigin = 'anonymous';
+            im.onload = function () {
+              try {
+                var cv = document.createElement('canvas'); cv.width = UW; cv.height = UH;
+                var c = cv.getContext('2d'), sc = Math.max(UW / im.naturalWidth, UH / im.naturalHeight), w = im.naturalWidth * sc, hh = im.naturalHeight * sc;
+                c.drawImage(im, (UW - w) / 2, (UH - hh) / 2, w, hh);
+                var d = c.getImageData(0, 0, UW, UH).data, nt = new Float32Array(402), nx = [];
+                for (var X = 0; X < 402; X++) {
+                  var ix = X - UL; if (ix < 0 || ix >= UW) continue;
+                  for (var Y = 0; Y < UH - 2; Y++) {
+                    if (d[(Y * UW + ix) * 4 + 3] > 150 && d[((Y + 2) * UW + ix) * 4 + 3] > 150) {
+                      nt[X] = UT + Y; nx.push(X); break;
+                    }
+                  }
+                }
+                if (nx.length > 80) { top = nt; xs = nx; } else { tryImg(l, k + 1); }
+              } catch (e) { tryImg(l, k + 1); }
+            };
+            im.onerror = function () { tryImg(l, k + 1); };
+            im.src = l[k];
+          })(['assets/a59cf.webp', 'assets/a59cf.png'], 0);
+
+          var rs = ms.querySelector('.mrain'), gs = ms.querySelector('.mglow');
+          if (!rs || !gs) return;
+          var rc = document.createElement('canvas'), gc = document.createElement('canvas');
+          rs.appendChild(rc); gs.appendChild(gc); gc.width = 201; gc.height = 150;
+          function fit() {
+            var k = Math.min(2, (window.devicePixelRatio || 1) * document.documentElement.clientWidth / 402);
+            rc.width = Math.round(402 * k); rc.height = Math.round(874 * k); rc.k = k;
+          }
+          fit();
+          addEventListener('resize', fit);
+          var drops = [], parts = [], runs = [], drips = [];
+          function sp(d, first) {
+            d.x = xs[(Math.random() * xs.length) | 0] + Math.random();
+            d.sy = 40 + Math.random() * 50;
+            d.y = first ? d.sy - Math.random() * 900 : d.sy;
+            d.v = 300 + Math.random() * 180;
+            d.len = 12 + Math.random() * 16;
+            d.a = .35 + Math.random() * .4;
+            d.hit = false;
+          }
+          for (i = 0; i < 115; i++) { var d = {}; sp(d, true); drops.push(d); }
+          var LT = { start: -1, next: performance.now() / 1000 + .6, I: 0, bolt: null, fx: 200, tx: 200, ty: 560 };
+          function pulse(e, s0, r, dc) { if (e < s0) return 0; if (e < s0 + r) return (e - s0) / r; return Math.exp(-(e - s0 - r) / dc * 3); }
+          function jag(x0, y0, x1, y1, dp, o) {
+            if (dp === 0 || Math.hypot(x1 - x0, y1 - y0) < 8) { o.push([x1, y1]); return; }
+            var mx = (x0 + x1) / 2 + (Math.random() - .5) * Math.hypot(x1 - x0, y1 - y0) * .35, my = (y0 + y1) / 2 + (Math.random() - .5) * 8;
+            jag(x0, y0, mx, my, dp - 1, o); jag(mx, my, x1, y1, dp - 1, o);
+          }
+          function mkBolt() {
+            var fx = 90 + Math.random() * 220, tx = Math.max(1, Math.min(400, fx + (Math.random() - .5) * 60)) | 0;
+            if (!top[tx]) tx = xs[(Math.random() * xs.length) | 0] | 0;
+            var ty = top[tx], main = [[fx, 60]]; jag(fx, 60, tx, ty, 6, main); var br = [];
+            for (var b = 0; b < 3; b++) {
+              var k = (main.length * (.25 + .5 * Math.random())) | 0, p = main[k], ex = p[0] + (Math.random() < .5 ? -1 : 1) * (25 + Math.random() * 50), ey = Math.min(ty - 15, p[1] + 40 + Math.random() * 80), sg = [p];
+              jag(p[0], p[1], ex, ey, 4, sg); br.push(sg);
+            }
+            LT.bolt = { main: main, br: br }; LT.fx = fx; LT.tx = tx; LT.ty = ty;
+          }
+          var last = performance.now();
+          function frame(t) {
+            var dt = Math.min(.05, (t - last) / 1000); last = t; var now = t / 1000;
+            if (LT.start < 0 && now >= LT.next) { LT.start = now; mkBolt(); }
+            if (LT.start >= 0) {
+              var e = now - LT.start; LT.I = Math.max(pulse(e, 0, .04, .16), .7 * pulse(e, .2, .03, .12), pulse(e, .36, .04, .5));
+              if (e > 1.3) { LT.start = -1; LT.I = 0; LT.next = now + 4 + Math.random() * 5; }
+            }
+            for (i = 0; i < drops.length; i++) {
+              var d = drops[i], tp = top[d.x | 0] || 1e9; d.y += d.v * dt;
+              if (!d.hit && d.y >= tp) {
+                d.hit = true;
+                if (Math.random() < .16 && runs.length < 14) runs.push({ x: d.x, y: tp, dir: d.x < 196 ? -1 : d.x > 206 ? 1 : (Math.random() < .5 ? -1 : 1), sp: 15 + Math.random() * 20, tr: [], st: 0, hang: 0 });
+                for (var j = 0; j < 3; j++) parts.push({ x: d.x, y: tp, vx: (Math.random() - .5) * 60, vy: -(30 + Math.random() * 50), l: .3 + Math.random() * .2 });
+              }
+              if (d.y - d.len >= tp) sp(d, false);
+            }
+            for (var ri = runs.length - 1; ri >= 0; ri--) {
+              var R = runs[ri];
+              if (R.st === 0) {
+                R.sp += 30 * dt; R.x += R.dir * R.sp * dt; var xi = R.x | 0, ty = top[xi];
+                if (!ty || Math.abs(ty - R.y) > 16 || xi < 1 || xi > 400) { R.st = 1; R.hang = .3 + Math.random() * .5; R.tr.length = 0; }
+                else { R.y = ty; R.tr.push([R.x, R.y]); if (R.tr.length > 14) R.tr.shift(); }
+              } else {
+                R.hang -= dt; if (R.hang <= 0) { drips.push({ x: R.x, y: R.y, vy: 10 }); runs.splice(ri, 1); }
+              }
+            }
+            for (var di = drips.length - 1; di >= 0; di--) { var D = drips[di]; D.vy += 450 * dt; D.y += D.vy * dt; if (D.y > 880) drips.splice(di, 1); }
+            for (var p = parts.length - 1; p >= 0; p--) { var q = parts[p]; q.vy += 220 * dt; q.x += q.vx * dt; q.y += q.vy * dt; q.l -= dt; if (q.l <= 0) parts.splice(p, 1); }
+            if (rc.getBoundingClientRect().bottom < 0) { requestAnimationFrame(frame); return; }
+            var c = rc.getContext('2d'), k = rc.k; c.setTransform(k, 0, 0, k, 0, 0); c.clearRect(0, 0, 402, 874); c.lineCap = 'round'; c.lineWidth = 1.2;
+            if (LT.I > .02 && LT.bolt) {
+              var B = LT.bolt, I = LT.I; c.save(); c.lineJoin = 'round'; c.shadowColor = 'rgba(150,190,255,' + I + ')'; c.shadowBlur = 14;
+              var ln = function (pts, w, a) { c.lineWidth = w; c.strokeStyle = 'rgba(235,243,255,' + (a * I) + ')'; c.beginPath(); c.moveTo(pts[0][0], pts[0][1]); for (var n = 1; n < pts.length; n++) c.lineTo(pts[n][0], pts[n][1]); c.stroke(); };
+              ln(B.main, 3, .55); ln(B.main, 1.4, 1); B.br.forEach(function (s2) { ln(s2, 2, .45); ln(s2, .8, .9); }); c.restore();
+              var g = c.createRadialGradient(LT.tx, LT.ty, 1, LT.tx, LT.ty, 70); g.addColorStop(0, 'rgba(235,245,255,' + (.75 * I) + ')'); g.addColorStop(1, 'rgba(150,190,255,0)'); c.fillStyle = g; c.fillRect(LT.tx - 70, LT.ty - 70, 140, 140); c.lineWidth = 1.2;
+            }
+            for (i = 0; i < drops.length; i++) {
+              var d = drops[i], tp = top[d.x | 0] || 1e9, y1 = Math.min(d.y, tp), y0 = d.y - d.len; if (y0 >= y1) continue;
+              c.strokeStyle = 'rgba(205,228,255,' + (d.a * Math.min(1, Math.max(0, (d.y - d.sy) / 40))) + ')'; c.beginPath(); c.moveTo(d.x, y0); c.lineTo(d.x, y1); c.stroke();
+            }
+            for (i = 0; i < runs.length; i++) {
+              var R = runs[i];
+              if (R.st === 0) {
+                c.lineWidth = 1.4; for (var n = 1; n < R.tr.length; n++) { c.strokeStyle = 'rgba(215,235,255,' + (.55 * n / R.tr.length) + ')'; c.beginPath(); c.moveTo(R.tr[n - 1][0], R.tr[n - 1][1]); c.lineTo(R.tr[n][0], R.tr[n][1]); c.stroke(); } c.fillStyle = 'rgba(235,246,255,.95)'; c.beginPath(); c.arc(R.x, R.y, 1.6, 0, 6.283); c.fill();
+              } else {
+                c.fillStyle = 'rgba(235,246,255,.95)'; c.beginPath(); c.ellipse(R.x, R.y + 1.4, 1.6, 2.4, 0, 0, 6.283); c.fill();
+              }
+            }
+            for (i = 0; i < drips.length; i++) { var D = drips[i]; c.strokeStyle = 'rgba(225,240,255,.9)'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(D.x, D.y - Math.min(14, D.vy * .03)); c.lineTo(D.x, D.y); c.stroke(); }
+            c.fillStyle = 'rgba(225,240,255,.8)'; for (i = 0; i < parts.length; i++) { var q = parts[i]; c.globalAlpha = Math.max(0, q.l / .5); c.beginPath(); c.arc(q.x, q.y, 1.5, 0, 6.283); c.fill(); } c.globalAlpha = 1;
+            var gx = gc.getContext('2d'); gx.setTransform(.5, 0, 0, .5, 0, 0); gx.clearRect(0, 0, 402, 300);
+            if (LT.I > .01) {
+              var I2 = LT.I; gx.setTransform(.5, 0, 0, .5, 0, 25); var lg = gx.createLinearGradient(0, -100, 0, 200); lg.addColorStop(0, 'rgba(160,195,255,0)'); lg.addColorStop(.3, 'rgba(165,198,255,' + (.3 * I2) + ')'); lg.addColorStop(.5, 'rgba(190,215,255,' + (.5 * I2) + ')'); lg.addColorStop(.8, 'rgba(165,198,255,' + (.32 * I2) + ')'); lg.addColorStop(1, 'rgba(160,195,255,0)'); gx.fillStyle = lg; gx.fillRect(-50, -100, 500, 300);
+              gx.save(); gx.translate(LT.fx, 40); gx.scale(1, .55); var rg = gx.createRadialGradient(0, 0, 5, 0, 0, 260); rg.addColorStop(0, 'rgba(240,248,255,' + (.85 * I2) + ')'); rg.addColorStop(.35, 'rgba(170,200,255,' + (.4 * I2) + ')'); rg.addColorStop(1, 'rgba(120,150,255,0)'); gx.fillStyle = rg; gx.fillRect(-600, -500, 1200, 1000); gx.restore();
+            }
+            requestAnimationFrame(frame);
+          }
+          requestAnimationFrame(frame);
+        })();
+      }
 
       (function cursor() {
         var cur = document.getElementById('cur'), cx = -200, cy = -200, tx = -200, ty = -200, raf = 0;
