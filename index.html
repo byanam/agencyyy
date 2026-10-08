@@ -7,10 +7,12 @@
   <meta name="theme-color" content="#1102b8">
   <title>Legendary Agency</title>
   <meta property="og:title" content="Legendary Agency">
-  <meta property="og:description" content="Independent studio in India designing and developing digital experiences for ambitious brands.">
+  <meta property="og:description"
+    content="Independent studio in India designing and developing digital experiences for ambitious brands.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="apple-touch-icon.png">
-  <meta name="description" content="Independent studio in India designing and developing digital experiences for ambitious brands.">
+  <meta name="description"
+    content="Independent studio in India designing and developing digital experiences for ambitious brands.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -643,9 +645,9 @@
       opacity: 0;
       transform: translate3d(0, 0, 0);
       transition: transform 0.38s cubic-bezier(0.2, 0.85, 0.3, 1),
-                  width 0.38s cubic-bezier(0.2, 0.85, 0.3, 1),
-                  height 0.38s cubic-bezier(0.2, 0.85, 0.3, 1),
-                  opacity 0.25s ease;
+        width 0.38s cubic-bezier(0.2, 0.85, 0.3, 1),
+        height 0.38s cubic-bezier(0.2, 0.85, 0.3, 1),
+        opacity 0.25s ease;
       will-change: transform, width, height, opacity;
     }
 
@@ -942,7 +944,8 @@
       transform: scale(1.08);
     }
 
-    @media (pointer: coarse), (hover: none) {
+    @media (pointer: coarse),
+    (hover: none) {
       #cur {
         display: none !important;
       }
@@ -970,17 +973,6 @@
       height: 100%;
     }
 
-    .pnoise {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background-repeat: repeat;
-      background-size: 256px 256px;
-    }
-
     @media (max-width: 768px) {
       .desk-hero {
         display: none !important;
@@ -988,11 +980,18 @@
 
       .stage {
         background: transparent !important;
+        overflow: visible !important;
+      }
+
+      .stage .pnoise {
+        top: -1500px !important;
+        height: 7000px !important;
       }
 
       .bg-gradient {
         display: none !important;
       }
+
       .rc-modal-card {
         right: auto;
         left: 50%;
@@ -1010,15 +1009,29 @@
         filter: none !important;
       }
     }
+
     @media print {
-      #loaderScreen, #nav, #cur { display: none !important; }
-      body { background: #fff !important; color: #000 !important; }
-      .stage { position: relative !important; }
+
+      #loaderScreen,
+      #nav,
+      #cur {
+        display: none !important;
+      }
+
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+
+      .stage {
+        position: relative !important;
+      }
     }
   </style>
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Legendary Agency">
-  <meta name="twitter:description" content="Independent studio in India designing and developing digital experiences for ambitious brands.">
+  <meta name="twitter:description"
+    content="Independent studio in India designing and developing digital experiences for ambitious brands.">
   <link rel="canonical" href="https://byanam.agency/">
   <script type="application/ld+json">
   {
@@ -1045,7 +1058,9 @@
     <div class="loader-badge-wrap">
       <svg class="loader-ring-svg" viewBox="0 0 294 294">
         <circle class="loader-ring-bg" cx="147" cy="147" r="139" fill="none" stroke-width="16" />
-        <circle id="loaderRingProgress" class="loader-ring-stroke" cx="147" cy="147" r="139" fill="none" stroke-width="16" stroke-linecap="butt" stroke-dasharray="873.36" stroke-dashoffset="873.36" transform="rotate(-90 147 147)" />
+        <circle id="loaderRingProgress" class="loader-ring-stroke" cx="147" cy="147" r="139" fill="none"
+          stroke-width="16" stroke-linecap="butt" stroke-dasharray="873.36" stroke-dashoffset="873.36"
+          transform="rotate(-90 147 147)" />
       </svg>
       <img src="favicon.svg" class="loader-favicon" alt="Legendary Agency">
     </div>
@@ -1122,15 +1137,13 @@
     </defs>
   </svg>
   <div id="wrap" role="main">
-    <div class="pnoise" style="left:0;top:0;width:100%;height:100%;position:absolute;pointer-events:none;z-index:1;background-size:256px 256px"></div>
     <div id="stage" class="stage">
 
       <!-- purple gradient background -->
       <div class="bg-gradient"
         style="left:0;top:0;width:1280px;height:5218px;background:linear-gradient(180deg,rgb(30,20,139) 0%,rgb(26,10,197) 23.19%,rgb(24,5,226) 34.99%,rgb(22,0,255) 41.28%,rgb(72,0,255) 48.75%,rgb(98,0,255) 56.21%,rgb(75,0,167) 64.07%,rgb(67,1,142) 70.76%,rgb(60,1,129) 76%,rgb(30,0,70) 86%,rgb(8,0,20) 93%,rgb(0,0,0) 97%)">
       </div>
-      <div class="pnoise"
-        style="left:0;top:0;width:1280px;height:5218px;background-size:256px 256px"></div>
+      <div class="pnoise" style="left:0;top:0;width:1280px;height:5218px;background-size:256px 256px"></div>
 
       <!-- footer clouds (layered on top of receipt) -->
       <div class="rb" style="left:298px;top:4888px;width:849px;height:369px;z-index:20;pointer-events:none">
@@ -1138,10 +1151,11 @@
             style="object-fit:fill" src="assets/8bc30.webp" data-k="8bc30" alt=""></div>
       </div>
       <div class="rb" style="left:410.8px;top:4816px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
-        <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover" decoding="async"
-            src="assets/de02e.webp" data-k="de02e" alt=""></div>
+        <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover"
+            decoding="async" src="assets/de02e.webp" data-k="de02e" alt=""></div>
       </div>
-      <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+      <div style="left:-289px;top:4890.19px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img
+          class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
       </div>
 
       <!-- contact -->
@@ -1186,8 +1200,8 @@
       </p>
 
       <div class="rb" style="left:-213px;top:2761px;width:1329.324px;height:655.03px">
-        <div class="r" style="transform:rotate(10.8deg);width:1272.389px;height:424.13px;opacity:.6"><img class="cover" decoding="async"
-            src="assets/255d2.webp" data-k="255d2" alt=""></div>
+        <div class="r" style="transform:rotate(10.8deg);width:1272.389px;height:424.13px;opacity:.6"><img class="cover"
+            decoding="async" src="assets/255d2.webp" data-k="255d2" alt=""></div>
       </div>
       <div class="rb" style="left:200px;top:3011px;width:1315.963px;height:468.581px">
         <div class="r" style="transform:rotate(-178.52deg);width:1305.175px;height:435.058px;opacity:.6"><img
@@ -1196,8 +1210,9 @@
 
       <!-- projects: folders -->
       <div class="rb" style="left:441px;top:1869px;width:739.293px;height:544.142px">
-        <div class="r fold" data-f="1" style="--rot:7.76deg;width:684.014px;height:456.009px"><img class="cover" decoding="async"
-            style="filter:url(#nz6)" src="assets/a4a75.webp" data-k="a4a75" width="684" height="456" alt=""></div>
+        <div class="r fold" data-f="1" style="--rot:7.76deg;width:684.014px;height:456.009px"><img class="cover"
+            decoding="async" style="filter:url(#nz6)" src="assets/a4a75.webp" data-k="a4a75" width="684" height="456"
+            alt=""></div>
       </div>
       <div class="rb" style="left:506.13px;top:2023px;width:609.851px;height:274.183px">
         <div class="r flab" data-f="1" style="--rot:7.4deg">
@@ -1205,8 +1220,9 @@
         </div>
       </div>
       <div class="rb" style="left:72px;top:2126px;width:739.001px;height:543.64px">
-        <div class="r fold" data-f="2" style="--rot:-7.71deg;width:684.014px;height:456.009px"><img class="cover" decoding="async"
-            style="filter:url(#nz6)" src="assets/a4a75.webp" data-k="a4a75" width="684" height="456" alt=""></div>
+        <div class="r fold" data-f="2" style="--rot:-7.71deg;width:684.014px;height:456.009px"><img class="cover"
+            decoding="async" style="filter:url(#nz6)" src="assets/a4a75.webp" data-k="a4a75" width="684" height="456"
+            alt=""></div>
       </div>
       <div class="rb" style="left:137px;top:2288px;width:608.904px;height:269.94px">
         <div class="r flab" data-f="2" style="--rot:-6.96deg">
@@ -1214,8 +1230,9 @@
         </div>
       </div>
       <div class="rb" style="left:477.51px;top:2495.15px;width:740.263px;height:545.806px">
-        <div class="r fold" data-f="3" style="--rot:7.91deg;width:684.014px;height:456.009px"><img class="cover" decoding="async"
-            style="filter:url(#nz6)" src="assets/a4a75.webp" data-k="a4a75" width="684" height="456" alt=""></div>
+        <div class="r fold" data-f="3" style="--rot:7.91deg;width:684.014px;height:456.009px"><img class="cover"
+            decoding="async" style="filter:url(#nz6)" src="assets/a4a75.webp" data-k="a4a75" width="684" height="456"
+            alt=""></div>
       </div>
       <div class="rb" style="left:543.0px;top:2657px;width:610.874px;height:278.94px">
         <div class="r flab" data-f="3" style="--rot:7.89deg">
@@ -1225,12 +1242,14 @@
 
       <!-- main cloud over folders -->
       <div class="rb" style="left:-323.31px;top:2854.91px;width:1681.784px;height:606.857px">
-        <div class="r" style="transform:rotate(-1.79deg);width:1665.25px;height:555.083px"><img class="cover" decoding="async"
-            src="assets/764ac.webp" data-k="764ac" alt=""></div>
+        <div class="r" style="transform:rotate(-1.79deg);width:1665.25px;height:555.083px"><img class="cover"
+            decoding="async" src="assets/764ac.webp" data-k="764ac" alt=""></div>
       </div>
 
       <!-- umbrella -->
-      <div class="desk-hero" style="left:66px;top:589px;width:1148px;height:980px"><img class="cover" loading="eager" fetchpriority="high" decoding="async" src="assets/a59cf.webp" data-k="a59cf" width="1148" height="980" alt=""></div>
+      <div class="desk-hero" style="left:66px;top:589px;width:1148px;height:980px"><img class="cover" loading="eager"
+          fetchpriority="high" decoding="async" src="assets/a59cf.webp" data-k="a59cf" width="1148" height="980" alt="">
+      </div>
 
       <div class="dripslot desk-hero" style="left:0;top:0;width:1280px;height:1750px"></div>
 
@@ -1274,8 +1293,8 @@
 
       <!-- hero base clouds -->
       <div class="rb desk-hero" style="left:-313px;top:-443px;width:1280px;height:808px">
-        <div class="r" style="transform:scaleY(-1);width:1280px;height:808px;opacity:.44"><img class="cover" decoding="async"
-            style="filter:url(#nz2)" src="assets/57e01.webp" data-k="57e01" alt=""></div>
+        <div class="r" style="transform:scaleY(-1);width:1280px;height:808px;opacity:.44"><img class="cover"
+            decoding="async" style="filter:url(#nz2)" src="assets/57e01.webp" data-k="57e01" alt=""></div>
       </div>
       <div class="rb desk-hero" style="left:519px;top:-491px;width:1409px;height:829px">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1409px;height:829px;opacity:.5"><img
@@ -1300,17 +1319,19 @@
         <div class="r" style="transform:rotate(90deg);width:369px;height:849px"><img class="cover" decoding="async"
             style="object-fit:fill" src="assets/8bc30.webp" data-k="8bc30" alt=""></div>
       </div>
-      <div class="rb desk-hero" style="left:410.8px;top:-400px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
-        <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover" decoding="async"
-            src="assets/de02e.webp" data-k="de02e" alt=""></div>
+      <div class="rb desk-hero"
+        style="left:410.8px;top:-400px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
+        <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover"
+            decoding="async" src="assets/de02e.webp" data-k="de02e" alt=""></div>
       </div>
-      <div class="desk-hero" style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+      <div class="desk-hero"
+        style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img
+          class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
       </div>
 
 
     </div>
     <div id="mstage" class="stage mstage" aria-hidden="true">
-      <div class="pnoise" style="left:0;top:0;width:402px;height:874px;position:absolute;pointer-events:none;z-index:0;background-size:256px 256px"></div>
       <div class="rb" style="left:-159px;top:-66.51px;width:439.804px;height:277.626px">
         <div class="r" style="transform:scaleY(-1);width:439.804px;height:277.626px;opacity:.44">
           <img class="cover" style="filter:url(#nz2)" decoding="async" src="assets/57e01.webp" data-k="57e01" alt="">
@@ -1322,8 +1343,10 @@
         </div>
       </div>
       <div class="mrain" style="left:0;top:0;width:402px;height:874px"></div>
-      <div style="left:201px;top:233px;width:510px;height:166px;transform:translateX(-50%);filter:url(#isE) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
-        <div class="serif grad" style="position:relative;width:550px;margin:-40px -20px;padding:40px 20px;font-size:128px;letter-spacing:-3.84px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60%,#ffd000 83.7%,#ffd000 100%)">
+      <div
+        style="left:201px;top:233px;width:510px;height:166px;transform:translateX(-50%);filter:url(#isE) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
+        <div class="serif grad"
+          style="position:relative;width:550px;margin:-40px -20px;padding:40px 20px;font-size:128px;letter-spacing:-3.84px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60%,#ffd000 83.7%,#ffd000 100%)">
           <p style="position:static;line-height:.65">legendary</p>
           <p style="position:static;line-height:.65">Studio</p>
         </div>
@@ -1344,18 +1367,31 @@
       <div style="left:-4px;top:495px;width:410px;height:350px">
         <img class="cover" decoding="async" src="assets/a59cf.webp" data-k="a59cf" alt="">
       </div>
-      <div style="left:201px;top:670px;width:194px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:20px;line-height:0;white-space:nowrap;text-shadow:-2px 4px 3.3px rgba(0,0,0,.43)">
-        <p style="position:static"><span style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px;color:#efc305">30 +</span><span style="line-height:24px"> </span><span style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px">Clients Served</span></p>
-        <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic"><span style="line-height:24px;color:#efc305">10+</span><span style="line-height:24px"> Businesses Scaled</span></p>
-        <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic"><span style="line-height:24px;color:#efc305">4+ </span><span style="line-height:24px">years</span><span style="line-height:24px"> of experience</span></p>
+      <div
+        style="left:201px;top:670px;width:194px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:20px;line-height:0;white-space:nowrap;text-shadow:-2px 4px 3.3px rgba(0,0,0,.43)">
+        <p style="position:static"><span
+            style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px;color:#efc305">30
+            +</span><span style="line-height:24px"> </span><span
+            style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px">Clients Served</span></p>
+        <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic"><span
+            style="line-height:24px;color:#efc305">10+</span><span style="line-height:24px"> Businesses Scaled</span>
+        </p>
+        <p style="position:static;font-family:'Instrument Serif',serif;font-style:italic"><span
+            style="line-height:24px;color:#efc305">4+ </span><span style="line-height:24px">years</span><span
+            style="line-height:24px"> of experience</span></p>
       </div>
-      <p class="serif" style="left:201px;top:423px;width:366px;height:155px;transform:translateX(-50%);font-size:36px;letter-spacing:-1.08px;line-height:1;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.5)">Building high-impact<br>digital experiences<br>since 2022.</p>
-      <p class="serif" style="left:201px;top:778px;width:384px;height:87px;transform:translateX(-50%);font-size:24px;font-style:italic;line-height:normal;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.48)">We are an independent studio in India, designing and developing websites for ambitious brands.</p>
+      <p class="serif"
+        style="left:201px;top:423px;width:366px;height:155px;transform:translateX(-50%);font-size:36px;letter-spacing:-1.08px;line-height:1;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.5)">
+        Building high-impact<br>digital experiences<br>since 2022.</p>
+      <p class="serif"
+        style="left:201px;top:778px;width:384px;height:87px;transform:translateX(-50%);font-size:24px;font-style:italic;line-height:normal;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.48)">
+        We are an independent studio in India, designing and developing websites for ambitious brands.</p>
       <div class="mglow" style="left:0;top:0;width:402px;height:300px;mix-blend-mode:screen"></div>
     </div>
   </div>
   <!-- RECEIPT MODAL OVERLAY (POPS UP FROM BOTTOM ON GET IN TOUCH) -->
-  <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Contact Receipt Form">
+  <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true"
+    aria-label="Contact Receipt Form">
     <div class="rc-modal-card">
       <button type="button" class="rc-close-btn" id="rcCloseBtn" aria-label="Close modal">&times;</button>
       <div class="rc"
@@ -1366,14 +1402,15 @@
         <p class="serif"
           style="left:213.5px;top:25px;width:427px;transform:translateX(-50%);font-size:48px;line-height:.65;letter-spacing:-1.44px;color:#000;text-align:center">
           legendary Agency</p>
-        <div class="sans rt2" style="left:214px;top:70px;transform:translateX(-50%);text-align:center;white-space:nowrap">
+        <div class="sans rt2"
+          style="left:214px;top:70px;transform:translateX(-50%);text-align:center;white-space:nowrap">
           <p style="position:static">D196, D block, Swarn Nagri</p>
           <p style="position:static">Greater Noida, UP</p>
         </div>
-        <p class="sans rt2" style="left:214px;top:114px;transform:translateX(-50%);font-weight:500;white-space:nowrap">(+91)
+        <p class="sans rt2" style="left:214px;top:114px;transform:translateX(-50%);font-weight:500;white-space:nowrap">
+          (+91)
           9229542747</p>
-        <p class="sans rt2"
-          style="left:325px;top:142px;transform:translateX(-100%);font-weight:500;white-space:nowrap">
+        <p class="sans rt2" style="left:325px;top:142px;transform:translateX(-100%);font-weight:500;white-space:nowrap">
           anamrazzaque@gmail.com</p>
         <div style="left:24px;top:170px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
         <p class="sans rt2" style="left:23px;top:190px;">DATE</p>
@@ -1382,9 +1419,11 @@
         <p class="sans rt2" style="left:169px;top:190px;">:</p>
         <p class="sans rt2" style="left:169px;top:212px;">:</p>
         <p class="sans rt2" style="left:169px;top:234px;">:</p>
-        <p class="sans rt2 rcDate" style="left:404px;top:190px;transform:translateX(-100%);white-space:nowrap">05/10/2026
+        <p class="sans rt2 rcDate" style="left:404px;top:190px;transform:translateX(-100%);white-space:nowrap">
+          05/10/2026
         </p>
-        <p class="sans rt2 rcTime" style="left:404px;top:212px;transform:translateX(-100%);white-space:nowrap">04:45:21 PM
+        <p class="sans rt2 rcTime" style="left:404px;top:212px;transform:translateX(-100%);white-space:nowrap">04:45:21
+          PM
         </p>
         <p class="sans rt2" style="left:404px;top:234px;transform:translateX(-100%)">INDIA</p>
         <div style="left:24px;top:271px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
@@ -1394,16 +1433,16 @@
         <input class="sans rcE" type="email" placeholder="[YOUR MAIL]"
           style="left:24px;top:314px;width:380px;height:26px" autocomplete="off" aria-label="Your Email">
         <div style="left:24px;top:340px;width:380px;height:0;border-top:1px dashed rgba(0,0,0,.7)"></div>
-        <textarea class="sans rcM" placeholder="[ABOUT THE PROJECT]"
-          style="left:24px;top:345px;width:380px;height:72px" aria-label="About the project"></textarea>
+        <textarea class="sans rcM" placeholder="[ABOUT THE PROJECT]" style="left:24px;top:345px;width:380px;height:72px"
+          aria-label="About the project"></textarea>
         <div style="left:24px;top:422px;width:380px;height:0;border-top:1px dashed rgba(0,0,0,.7)"></div>
         <label class="sans rt2 rcAtt"
           style="left:24px;top:425px;width:380px;height:22px;display:flex;align-items:center;gap:10px;cursor:pointer;white-space:nowrap;overflow:hidden"><svg
-            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"
-            stroke-linecap="round" style="flex:none;position:static">
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"
+            style="flex:none;position:static">
             <path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7L14 4.5a3.3 3.3 0 0 1 4.7 4.7L10 18a1.7 1.7 0 0 1-2.4-2.4L15 8" />
-          </svg><span class="rcFn" style="position:static">ATTACH A PDF/DOC FILE, 10 MB MAX</span><input type="file" class="rcFile"
-            accept=".pdf,.doc,.docx" style="display:none" aria-label="Attach a document"></label>
+          </svg><span class="rcFn" style="position:static">ATTACH A PDF/DOC FILE, 10 MB MAX</span><input type="file"
+            class="rcFile" accept=".pdf,.doc,.docx" style="display:none" aria-label="Attach a document"></label>
         <div style="left:24px;top:447px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
         <button class="sans rcSend" style="left:24px;top:449px;width:380px;height:44px">[SUBMIT]</button>
         <div style="left:24px;top:495px;width:380px;height:0;border-top:1px solid rgba(0,0,0,.7)"></div>
@@ -1482,16 +1521,19 @@
     </div>
   </div>
   <div id="cur"><span>View</span></div>
-  <nav id="nav" role="navigation"><div class="nav-indicator" id="navIndicator" aria-hidden="true"></div><a id="sndBtn" class="snd off" title="Play music & sound" aria-label="Play music and sound"><svg
-        viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
+  <nav id="nav" role="navigation">
+    <div class="nav-indicator" id="navIndicator" aria-hidden="true"></div><a id="sndBtn" class="snd off"
+      title="Play music & sound" aria-label="Play music and sound"><svg viewBox="0 0 24 24" width="18" height="18"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 18V5l12-2v13"></path>
         <circle cx="6" cy="18" r="3" fill="currentColor"></circle>
         <circle cx="18" cy="16" r="3" fill="currentColor"></circle>
-        <line x1="3" y1="3" x2="21" y2="21" stroke="#000" stroke-width="3.5" stroke-linecap="round" opacity="0.45"></line>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="#000" stroke-width="3.5" stroke-linecap="round" opacity="0.45">
+        </line>
         <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></line>
       </svg><span class="sr-only">Play music and sound</span></a><a data-go="0">Hero</a><a data-go="1">Projects</a><a
-      data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a></nav>
+      data-go="2">Services</a><a class="cta" data-go="3">Get in touch</a>
+  </nav>
   <audio id="thunderAudio" preload="auto" playsinline webkit-playsinline>
     <source src="assets/thunder.mp3" type="audio/mpeg">
     <source src="/assets/thunder.mp3" type="audio/mpeg">
@@ -1588,7 +1630,7 @@
         var threshold = isMobileDevice ? 0.75 : 0.85;
         var timeLimit = isMobileDevice ? 1200 : 1800;
         if ((loadedAssets >= totalAssets && elapsed >= minDuration) ||
-            (loadedAssets >= Math.ceil(totalAssets * threshold) && elapsed >= timeLimit)) {
+          (loadedAssets >= Math.ceil(totalAssets * threshold) && elapsed >= timeLimit)) {
           clearInterval(progressInterval);
           finishLoader();
         }
