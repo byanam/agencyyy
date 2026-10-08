@@ -1740,10 +1740,19 @@
         history.scrollRestoration = 'manual';
       }
       function layout() {
+        var isMob = document.documentElement.clientWidth <= 768;
+        var curH = isMob ? 7500 : H;
         s = document.documentElement.clientWidth / W;
         document.documentElement.style.setProperty('--s', s);
-        var p = Math.floor(H * s);
-        copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')'; });
+        var p = Math.floor(curH * s);
+        copies.forEach(function (e, i) {
+          e.style.height = curH + 'px';
+          var bg = e.querySelector('div[style*="rgb(30,20,139)"]');
+          if (bg) bg.style.height = curH + 'px';
+          var pn = e.querySelector('.pnoise');
+          if (pn) pn.style.height = curH + 'px';
+          e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')';
+        });
         wrap.style.height = (copies.length * p) + 'px';
       }
       var userHasScrolled = false;
@@ -2345,7 +2354,14 @@
       wrap.addEventListener('click', function (e) { var r = e.target.closest && e.target.closest('.srow'); if (r) setSvc(+r.getAttribute('data-i')); });
 
       /* ---------- floating navigation with smooth sliding indicator ---------- */
-      var nav = document.getElementById('nav'), SEC = [2, 1150, 3250, 4300];
+      var nav = document.getElementById('nav');
+      function getSEC() {
+        var isMob = document.documentElement.clientWidth <= 768;
+        return isMob ? [2, 3050, 5150, 6300] : [2, 1150, 3250, 4300];
+      }
+      function getCurH() {
+        return (document.documentElement.clientWidth <= 768) ? 7500 : H;
+      }
       var navIndicator = document.getElementById('navIndicator');
       var navLinks = nav.querySelectorAll('a[data-go]');
       var currentNavIndex = -1;
@@ -2392,7 +2408,9 @@
       nav.addEventListener('click', function (e) {
         var a = e.target.closest('a'); if (!a) return;
         if (a.id === 'sndBtn') return;
-        var p = Math.floor(H * s);
+        var curH = getCurH();
+        var p = Math.floor(curH * s);
+        var SEC = getSEC();
         var targetIdx = +a.getAttribute('data-go');
         var off = SEC[targetIdx] * s;
         var candidates = [off, p + off, 2 * p + off];
@@ -2437,10 +2455,12 @@
 
       function navOn() {
         if (isNavClickScrolling) return;
-        var p = Math.floor(H * s);
+        var curH = getCurH();
+        var p = Math.floor(curH * s);
         var normY = ((window.scrollY % p) + p) % p;
         var y = (normY / s) + 300;
-        var i = y >= 4300 ? 3 : y >= 3250 ? 2 : y >= 1150 ? 1 : 0;
+        var SEC = getSEC();
+        var i = y >= SEC[3] ? 3 : y >= SEC[2] ? 2 : y >= SEC[1] ? 1 : 0;
         if (i !== currentNavIndex) {
           setNavIndex(i, false);
         }
