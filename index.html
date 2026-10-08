@@ -135,7 +135,7 @@
       position: relative;
       width: 100%;
       overflow: hidden;
-      background: #000;
+      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%, rgb(30, 0, 70) 86%, rgb(8, 0, 20) 93%, rgb(0, 0, 0) 97%);
       transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: filter;
     }
@@ -957,7 +957,7 @@
       height: 874px;
       overflow: hidden;
       transform-origin: 0 0;
-      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%);
+      background: transparent;
       z-index: 25;
     }
 
@@ -971,6 +971,17 @@
     }
 
     @media (max-width: 768px) {
+      .desk-hero {
+        display: none !important;
+      }
+
+      .stage {
+        background: transparent !important;
+      }
+
+      .bg-gradient {
+        display: none !important;
+      }
       .rc-modal-card {
         right: auto;
         left: 50%;
@@ -1103,7 +1114,7 @@
     <div id="stage" class="stage">
 
       <!-- purple gradient background -->
-      <div
+      <div class="bg-gradient"
         style="left:0;top:0;width:1280px;height:5218px;background:linear-gradient(180deg,rgb(30,20,139) 0%,rgb(26,10,197) 23.19%,rgb(24,5,226) 34.99%,rgb(22,0,255) 41.28%,rgb(72,0,255) 48.75%,rgb(98,0,255) 56.21%,rgb(75,0,167) 64.07%,rgb(67,1,142) 70.76%,rgb(60,1,129) 76%,rgb(30,0,70) 86%,rgb(8,0,20) 93%,rgb(0,0,0) 97%)">
       </div>
       <div class="pnoise"
@@ -1207,9 +1218,9 @@
       </div>
 
       <!-- umbrella -->
-      <div style="left:66px;top:589px;width:1148px;height:980px"><img class="cover" loading="eager" fetchpriority="high" decoding="async" src="assets/a59cf.webp" data-k="a59cf" width="1148" height="980" alt=""></div>
+      <div class="desk-hero" style="left:66px;top:589px;width:1148px;height:980px"><img class="cover" loading="eager" fetchpriority="high" decoding="async" src="assets/a59cf.webp" data-k="a59cf" width="1148" height="980" alt=""></div>
 
-      <div class="dripslot" style="left:0;top:0;width:1280px;height:1750px"></div>
+      <div class="dripslot desk-hero" style="left:0;top:0;width:1280px;height:1750px"></div>
 
       <!-- projects clouds + title -->
       <div class="rb" style="left:-236px;top:1251px;width:1580.482px;height:639.669px">
@@ -1223,10 +1234,10 @@
       </div>
 
       <!-- hero text -->
-      <p class="serif shC"
+      <p class="serif shC desk-hero"
         style="left:353.5px;top:1079px;width:541px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">
         “First impressions are<br>expensive to get wrong.”</p>
-      <div
+      <div class="desk-hero"
         style="left:353.5px;top:1226px;width:427px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:0;line-height:0">
         <p style="position:static;margin:0"><span
             style="font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px;color:#efc305">30
@@ -1242,28 +1253,28 @@
           <span style="color:#efc305">4+ </span><span style="color:#fff">years</span> of experience
         </p>
       </div>
-      <p class="serif"
+      <p class="serif desk-hero"
         style="font-style:italic;left:942.5px;top:1278px;width:447px;height:87px;transform:translateX(-50%);font-size:20px;line-height:normal;text-align:center;color:#fff">
         We are an independent studio in India, designing and developing websites for ambitious brands.</p>
-      <p class="serif shC"
+      <p class="serif shC desk-hero"
         style="left:942.5px;top:1079px;width:543px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">
         Building high-impact<br>digital experiences since<br>2022.</p>
 
       <!-- hero base clouds -->
-      <div class="rb" style="left:-313px;top:-443px;width:1280px;height:808px">
+      <div class="rb desk-hero" style="left:-313px;top:-443px;width:1280px;height:808px">
         <div class="r" style="transform:scaleY(-1);width:1280px;height:808px;opacity:.44"><img class="cover" decoding="async"
             style="filter:url(#nz2)" src="assets/57e01.webp" data-k="57e01" alt=""></div>
       </div>
-      <div class="rb" style="left:519px;top:-491px;width:1409px;height:829px">
+      <div class="rb desk-hero" style="left:519px;top:-491px;width:1409px;height:829px">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1409px;height:829px;opacity:.5"><img
             class="cover" src="assets/0d995.webp" data-k="0d995" alt=""></div>
       </div>
 
       <!-- rain slot: above base clouds, below text + top clouds -->
-      <div class="rainslot" style="left:0;top:0;width:1280px;height:1750px"></div>
+      <div class="rainslot desk-hero" style="left:0;top:0;width:1280px;height:1750px"></div>
 
       <!-- legendary Agency -->
-      <div
+      <div class="desk-hero"
         style="left:639.5px;top:199px;width:979px;height:390px;transform:translateX(-50%);filter:url(#isD) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
         <div class="serif grad"
           style="position:relative;width:1059px;margin:-80px -40px;padding:80px 40px;font-size:300px;letter-spacing:-9px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60.56%,#ffd000 85.45%,#ffd000 100%)">
@@ -1273,21 +1284,20 @@
       </div>
 
       <!-- top clouds -->
-      <div class="rb" style="left:298px;top:-328px;width:849px;height:369px;z-index:20;pointer-events:none">
+      <div class="rb desk-hero" style="left:298px;top:-328px;width:849px;height:369px;z-index:20;pointer-events:none">
         <div class="r" style="transform:rotate(90deg);width:369px;height:849px"><img class="cover" decoding="async"
             style="object-fit:fill" src="assets/8bc30.webp" data-k="8bc30" alt=""></div>
       </div>
-      <div class="rb" style="left:410.8px;top:-400px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
+      <div class="rb desk-hero" style="left:410.8px;top:-400px;width:1191.204px;height:700.88px;z-index:20;pointer-events:none">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:1191.204px;height:700.88px"><img class="cover" decoding="async"
             src="assets/de02e.webp" data-k="de02e" alt=""></div>
       </div>
-      <div style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+      <div class="desk-hero" style="left:-289px;top:-325.81px;width:1065.32px;height:626.812px;z-index:20;pointer-events:none"><img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
       </div>
 
 
     </div>
     <div id="mstage" class="stage mstage" aria-hidden="true">
-      <div class="pnoise" style="left:0;top:0;width:402px;height:874px;background-size:256px 256px"></div>
       <div class="rb" style="left:-159px;top:-66.51px;width:439.804px;height:277.626px">
         <div class="r" style="transform:scaleY(-1);width:439.804px;height:277.626px;opacity:.44">
           <img class="cover" style="filter:url(#nz2)" decoding="async" src="assets/57e01.webp" data-k="57e01" alt="">
