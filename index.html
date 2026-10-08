@@ -950,33 +950,32 @@
 
     @media (max-width: 768px) {
       #nav {
-        top: 14px;
-        padding: 8px 14px;
-        gap: 6px;
-        border-radius: 40px;
-        max-width: calc(100vw - 16px);
+        top: 10px;
+        padding: 4px 6px;
+        gap: 2px;
+        max-width: calc(100vw - 12px);
       }
 
       #nav a {
-        font-size: clamp(14px, 3.8vw, 17px);
-        padding: 7px 12px;
+        font-size: clamp(12px, 3.3vw, 15px);
+        padding: 5px 8px;
         letter-spacing: -0.3px;
       }
 
       #nav a.snd {
-        width: 36px;
-        height: 36px;
-        margin-right: 3px;
+        width: 30px;
+        height: 30px;
+        margin-right: 2px;
       }
 
       #nav a.snd svg {
-        width: 17px;
-        height: 17px;
+        width: 14px;
+        height: 14px;
       }
 
       #nav a.cta {
-        padding: 7px 14px;
-        margin-left: 3px;
+        padding: 5px 10px;
+        margin-left: 2px;
       }
 
       .rc-modal-card {
@@ -994,147 +993,6 @@
 
       .stage img[style*="filter:url(#nz"] {
         filter: none !important;
-      }
-
-      /* ==============================================================
-         MOBILE: 4 SCREENS (Hero, Projects, Services, Contact)
-         Each screen spans 100vh (~2700px in stage space)
-         ============================================================== */
-
-      /* SCREEN 1: HERO (0 to 2700px) */
-      .hero-title-wrap {
-        top: 240px !important;
-      }
-      .hero-title-wrap .grad {
-        font-size: 310px !important;
-        letter-spacing: -11px !important;
-      }
-      .hero-quote-left {
-        left: 310px !important;
-        top: 1580px !important;
-        width: 530px !important;
-        font-size: 88px !important;
-        line-height: 0.94 !important;
-        letter-spacing: -2.8px !important;
-        white-space: normal !important;
-      }
-      .hero-stats-left {
-        left: 310px !important;
-        top: 1880px !important;
-        width: 520px !important;
-      }
-      .hero-stats-left span,
-      .hero-stats-left p {
-        font-size: 46px !important;
-        line-height: 52px !important;
-      }
-      .hero-tagline-right {
-        left: 970px !important;
-        top: 1580px !important;
-        width: 530px !important;
-        font-size: 88px !important;
-        line-height: 0.94 !important;
-        letter-spacing: -2.8px !important;
-        white-space: normal !important;
-      }
-      .hero-desc-right {
-        left: 970px !important;
-        top: 1940px !important;
-        width: 480px !important;
-        font-size: 36px !important;
-        line-height: 1.3 !important;
-        letter-spacing: -0.6px !important;
-      }
-
-      /* SCREEN 2: PROJECTS (2700px to 5400px) */
-      .stage .rb[style*="top:1251px"] { top: 2700px !important; }
-      .stage .rb[style*="top:1370px"] { top: 2820px !important; }
-      .stage .h200[style*="top:1631px"],
-      .stage .ttl[data-t="1631"] {
-        top: 3050px !important;
-        font-size: 210px !important;
-      }
-      .stage .rb[style*="top:1869px"] { top: 3400px !important; }
-      .stage .rb[style*="top:2023px"] { top: 3560px !important; }
-      .stage .rb[style*="top:2126px"] { top: 3950px !important; }
-      .stage .rb[style*="top:2288px"] { top: 4110px !important; }
-      .stage .rb[style*="top:2495.15px"] { top: 4500px !important; }
-      .stage .rb[style*="top:2657px"] { top: 4660px !important; }
-      .stage .fold {
-        --sc: 1.25;
-      }
-      .stage .folder {
-        font-size: 240px !important;
-      }
-
-      /* SCREEN 3: SERVICES & PROCESS (5400px to 8100px) */
-      .stage .rb[style*="top:2761px"] { top: 5200px !important; }
-      .stage .rb[style*="top:3011px"] { top: 5450px !important; }
-      .stage .rb[style*="top:2854.91px"] { top: 5100px !important; }
-      .stage .h200[style*="3327.01"],
-      .stage .ttl[data-t="3327"] {
-        top: 5750px !important;
-        font-size: 200px !important;
-      }
-      .stage .svcbar {
-        top: 6050px !important;
-        height: 150px !important;
-      }
-      .stage .svct[data-i="0"] { top: 6090px !important; }
-      .stage .svct[data-i="1"] { top: 6240px !important; }
-      .stage .svct[data-i="2"] { top: 6390px !important; }
-      .stage .svct[data-i="3"] { top: 6540px !important; }
-      .stage .svct[data-i="4"] { top: 6690px !important; }
-      .stage .srow[data-i="0"] { top: 6050px !important; height: 150px !important; }
-      .stage .srow[data-i="1"] { top: 6200px !important; height: 150px !important; }
-      .stage .srow[data-i="2"] { top: 6350px !important; height: 150px !important; }
-      .stage .srow[data-i="3"] { top: 6500px !important; height: 150px !important; }
-      .stage .srow[data-i="4"] { top: 6650px !important; height: 150px !important; }
-      .stage .svcdesc {
-        top: 6050px !important;
-        font-size: 38px !important;
-        line-height: 1.3 !important;
-        height: 150px !important;
-      }
-      .stage .svct {
-        font-size: 84px !important;
-        letter-spacing: -2px !important;
-      }
-
-      /* SCREEN 4: CONTACT US (8100px to 10800px) */
-      .stage .serif.shB[style*="top:4337px"] {
-        top: 8350px !important;
-        font-size: 210px !important;
-      }
-      .stage .cloudtxt {
-        top: 8650px !important;
-        font-size: 88px !important;
-        width: 1000px !important;
-        line-height: 1.05 !important;
-      }
-      .stage p[style*="top:4754px"] {
-        top: 8980px !important;
-        font-size: 42px !important;
-      }
-      .stage p[style*="top:4779px"] {
-        top: 9050px !important;
-        font-size: 38px !important;
-        width: 700px !important;
-        line-height: 1.2 !important;
-      }
-      .stage .bm {
-        top: 9180px !important;
-        font-size: 40px !important;
-        height: 96px !important;
-        width: 580px !important;
-        left: 350px !important;
-      }
-      .stage .rb[style*="top:4888px"] { top: 9350px !important; }
-      .stage .rb[style*="top:4816px"] { top: 9300px !important; }
-      .stage div[style*="top:4890.19px"] { top: 9350px !important; }
-      .stage div[style*="top:5070px"] {
-        top: 9600px !important;
-        font-size: 22px !important;
       }
     }
     @media print {
@@ -1360,10 +1218,10 @@
       </div>
 
       <!-- hero text -->
-      <p class="serif shC hero-quote-left"
+      <p class="serif shC"
         style="left:353.5px;top:1079px;width:541px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">
         “First impressions are<br>expensive to get wrong.”</p>
-      <div class="hero-stats-left"
+      <div
         style="left:353.5px;top:1226px;width:427px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:0;line-height:0">
         <p style="position:static;margin:0"><span
             style="font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px;color:#efc305">30
@@ -1379,10 +1237,10 @@
           <span style="color:#efc305">4+ </span><span style="color:#fff">years</span> of experience
         </p>
       </div>
-      <p class="serif hero-desc-right"
+      <p class="serif"
         style="font-style:italic;left:942.5px;top:1278px;width:447px;height:87px;transform:translateX(-50%);font-size:20px;line-height:normal;text-align:center;color:#fff">
         We are an independent studio in India, designing and developing websites for ambitious brands.</p>
-      <p class="serif shC hero-tagline-right"
+      <p class="serif shC"
         style="left:942.5px;top:1079px;width:543px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">
         Building high-impact<br>digital experiences since<br>2022.</p>
 
@@ -1400,7 +1258,7 @@
       <div class="rainslot" style="left:0;top:0;width:1280px;height:1750px"></div>
 
       <!-- legendary Agency -->
-      <div class="hero-title-wrap"
+      <div
         style="left:639.5px;top:199px;width:979px;height:390px;transform:translateX(-50%);filter:url(#isD) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
         <div class="serif grad"
           style="position:relative;width:1059px;margin:-80px -40px;padding:80px 40px;font-size:300px;letter-spacing:-9px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60.56%,#ffd000 85.45%,#ffd000 100%)">
@@ -1736,27 +1594,11 @@
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
-      function getStageHeight() {
-        var isMob = document.documentElement.clientWidth <= 768;
-        if (!isMob) return H;
-        var sMob = document.documentElement.clientWidth / W;
-        var screenHInStage = window.innerHeight / sMob;
-        return Math.max(10000, Math.round(screenHInStage * 4));
-      }
       function layout() {
-        var isMob = document.documentElement.clientWidth <= 768;
-        var curH = getStageHeight();
         s = document.documentElement.clientWidth / W;
         document.documentElement.style.setProperty('--s', s);
-        var p = Math.floor(curH * s);
-        copies.forEach(function (e, i) {
-          e.style.height = curH + 'px';
-          var bg = e.querySelector('div[style*="rgb(30,20,139)"]');
-          if (bg) bg.style.height = curH + 'px';
-          var pn = e.querySelector('.pnoise');
-          if (pn) pn.style.height = curH + 'px';
-          e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')';
-        });
+        var p = Math.floor(H * s);
+        copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')'; });
         wrap.style.height = (copies.length * p) + 'px';
       }
       var userHasScrolled = false;
@@ -2358,11 +2200,7 @@
       wrap.addEventListener('click', function (e) { var r = e.target.closest && e.target.closest('.srow'); if (r) setSvc(+r.getAttribute('data-i')); });
 
       /* ---------- floating navigation with smooth sliding indicator ---------- */
-      var nav = document.getElementById('nav');
-      function getSEC() {
-        var isMob = document.documentElement.clientWidth <= 768;
-        return isMob ? [2, 2800, 5600, 8350] : [2, 1150, 3250, 4300];
-      }
+      var nav = document.getElementById('nav'), SEC = [2, 1150, 3250, 4300];
       var navIndicator = document.getElementById('navIndicator');
       var navLinks = nav.querySelectorAll('a[data-go]');
       var currentNavIndex = -1;
@@ -2409,9 +2247,7 @@
       nav.addEventListener('click', function (e) {
         var a = e.target.closest('a'); if (!a) return;
         if (a.id === 'sndBtn') return;
-        var curH = getStageHeight();
-        var p = Math.floor(curH * s);
-        var SEC = getSEC();
+        var p = Math.floor(H * s);
         var targetIdx = +a.getAttribute('data-go');
         var off = SEC[targetIdx] * s;
         var candidates = [off, p + off, 2 * p + off];
@@ -2456,12 +2292,10 @@
 
       function navOn() {
         if (isNavClickScrolling) return;
-        var curH = getStageHeight();
-        var p = Math.floor(curH * s);
+        var p = Math.floor(H * s);
         var normY = ((window.scrollY % p) + p) % p;
         var y = (normY / s) + 300;
-        var SEC = getSEC();
-        var i = y >= SEC[3] ? 3 : y >= SEC[2] ? 2 : y >= SEC[1] ? 1 : 0;
+        var i = y >= 4300 ? 3 : y >= 3250 ? 2 : y >= 1150 ? 1 : 0;
         if (i !== currentNavIndex) {
           setNavIndex(i, false);
         }
