@@ -994,6 +994,81 @@
       .stage img[style*="filter:url(#nz"] {
         filter: none !important;
       }
+
+      /* Mobile typography enlargement & visual optimizations */
+      .hero-title-wrap {
+        top: 235px !important;
+      }
+      .hero-title-wrap .grad {
+        font-size: 320px !important;
+        letter-spacing: -12px !important;
+      }
+
+      .hero-quote-left {
+        left: 290px !important;
+        top: 1060px !important;
+        width: 540px !important;
+        font-size: 105px !important;
+        line-height: 0.9 !important;
+        letter-spacing: -3.5px !important;
+        white-space: normal !important;
+      }
+
+      .hero-stats-left {
+        left: 290px !important;
+        top: 1390px !important;
+        width: 520px !important;
+      }
+      .hero-stats-left span,
+      .hero-stats-left p {
+        font-size: 52px !important;
+        line-height: 60px !important;
+      }
+
+      .hero-tagline-right {
+        left: 990px !important;
+        top: 1060px !important;
+        width: 530px !important;
+        font-size: 105px !important;
+        line-height: 0.9 !important;
+        letter-spacing: -3.5px !important;
+        white-space: normal !important;
+      }
+
+      .hero-desc-right {
+        left: 990px !important;
+        top: 1450px !important;
+        width: 500px !important;
+        font-size: 42px !important;
+        line-height: 1.25 !important;
+        letter-spacing: -0.8px !important;
+      }
+
+      .stage .svct {
+        font-size: 80px !important;
+        letter-spacing: -2.5px !important;
+      }
+      .stage .svcdesc {
+        font-size: 36px !important;
+        line-height: 1.25 !important;
+      }
+      .stage .bm {
+        font-size: 36px !important;
+        height: 84px !important;
+      }
+      .stage .cloudtxt {
+        font-size: 86px !important;
+        width: 950px !important;
+        line-height: 1 !important;
+      }
+      .stage p[style*="top:4754px"] {
+        font-size: 38px !important;
+      }
+      .stage p[style*="top:4779px"] {
+        font-size: 36px !important;
+        width: 600px !important;
+        line-height: 1.1 !important;
+      }
     }
     @media print {
       #loaderScreen, #nav, #cur { display: none !important; }
@@ -1218,10 +1293,10 @@
       </div>
 
       <!-- hero text -->
-      <p class="serif shC"
+      <p class="serif shC hero-quote-left"
         style="left:353.5px;top:1079px;width:541px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">
         “First impressions are<br>expensive to get wrong.”</p>
-      <div
+      <div class="hero-stats-left"
         style="left:353.5px;top:1226px;width:427px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:0;line-height:0">
         <p style="position:static;margin:0"><span
             style="font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:34px;color:#efc305">30
@@ -1237,10 +1312,10 @@
           <span style="color:#efc305">4+ </span><span style="color:#fff">years</span> of experience
         </p>
       </div>
-      <p class="serif"
+      <p class="serif hero-desc-right"
         style="font-style:italic;left:942.5px;top:1278px;width:447px;height:87px;transform:translateX(-50%);font-size:20px;line-height:normal;text-align:center;color:#fff">
         We are an independent studio in India, designing and developing websites for ambitious brands.</p>
-      <p class="serif shC"
+      <p class="serif shC hero-tagline-right"
         style="left:942.5px;top:1079px;width:543px;height:155px;transform:translateX(-50%);font-size:64px;letter-spacing:-1.92px;text-align:center;color:#fff;white-space:nowrap">
         Building high-impact<br>digital experiences since<br>2022.</p>
 
@@ -1258,7 +1333,7 @@
       <div class="rainslot" style="left:0;top:0;width:1280px;height:1750px"></div>
 
       <!-- legendary Agency -->
-      <div
+      <div class="hero-title-wrap"
         style="left:639.5px;top:199px;width:979px;height:390px;transform:translateX(-50%);filter:url(#isD) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
         <div class="serif grad"
           style="position:relative;width:1059px;margin:-80px -40px;padding:80px 40px;font-size:300px;letter-spacing:-9px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60.56%,#ffd000 85.45%,#ffd000 100%)">
