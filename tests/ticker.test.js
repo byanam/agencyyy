@@ -6,3 +6,5 @@ const formatted = d.toLocaleTimeString('en-US', tz);
 assert(formatted.length > 0, 'Formatted time must be non-empty');
 assert(/AM|PM/i.test(formatted), 'Formatted time must contain meridian AM/PM indicator');
 console.log('[PASS] Ticker Kolkata timezone format validation passed');
+
+// Test Suite: ISO date format and Indian Standard Time validation
