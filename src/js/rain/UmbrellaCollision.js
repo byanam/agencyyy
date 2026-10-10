@@ -11,3 +11,5 @@ export class UmbrellaCollision {
     return null;
   }
 }
+
+// Rain Engine: Elliptical boundary intersection and deflect vector math
