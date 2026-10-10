@@ -9,3 +9,5 @@ function isInsideUmbrella(px, py, cx, cy, rx, ry) {
 assert.strictEqual(isInsideUmbrella(100, 100, 100, 100, 50, 50), true);
 assert.strictEqual(isInsideUmbrella(200, 200, 100, 100, 50, 50), false);
 console.log('[PASS] Umbrella ellipse collision boundary mathematics passed');
+
+// Test Suite: Ellipse collision boundary formula verification
