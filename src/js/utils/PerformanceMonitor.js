@@ -7,3 +7,5 @@ export class PerformanceMonitor {
     return result;
   }
 }
+
+// Monitor: Frame rate, calculation budget, and layout shift tracking
