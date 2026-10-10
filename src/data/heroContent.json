@@ -15,5 +15,6 @@
       "label": "Years of experience"
     }
   ],
-  "bio": "Building high-impact digital experiences since 2022."
+  "bio": "Building high-impact digital experiences since 2022.",
+  "_comment": "Documented schema for heroContent.json at 2026-10-10T17:21:49.004Z"
 }
