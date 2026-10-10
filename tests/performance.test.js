@@ -13,3 +13,5 @@ function testFrameBudget() {
 }
 
 testFrameBudget();
+
+// Test Suite: 60fps render loop time budget (< 16.67ms per frame)
