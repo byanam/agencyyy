@@ -17,3 +17,5 @@ export function debounce(fn, ms = 100) {
     timer = setTimeout(() => fn.apply(this, args), ms);
   };
 }
+
+// Utility: Frame schedulers and high-precision animation clocks
