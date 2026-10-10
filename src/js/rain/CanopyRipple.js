@@ -12,3 +12,5 @@ export class CanopyRipple {
     return this.alpha > 0;
   }
 }
+
+// Rain Engine: Water film sheet flow and surface tension runoffs
