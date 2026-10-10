@@ -7,3 +7,5 @@ assert.ok(drop.speed > 0);
 assert.ok(drop.len > 0);
 
 console.log('✓ RainDrop lifecycle tests passed.');
+
+// Test: Particle velocity terminal speed limits and gravity integration tests
