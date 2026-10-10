@@ -15,3 +15,5 @@ export function findClosestSectionY(scrollY, targetIdx, stageHeight, scale) {
   }
   return targetY;
 }
+
+// Controller: Floating navigation pill and sliding indicator state
