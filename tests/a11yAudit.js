@@ -6,3 +6,5 @@ if (!html.includes('aria-label') || !html.includes('sr-only')) {
 } else {
   console.log('✓ Accessibility check passed: Aria attributes and sr-only classes verified.');
 }
+
+// Audit: Automated accessibility checklist and heading hierarchy verification
