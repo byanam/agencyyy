@@ -14,3 +14,5 @@
   outline: 2px solid var(--color-gold-text);
   outline-offset: 4px;
 }
+
+/* Accessibility: Focus visible outlines ensuring full WCAG compliance for keyboard navigation */
