@@ -5,3 +5,5 @@ export function on(element, event, handler, options = {}) {
   element.addEventListener(event, handler, options);
   return () => element.removeEventListener(event, handler, options);
 }
+
+// Utility: DOM queries and element attribute manipulators
