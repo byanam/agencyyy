@@ -1050,6 +1050,28 @@
         transform: scale(1.12) rotate(var(--rot)) translateY(var(--ty, 0px)) scale(var(--sc, 1)) !important;
       }
 
+      .fold,
+      .flab,
+      .fold img,
+      .flab .folder,
+      .folder {
+        opacity: 1 !important;
+        filter: none !important;
+      }
+
+      .flab .folder {
+        color: #b9e6ff !important;
+        text-shadow: 0 0 24px rgba(150, 220, 255, .8) !important;
+        opacity: 1 !important;
+      }
+
+      #mstage img[data-k="57e01"],
+      .mstage img[data-k="57e01"],
+      #mstage .rb:has(img[data-k="57e01"]),
+      .mstage .rb:has(img[data-k="57e01"]) {
+        display: none !important;
+      }
+
       .stage .rb:has(.fold) {
         z-index: 10 !important;
       }
@@ -1354,7 +1376,7 @@
       <div class="srow" data-i="2" style="left:65px;top:3829px;width:1149px;height:132px;cursor:pointer"></div>
       <div class="srow" data-i="3" style="left:65px;top:3963px;width:1149px;height:132px;cursor:pointer"></div>
       <div class="srow" data-i="4" style="left:65px;top:4097px;width:1149px;height:132px;cursor:pointer"></div>
-      <p class="serif h200 shB" style="left:640px;top:3327.01px;color:#fff;white-space:pre-wrap">Services &amp; Process
+      <p class="serif h200 shB t-serv" style="left:640px;top:3327.01px;color:#fff;white-space:pre-wrap">Services &amp; Process
       </p>
 
       <div class="rb" style="left:-213px;top:2761px;width:1329.324px;height:655.03px">
@@ -1416,7 +1438,7 @@
         <div class="r" style="transform:rotate(4.72deg);width:1543.396px;height:514.465px;opacity:.53"><img
             class="cover" src="assets/20b2c.webp" data-k="20b2c" alt=""></div>
       </div>
-      <p class="serif h200 shB" style="left:657px;top:1631px;color:#fff">Projects</p>
+      <p class="serif h200 shB t-proj" style="left:657px;top:1631px;color:#fff">Projects</p>
       <div class="rb" style="left:141px;top:1370px;width:1007.163px;height:347.353px">
         <div class="r" style="transform:rotate(-179.25deg) scale(1,-1);width:1002.886px;height:334.296px"><img
             class="cover" src="assets/0b3fd.webp" data-k="0b3fd" alt=""></div>
@@ -1490,11 +1512,6 @@
 
     </div>
     <div id="mstage" class="stage mstage" aria-hidden="true">
-      <div class="rb" style="left:-159px;top:-66.51px;width:439.804px;height:277.626px">
-        <div class="r" style="transform:scaleY(-1);width:439.804px;height:277.626px;opacity:.44">
-          <img class="cover on" loading="eager" src="assets/57e01.webp" data-k="57e01" alt="">
-        </div>
-      </div>
       <div class="rb" style="left:126.88px;top:-83px;width:484.12px;height:284.846px">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:484.12px;height:284.846px;opacity:.5">
           <img class="cover on" loading="eager" src="assets/0d995.webp" data-k="0d995" alt="">
@@ -2003,11 +2020,13 @@
               c0b.closest('.rb').style.zIndex = '3';
             }
           }
-          var stgTP = stg.querySelector('.t-proj');
+          var stgTP = stg.querySelector('.t-proj') || Array.from(stg.querySelectorAll('.h200')).find(function (el) { return el.textContent.includes('Projects'); });
           if (stgTP) {
             stgTP.style.top = '2000px';
             stgTP.setAttribute('data-t', '2000');
             stgTP.style.zIndex = '4';
+            stgTP.style.transform = 'translate3d(-50%, 0, 0)';
+            stgTP.style.opacity = '1';
           }
 
           // 2. Folders: centered between project clouds and services clouds with clean layering
@@ -2070,10 +2089,13 @@
           }
 
           // 4. Services section
-          var stgTS = stg.querySelector('.t-serv');
+          var stgTS = stg.querySelector('.t-serv') || Array.from(stg.querySelectorAll('.h200')).find(function (el) { return el.textContent.includes('Services'); });
           if (stgTS) {
             stgTS.style.top = '4247px';
             stgTS.setAttribute('data-t', '4247');
+            stgTS.style.zIndex = '4';
+            stgTS.style.transform = 'translate3d(-50%, 0, 0)';
+            stgTS.style.opacity = '1';
           }
 
           // 5. Contact section (placed right below the titles)
@@ -2745,13 +2767,14 @@
             var tr = 'translate3d(' + totalX.toFixed(2) + 'px,' + totalY.toFixed(2) + 'px,0)';
             for (var j = 0; j < cl.length; j++) cl[j][i].style.transform = tr;
             mcl.forEach(function (list) {
-              if (list.length >= 5) {
-                if (i === 8 && list[0]) list[0].style.transform = tr;
-                if (i === 9 && list[1]) list[1].style.transform = tr;
-                if (i === 10 && list[2]) list[2].style.transform = tr;
-                if (i === 11 && list[3]) list[3].style.transform = tr;
-                if (i === 12 && list[4]) list[4].style.transform = tr;
-              }
+              list.forEach(function (el) {
+                var im = el.querySelector('img[data-k]');
+                var k = im ? im.getAttribute('data-k') : '';
+                if (k === '57e01' && i === 8) el.style.transform = tr;
+                else if (k === '0d995' && i === 9) el.style.transform = tr;
+                else if (k === '8bc30' && i === 10) el.style.transform = tr;
+                else if (k === 'de02e' && (i === 11 || i === 12)) el.style.transform = tr;
+              });
             });
           }
           if (MOB) {
