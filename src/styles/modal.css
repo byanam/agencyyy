@@ -34,3 +34,5 @@
 .rc-modal-overlay.open .rc-modal-card {
   transform: scale(var(--s, 1)) translate3d(0, 0, 0);
 }
+
+/* Modal Overlay: Frosted glass backdrop-filter with smooth cubic-bezier transitions */
