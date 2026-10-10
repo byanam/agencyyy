@@ -16,3 +16,5 @@ function testModalOpenState() {
 }
 
 testModalOpenState();
+
+// Test Suite: Modal display toggle, accessibility attributes, and escape key
