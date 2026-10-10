@@ -990,9 +990,9 @@
         overflow: visible !important;
       }
 
-      .stage .pnoise {
-        top: -2000px !important;
-        height: 14000px !important;
+      .stage .pnoise,
+      .pnoise {
+        display: none !important;
       }
 
       .bg-gradient {
@@ -1828,6 +1828,7 @@
       }
       stageImgs.forEach(function (im) { load(im, im.getAttribute('data-k')); });
       var initNoise = function () {
+        if (MOB) return;
         var n = document.createElement('canvas'); n.width = n.height = 512; var x = n.getContext('2d'), d = x.createImageData(512, 512);
         for (var i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.random() < .98 ? Math.round(Math.random() * 80) : 0; }
         x.putImageData(d, 0, 0);
@@ -1887,11 +1888,6 @@
             im.onerror = function () { im.classList.add('on'); };
           }
         });
-      });
-      document.querySelectorAll('.pnoise').forEach(function (e) {
-        var n = document.createElement('canvas'); n.width = n.height = 256; var x = n.getContext('2d'), d = x.createImageData(256, 256);
-        for (var i = 0; i < d.data.length; i += 4) { var r = Math.random(); d.data[i] = d.data[i + 1] = d.data[i + 2] = 0; d.data[i + 3] = Math.round(r * r * 150); }
-        x.putImageData(d, 0, 0); e.style.backgroundImage = 'url(' + n.toDataURL() + ')';
       });
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
@@ -2151,8 +2147,7 @@
           }
           var pn = stg.querySelector('.pnoise');
           if (pn) {
-            pn.style.top = '-2000px';
-            pn.style.height = '14000px';
+            pn.style.display = 'none';
           }
         });
         applyMobileSvcLayout(cur);
