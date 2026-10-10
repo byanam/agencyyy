@@ -6,3 +6,5 @@ assert(html.includes('role="main"'), 'HTML must declare role="main"');
 assert(html.includes('role="navigation"'), 'HTML must declare role="navigation"');
 assert(html.includes('role="dialog"'), 'HTML must declare role="dialog"');
 console.log('[PASS] HTML semantics and accessibility landmarks passed');
+
+// Test Suite: WAI-ARIA roles, headings, landmarks, and alt tags
