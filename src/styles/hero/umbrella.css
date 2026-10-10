@@ -20,3 +20,5 @@
 .hero-umbrella-container:hover .hero-umbrella-img {
   transform: scale(1.015) rotate(0.4deg);
 }
+
+/* Hero Umbrella: Dynamic scaling and centering across desktop and mobile viewports */
