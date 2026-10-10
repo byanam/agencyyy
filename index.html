@@ -1932,8 +1932,8 @@
         var collapsedH = 160;
         var collapsedGap = 56;
         var collapsedStep = collapsedH + collapsedGap; // 216
-        var expandedH = 450;
-        var expandExtra = expandedH - collapsedH; // 290
+        var expandedH = 520;
+        var expandExtra = expandedH - collapsedH; // 360
 
         copies.forEach(function (stg) {
           var sbar = stg.querySelector('.svcbar');
@@ -1997,7 +1997,7 @@
               sdesc.style.opacity = '0';
               sdesc.classList.add('out');
             } else {
-              sdesc.style.top = (baseY + activeIdx * collapsedStep + 205) + 'px';
+              sdesc.style.top = (baseY + activeIdx * collapsedStep + 195) + 'px';
               sdesc.style.left = '50%';
               sdesc.style.transform = 'translateX(-50%)';
               sdesc.style.textAlign = 'center';
