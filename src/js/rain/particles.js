@@ -9,3 +9,5 @@ export class RainDropPool {
     return this.drops[i];
   }
 }
+
+// Rain Engine: Recycled particle object pool eliminating garbage collection
