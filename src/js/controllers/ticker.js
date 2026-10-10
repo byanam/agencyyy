@@ -9,3 +9,5 @@ export function formatKolkataTime(date = new Date()) {
   }));
   return { timeStr, dateStr };
 }
+
+// Controller: Real-time Asia/Kolkata timezone clock and status ticker
