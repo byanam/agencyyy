@@ -5,3 +5,5 @@ for (let i = 0; i < iterations; i++) {
 }
 const t1 = performance.now();
 console.log(`✓ Benchmark: ${iterations} trig operations in ${(t1 - t0).toFixed(2)}ms`);
+
+// Benchmark: Frame execution time budget and 60fps render latency test harness
