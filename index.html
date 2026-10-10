@@ -1020,8 +1020,20 @@
         transform: translate3d(-50%, 0, 0) scale(var(--rc-s, 0.88)) !important;
       }
 
-      .stage img[style*="filter:url(#nz"] {
+      .stage img {
+        opacity: 1 !important;
+        transition: none !important;
+      }
+
+      [style*="filter:url"],
+      .shB,
+      .shC {
         filter: none !important;
+      }
+
+      .cld,
+      .ttl {
+        will-change: auto !important;
       }
 
       .stage,
@@ -1464,12 +1476,12 @@
     <div id="mstage" class="stage mstage" aria-hidden="true">
       <div class="rb" style="left:-159px;top:-66.51px;width:439.804px;height:277.626px">
         <div class="r" style="transform:scaleY(-1);width:439.804px;height:277.626px;opacity:.44">
-          <img class="cover" style="filter:url(#nz2)" decoding="async" src="assets/57e01.webp" data-k="57e01" alt="">
+          <img class="cover on" loading="eager" decoding="async" src="assets/57e01.webp" data-k="57e01" alt="">
         </div>
       </div>
       <div class="rb" style="left:126.88px;top:-83px;width:484.12px;height:284.846px">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:484.12px;height:284.846px;opacity:.5">
-          <img class="cover" decoding="async" src="assets/0d995.webp" data-k="0d995" alt="">
+          <img class="cover on" loading="eager" decoding="async" src="assets/0d995.webp" data-k="0d995" alt="">
         </div>
       </div>
       <div class="mrain" style="left:0;top:0;width:402px;height:874px"></div>
@@ -1483,19 +1495,19 @@
       </div>
       <div class="rb" style="left:51.69px;top:-63.26px;width:291.714px;height:126.787px">
         <div class="r" style="transform:rotate(90deg);width:126.787px;height:291.714px">
-          <img class="cover" style="object-fit:fill" decoding="async" src="assets/8bc30.webp" data-k="8bc30" alt="">
+          <img class="cover on" loading="eager" style="object-fit:fill" decoding="async" src="assets/8bc30.webp" data-k="8bc30" alt="">
         </div>
       </div>
       <div class="rb" style="left:90.45px;top:-88px;width:409.294px;height:240.82px">
         <div class="r" style="transform:rotate(180deg) scale(1,-1);width:409.294px;height:240.82px">
-          <img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+          <img class="cover on" loading="eager" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
         </div>
       </div>
       <div style="left:-150px;top:-62.51px;width:366.04px;height:215.37px">
-        <img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
+        <img class="cover on" loading="eager" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
       </div>
       <div style="left:-4px;top:462px;width:410px;height:350px">
-        <img class="cover" decoding="async" src="assets/a59cf.webp" data-k="a59cf" alt="">
+        <img class="cover on" loading="eager" decoding="async" src="assets/a59cf.webp" data-k="a59cf" alt="">
       </div>
       <div
         style="left:201px;top:637px;width:194px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:20px;line-height:0;white-space:nowrap;text-shadow:-2px 4px 3.3px rgba(0,0,0,.43)">
@@ -1684,7 +1696,7 @@
       var loaderScreen = document.getElementById('loaderScreen');
       var loaderRing = document.getElementById('loaderRingProgress');
       var ringCircumference = 873.36;
-      var stageImgs = Array.from(stage.querySelectorAll('img[data-k]'));
+      var stageImgs = Array.from(document.querySelectorAll('.stage img[data-k]'));
       var totalAssets = stageImgs.length;
       var loadedAssets = 0;
       var targetPct = 0;
@@ -2687,60 +2699,67 @@
             var tr = 'translate3d(' + totalX.toFixed(2) + 'px,' + totalY.toFixed(2) + 'px,0)';
             for (var j = 0; j < cl.length; j++)cl[j][i].style.transform = tr;
           }
-          var vh = innerHeight / s;
-          for (var j = 0; j < tl.length; j++) {
-            var rel = (y - j * p) / s;
-            tl[j].forEach(function (el) {
-              var T = +el.getAttribute('data-t'), D = +el.getAttribute('data-d') * 1.15, vis = T - rel;
-              if (el._st === undefined) {
-                if (vis <= 0.25 * vh) {
-                  el._st = 2; el._p = 1;
-                  el.style.transform = 'translate3d(-50%,0,0)';
+          if (MOB) {
+            tl.forEach(function (list) {
+              list.forEach(function (el) {
+                if (el.style.opacity !== '1') {
                   el.style.opacity = '1';
-                } else {
-                  el._st = 0; el._p = 0;
-                  el.style.transform = 'translate3d(-50%,' + (-D).toFixed(1) + 'px,0)';
-                  el.style.opacity = '0';
+                  el.style.transform = 'translate3d(-50%,0,0)';
                 }
-              }
-              if (el._st === 0 && vis <= 0.88 * vh) {
-                if (vis <= 0.25 * vh) {
-                  el._st = 2; el._p = 1;
-                  el.style.transform = 'translate3d(-50%,0,0)';
-                  el.style.opacity = '1';
-                } else {
-                  el._st = 1;
-                  el._t0 = t;
-                }
-              } else if (el._st === 2 && vis > 1.25 * vh) {
-                el._st = 0;
-                el._p = 0;
-                el.style.transform = 'translate3d(-50%,' + (-D).toFixed(1) + 'px,0)';
-                el.style.opacity = '0';
-              }
-              if (el._st === 1) {
-                if (vis <= 0.1 * vh) {
-                  el._st = 2; el._p = 1;
-                  el.style.transform = 'translate3d(-50%,0,0)';
-                  el.style.opacity = '1';
-                } else {
-                  el._p = Math.min(1, (t - el._t0) / 600);
-                  if (el._p >= 1) {
+              });
+            });
+          } else {
+            var vh = innerHeight / s;
+            for (var j = 0; j < tl.length; j++) {
+              var rel = (y - j * p) / s;
+              tl[j].forEach(function (el) {
+                var T = +el.getAttribute('data-t'), D = +el.getAttribute('data-d') * 1.15, vis = T - rel;
+                if (el._st === undefined) {
+                  if (vis <= 0.25 * vh) {
                     el._st = 2; el._p = 1;
                     el.style.transform = 'translate3d(-50%,0,0)';
                     el.style.opacity = '1';
                   } else {
-                    var pr = el._p, e = 1 - Math.pow(1 - pr, 3);
-                    el.style.transform = 'translate3d(-50%,' + (-(1 - e) * D).toFixed(1) + 'px,0)';
-                    el.style.opacity = Math.min(1, pr * 3.5).toFixed(3);
+                    el._st = 0; el._p = 0;
+                    el.style.transform = 'translate3d(-50%,' + (-D).toFixed(1) + 'px,0)';
+                    el.style.opacity = '0';
                   }
                 }
-              }
-            });
-          }
-          if (MOB) {
-            updateMobileFolders();
-            updateMobileServices();
+                if (el._st === 0 && vis <= 0.88 * vh) {
+                  if (vis <= 0.25 * vh) {
+                    el._st = 2; el._p = 1;
+                    el.style.transform = 'translate3d(-50%,0,0)';
+                    el.style.opacity = '1';
+                  } else {
+                    el._st = 1;
+                    el._t0 = t;
+                  }
+                } else if (el._st === 2 && vis > 1.25 * vh) {
+                  el._st = 0;
+                  el._p = 0;
+                  el.style.transform = 'translate3d(-50%,' + (-D).toFixed(1) + 'px,0)';
+                  el.style.opacity = '0';
+                }
+                if (el._st === 1) {
+                  if (vis <= 0.1 * vh) {
+                    el._st = 2; el._p = 1;
+                    el.style.transform = 'translate3d(-50%,0,0)';
+                    el.style.opacity = '1';
+                  } else {
+                    el._p = Math.min(1, (t - el._t0) / 600);
+                    if (el._p >= 1) {
+                      el._st = 2; el._p = 1;
+                      el.style.transform = 'translate3d(-50%,0,0)';
+                      el.style.opacity = '1';
+                    } else {
+                      var pr = el._p, e = 1 - Math.pow(1 - pr, 3);
+                      el.style.transform = 'translate3d(-50%,' + (-(1 - e) * D).toFixed(1) + 'px,0)';
+                      el.style.opacity = Math.min(1, pr * 3.5).toFixed(3);
+                    }
+                  }
+                }
+              });
+            }
           }
           requestAnimationFrame(frame);
         }
@@ -2961,9 +2980,11 @@
           if (!rs || !gs) return;
           var rc = document.createElement('canvas'), gc = document.createElement('canvas');
           rs.appendChild(rc); gs.appendChild(gc); gc.width = 201; gc.height = 150;
+          var heroLimitY = 874;
           function fit() {
             var k = Math.min(2, (window.devicePixelRatio || 1) * document.documentElement.clientWidth / 402);
             rc.width = Math.round(402 * k); rc.height = Math.round(874 * k); rc.k = k;
+            heroLimitY = Math.round(874 * (document.documentElement.clientWidth / 402));
           }
           fit();
           addEventListener('resize', fit);
@@ -3024,7 +3045,7 @@
             }
             for (var di = drips.length - 1; di >= 0; di--) { var D = drips[di]; D.vy += 450 * dt; D.y += D.vy * dt; if (D.y > 880) drips.splice(di, 1); }
             for (var p = parts.length - 1; p >= 0; p--) { var q = parts[p]; q.vy += 220 * dt; q.x += q.vx * dt; q.y += q.vy * dt; q.l -= dt; if (q.l <= 0) parts.splice(p, 1); }
-            if (rc.getBoundingClientRect().bottom < 0) { requestAnimationFrame(frame); return; }
+            if (window.scrollY > heroLimitY + 50) { requestAnimationFrame(frame); return; }
             var c = rc.getContext('2d'), k = rc.k; c.setTransform(k, 0, 0, k, 0, 0); c.clearRect(0, 0, 402, 874); c.lineCap = 'round'; c.lineWidth = 1.2;
             if (LT.I > .02 && LT.bolt) {
               var B = LT.bolt, I = LT.I; c.save(); c.lineJoin = 'round'; c.shadowColor = 'rgba(150,190,255,' + I + ')'; c.shadowBlur = 14;
@@ -3130,39 +3151,16 @@
           });
         }
       }
-      addEventListener('scroll', updateMobileFolders, { passive: true });
-
-      /* ---------- MOBILE SCROLL-DRIVEN SERVICES POP-UP (ACCORDION EXPANDS AS SCROLLING) ---------- */
-      var cachedMobileSvcRows = null;
-      function updateMobileServices() {
-        if (!MOB) return;
-        if (Date.now() - manualSvcTapTime < 800) return;
-        if (!cachedMobileSvcRows) {
-          cachedMobileSvcRows = Array.from(stage.querySelectorAll('.srow'));
+      var folderScrollRaf = false;
+      addEventListener('scroll', function () {
+        if (!folderScrollRaf) {
+          folderScrollRaf = true;
+          requestAnimationFrame(function () {
+            folderScrollRaf = false;
+            updateMobileFolders();
+          });
         }
-        if (!cachedMobileSvcRows.length) return;
-        var screenCenter = window.innerHeight * 0.5;
-        var bestIdx = -1;
-        var minDist = Infinity;
-        var maxDist = window.innerHeight * 0.24;
-
-        cachedMobileSvcRows.forEach(function (r, idx) {
-          var rect = r.getBoundingClientRect();
-          var centerY = rect.top + rect.height * 0.5;
-          var dist = Math.abs(centerY - screenCenter);
-          if (dist < minDist) {
-            minDist = dist;
-            bestIdx = idx;
-          }
-        });
-
-        var targetIdx = (minDist < maxDist) ? bestIdx : -1;
-        if (targetIdx !== cur) {
-          cur = targetIdx;
-          applyMobileSvcLayout(cur);
-        }
-      }
-      addEventListener('scroll', updateMobileServices, { passive: true });
+      }, { passive: true });
 
       /* ---------- CONTACT receipt: live date/time + form + modal popup ---------- */
       var rcModal = document.getElementById('rcModal');
