@@ -12,3 +12,5 @@ assets.forEach(a => {
   assert(fs.existsSync(p), `Asset ${p} must exist on disk`);
 });
 console.log(`[PASS] Verified ${assets.length} production assets present in public/assets`);
+
+// Test Suite: WebP image preloading and decode sync assertions
