@@ -18,3 +18,5 @@
 @import './modal.css';
 @import './responsive.css';
 @import './a11y.css';
+
+/* Main Stylesheet: Central import manifest grouping design tokens, layout, and components */
