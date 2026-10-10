@@ -25,3 +25,5 @@ const miss = UmbrellaCollision.check(
 assert.strictEqual(miss, null);
 
 console.log('✓ Collision unit tests passed.');
+
+// Test: Umbrella bounding ellipse and particle deflection vector verification
