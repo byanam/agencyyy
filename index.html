@@ -1070,6 +1070,28 @@
         display: none !important;
       }
 
+      .t-proj,
+      .t-serv {
+        z-index: 4 !important;
+      }
+
+      .svcbar,
+      .svct,
+      .svcdesc,
+      .srow {
+        z-index: 5 !important;
+      }
+
+      .stage .rb:has(img[data-k="764ac"]) {
+        z-index: 20 !important;
+      }
+
+      .stage .rb:has(img[data-k="20b2c"]),
+      .stage .rb:has(img[data-k="0b3fd"]),
+      .stage .rb:has(img[data-k="255d2"]) {
+        z-index: 1 !important;
+      }
+
       .svcbar {
         transition: top .5s cubic-bezier(.3, .9, .3, 1), height .5s cubic-bezier(.3, .9, .3, 1), opacity .3s ease !important;
       }
@@ -1999,7 +2021,7 @@
             c20.parentElement.style.transform = 'rotate(4.72deg) scale(2)';
             if (c20.closest('.rb')) {
               c20.closest('.rb').style.top = '1451px';
-              c20.closest('.rb').style.zIndex = '2';
+              c20.closest('.rb').style.zIndex = '1';
             }
           }
           var c0b = stg.querySelector('img[data-k="0b3fd"]');
@@ -2007,7 +2029,7 @@
             c0b.parentElement.style.transform = 'rotate(-179.25deg) scale(2,-2)';
             if (c0b.closest('.rb')) {
               c0b.closest('.rb').style.top = '1570px';
-              c0b.closest('.rb').style.zIndex = '3';
+              c0b.closest('.rb').style.zIndex = '1';
             }
           }
           var stgTP = stg.querySelector('.t-proj') || Array.from(stg.querySelectorAll('.h200')).find(function (el) { return el.textContent.includes('Projects'); });
@@ -2059,7 +2081,7 @@
             c76.parentElement.style.transform = 'rotate(-1.79deg) scale(1.6)';
             if (c76.closest('.rb')) {
               c76.closest('.rb').style.top = '3654.91px';
-              c76.closest('.rb').style.zIndex = '2';
+              c76.closest('.rb').style.zIndex = '20';
             }
           }
           var c255s = stg.querySelectorAll('img[data-k="255d2"]');
@@ -2067,14 +2089,14 @@
             c255s[0].parentElement.style.transform = 'rotate(10.8deg) scale(1.6)';
             if (c255s[0].closest('.rb')) {
               c255s[0].closest('.rb').style.top = '3561px';
-              c255s[0].closest('.rb').style.zIndex = '2';
+              c255s[0].closest('.rb').style.zIndex = '1';
             }
           }
           if (c255s[1] && c255s[1].parentElement) {
             c255s[1].parentElement.style.transform = 'rotate(-178.52deg) scale(1.6)';
             if (c255s[1].closest('.rb')) {
               c255s[1].closest('.rb').style.top = '3811px';
-              c255s[1].closest('.rb').style.zIndex = '2';
+              c255s[1].closest('.rb').style.zIndex = '1';
             }
           }
 
