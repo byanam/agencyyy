@@ -15,3 +15,5 @@ export class InfiniteScrollLoop {
     }
   }
 }
+
+// Controller: Seamless continuous bidirectional scroll boundary loop
