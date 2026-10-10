@@ -13,3 +13,5 @@ export class ModalController {
     this.modal.classList.remove('is-open');
   }
 }
+
+// Component: Contact form modal lifecycle and focus trapping
