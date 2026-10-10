@@ -15,3 +15,5 @@ export class SplashDroplet {
     return this.alpha > 0;
   }
 }
+
+// Rain Engine: Umbrella surface splash particle ballistic trajectories
