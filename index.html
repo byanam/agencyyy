@@ -138,7 +138,7 @@
       position: relative;
       width: 100%;
       overflow: hidden;
-      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 18%, rgb(22, 0, 255) 32%, rgb(55, 0, 255) 45%, rgb(85, 0, 220) 58%, rgb(70, 0, 170) 70%, rgb(50, 0, 120) 80%, rgb(30, 0, 70) 88%, rgb(15, 0, 35) 94%, rgb(0, 0, 0) 100%);
+      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%, rgb(30, 0, 70) 86%, rgb(8, 0, 20) 93%, rgb(0, 0, 0) 97%);
       transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: filter;
     }
@@ -185,7 +185,7 @@
       top: 0;
       width: 1280px;
       height: 5218px;
-      background: transparent;
+      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%, rgb(30, 0, 70) 86%, rgb(8, 0, 20) 93%, rgb(0, 0, 0) 97%);
       overflow: hidden;
       transform-origin: 0 0
     }
@@ -197,10 +197,6 @@
     .stage span,
     .stage br {
       position: static
-    }
-
-    .bg-gradient {
-      display: none !important;
     }
 
     .stage img {
@@ -981,6 +977,10 @@
         display: none !important;
       }
 
+      #wrap {
+        background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 18%, rgb(22, 0, 255) 32%, rgb(55, 0, 255) 45%, rgb(85, 0, 220) 58%, rgb(70, 0, 170) 70%, rgb(50, 0, 120) 80%, rgb(30, 0, 70) 88%, rgb(15, 0, 35) 94%, rgb(0, 0, 0) 100%) !important;
+      }
+
       .stage {
         background: transparent !important;
         overflow: visible !important;
@@ -1284,7 +1284,9 @@
     <div id="stage" class="stage">
 
       <!-- purple gradient background -->
-      <div class="bg-gradient" style="display:none"></div>
+      <div class="bg-gradient"
+        style="left:0;top:0;width:1280px;height:5218px;background:linear-gradient(180deg,rgb(30,20,139) 0%,rgb(26,10,197) 23.19%,rgb(24,5,226) 34.99%,rgb(22,0,255) 41.28%,rgb(72,0,255) 48.75%,rgb(98,0,255) 56.21%,rgb(75,0,167) 64.07%,rgb(67,1,142) 70.76%,rgb(60,1,129) 76%,rgb(30,0,70) 86%,rgb(8,0,20) 93%,rgb(0,0,0) 97%)">
+      </div>
       <div class="pnoise" style="left:0;top:0;width:1280px;height:5218px;background-size:256px 256px"></div>
 
       <!-- footer clouds (layered on top of receipt) -->
