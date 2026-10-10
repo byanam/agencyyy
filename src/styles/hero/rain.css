@@ -7,3 +7,5 @@
   pointer-events: none;
   z-index: 15;
 }
+
+/* Hero Rain: Canvas bounds constrained to hero section for optimal rendering performance */
