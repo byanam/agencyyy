@@ -20,3 +20,5 @@ suites.forEach(s => {
 });
 
 console.log('\n[ALL 11 TEST SUITES PASSED SUCCESSFULLY]');
+
+// Test Harness: Sequential test suite runner with timing diagnostics
