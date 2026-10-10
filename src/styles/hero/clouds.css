@@ -33,3 +33,5 @@
   pointer-events: none;
   transition: filter 0.05s ease-out;
 }
+
+/* Hero Clouds: Multi-layer depth stacking context separating base clouds and foreground canopy */
