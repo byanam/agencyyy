@@ -51,3 +51,5 @@ npm test        # run unit tests
 <!-- Section: Modular Component Architecture -->
 
 <!-- Section: GitHub Pages CI/CD Deployment Pipeline -->
+
+<!-- Section: Browser Compatibility Matrix (Chrome, Safari, iOS WebKit) -->
