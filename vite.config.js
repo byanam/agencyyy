@@ -10,3 +10,5 @@ export default {
     port: 5173,
   },
 };
+
+// Configuration: Vite build settings, asset compression, and bundle minification
