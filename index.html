@@ -2446,7 +2446,7 @@
           return { cloud: -1, intensity: 0 };
         }
 
-        /* Dynamic variable rain cycle: fast squall -> really fast downpour -> slow drizzle -> stopped -> resume */
+        /* Dynamic variable rain cycle: constant physical fall speed, varying droplet density */
         function getRainWeather(eRain) {
           if (eRain < 0) return { speed: 0, density: 0, lenMul: 1, splashBoost: 0 };
 
@@ -2454,51 +2454,46 @@
           var cycle = 36;
           var p = eRain % cycle;
 
-          var speed, density, lenMul, splashBoost;
+          var speed = 1.0;
+          var density, lenMul, splashBoost;
 
           if (p < 4) {
-            // 0 -> 4s: Initial squall accelerates
+            // 0 -> 4s: Initial squall builds up
             var u = p / 4;
-            speed = 1.0 + 0.85 * u;          // 1.0 -> 1.85x
             density = 0.6 + 0.4 * u;         // 0.6 -> 1.0
-            lenMul = 1.0 + 0.6 * u;          // 1.0 -> 1.6
-            splashBoost = 1.0 + 0.65 * u;
+            lenMul = 1.0 + 0.3 * u;          // 1.0 -> 1.3
+            splashBoost = 1.0 + 0.35 * u;
           } else if (p < 14) {
-            // 4 -> 14s: "Really fast" heavy storm! (10s duration)
+            // 4 -> 14s: Heavy downpour (10s duration)
             var u = (p - 4) / 10;
-            speed = 1.85 + 0.25 * Math.sin(u * Math.PI * 2); // 1.85 ~ 2.1x
             density = 1.0;
-            lenMul = 1.6 + 0.2 * Math.sin(u * Math.PI * 2);  // 1.6 ~ 1.8x
-            splashBoost = 1.65;
+            lenMul = 1.3 + 0.1 * Math.sin(u * Math.PI * 2);
+            splashBoost = 1.35;
           } else if (p < 20) {
-            // 14 -> 20s: "Slows down" - smooth deceleration into peaceful drizzle (6s duration)
+            // 14 -> 20s: Rain slows - droplets become fewer, falling speed remains constant (6s duration)
             var u = (p - 14) / 6;
             var ease = 0.5 - 0.5 * Math.cos(u * Math.PI);
-            speed = 1.85 - (1.85 - 0.46) * ease; // 1.85 -> 0.46x
-            density = 1.0 - 0.55 * ease;         // 1.0 -> 0.45
-            lenMul = 1.6 - 0.85 * ease;          // 1.6 -> 0.75
-            splashBoost = 1.65 - 1.15 * ease;
+            density = 1.0 - 0.7 * ease;         // 1.0 -> 0.3 (fewer droplets)
+            lenMul = 1.3 - 0.3 * ease;
+            splashBoost = 1.35 - 0.75 * ease;
           } else if (p < 23) {
-            // 20 -> 23s: Rain stops spawning, active drops fall and clear (3s)
+            // 20 -> 23s: Rain dies down - drops clear at normal falling speed (3s)
             var u = (p - 20) / 3;
-            speed = 0.46;
-            density = 0.45 * (1 - u);            // 0.45 -> 0.0
-            lenMul = 0.75;
-            splashBoost = 0.5 * (1 - u);
+            density = 0.3 * (1 - u);            // 0.3 -> 0.0
+            lenMul = 1.0;
+            splashBoost = 0.6 * (1 - u);
           } else if (p < 29) {
-            // 23 -> 29s: "Stops" - Rain completely stopped! Umbrella is dry and calm (6s)
-            speed = 0.5;
+            // 23 -> 29s: Rain completely stopped (6s)
             density = 0.0;                       // 0 drops spawned
-            lenMul = 0.75;
+            lenMul = 1.0;
             splashBoost = 0;
           } else {
-            // 29 -> 36s: Resuming gently and building up for the next storm cycle (7s)
+            // 29 -> 36s: Resuming gently for the next cycle (7s)
             var u = (p - 29) / 7;
             var ease = 0.5 - 0.5 * Math.cos(u * Math.PI);
-            speed = 0.5 + 0.5 * ease;            // 0.5 -> 1.0x
             density = 0.6 * ease;                // 0.0 -> 0.6
-            lenMul = 0.75 + 0.25 * ease;         // 0.75 -> 1.0
-            splashBoost = 0.3 + 0.7 * ease;
+            lenMul = 1.0;
+            splashBoost = 0.4 + 0.6 * ease;
           }
 
           return {
@@ -3141,49 +3136,44 @@
             if (storm.startTime < 0) startStorm();
           }, 1500);
 
-          /* Dynamic variable rain cycle matching desktop: squall -> really fast downpour -> slow drizzle -> stopped -> resume */
+          /* Dynamic variable rain cycle matching desktop: constant physical fall speed, varying droplet density */
           function getRainWeather(eRain) {
             if (eRain < 0) return { speed: 0, density: 0, lenMul: 1, splashBoost: 0 };
             var cycle = 36;
             var p = eRain % cycle;
-            var speed, density, lenMul, splashBoost;
+            var speed = 1.0;
+            var density, lenMul, splashBoost;
             if (p < 4) {
               var u = p / 4;
-              speed = 1.0 + 0.85 * u;
               density = 0.6 + 0.4 * u;
-              lenMul = 1.0 + 0.6 * u;
-              splashBoost = 1.0 + 0.65 * u;
+              lenMul = 1.0 + 0.3 * u;
+              splashBoost = 1.0 + 0.35 * u;
             } else if (p < 14) {
               var u = (p - 4) / 10;
-              speed = 1.85 + 0.25 * Math.sin(u * Math.PI * 2);
               density = 1.0;
-              lenMul = 1.6 + 0.2 * Math.sin(u * Math.PI * 2);
-              splashBoost = 1.65;
+              lenMul = 1.3 + 0.1 * Math.sin(u * Math.PI * 2);
+              splashBoost = 1.35;
             } else if (p < 20) {
               var u = (p - 14) / 6;
               var ease = 0.5 - 0.5 * Math.cos(u * Math.PI);
-              speed = 1.85 - (1.85 - 0.46) * ease;
-              density = 1.0 - 0.55 * ease;
-              lenMul = 1.6 - 0.85 * ease;
-              splashBoost = 1.65 - 1.15 * ease;
+              density = 1.0 - 0.7 * ease;
+              lenMul = 1.3 - 0.3 * ease;
+              splashBoost = 1.35 - 0.75 * ease;
             } else if (p < 23) {
               var u = (p - 20) / 3;
-              speed = 0.46;
-              density = 0.45 * (1 - u);
-              lenMul = 0.75;
-              splashBoost = 0.5 * (1 - u);
+              density = 0.3 * (1 - u);
+              lenMul = 1.0;
+              splashBoost = 0.6 * (1 - u);
             } else if (p < 29) {
-              speed = 0.5;
               density = 0.0;
-              lenMul = 0.75;
+              lenMul = 1.0;
               splashBoost = 0;
             } else {
               var u = (p - 29) / 7;
               var ease = 0.5 - 0.5 * Math.cos(u * Math.PI);
-              speed = 0.5 + 0.5 * ease;
               density = 0.6 * ease;
-              lenMul = 0.75 + 0.25 * ease;
-              splashBoost = 0.3 + 0.7 * ease;
+              lenMul = 1.0;
+              splashBoost = 0.4 + 0.6 * ease;
             }
             return {
               speed: speed,
