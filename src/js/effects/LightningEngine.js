@@ -18,3 +18,5 @@ export class LightningEngine {
     }, 90);
   }
 }
+
+// Effect: Fractal lightning bolt path renderer and illumination glow
