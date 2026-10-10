@@ -1073,7 +1073,7 @@
       .svct.act {
         transform: translateX(-50%) scale(1.04) !important;
         color: #fff !important;
-        text-shadow: 0 0 32px rgba(255, 255, 255, 0.45) !important;
+        text-shadow: none !important;
       }
 
       .svcdesc {
@@ -1871,7 +1871,7 @@
       }
       /* ---------- SERVICES DATA & MOBILE ACCORDION LAYOUT ---------- */
       var SD = ["We start by listening. Together we capture your story, your audience and your style, then shape them into a clear creative direction your whole brand can follow.", "We map out every page and the journey your visitors take, so your site is easy to use and gently guides people toward becoming customers.", "We turn the plan into a beautiful, memorable design, with colours, type and little details that feel unmistakably you on every screen.", "Your design becomes a fast, smooth website that works perfectly on phones, tablets and desktops, and is tested on every device before launch.", "We put your site live on secure, reliable servers and keep it updated and backed up, so you can focus on running your business."];
-      var cur = MOB ? -1 : 0;
+      var cur = 0;
 
       function applyMobileSvcLayout(activeIdx) {
         if (!MOB) return;
@@ -2790,9 +2790,7 @@
           c.querySelectorAll('.svct').forEach(function (t) { t.classList.toggle('act', +t.getAttribute('data-i') === i); });
         });
       }
-      if (!MOB) {
-        copies.forEach(function (c) { c.querySelectorAll('.svct')[0].classList.add('act'); });
-      }
+      copies.forEach(function (c) { c.querySelectorAll('.svct')[0].classList.add('act'); });
       wrap.addEventListener('mouseover', function (e) {
         if (MOB) return;
         var r = e.target.closest && (e.target.closest('.srow') || e.target.closest('.svct'));
@@ -3160,6 +3158,50 @@
           requestAnimationFrame(function () {
             folderScrollRaf = false;
             updateMobileFolders();
+          });
+        }
+      }, { passive: true });
+
+      /* ---------- MOBILE SCROLL-DRIVEN SERVICES (TITLES AUTOMATICALLY OPEN AS SCROLLING) ---------- */
+      var cachedMobileSvcRows = null;
+      var svcScrollRaf = false;
+      function updateMobileServices() {
+        if (!MOB) return;
+        if (Date.now() - manualSvcTapTime < 800) return;
+        if (!cachedMobileSvcRows) {
+          cachedMobileSvcRows = Array.from(stage.querySelectorAll('.srow'));
+        }
+        if (!cachedMobileSvcRows.length) return;
+        var screenCenter = window.innerHeight * 0.48;
+        var bestIdx = 0;
+        var minDist = Infinity;
+
+        var firstRect = cachedMobileSvcRows[0].getBoundingClientRect();
+        if (firstRect.top > screenCenter) {
+          bestIdx = 0;
+        } else {
+          cachedMobileSvcRows.forEach(function (r, idx) {
+            var rect = r.getBoundingClientRect();
+            var centerY = rect.top + rect.height * 0.5;
+            var dist = Math.abs(centerY - screenCenter);
+            if (dist < minDist) {
+              minDist = dist;
+              bestIdx = idx;
+            }
+          });
+        }
+
+        if (bestIdx !== cur && bestIdx >= 0 && bestIdx <= 4) {
+          cur = bestIdx;
+          applyMobileSvcLayout(cur);
+        }
+      }
+      addEventListener('scroll', function () {
+        if (!svcScrollRaf) {
+          svcScrollRaf = true;
+          requestAnimationFrame(function () {
+            svcScrollRaf = false;
+            updateMobileServices();
           });
         }
       }, { passive: true });
