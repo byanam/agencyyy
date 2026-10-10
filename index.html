@@ -1056,13 +1056,11 @@
       .flab .folder,
       .folder {
         opacity: 1 !important;
-        filter: none !important;
       }
 
-      .flab .folder {
+      .flab.hov .folder {
         color: #b9e6ff !important;
-        text-shadow: 0 0 24px rgba(150, 220, 255, .8) !important;
-        opacity: 1 !important;
+        text-shadow: 0 0 30px rgba(150, 220, 255, .9), 0 8px 20px rgba(0, 0, 60, .4) !important;
       }
 
       #mstage img[data-k="57e01"],
@@ -1070,14 +1068,6 @@
       #mstage .rb:has(img[data-k="57e01"]),
       .mstage .rb:has(img[data-k="57e01"]) {
         display: none !important;
-      }
-
-      .stage .rb:has(.fold) {
-        z-index: 10 !important;
-      }
-
-      .stage .rb:has(.flab) {
-        z-index: 11 !important;
       }
 
       .svcbar {
@@ -2044,23 +2034,23 @@
           var f2 = stg.querySelector('.fold[data-f="2"]');
           if (f2 && f2.closest('.rb')) {
             f2.closest('.rb').style.top = '2720px';
-            f2.closest('.rb').style.zIndex = '10';
+            f2.closest('.rb').style.zIndex = '12';
           }
           var fl2 = stg.querySelector('.flab[data-f="2"]');
           if (fl2 && fl2.closest('.rb')) {
             fl2.closest('.rb').style.top = '2882px';
-            fl2.closest('.rb').style.zIndex = '11';
+            fl2.closest('.rb').style.zIndex = '13';
           }
 
           var f3 = stg.querySelector('.fold[data-f="3"]');
           if (f3 && f3.closest('.rb')) {
             f3.closest('.rb').style.top = '3080px';
-            f3.closest('.rb').style.zIndex = '10';
+            f3.closest('.rb').style.zIndex = '14';
           }
           var fl3 = stg.querySelector('.flab[data-f="3"]');
           if (fl3 && fl3.closest('.rb')) {
             fl3.closest('.rb').style.top = '3242px';
-            fl3.closest('.rb').style.zIndex = '11';
+            fl3.closest('.rb').style.zIndex = '15';
           }
 
           // 3. Main cloud over folders & Services base clouds
@@ -3556,8 +3546,22 @@
         wrap.addEventListener('mouseout', function (e) { var r = e.relatedTarget; if (!(r && r.closest && r.closest('.fold'))) cur.classList.remove('on'); });
       })();
       wrap.addEventListener('click', function (e) {
-        var r = e.target.closest && e.target.closest('.row[data-go]'); if (!r) return;
-        var a = nav.querySelector('a[data-go="' + r.getAttribute('data-go') + '"]'); if (a) a.click();
+        var r = e.target.closest && e.target.closest('.row[data-go]');
+        if (r) {
+          var a = nav.querySelector('a[data-go="' + r.getAttribute('data-go') + '"]');
+          if (a) a.click();
+          return;
+        }
+        if (MOB) {
+          var f = e.target.closest && e.target.closest('[data-f]');
+          if (f) {
+            var targetId = f.getAttribute('data-f');
+            activeMobileFold = targetId;
+            wrap.querySelectorAll('[data-f]').forEach(function (el) {
+              el.classList.toggle('hov', el.getAttribute('data-f') === targetId);
+            });
+          }
+        }
       });
       function hov(e, on) {
         if (MOB) return;
