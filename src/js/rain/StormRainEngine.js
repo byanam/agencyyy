@@ -13,3 +13,5 @@ export class StormRainEngine {
     this.splashes = [];
   }
 }
+
+// Rain Engine: Dynamic storm cycle manager and particle allocation pool
