@@ -17,3 +17,5 @@ export function initModal(modalEl, closeBtnEl) {
   }
   return { open, close };
 }
+
+// Component: Modal overlay backdrop blur and enter/exit states
