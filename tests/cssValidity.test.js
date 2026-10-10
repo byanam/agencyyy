@@ -9,3 +9,5 @@ const opens = (css.match(/\{/g) || []).length;
 const closes = (css.match(/\}/g) || []).length;
 assert.strictEqual(opens, closes, `CSS curly braces must be balanced: ${opens} vs ${closes}`);
 console.log(`[PASS] CSS syntax balance verified (${opens} matched rule blocks)`);
+
+// Test Suite: CSS syntax integrity, balanced braces, and valid selectors
