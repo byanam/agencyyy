@@ -39,6 +39,7 @@
   <style>
     :root {
       --s: 1;
+      --rc-s: 0.88;
     }
 
     * {
@@ -137,7 +138,7 @@
       position: relative;
       width: 100%;
       overflow: hidden;
-      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%, rgb(30, 0, 70) 86%, rgb(8, 0, 20) 93%, rgb(0, 0, 0) 97%);
+      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 18%, rgb(22, 0, 255) 32%, rgb(55, 0, 255) 45%, rgb(85, 0, 220) 58%, rgb(70, 0, 170) 70%, rgb(50, 0, 120) 80%, rgb(30, 0, 70) 88%, rgb(15, 0, 35) 94%, rgb(0, 0, 0) 100%);
       transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: filter;
     }
@@ -184,7 +185,7 @@
       top: 0;
       width: 1280px;
       height: 5218px;
-      background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 23.19%, rgb(24, 5, 226) 34.99%, rgb(22, 0, 255) 41.28%, rgb(72, 0, 255) 48.75%, rgb(98, 0, 255) 56.21%, rgb(75, 0, 167) 64.07%, rgb(67, 1, 142) 70.76%, rgb(60, 1, 129) 76%, rgb(30, 0, 70) 86%, rgb(8, 0, 20) 93%, rgb(0, 0, 0) 97%);
+      background: transparent;
       overflow: hidden;
       transform-origin: 0 0
     }
@@ -196,6 +197,10 @@
     .stage span,
     .stage br {
       position: static
+    }
+
+    .bg-gradient {
+      display: none !important;
     }
 
     .stage img {
@@ -773,7 +778,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 30px;
+      border-radius: inherit;
       pointer-events: none;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.03) 48%, transparent 75%);
       -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
@@ -982,63 +987,158 @@
       }
 
       .stage .pnoise {
-        top: -1500px !important;
-        height: 7000px !important;
+        top: -2000px !important;
+        height: 14000px !important;
       }
 
       .bg-gradient {
         display: none !important;
       }
 
+      .rc-modal-overlay {
+        background: transparent !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+      }
+
+      .rc-modal-overlay.open {
+        background: transparent !important;
+      }
+
       .rc-modal-card {
-        right: auto;
-        left: 50%;
-        top: 50%;
-        transform-origin: center center;
-        transform: translate3d(-50%, 150vh, 0) scale(min(0.85, calc((100vw - 24px) / 427)));
-        max-height: 92vh;
+        right: auto !important;
+        left: 50% !important;
+        top: auto !important;
+        bottom: 0 !important;
+        transform-origin: bottom center !important;
+        transform: translate3d(-50%, 120%, 0) scale(var(--rc-s, 0.88)) !important;
+        max-height: none !important;
+        transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) !important;
       }
 
       .rc-modal-overlay.open .rc-modal-card {
-        transform: translate3d(-50%, -50%, 0) scale(min(0.85, calc((100vw - 24px) / 427)));
+        transform: translate3d(-50%, 0, 0) scale(var(--rc-s, 0.88)) !important;
       }
 
       .stage img[style*="filter:url(#nz"] {
         filter: none !important;
       }
 
+      .stage,
+      .bg-gradient {
+        height: 7920px !important;
+      }
+
+      .fold,
+      .flab {
+        transform: scale(1.12) rotate(var(--rot)) translateY(var(--ty, 0px)) scale(var(--sc, 1)) !important;
+      }
+
+      .stage .rb:has(.fold) {
+        z-index: 10 !important;
+      }
+
+      .stage .rb:has(.flab) {
+        z-index: 11 !important;
+      }
+
+      .svcbar {
+        transition: top .5s cubic-bezier(.3, .9, .3, 1), height .5s cubic-bezier(.3, .9, .3, 1), opacity .3s ease !important;
+      }
+
+      .svct {
+        font-size: 102px !important;
+        line-height: 1 !important;
+        letter-spacing: -3px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        text-align: center !important;
+        width: 1149px !important;
+        pointer-events: none !important;
+        transition: top .45s cubic-bezier(.3, .9, .3, 1), color .3s ease, transform .45s cubic-bezier(.3, .9, .3, 1), text-shadow .3s ease !important;
+      }
+
+      .svct.act {
+        transform: translateX(-50%) scale(1.04) !important;
+        color: #fff !important;
+        text-shadow: 0 0 32px rgba(255, 255, 255, 0.45) !important;
+      }
+
+      .svcdesc {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        text-align: center !important;
+        justify-content: center !important;
+        width: 1040px !important;
+        font-size: 48px !important;
+        line-height: 1.38 !important;
+        letter-spacing: -1px !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        pointer-events: none !important;
+        transition: top .5s cubic-bezier(.3, .9, .3, 1), opacity .25s ease !important;
+      }
+
+      .srow {
+        cursor: pointer !important;
+        transition: top .45s cubic-bezier(.3, .9, .3, 1), height .45s cubic-bezier(.3, .9, .3, 1) !important;
+      }
+
+      .cloudtxt {
+        width: 1140px !important;
+        font-size: 102px !important;
+        line-height: 1.05 !important;
+        letter-spacing: -3.5px !important;
+        height: auto !important;
+      }
+
+      .stage .bm {
+        width: 780px !important;
+        height: 148px !important;
+        font-size: 64px !important;
+        border-radius: 9999px !important;
+        overflow: hidden !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 30 !important;
+      }
+
+      .stage .bm::before {
+        border-radius: inherit !important;
+      }
+
       #nav {
-        gap: 2px;
-        padding: 4px 6px;
+        left: auto !important;
+        right: 16px !important;
+        top: 16px !important;
+        transform: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
       }
 
-      .nav-indicator {
-        border-radius: 26px;
-      }
-
-      #nav a {
-        font-size: 30px;
-        line-height: 1.1;
-        letter-spacing: -0.7px;
-        font-weight: 600;
-        padding: 4px 6px;
-        border-radius: 26px;
+      #nav::before,
+      .nav-indicator,
+      #nav a.snd,
+      #nav a:not(.cta) {
+        display: none !important;
       }
 
       #nav a.cta {
-        padding: 4px 10px;
-        font-weight: 400;
-        line-height: 1.1;
-      }
-
-      #nav a.snd {
-        width: 40px;
-        height: 40px;
-      }
-
-      #nav a.snd svg {
-        width: 19px;
-        height: 19px;
+        display: inline-flex !important;
+        padding: 10px 24px !important;
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.6px !important;
+        border-radius: 30px !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+        box-shadow: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.2), 0 10px 30px -4px rgba(0, 0, 30, 0.35), 0 4px 12px 0 rgba(0, 0, 0, 0.16) !important;
+        backdrop-filter: blur(22px) saturate(190%) contrast(105%) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(190%) contrast(105%) !important;
       }
     }
 
@@ -1172,9 +1272,7 @@
     <div id="stage" class="stage">
 
       <!-- purple gradient background -->
-      <div class="bg-gradient"
-        style="left:0;top:0;width:1280px;height:5218px;background:linear-gradient(180deg,rgb(30,20,139) 0%,rgb(26,10,197) 23.19%,rgb(24,5,226) 34.99%,rgb(22,0,255) 41.28%,rgb(72,0,255) 48.75%,rgb(98,0,255) 56.21%,rgb(75,0,167) 64.07%,rgb(67,1,142) 70.76%,rgb(60,1,129) 76%,rgb(30,0,70) 86%,rgb(8,0,20) 93%,rgb(0,0,0) 97%)">
-      </div>
+      <div class="bg-gradient" style="display:none"></div>
       <div class="pnoise" style="left:0;top:0;width:1280px;height:5218px;background-size:256px 256px"></div>
 
       <!-- footer clouds (layered on top of receipt) -->
@@ -1376,9 +1474,9 @@
       </div>
       <div class="mrain" style="left:0;top:0;width:402px;height:874px"></div>
       <div
-        style="left:201px;top:233px;width:510px;height:166px;transform:translateX(-50%);filter:url(#isE) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
+        style="left:201px;top:168px;width:510px;height:166px;transform:translateX(-50%);filter:url(#isE) drop-shadow(0 4px 0 rgba(0,0,0,.25))">
         <div class="serif grad"
-          style="position:relative;width:550px;margin:-40px -20px;padding:40px 20px;font-size:128px;letter-spacing:-3.84px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60%,#ffd000 83.7%,#ffd000 100%)">
+          style="position:relative;width:550px;margin:-40px -20px;padding:40px 20px;font-size:122px;letter-spacing:-3.66px;text-align:center;line-height:0;background-image:linear-gradient(180deg,#fff 0,#fff 60%,#ffd000 83.7%,#ffd000 100%)">
           <p style="position:static;line-height:.65">legendary</p>
           <p style="position:static;line-height:.65">Studio</p>
         </div>
@@ -1396,11 +1494,11 @@
       <div style="left:-150px;top:-62.51px;width:366.04px;height:215.37px">
         <img class="cover" decoding="async" src="assets/de02e.webp" data-k="de02e" alt="">
       </div>
-      <div style="left:-4px;top:495px;width:410px;height:350px">
+      <div style="left:-4px;top:462px;width:410px;height:350px">
         <img class="cover" decoding="async" src="assets/a59cf.webp" data-k="a59cf" alt="">
       </div>
       <div
-        style="left:201px;top:670px;width:194px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:20px;line-height:0;white-space:nowrap;text-shadow:-2px 4px 3.3px rgba(0,0,0,.43)">
+        style="left:201px;top:637px;width:194px;height:126px;transform:translateX(-50%);text-align:center;color:#fff;font-family:'Inter',sans-serif;font-weight:300;font-size:20px;line-height:0;white-space:nowrap;text-shadow:-2px 4px 3.3px rgba(0,0,0,.43)">
         <p style="position:static"><span
             style="font-family:'Instrument Serif',serif;font-style:italic;line-height:24px;color:#efc305">30
             +</span><span style="line-height:24px"> </span><span
@@ -1413,10 +1511,10 @@
             style="line-height:24px"> of experience</span></p>
       </div>
       <p class="serif"
-        style="left:201px;top:423px;width:366px;height:155px;transform:translateX(-50%);font-size:36px;letter-spacing:-1.08px;line-height:1;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.5)">
+        style="left:201px;top:355px;width:366px;height:155px;transform:translateX(-50%);font-size:36px;letter-spacing:-1.08px;line-height:1;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.5)">
         Building high-impact<br>digital experiences<br>since 2022.</p>
       <p class="serif"
-        style="left:201px;top:778px;width:384px;height:87px;transform:translateX(-50%);font-size:24px;font-style:italic;line-height:normal;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.48)">
+        style="left:201px;top:745px;width:384px;height:87px;transform:translateX(-50%);font-size:24px;font-style:italic;line-height:normal;text-align:center;color:#fff;text-shadow:0 4px 4px rgba(0,0,0,.48)">
         We are an independent studio in India, designing and developing websites for ambitious brands.</p>
       <div class="mglow" style="left:0;top:0;width:402px;height:300px;mix-blend-mode:screen"></div>
     </div>
@@ -1425,7 +1523,6 @@
   <div id="rcModal" class="rc-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true"
     aria-label="Contact Receipt Form">
     <div class="rc-modal-card">
-      <button type="button" class="rc-close-btn" id="rcCloseBtn" aria-label="Close modal">&times;</button>
       <div class="rc"
         style="position:relative;left:0;top:0;width:427px;height:698px;background:#f3f3f3;overflow:hidden;isolation:isolate;box-shadow:-14px 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.08)">
         <p class="sans"
@@ -1758,9 +1855,272 @@
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
+      /* ---------- SERVICES DATA & MOBILE ACCORDION LAYOUT ---------- */
+      var SD = ["We start by listening. Together we capture your story, your audience and your style, then shape them into a clear creative direction your whole brand can follow.", "We map out every page and the journey your visitors take, so your site is easy to use and gently guides people toward becoming customers.", "We turn the plan into a beautiful, memorable design, with colours, type and little details that feel unmistakably you on every screen.", "Your design becomes a fast, smooth website that works perfectly on phones, tablets and desktops, and is tested on every device before launch.", "We put your site live on secure, reliable servers and keep it updated and backed up, so you can focus on running your business."];
+      var cur = MOB ? -1 : 0;
+
+      function applyMobileSvcLayout(activeIdx) {
+        if (!MOB) return;
+        var baseY = 4481;
+        var collapsedH = 160;
+        var collapsedGap = 56;
+        var collapsedStep = collapsedH + collapsedGap; // 216
+        var expandedH = 450;
+        var expandExtra = expandedH - collapsedH; // 290
+
+        var sbar = stage.querySelector('.svcbar');
+        var sdesc = stage.querySelector('.svcdesc');
+        var srows = stage.querySelectorAll('.srow');
+        var svcts = stage.querySelectorAll('.svct');
+
+        for (var j = 0; j < 5; j++) {
+          var y, h, titleY;
+          if (activeIdx < 0 || activeIdx > 4) {
+            y = baseY + j * collapsedStep;
+            h = collapsedH;
+            titleY = y + 29;
+          } else if (j < activeIdx) {
+            y = baseY + j * collapsedStep;
+            h = collapsedH;
+            titleY = y + 29;
+          } else if (j === activeIdx) {
+            y = baseY + j * collapsedStep;
+            h = expandedH;
+            titleY = y + 36;
+          } else {
+            y = baseY + j * collapsedStep + expandExtra;
+            h = collapsedH;
+            titleY = y + 29;
+          }
+
+          if (srows[j]) {
+            srows[j].style.top = y + 'px';
+            srows[j].style.height = h + 'px';
+            srows[j].style.left = '65px';
+            srows[j].style.width = '1149px';
+          }
+          if (svcts[j]) {
+            svcts[j].style.top = titleY + 'px';
+            svcts[j].style.left = '50%';
+            svcts[j].style.transform = 'translateX(-50%)';
+            svcts[j].style.textAlign = 'center';
+            svcts[j].style.width = '1149px';
+            svcts[j].classList.toggle('act', j === activeIdx);
+          }
+        }
+
+        if (sbar) {
+          if (activeIdx < 0 || activeIdx > 4) {
+            sbar.style.opacity = '0';
+            sbar.style.pointerEvents = 'none';
+          } else {
+            sbar.style.opacity = '1';
+            sbar.style.pointerEvents = 'auto';
+            sbar.style.top = (baseY + activeIdx * collapsedStep) + 'px';
+            sbar.style.height = expandedH + 'px';
+            sbar.style.left = '65px';
+            sbar.style.width = '1149px';
+            sbar.style.transform = 'none';
+          }
+        }
+
+        if (sdesc) {
+          if (activeIdx < 0 || activeIdx > 4) {
+            sdesc.style.opacity = '0';
+            sdesc.classList.add('out');
+          } else {
+            sdesc.style.top = (baseY + activeIdx * collapsedStep + 172) + 'px';
+            sdesc.style.left = '50%';
+            sdesc.style.transform = 'translateX(-50%)';
+            sdesc.style.textAlign = 'center';
+            sdesc.style.justifyContent = 'center';
+            sdesc.style.width = '1040px';
+            sdesc.style.height = '220px';
+            sdesc.style.opacity = '1';
+            sdesc.classList.remove('out');
+            sdesc.textContent = SD[activeIdx];
+          }
+        }
+      }
+
+      /* ---------- MOBILE-ONLY SECTION & CLOUD ENHANCEMENTS ---------- */
+      function applyMobileSectionLayout() {
+        if (!MOB) return;
+        // 1. Projects clouds and title
+        var c20 = stage.querySelector('img[data-k="20b2c"]');
+        if (c20 && c20.parentElement) {
+          c20.parentElement.style.transform = 'rotate(4.72deg) scale(2)';
+          if (c20.closest('.rb')) {
+            c20.closest('.rb').style.top = '1451px';
+            c20.closest('.rb').style.zIndex = '2';
+          }
+        }
+        var c0b = stage.querySelector('img[data-k="0b3fd"]');
+        if (c0b && c0b.parentElement) {
+          c0b.parentElement.style.transform = 'rotate(-179.25deg) scale(2,-2)';
+          if (c0b.closest('.rb')) {
+            c0b.closest('.rb').style.top = '1570px';
+            c0b.closest('.rb').style.zIndex = '3';
+          }
+        }
+        if (tP) {
+          tP.style.top = '2000px';
+          tP.setAttribute('data-t', '2000');
+          tP.style.zIndex = '4';
+        }
+
+        // 2. Folders: centered between project clouds and services clouds with clean layering
+        var f1 = stage.querySelector('.fold[data-f="1"]');
+        if (f1 && f1.closest('.rb')) {
+          f1.closest('.rb').style.top = '2360px';
+          f1.closest('.rb').style.zIndex = '10';
+        }
+        var fl1 = stage.querySelector('.flab[data-f="1"]');
+        if (fl1 && fl1.closest('.rb')) {
+          fl1.closest('.rb').style.top = '2514px';
+          fl1.closest('.rb').style.zIndex = '11';
+        }
+
+        var f2 = stage.querySelector('.fold[data-f="2"]');
+        if (f2 && f2.closest('.rb')) {
+          f2.closest('.rb').style.top = '2720px';
+          f2.closest('.rb').style.zIndex = '10';
+        }
+        var fl2 = stage.querySelector('.flab[data-f="2"]');
+        if (fl2 && fl2.closest('.rb')) {
+          fl2.closest('.rb').style.top = '2882px';
+          fl2.closest('.rb').style.zIndex = '11';
+        }
+
+        var f3 = stage.querySelector('.fold[data-f="3"]');
+        if (f3 && f3.closest('.rb')) {
+          f3.closest('.rb').style.top = '3080px';
+          f3.closest('.rb').style.zIndex = '10';
+        }
+        var fl3 = stage.querySelector('.flab[data-f="3"]');
+        if (fl3 && fl3.closest('.rb')) {
+          fl3.closest('.rb').style.top = '3242px';
+          fl3.closest('.rb').style.zIndex = '11';
+        }
+
+        // 3. Main cloud over folders & Services base clouds
+        var c76 = stage.querySelector('img[data-k="764ac"]');
+        if (c76 && c76.parentElement) {
+          c76.parentElement.style.transform = 'rotate(-1.79deg) scale(1.6)';
+          if (c76.closest('.rb')) {
+            c76.closest('.rb').style.top = '3654.91px';
+            c76.closest('.rb').style.zIndex = '2';
+          }
+        }
+        var c255s = stage.querySelectorAll('img[data-k="255d2"]');
+        if (c255s[0] && c255s[0].parentElement) {
+          c255s[0].parentElement.style.transform = 'rotate(10.8deg) scale(1.6)';
+          if (c255s[0].closest('.rb')) {
+            c255s[0].closest('.rb').style.top = '3561px';
+            c255s[0].closest('.rb').style.zIndex = '2';
+          }
+        }
+        if (c255s[1] && c255s[1].parentElement) {
+          c255s[1].parentElement.style.transform = 'rotate(-178.52deg) scale(1.6)';
+          if (c255s[1].closest('.rb')) {
+            c255s[1].closest('.rb').style.top = '3811px';
+            c255s[1].closest('.rb').style.zIndex = '2';
+          }
+        }
+
+        // 4. Services section (expanded accordion and shifted slightly downwards inside cloud)
+        if (tS) {
+          tS.style.top = '4247px';
+          tS.setAttribute('data-t', '4247');
+        }
+        applyMobileSvcLayout(cur);
+
+        // 5. Contact section (placed right below the titles)
+        var allP = Array.from(stage.querySelectorAll('p'));
+        var rtt = allP.find(function (e) { return e.textContent.includes('Ready to talk'); });
+        if (rtt) rtt.style.top = '5940px';
+        var ctxt = stage.querySelector('.cloudtxt');
+        if (ctxt) {
+          ctxt.style.top = '6180px';
+          ctxt.style.width = '1140px';
+          ctxt.style.fontSize = '102px';
+          ctxt.style.lineHeight = '1.05';
+          ctxt.style.letterSpacing = '-3.5px';
+          ctxt.style.height = 'auto';
+        }
+        var allP_sans = Array.from(stage.querySelectorAll('p.sans'));
+        var lead = allP_sans.find(function (e) { return e.textContent.includes('TEAM LEAD'); });
+        if (lead) {
+          lead.style.top = '7270px';
+          lead.style.fontSize = '58px';
+          lead.style.letterSpacing = '-1.8px';
+          lead.style.lineHeight = '1';
+          lead.style.margin = '0';
+          lead.style.padding = '0';
+        }
+        var leadSub = allP_sans.find(function (e) { return e.textContent.includes('will answer'); });
+        if (leadSub) {
+          leadSub.style.top = '7330px';
+          leadSub.style.fontSize = '48px';
+          leadSub.style.width = '1100px';
+          leadSub.style.whiteSpace = 'nowrap';
+          leadSub.style.lineHeight = '1';
+          leadSub.style.letterSpacing = '-1.5px';
+          leadSub.style.margin = '0';
+          leadSub.style.padding = '0';
+        }
+        var bmAb = stage.querySelector('.bm[href*="mailto"]');
+        if (bmAb) {
+          bmAb.style.top = '7435px';
+          bmAb.style.width = '780px';
+          bmAb.style.height = '148px';
+          bmAb.style.fontSize = '64px';
+          bmAb.style.borderRadius = '9999px';
+          bmAb.style.overflow = 'hidden';
+          bmAb.style.left = '50%';
+          bmAb.style.transform = 'translateX(-50%)';
+          bmAb.style.margin = '0';
+          bmAb.style.zIndex = '30';
+        }
+        var allDiv = Array.from(stage.querySelectorAll('div.sans'));
+        var foot = allDiv.find(function (e) { return e.textContent.includes('LEGENDARY AGENCY'); });
+        if (foot) {
+          foot.style.top = '7720px';
+          foot.style.zIndex = '31';
+        }
+
+        // Footer clouds (behind button at z-index 10)
+        var fc1 = stage.querySelector('img[data-k="8bc30"]');
+        if (fc1 && fc1.closest('.rb')) {
+          fc1.closest('.rb').style.top = '7510px';
+          fc1.closest('.rb').style.zIndex = '10';
+        }
+        var deImgs = stage.querySelectorAll('img[data-k="de02e"]');
+        if (deImgs[0] && deImgs[0].closest('.rb')) {
+          deImgs[0].closest('.rb').style.top = '7450px';
+          deImgs[0].closest('.rb').style.zIndex = '10';
+        }
+        if (deImgs[1]) {
+          var deContainer = deImgs[1].closest('.rb') || deImgs[1].parentElement;
+          if (deContainer) {
+            deContainer.style.top = '7512px';
+            deContainer.style.zIndex = '10';
+          }
+        }
+        var pn = stage.querySelector('.pnoise');
+        if (pn) {
+          pn.style.top = '-2000px';
+          pn.style.height = '14000px';
+        }
+      }
+      if (MOB) applyMobileSectionLayout();
+
       function layout() {
         s = document.documentElement.clientWidth / W;
         document.documentElement.style.setProperty('--s', s);
+        var isMob = innerWidth <= 768;
+        var rcScale = isMob ? Math.min((document.documentElement.clientWidth - 16) / 427, (window.innerHeight - 36) / 698) : s;
+        document.documentElement.style.setProperty('--rc-s', rcScale);
         var mstage = document.getElementById('mstage');
         if (MOB) {
           var m = document.documentElement.clientWidth / 402;
@@ -1772,7 +2132,7 @@
           for (var ci = 1; ci < copies.length; ci++) {
             copies[ci].style.display = 'none';
           }
-          wrap.style.height = (874 * m + (H - Y0) * s) + 'px';
+          wrap.style.height = (874 * m + (7920 - Y0) * s) + 'px';
           return;
         }
         if (mstage) {
@@ -1840,6 +2200,7 @@
         }
         lastW = curW;
         if (MOB) {
+          cachedMobileFolds = null;
           layout();
         } else {
           var oldP = Math.max(1, Math.floor(H * s));
@@ -2377,15 +2738,28 @@
               }
             });
           }
+          if (MOB) {
+            updateMobileFolders();
+            updateMobileServices();
+          }
           requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
       })();
 
       /* ---------- SERVICES: interactive list ---------- */
-      var SD = ["We start by listening. Together we capture your story, your audience and your style, then shape them into a clear creative direction your whole brand can follow.", "We map out every page and the journey your visitors take, so your site is easy to use and gently guides people toward becoming customers.", "We turn the plan into a beautiful, memorable design, with colours, type and little details that feel unmistakably you on every screen.", "Your design becomes a fast, smooth website that works perfectly on phones, tablets and desktops, and is tested on every device before launch.", "We put your site live on secure, reliable servers and keep it updated and backed up, so you can focus on running your business."];
-      var cur = 0;
+      var manualSvcTapTime = 0;
       function setSvc(i, force) {
+        if (MOB) {
+          manualSvcTapTime = Date.now();
+          if (cur === i && !force) {
+            cur = -1;
+          } else {
+            cur = i;
+          }
+          applyMobileSvcLayout(cur);
+          return;
+        }
         if (i === cur && !force) return; cur = i;
         copies.forEach(function (c) {
           c.querySelector('.svcbar').style.transform = 'translateY(' + (i * 134) + 'px)';
@@ -2395,12 +2769,21 @@
           c.querySelectorAll('.svct').forEach(function (t) { t.classList.toggle('act', +t.getAttribute('data-i') === i); });
         });
       }
-      copies.forEach(function (c) { c.querySelectorAll('.svct')[0].classList.add('act'); });
-      wrap.addEventListener('mouseover', function (e) { var r = e.target.closest && e.target.closest('.srow'); if (r) setSvc(+r.getAttribute('data-i')); });
-      wrap.addEventListener('click', function (e) { var r = e.target.closest && e.target.closest('.srow'); if (r) setSvc(+r.getAttribute('data-i')); });
+      if (!MOB) {
+        copies.forEach(function (c) { c.querySelectorAll('.svct')[0].classList.add('act'); });
+      }
+      wrap.addEventListener('mouseover', function (e) {
+        if (MOB) return;
+        var r = e.target.closest && (e.target.closest('.srow') || e.target.closest('.svct'));
+        if (r) setSvc(+r.getAttribute('data-i'));
+      });
+      wrap.addEventListener('click', function (e) {
+        var r = e.target.closest && (e.target.closest('.srow') || e.target.closest('.svct'));
+        if (r) setSvc(+r.getAttribute('data-i'));
+      });
 
       /* ---------- floating navigation with smooth sliding indicator ---------- */
-      var nav = document.getElementById('nav'), SEC = [2, MOB ? Y0 : 1150, 3250, 4300];
+      var nav = document.getElementById('nav'), SEC = [2, MOB ? Y0 : 1150, MOB ? 4180 : 3250, MOB ? 5900 : 4300];
       var navIndicator = document.getElementById('navIndicator');
       var navLinks = nav.querySelectorAll('a[data-go]');
       var currentNavIndex = -1;
@@ -2434,10 +2817,18 @@
       }
 
       function navFit() {
-        var ns = MOB ? Math.min(1, (document.documentElement.clientWidth - 10) / 540) : s;
-        nav.style.transform = 'translate3d(-50%,0,0) scale(' + ns + ')';
-        nav.style.top = (18 * ns) + 'px';
-        updateNavIndicator(currentNavIndex, true);
+        if (MOB) {
+          nav.style.left = 'auto';
+          nav.style.right = '16px';
+          nav.style.top = '16px';
+          nav.style.transform = 'none';
+        } else {
+          nav.style.left = '50%';
+          nav.style.right = 'auto';
+          nav.style.top = (18 * s) + 'px';
+          nav.style.transform = 'translate3d(-50%,0,0) scale(' + s + ')';
+          updateNavIndicator(currentNavIndex, true);
+        }
       }
       navFit();
       addEventListener('resize', navFit);
@@ -2514,7 +2905,7 @@
           var normY = ((window.scrollY % p) + p) % p;
           y = (normY / s) + 300;
         }
-        var i = y >= 4300 ? 3 : y >= 3250 ? 2 : y >= 1150 ? 1 : 0;
+        var i = y >= (MOB ? 5100 : 4300) ? 3 : y >= (MOB ? 4050 : 3250) ? 2 : y >= (MOB ? Y0 : 1150) ? 1 : 0;
         if (i !== currentNavIndex) {
           setNavIndex(i, false);
         }
@@ -2527,7 +2918,7 @@
         (function initMobileHero() {
           var ms = document.getElementById('mstage');
           if (!ms) return;
-          var UL = -4, UT = 495, UW = 410, UH = 350, top = new Float32Array(402), xs = [], i, x;
+          var UL = -4, UT = 462, UW = 410, UH = 350, top = new Float32Array(402), xs = [], i, x;
           function fb() {
             xs = [];
             for (x = 0; x < 402; x++) {
@@ -2690,6 +3081,7 @@
         var a = nav.querySelector('a[data-go="' + r.getAttribute('data-go') + '"]'); if (a) a.click();
       });
       function hov(e, on) {
+        if (MOB) return;
         var f = e.target.closest && e.target.closest('.fold'); if (!f) return;
         if (!on && e.relatedTarget && f.contains(e.relatedTarget)) return;
         var st = f.closest('.stage');
@@ -2698,11 +3090,90 @@
       wrap.addEventListener('mouseover', function (e) { hov(e, true); });
       wrap.addEventListener('mouseout', function (e) { hov(e, false); });
 
+      /* ---------- MOBILE SCROLL-DRIVEN FOLDER HOVER (SAAS -> B2B -> E COM) ---------- */
+      var activeMobileFold = null;
+      var cachedMobileFolds = null;
+      function updateMobileFolders() {
+        if (!MOB) {
+          if (activeMobileFold) {
+            stage.querySelectorAll('[data-f].hov').forEach(function (el) { el.classList.remove('hov'); });
+            activeMobileFold = null;
+          }
+          return;
+        }
+        if (!cachedMobileFolds) {
+          cachedMobileFolds = Array.from(stage.querySelectorAll('.fold[data-f]'));
+        }
+        if (!cachedMobileFolds.length) return;
+        var screenCenter = window.innerHeight * 0.5;
+        var bestId = null;
+        var minDist = Infinity;
+        var maxDist = window.innerHeight * 0.22;
+
+        cachedMobileFolds.forEach(function (f) {
+          var container = f.parentElement || f;
+          var rect = container.getBoundingClientRect();
+          var centerY = rect.top + rect.height * 0.5;
+          var dist = Math.abs(centerY - screenCenter);
+          if (dist < minDist) {
+            minDist = dist;
+            bestId = f.getAttribute('data-f');
+          }
+        });
+
+        var targetId = (minDist < maxDist) ? bestId : null;
+        if (targetId !== activeMobileFold) {
+          activeMobileFold = targetId;
+          stage.querySelectorAll('[data-f]').forEach(function (el) {
+            var match = targetId && el.getAttribute('data-f') === targetId;
+            el.classList.toggle('hov', !!match);
+          });
+        }
+      }
+      addEventListener('scroll', updateMobileFolders, { passive: true });
+
+      /* ---------- MOBILE SCROLL-DRIVEN SERVICES POP-UP (ACCORDION EXPANDS AS SCROLLING) ---------- */
+      var cachedMobileSvcRows = null;
+      function updateMobileServices() {
+        if (!MOB) return;
+        if (Date.now() - manualSvcTapTime < 800) return;
+        if (!cachedMobileSvcRows) {
+          cachedMobileSvcRows = Array.from(stage.querySelectorAll('.srow'));
+        }
+        if (!cachedMobileSvcRows.length) return;
+        var screenCenter = window.innerHeight * 0.5;
+        var bestIdx = -1;
+        var minDist = Infinity;
+        var maxDist = window.innerHeight * 0.24;
+
+        cachedMobileSvcRows.forEach(function (r, idx) {
+          var rect = r.getBoundingClientRect();
+          var centerY = rect.top + rect.height * 0.5;
+          var dist = Math.abs(centerY - screenCenter);
+          if (dist < minDist) {
+            minDist = dist;
+            bestIdx = idx;
+          }
+        });
+
+        var targetIdx = (minDist < maxDist) ? bestIdx : -1;
+        if (targetIdx !== cur) {
+          cur = targetIdx;
+          applyMobileSvcLayout(cur);
+        }
+      }
+      addEventListener('scroll', updateMobileServices, { passive: true });
+
       /* ---------- CONTACT receipt: live date/time + form + modal popup ---------- */
       var rcModal = document.getElementById('rcModal');
       var rcBackdropCached = rcModal;
       function openRcModal() {
         if (!rcModal) return;
+        var isMob = innerWidth <= 768;
+        if (isMob) {
+          var rcScale = Math.min((document.documentElement.clientWidth - 16) / 427, (window.innerHeight - 36) / 698);
+          document.documentElement.style.setProperty('--rc-s', rcScale);
+        }
         document.body.classList.add('rc-open');
         rcModal.classList.add('open');
         rcModal.setAttribute('aria-hidden', 'false');
