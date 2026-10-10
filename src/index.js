@@ -5,3 +5,5 @@ import './styles/responsive.css';
 import * as App from './js/app.js';
 
 export default App;
+
+// Entrypoint: Main application bundle initializer and runtime bootstrap
