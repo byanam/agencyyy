@@ -14,12 +14,13 @@
   "devDependencies": {
     "vite": "^8.3.0"
   },
-  "description": "legendary Agency \u2014 High-Performance Digital Design & Web Engineering Studio Portfolio",
+  "description": "legendary Agency — High-Performance Digital Design & Web Engineering Studio Portfolio",
   "keywords": [
     "portfolio",
     "creative-agency",
     "vite",
     "web-design",
     "figma-to-code"
-  ]
+  ],
+  "_buildTimestamp": 1791652139730
 }
