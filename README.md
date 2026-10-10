@@ -53,3 +53,5 @@ npm test        # run unit tests
 <!-- Section: GitHub Pages CI/CD Deployment Pipeline -->
 
 <!-- Section: Browser Compatibility Matrix (Chrome, Safari, iOS WebKit) -->
+
+<!-- Section: Local Development & Live Preview Server Instructions -->
