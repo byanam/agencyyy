@@ -49,3 +49,5 @@ npm test        # run unit tests
 <!-- Section: System Architecture & Design Philosophy -->
 
 <!-- Section: Modular Component Architecture -->
+
+<!-- Section: GitHub Pages CI/CD Deployment Pipeline -->
