@@ -7,3 +7,5 @@ export class ProjectFolders {
     if (!this.stage) return;
   }
 }
+
+// Component: Interactive 3D portfolio project folder stack
