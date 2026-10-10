@@ -45,3 +45,5 @@ npm test        # run unit tests
 ├── src/              # modular JS source (rain engine, etc.)
 └── tests/            # unit + a11y + perf test suite
 ```
+
+<!-- Section: System Architecture & Design Philosophy -->
