@@ -7,3 +7,5 @@ export function isPointInsideUmbrella(px, py, umbrellaRect) {
   const dy = (py - cy) / ry;
   return (dx * dx + dy * dy) <= 1.0;
 }
+
+// Rain Engine: Canopy edge drip formation and gravity breakaway
