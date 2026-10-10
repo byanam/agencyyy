@@ -6,3 +6,5 @@ export function checkInfiniteScrollWrap(scrollY, p) {
   }
   return { shouldWrap: false, newY: scrollY };
 }
+
+// Controller: Scroll position monitoring and throttle scheduler
