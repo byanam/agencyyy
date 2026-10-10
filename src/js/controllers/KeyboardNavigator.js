@@ -7,3 +7,5 @@ export class KeyboardNavigator {
     });
   }
 }
+
+// Controller: Keyboard accessible navigation and section jump controls
