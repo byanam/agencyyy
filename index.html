@@ -1119,6 +1119,7 @@
         transform: translateX(-50%) !important;
         text-align: center !important;
         justify-content: center !important;
+        align-items: flex-start !important;
         width: 1040px !important;
         font-size: 48px !important;
         line-height: 1.38 !important;
@@ -1996,13 +1997,14 @@
               sdesc.style.opacity = '0';
               sdesc.classList.add('out');
             } else {
-              sdesc.style.top = (baseY + activeIdx * collapsedStep + 172) + 'px';
+              sdesc.style.top = (baseY + activeIdx * collapsedStep + 205) + 'px';
               sdesc.style.left = '50%';
               sdesc.style.transform = 'translateX(-50%)';
               sdesc.style.textAlign = 'center';
               sdesc.style.justifyContent = 'center';
+              sdesc.style.alignItems = 'flex-start';
               sdesc.style.width = '1040px';
-              sdesc.style.height = '220px';
+              sdesc.style.height = 'auto';
               sdesc.style.opacity = '1';
               sdesc.classList.remove('out');
               sdesc.textContent = SD[activeIdx];
