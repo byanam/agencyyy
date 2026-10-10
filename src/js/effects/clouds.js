@@ -7,3 +7,5 @@ export function calculateSmoothedVelocity(deltaY, scale, dt) {
 export function computeCloudDrift(t, sx, px, ax) {
   return Math.sin(t * sx + px) * ax + Math.sin(t * sx * 0.45 + px * 1.5) * (ax * 0.25);
 }
+
+// Effect: Atmospheric sine wave multi-layer cloud drift physics
