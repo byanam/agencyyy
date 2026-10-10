@@ -12,3 +12,5 @@ export class RainDrop {
     this.alpha = Math.random() * 0.45 + 0.35;
   }
 }
+
+// Rain Engine: Individual particle kinematic trajectory and terminal speed
