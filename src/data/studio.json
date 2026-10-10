@@ -4,5 +4,6 @@
   "location": "India",
   "clientsServed": 30,
   "businessesScaled": 10,
-  "yearsExperience": 4
+  "yearsExperience": 4,
+  "_comment": "Documented schema for studio.json at 2026-10-10T17:21:49.313Z"
 }
