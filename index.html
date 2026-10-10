@@ -1518,7 +1518,7 @@
       <div style="left:-150px;top:-62.51px;width:366.04px;height:215.37px">
         <img class="cover on" loading="eager" src="assets/de02e.webp" data-k="de02e" alt="">
       </div>
-      <div style="left:-4px;top:462px;width:410px;height:350px">
+      <div style="left:5px;top:468px;width:392px;height:335px">
         <img class="cover on" loading="eager" src="assets/a59cf.webp" data-k="a59cf" alt="">
       </div>
       <div
@@ -2957,13 +2957,13 @@
         (function initMobileHero() {
           var ms = document.getElementById('mstage');
           if (!ms) return;
-          var UL = -4, UT = 462, UW = 410, UH = 350, top = new Float32Array(402), xs = [], i, x;
+          var UL = 5, UT = 468, UW = 392, UH = 335, top = new Float32Array(402), xs = [], i, x;
           function fb() {
             xs = [];
             for (x = 0; x < 402; x++) {
-              var u = (x - 201) / 200;
+              var u = (x - 201) / 196;
               if (Math.abs(u) < 1) {
-                top[x] = 520 + 110 * (1 - Math.sqrt(1 - u * u));
+                top[x] = 526 + 105 * (1 - Math.sqrt(1 - u * u));
                 xs.push(x);
               } else {
                 top[x] = 0;
