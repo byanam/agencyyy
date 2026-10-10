@@ -14,3 +14,5 @@ export {
   formatKolkataTime,
   checkInfiniteScrollWrap
 };
+
+// Application: Core controller wiring, interaction bindings, and effect pipelines
