@@ -29,3 +29,5 @@ simulateScroll(p, p, -100, 1000);
 });
 
 console.log('[PASS] Bidirectional scroll loop mathematically bounded in both directions (desktop & mobile)');
+
+// Test Suite: Mathematical verification of infinite loop scroll range
