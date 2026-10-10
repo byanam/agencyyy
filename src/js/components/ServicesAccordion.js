@@ -7,3 +7,5 @@ export class ServicesAccordion {
     if (!this.container) return;
   }
 }
+
+// Component: Interactive services accordion with dynamic transitions
