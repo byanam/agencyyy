@@ -9,3 +9,5 @@ files.forEach(f => {
   assert(stat.size > 0, `File ${f} must have non-zero size`);
 });
 console.log(`[PASS] All ${files.length} production assets have non-zero size`);
+
+// Test Suite: Production asset availability and file size integrity
