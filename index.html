@@ -950,17 +950,18 @@
       }
     }
 
-    #mstage {
+    #mstage,
+    .mstage {
       display: none;
       position: absolute;
       left: 0;
       top: 0;
       width: 402px;
       height: 874px;
-      overflow: hidden;
+      overflow: visible;
       transform-origin: 0 0;
       background: transparent;
-      z-index: 25;
+      z-index: 10;
     }
 
     .mrain canvas,
@@ -980,6 +981,8 @@
 
       #wrap {
         background: linear-gradient(180deg, rgb(30, 20, 139) 0%, rgb(26, 10, 197) 18%, rgb(22, 0, 255) 32%, rgb(55, 0, 255) 45%, rgb(85, 0, 220) 58%, rgb(70, 0, 170) 70%, rgb(50, 0, 120) 80%, rgb(30, 0, 70) 88%, rgb(15, 0, 35) 94%, rgb(0, 0, 0) 100%) !important;
+        background-size: 100% var(--p-mob, 100%) !important;
+        background-repeat: repeat-y !important;
       }
 
       .stage {
@@ -1703,8 +1706,13 @@
       var Y0 = 1590;
       const W = 1280, H = 5216;
       var wrap = document.getElementById('wrap'), stage = document.getElementById('stage'), copies = [stage], s = 1, isNavClickScrolling = false;
+      var mstage = document.getElementById('mstage'), mcopies = [mstage];
       function mTop() {
         return Math.round(874 * (document.documentElement.clientWidth / 402) - Y0 * s);
+      }
+      function getMobilePeriod() {
+        var m = document.documentElement.clientWidth / 402;
+        return Math.round(mTop() + 7480 * s + 88 * m);
       }
       /* ---------- PRELOADER: ROTATING WHITE STROKE AROUND FAVICON ---------- */
       var loaderScreen = document.getElementById('loaderScreen');
@@ -1857,18 +1865,20 @@
       }
       var c1 = stage.cloneNode(true); c1.removeAttribute('id'); wrap.appendChild(c1); copies.push(c1);
       var c2 = stage.cloneNode(true); c2.removeAttribute('id'); wrap.appendChild(c2); copies.push(c2);
+      if (mstage) {
+        var m1 = mstage.cloneNode(true); m1.removeAttribute('id'); m1.classList.add('mstage'); wrap.appendChild(m1); mcopies.push(m1);
+        var m2 = mstage.cloneNode(true); m2.removeAttribute('id'); m2.classList.add('mstage'); wrap.appendChild(m2); mcopies.push(m2);
+      }
       var CK = ['8bc30', 'de02e', '255d2', '764ac', '20b2c', '0b3fd', '57e01', '0d995'];
       var CK_SET = new Set(CK);
-      var mstageEl = document.getElementById('mstage');
-      var allCloudStages = [stage, c1, c2];
-      if (mstageEl) allCloudStages.push(mstageEl);
+      var allCloudStages = [stage, c1, c2].concat(mcopies.filter(Boolean));
       allCloudStages.forEach(function (cp) {
         cp.querySelectorAll('img[data-k]').forEach(function (im) {
           if (!CK_SET.has(im.getAttribute('data-k'))) return;
           var w = im.parentNode; if (w.classList.contains('r')) w = w.parentNode; w.classList.add('cld');
         });
       });
-      [c1, c2].forEach(function (cp) {
+      [c1, c2].concat(mcopies.filter(Boolean)).forEach(function (cp) {
         cp.querySelectorAll('img').forEach(function (im) {
           im.decoding = 'sync';
           if (im.complete) { im.classList.add('on'); }
@@ -1877,14 +1887,6 @@
             im.onerror = function () { im.classList.add('on'); };
           }
         });
-      });
-      document.querySelectorAll('#mstage img').forEach(function (im) {
-        im.decoding = 'sync';
-        if (im.complete) { im.classList.add('on'); }
-        else {
-          im.onload = function () { im.classList.add('on'); };
-          im.onerror = function () { im.classList.add('on'); };
-        }
       });
       document.querySelectorAll('.pnoise').forEach(function (e) {
         var n = document.createElement('canvas'); n.width = n.height = 256; var x = n.getContext('2d'), d = x.createImageData(256, 256);
@@ -1907,250 +1909,253 @@
         var expandedH = 450;
         var expandExtra = expandedH - collapsedH; // 290
 
-        var sbar = stage.querySelector('.svcbar');
-        var sdesc = stage.querySelector('.svcdesc');
-        var srows = stage.querySelectorAll('.srow');
-        var svcts = stage.querySelectorAll('.svct');
+        copies.forEach(function (stg) {
+          var sbar = stg.querySelector('.svcbar');
+          var sdesc = stg.querySelector('.svcdesc');
+          var srows = stg.querySelectorAll('.srow');
+          var svcts = stg.querySelectorAll('.svct');
 
-        for (var j = 0; j < 5; j++) {
-          var y, h, titleY;
-          if (activeIdx < 0 || activeIdx > 4) {
-            y = baseY + j * collapsedStep;
-            h = collapsedH;
-            titleY = y + 29;
-          } else if (j < activeIdx) {
-            y = baseY + j * collapsedStep;
-            h = collapsedH;
-            titleY = y + 29;
-          } else if (j === activeIdx) {
-            y = baseY + j * collapsedStep;
-            h = expandedH;
-            titleY = y + 36;
-          } else {
-            y = baseY + j * collapsedStep + expandExtra;
-            h = collapsedH;
-            titleY = y + 29;
+          for (var j = 0; j < 5; j++) {
+            var y, h, titleY;
+            if (activeIdx < 0 || activeIdx > 4) {
+              y = baseY + j * collapsedStep;
+              h = collapsedH;
+              titleY = y + 29;
+            } else if (j < activeIdx) {
+              y = baseY + j * collapsedStep;
+              h = collapsedH;
+              titleY = y + 29;
+            } else if (j === activeIdx) {
+              y = baseY + j * collapsedStep;
+              h = expandedH;
+              titleY = y + 36;
+            } else {
+              y = baseY + j * collapsedStep + expandExtra;
+              h = collapsedH;
+              titleY = y + 29;
+            }
+
+            if (srows[j]) {
+              srows[j].style.top = y + 'px';
+              srows[j].style.height = h + 'px';
+              srows[j].style.left = '65px';
+              srows[j].style.width = '1149px';
+            }
+            if (svcts[j]) {
+              svcts[j].style.top = titleY + 'px';
+              svcts[j].style.left = '50%';
+              svcts[j].style.transform = 'translateX(-50%)';
+              svcts[j].style.textAlign = 'center';
+              svcts[j].style.width = '1149px';
+              svcts[j].classList.toggle('act', j === activeIdx);
+            }
           }
 
-          if (srows[j]) {
-            srows[j].style.top = y + 'px';
-            srows[j].style.height = h + 'px';
-            srows[j].style.left = '65px';
-            srows[j].style.width = '1149px';
+          if (sbar) {
+            if (activeIdx < 0 || activeIdx > 4) {
+              sbar.style.opacity = '0';
+              sbar.style.pointerEvents = 'none';
+            } else {
+              sbar.style.opacity = '1';
+              sbar.style.pointerEvents = 'auto';
+              sbar.style.top = (baseY + activeIdx * collapsedStep) + 'px';
+              sbar.style.height = expandedH + 'px';
+              sbar.style.left = '65px';
+              sbar.style.width = '1149px';
+              sbar.style.transform = 'none';
+            }
           }
-          if (svcts[j]) {
-            svcts[j].style.top = titleY + 'px';
-            svcts[j].style.left = '50%';
-            svcts[j].style.transform = 'translateX(-50%)';
-            svcts[j].style.textAlign = 'center';
-            svcts[j].style.width = '1149px';
-            svcts[j].classList.toggle('act', j === activeIdx);
-          }
-        }
 
-        if (sbar) {
-          if (activeIdx < 0 || activeIdx > 4) {
-            sbar.style.opacity = '0';
-            sbar.style.pointerEvents = 'none';
-          } else {
-            sbar.style.opacity = '1';
-            sbar.style.pointerEvents = 'auto';
-            sbar.style.top = (baseY + activeIdx * collapsedStep) + 'px';
-            sbar.style.height = expandedH + 'px';
-            sbar.style.left = '65px';
-            sbar.style.width = '1149px';
-            sbar.style.transform = 'none';
+          if (sdesc) {
+            if (activeIdx < 0 || activeIdx > 4) {
+              sdesc.style.opacity = '0';
+              sdesc.classList.add('out');
+            } else {
+              sdesc.style.top = (baseY + activeIdx * collapsedStep + 172) + 'px';
+              sdesc.style.left = '50%';
+              sdesc.style.transform = 'translateX(-50%)';
+              sdesc.style.textAlign = 'center';
+              sdesc.style.justifyContent = 'center';
+              sdesc.style.width = '1040px';
+              sdesc.style.height = '220px';
+              sdesc.style.opacity = '1';
+              sdesc.classList.remove('out');
+              sdesc.textContent = SD[activeIdx];
+            }
           }
-        }
-
-        if (sdesc) {
-          if (activeIdx < 0 || activeIdx > 4) {
-            sdesc.style.opacity = '0';
-            sdesc.classList.add('out');
-          } else {
-            sdesc.style.top = (baseY + activeIdx * collapsedStep + 172) + 'px';
-            sdesc.style.left = '50%';
-            sdesc.style.transform = 'translateX(-50%)';
-            sdesc.style.textAlign = 'center';
-            sdesc.style.justifyContent = 'center';
-            sdesc.style.width = '1040px';
-            sdesc.style.height = '220px';
-            sdesc.style.opacity = '1';
-            sdesc.classList.remove('out');
-            sdesc.textContent = SD[activeIdx];
-          }
-        }
+        });
       }
 
       /* ---------- MOBILE-ONLY SECTION & CLOUD ENHANCEMENTS ---------- */
       function applyMobileSectionLayout() {
         if (!MOB) return;
-        // 1. Projects clouds and title
-        var c20 = stage.querySelector('img[data-k="20b2c"]');
-        if (c20 && c20.parentElement) {
-          c20.parentElement.style.transform = 'rotate(4.72deg) scale(2)';
-          if (c20.closest('.rb')) {
-            c20.closest('.rb').style.top = '1451px';
-            c20.closest('.rb').style.zIndex = '2';
+        copies.forEach(function (stg) {
+          // 1. Projects clouds and title
+          var c20 = stg.querySelector('img[data-k="20b2c"]');
+          if (c20 && c20.parentElement) {
+            c20.parentElement.style.transform = 'rotate(4.72deg) scale(2)';
+            if (c20.closest('.rb')) {
+              c20.closest('.rb').style.top = '1451px';
+              c20.closest('.rb').style.zIndex = '2';
+            }
           }
-        }
-        var c0b = stage.querySelector('img[data-k="0b3fd"]');
-        if (c0b && c0b.parentElement) {
-          c0b.parentElement.style.transform = 'rotate(-179.25deg) scale(2,-2)';
-          if (c0b.closest('.rb')) {
-            c0b.closest('.rb').style.top = '1570px';
-            c0b.closest('.rb').style.zIndex = '3';
+          var c0b = stg.querySelector('img[data-k="0b3fd"]');
+          if (c0b && c0b.parentElement) {
+            c0b.parentElement.style.transform = 'rotate(-179.25deg) scale(2,-2)';
+            if (c0b.closest('.rb')) {
+              c0b.closest('.rb').style.top = '1570px';
+              c0b.closest('.rb').style.zIndex = '3';
+            }
           }
-        }
-        if (tP) {
-          tP.style.top = '2000px';
-          tP.setAttribute('data-t', '2000');
-          tP.style.zIndex = '4';
-        }
-
-        // 2. Folders: centered between project clouds and services clouds with clean layering
-        var f1 = stage.querySelector('.fold[data-f="1"]');
-        if (f1 && f1.closest('.rb')) {
-          f1.closest('.rb').style.top = '2360px';
-          f1.closest('.rb').style.zIndex = '10';
-        }
-        var fl1 = stage.querySelector('.flab[data-f="1"]');
-        if (fl1 && fl1.closest('.rb')) {
-          fl1.closest('.rb').style.top = '2514px';
-          fl1.closest('.rb').style.zIndex = '11';
-        }
-
-        var f2 = stage.querySelector('.fold[data-f="2"]');
-        if (f2 && f2.closest('.rb')) {
-          f2.closest('.rb').style.top = '2720px';
-          f2.closest('.rb').style.zIndex = '10';
-        }
-        var fl2 = stage.querySelector('.flab[data-f="2"]');
-        if (fl2 && fl2.closest('.rb')) {
-          fl2.closest('.rb').style.top = '2882px';
-          fl2.closest('.rb').style.zIndex = '11';
-        }
-
-        var f3 = stage.querySelector('.fold[data-f="3"]');
-        if (f3 && f3.closest('.rb')) {
-          f3.closest('.rb').style.top = '3080px';
-          f3.closest('.rb').style.zIndex = '10';
-        }
-        var fl3 = stage.querySelector('.flab[data-f="3"]');
-        if (fl3 && fl3.closest('.rb')) {
-          fl3.closest('.rb').style.top = '3242px';
-          fl3.closest('.rb').style.zIndex = '11';
-        }
-
-        // 3. Main cloud over folders & Services base clouds
-        var c76 = stage.querySelector('img[data-k="764ac"]');
-        if (c76 && c76.parentElement) {
-          c76.parentElement.style.transform = 'rotate(-1.79deg) scale(1.6)';
-          if (c76.closest('.rb')) {
-            c76.closest('.rb').style.top = '3654.91px';
-            c76.closest('.rb').style.zIndex = '2';
+          var stgTP = stg.querySelector('.t-proj');
+          if (stgTP) {
+            stgTP.style.top = '2000px';
+            stgTP.setAttribute('data-t', '2000');
+            stgTP.style.zIndex = '4';
           }
-        }
-        var c255s = stage.querySelectorAll('img[data-k="255d2"]');
-        if (c255s[0] && c255s[0].parentElement) {
-          c255s[0].parentElement.style.transform = 'rotate(10.8deg) scale(1.6)';
-          if (c255s[0].closest('.rb')) {
-            c255s[0].closest('.rb').style.top = '3561px';
-            c255s[0].closest('.rb').style.zIndex = '2';
-          }
-        }
-        if (c255s[1] && c255s[1].parentElement) {
-          c255s[1].parentElement.style.transform = 'rotate(-178.52deg) scale(1.6)';
-          if (c255s[1].closest('.rb')) {
-            c255s[1].closest('.rb').style.top = '3811px';
-            c255s[1].closest('.rb').style.zIndex = '2';
-          }
-        }
 
-        // 4. Services section (expanded accordion and shifted slightly downwards inside cloud)
-        if (tS) {
-          tS.style.top = '4247px';
-          tS.setAttribute('data-t', '4247');
-        }
+          // 2. Folders: centered between project clouds and services clouds with clean layering
+          var f1 = stg.querySelector('.fold[data-f="1"]');
+          if (f1 && f1.closest('.rb')) {
+            f1.closest('.rb').style.top = '2360px';
+            f1.closest('.rb').style.zIndex = '10';
+          }
+          var fl1 = stg.querySelector('.flab[data-f="1"]');
+          if (fl1 && fl1.closest('.rb')) {
+            fl1.closest('.rb').style.top = '2514px';
+            fl1.closest('.rb').style.zIndex = '11';
+          }
+
+          var f2 = stg.querySelector('.fold[data-f="2"]');
+          if (f2 && f2.closest('.rb')) {
+            f2.closest('.rb').style.top = '2720px';
+            f2.closest('.rb').style.zIndex = '10';
+          }
+          var fl2 = stg.querySelector('.flab[data-f="2"]');
+          if (fl2 && fl2.closest('.rb')) {
+            fl2.closest('.rb').style.top = '2882px';
+            fl2.closest('.rb').style.zIndex = '11';
+          }
+
+          var f3 = stg.querySelector('.fold[data-f="3"]');
+          if (f3 && f3.closest('.rb')) {
+            f3.closest('.rb').style.top = '3080px';
+            f3.closest('.rb').style.zIndex = '10';
+          }
+          var fl3 = stg.querySelector('.flab[data-f="3"]');
+          if (fl3 && fl3.closest('.rb')) {
+            fl3.closest('.rb').style.top = '3242px';
+            fl3.closest('.rb').style.zIndex = '11';
+          }
+
+          // 3. Main cloud over folders & Services base clouds
+          var c76 = stg.querySelector('img[data-k="764ac"]');
+          if (c76 && c76.parentElement) {
+            c76.parentElement.style.transform = 'rotate(-1.79deg) scale(1.6)';
+            if (c76.closest('.rb')) {
+              c76.closest('.rb').style.top = '3654.91px';
+              c76.closest('.rb').style.zIndex = '2';
+            }
+          }
+          var c255s = stg.querySelectorAll('img[data-k="255d2"]');
+          if (c255s[0] && c255s[0].parentElement) {
+            c255s[0].parentElement.style.transform = 'rotate(10.8deg) scale(1.6)';
+            if (c255s[0].closest('.rb')) {
+              c255s[0].closest('.rb').style.top = '3561px';
+              c255s[0].closest('.rb').style.zIndex = '2';
+            }
+          }
+          if (c255s[1] && c255s[1].parentElement) {
+            c255s[1].parentElement.style.transform = 'rotate(-178.52deg) scale(1.6)';
+            if (c255s[1].closest('.rb')) {
+              c255s[1].closest('.rb').style.top = '3811px';
+              c255s[1].closest('.rb').style.zIndex = '2';
+            }
+          }
+
+          // 4. Services section
+          var stgTS = stg.querySelector('.t-serv');
+          if (stgTS) {
+            stgTS.style.top = '4247px';
+            stgTS.setAttribute('data-t', '4247');
+          }
+
+          // 5. Contact section (placed right below the titles)
+          var allP = Array.from(stg.querySelectorAll('p'));
+          var rtt = allP.find(function (e) { return e.textContent.includes('Ready to talk'); });
+          if (rtt) rtt.style.top = '5940px';
+          var ctxt = stg.querySelector('.cloudtxt');
+          if (ctxt) {
+            ctxt.style.top = '6180px';
+            ctxt.style.width = '1140px';
+            ctxt.style.fontSize = '102px';
+            ctxt.style.lineHeight = '1.05';
+            ctxt.style.letterSpacing = '-3.5px';
+            ctxt.style.height = 'auto';
+          }
+          var allP_sans = Array.from(stg.querySelectorAll('p.sans'));
+          var lead = allP_sans.find(function (e) { return e.textContent.includes('TEAM LEAD'); });
+          if (lead) {
+            lead.style.top = '7270px';
+            lead.style.fontSize = '58px';
+            lead.style.letterSpacing = '-1.8px';
+            lead.style.lineHeight = '1';
+            lead.style.margin = '0';
+            lead.style.padding = '0';
+          }
+          var leadSub = allP_sans.find(function (e) { return e.textContent.includes('will answer'); });
+          if (leadSub) {
+            leadSub.style.top = '7330px';
+            leadSub.style.fontSize = '48px';
+            leadSub.style.width = '1100px';
+            leadSub.style.whiteSpace = 'nowrap';
+            leadSub.style.lineHeight = '1';
+            leadSub.style.letterSpacing = '-1.5px';
+            leadSub.style.margin = '0';
+            leadSub.style.padding = '0';
+          }
+          var bmAb = stg.querySelector('.bm[href*="mailto"]');
+          if (bmAb) {
+            bmAb.style.top = '7435px';
+            bmAb.style.width = '780px';
+            bmAb.style.height = '148px';
+            bmAb.style.fontSize = '64px';
+            bmAb.style.borderRadius = '9999px';
+            bmAb.style.overflow = 'hidden';
+            bmAb.style.left = '50%';
+            bmAb.style.transform = 'translateX(-50%)';
+            bmAb.style.margin = '0';
+            bmAb.style.zIndex = '30';
+          }
+          var allDiv = Array.from(stg.querySelectorAll('div.sans'));
+          var foot = allDiv.find(function (e) { return e.textContent.includes('LEGENDARY AGENCY'); });
+          if (foot) {
+            foot.style.top = '7720px';
+            foot.style.zIndex = '31';
+          }
+
+          // Footer clouds: on mobile, hide the duplicate 1280px footer clouds so the top clouds of the next hero are the ONE connecting cloud
+          var fc1 = stg.querySelector('img[data-k="8bc30"]');
+          if (fc1 && fc1.closest('.rb')) {
+            fc1.closest('.rb').style.display = 'none';
+          }
+          var deImgs = stg.querySelectorAll('img[data-k="de02e"]');
+          if (deImgs[0] && deImgs[0].closest('.rb')) {
+            deImgs[0].closest('.rb').style.display = 'none';
+          }
+          if (deImgs[1]) {
+            var deContainer = deImgs[1].closest('.rb') || deImgs[1].parentElement;
+            if (deContainer) {
+              deContainer.style.display = 'none';
+            }
+          }
+          var pn = stg.querySelector('.pnoise');
+          if (pn) {
+            pn.style.top = '-2000px';
+            pn.style.height = '14000px';
+          }
+        });
         applyMobileSvcLayout(cur);
-
-        // 5. Contact section (placed right below the titles)
-        var allP = Array.from(stage.querySelectorAll('p'));
-        var rtt = allP.find(function (e) { return e.textContent.includes('Ready to talk'); });
-        if (rtt) rtt.style.top = '5940px';
-        var ctxt = stage.querySelector('.cloudtxt');
-        if (ctxt) {
-          ctxt.style.top = '6180px';
-          ctxt.style.width = '1140px';
-          ctxt.style.fontSize = '102px';
-          ctxt.style.lineHeight = '1.05';
-          ctxt.style.letterSpacing = '-3.5px';
-          ctxt.style.height = 'auto';
-        }
-        var allP_sans = Array.from(stage.querySelectorAll('p.sans'));
-        var lead = allP_sans.find(function (e) { return e.textContent.includes('TEAM LEAD'); });
-        if (lead) {
-          lead.style.top = '7270px';
-          lead.style.fontSize = '58px';
-          lead.style.letterSpacing = '-1.8px';
-          lead.style.lineHeight = '1';
-          lead.style.margin = '0';
-          lead.style.padding = '0';
-        }
-        var leadSub = allP_sans.find(function (e) { return e.textContent.includes('will answer'); });
-        if (leadSub) {
-          leadSub.style.top = '7330px';
-          leadSub.style.fontSize = '48px';
-          leadSub.style.width = '1100px';
-          leadSub.style.whiteSpace = 'nowrap';
-          leadSub.style.lineHeight = '1';
-          leadSub.style.letterSpacing = '-1.5px';
-          leadSub.style.margin = '0';
-          leadSub.style.padding = '0';
-        }
-        var bmAb = stage.querySelector('.bm[href*="mailto"]');
-        if (bmAb) {
-          bmAb.style.top = '7435px';
-          bmAb.style.width = '780px';
-          bmAb.style.height = '148px';
-          bmAb.style.fontSize = '64px';
-          bmAb.style.borderRadius = '9999px';
-          bmAb.style.overflow = 'hidden';
-          bmAb.style.left = '50%';
-          bmAb.style.transform = 'translateX(-50%)';
-          bmAb.style.margin = '0';
-          bmAb.style.zIndex = '30';
-        }
-        var allDiv = Array.from(stage.querySelectorAll('div.sans'));
-        var foot = allDiv.find(function (e) { return e.textContent.includes('LEGENDARY AGENCY'); });
-        if (foot) {
-          foot.style.top = '7720px';
-          foot.style.zIndex = '31';
-        }
-
-        // Footer clouds (behind button at z-index 10)
-        var fc1 = stage.querySelector('img[data-k="8bc30"]');
-        if (fc1 && fc1.closest('.rb')) {
-          fc1.closest('.rb').style.top = '7510px';
-          fc1.closest('.rb').style.zIndex = '10';
-        }
-        var deImgs = stage.querySelectorAll('img[data-k="de02e"]');
-        if (deImgs[0] && deImgs[0].closest('.rb')) {
-          deImgs[0].closest('.rb').style.top = '7450px';
-          deImgs[0].closest('.rb').style.zIndex = '10';
-        }
-        if (deImgs[1]) {
-          var deContainer = deImgs[1].closest('.rb') || deImgs[1].parentElement;
-          if (deContainer) {
-            deContainer.style.top = '7512px';
-            deContainer.style.zIndex = '10';
-          }
-        }
-        var pn = stage.querySelector('.pnoise');
-        if (pn) {
-          pn.style.top = '-2000px';
-          pn.style.height = '14000px';
-        }
       }
       if (MOB) applyMobileSectionLayout();
 
@@ -2160,26 +2165,31 @@
         var isMob = innerWidth <= 768;
         var rcScale = isMob ? Math.min((document.documentElement.clientWidth - 16) / 427, (window.innerHeight - 36) / 698) : s;
         document.documentElement.style.setProperty('--rc-s', rcScale);
-        var mstage = document.getElementById('mstage');
         if (MOB) {
           var m = document.documentElement.clientWidth / 402;
-          if (mstage) {
-            mstage.style.display = 'block';
-            mstage.style.transform = 'scale(' + m + ')';
-          }
-          copies[0].style.transform = 'translateY(' + mTop() + 'px) scale(' + s + ')';
-          for (var ci = 1; ci < copies.length; ci++) {
-            copies[ci].style.display = 'none';
-          }
-          wrap.style.height = (874 * m + (7920 - Y0) * s) + 'px';
+          var pMob = getMobilePeriod();
+          document.documentElement.style.setProperty('--p-mob', pMob + 'px');
+          mcopies.forEach(function (ms, mi) {
+            if (ms) {
+              ms.style.display = 'block';
+              ms.style.transform = 'translateY(' + (mi * pMob) + 'px) scale(' + m + ')';
+            }
+          });
+          copies.forEach(function (cp, ci) {
+            cp.style.display = '';
+            cp.style.zIndex = '20';
+            cp.style.transform = 'translateY(' + (ci * pMob + mTop()) + 'px) scale(' + s + ')';
+          });
+          wrap.style.height = (3 * pMob) + 'px';
           return;
         }
-        if (mstage) {
-          mstage.style.display = 'none';
-        }
-        for (var ci = 1; ci < copies.length; ci++) {
-          copies[ci].style.display = '';
-        }
+        mcopies.forEach(function (ms) {
+          if (ms) ms.style.display = 'none';
+        });
+        copies.forEach(function (cp) {
+          cp.style.display = '';
+          cp.style.zIndex = '';
+        });
         var p = Math.floor(H * s);
         copies.forEach(function (e, i) { e.style.transform = 'translateY(' + (i * p) + 'px) scale(' + s + ')'; });
         wrap.style.height = (copies.length * p) + 'px';
@@ -2194,7 +2204,8 @@
       function resetToHero(force) {
         if (!force && userHasScrolled) return;
         if (MOB) {
-          window.scrollTo(0, 0);
+          var pMob = getMobilePeriod();
+          window.scrollTo(0, pMob);
           return;
         }
         var p = Math.floor(H * s);
@@ -2213,9 +2224,9 @@
       /* ---------- NATIVE FREE EFFORTLESS SCROLL WITH SEAMLESS INFINITE LOOP (BIDIRECTIONAL) ---------- */
       var isLoopWrapping = false;
       addEventListener('scroll', function () {
-        if (MOB) return;
         if (isNavClickScrolling) return;
-        var y = window.scrollY, p = Math.floor(H * s);
+        var y = window.scrollY;
+        var p = MOB ? getMobilePeriod() : Math.floor(H * s);
         if (p <= 0) return;
         if (y >= 2 * p) {
           isLoopWrapping = true;
@@ -2240,7 +2251,11 @@
         lastW = curW;
         if (MOB) {
           cachedMobileFolds = null;
+          var oldP = Math.max(1, getMobilePeriod());
+          var rel = window.scrollY / oldP;
           layout();
+          var newP = getMobilePeriod();
+          window.scrollTo(0, rel * newP);
         } else {
           var oldP = Math.max(1, Math.floor(H * s));
           var rel = window.scrollY / oldP;
@@ -2671,8 +2686,7 @@
       /* ---------- CONTINUOUS CLOUD DRIFT (IDLE MOTION) + SMOOTH SCROLL REACTIVE MOTION ---------- */
       (function fx() {
         var cl = copies.map(function (cp) { return cp.querySelectorAll('.cld'); });
-        var mstageEl = document.getElementById('mstage');
-        var mcl = mstageEl ? Array.from(mstageEl.querySelectorAll('.cld')) : [];
+        var mcl = mcopies.map(function (ms) { return ms ? Array.from(ms.querySelectorAll('.cld')) : []; });
         var tl = copies.map(function (cp) { return cp.querySelectorAll('.ttl'); });
         var last = performance.now(), ly = window.scrollY, v = 0, n = cl[0].length;
         var ST = [], DRIFT = [
@@ -2710,7 +2724,7 @@
         function frame(t) {
           var dt = Math.min(.05, Math.max(.001, (t - last) / 1000)); last = t;
           var T = t / 1000;
-          var p = Math.floor(H * s), y = window.scrollY, dy = y - ly; ly = y;
+          var p = MOB ? getMobilePeriod() : Math.floor(H * s), y = window.scrollY, dy = y - ly; ly = y;
           if (isLoopWrapping || Math.abs(dy) > p * 0.25) dy = 0;
           var maxV = isMobileDevice ? 900 : 1500;
           var targetV = (dy / Math.max(0.65, s)) / dt;
@@ -2735,13 +2749,15 @@
             var totalY = S.y + driftY;
             var tr = 'translate3d(' + totalX.toFixed(2) + 'px,' + totalY.toFixed(2) + 'px,0)';
             for (var j = 0; j < cl.length; j++) cl[j][i].style.transform = tr;
-            if (mcl.length >= 5) {
-              if (i === 8 && mcl[0]) mcl[0].style.transform = tr;
-              if (i === 9 && mcl[1]) mcl[1].style.transform = tr;
-              if (i === 10 && mcl[2]) mcl[2].style.transform = tr;
-              if (i === 11 && mcl[3]) mcl[3].style.transform = tr;
-              if (i === 12 && mcl[4]) mcl[4].style.transform = tr;
-            }
+            mcl.forEach(function (list) {
+              if (list.length >= 5) {
+                if (i === 8 && list[0]) list[0].style.transform = tr;
+                if (i === 9 && list[1]) list[1].style.transform = tr;
+                if (i === 10 && list[2]) list[2].style.transform = tr;
+                if (i === 11 && list[3]) list[3].style.transform = tr;
+                if (i === 12 && list[4]) list[4].style.transform = tr;
+              }
+            });
           }
           if (MOB) {
             tl.forEach(function (list) {
@@ -2911,7 +2927,19 @@
           return;
         }
         if (MOB) {
-          var targetY = targetIdx === 0 ? 0 : (mTop() + SEC[targetIdx] * s);
+          var pMob = getMobilePeriod();
+          var off = targetIdx === 0 ? 0 : (mTop() + SEC[targetIdx] * s);
+          var candidates = [off, pMob + off, 2 * pMob + off];
+          var curY = window.scrollY;
+          var targetY = candidates[1];
+          var minDiff = Infinity;
+          candidates.forEach(function (cand) {
+            var diff = Math.abs(cand - curY);
+            if (diff < minDiff) {
+              minDiff = diff;
+              targetY = cand;
+            }
+          });
           if (targetIdx < 3) {
             setNavIndex(targetIdx, false);
             isNavClickScrolling = true;
@@ -2960,7 +2988,9 @@
         if (isNavClickScrolling) return;
         var y;
         if (MOB) {
-          y = ((window.scrollY - mTop()) / s) + 300;
+          var pMob = getMobilePeriod();
+          var normY = ((window.scrollY % pMob) + pMob) % pMob;
+          y = ((normY - mTop()) / s) + 300;
         } else {
           var p = Math.floor(H * s);
           var normY = ((window.scrollY % p) + p) % p;
@@ -3019,19 +3049,25 @@
             im.src = l[k];
           })(['assets/a59cf.webp', 'assets/a59cf.png'], 0);
 
-          var rs = ms.querySelector('.mrain'), ds = ms.querySelector('.mdrips'), gs = ms.querySelector('.mglow');
-          if (!rs) return;
-          var rc = document.createElement('canvas'), dc = document.createElement('canvas'), gc = gs ? document.createElement('canvas') : null;
-          rs.appendChild(rc);
-          if (ds) ds.appendChild(dc);
-          if (gs && gc) { gs.appendChild(gc); gc.width = 201; gc.height = 150; }
+          var rainCanvases = [];
+          mcopies.forEach(function (msCopy) {
+            if (!msCopy) return;
+            var rs = msCopy.querySelector('.mrain'), ds = msCopy.querySelector('.mdrips'), gs = msCopy.querySelector('.mglow');
+            if (!rs) return;
+            var rc = document.createElement('canvas'), dc = document.createElement('canvas'), gc = gs ? document.createElement('canvas') : null;
+            rs.appendChild(rc);
+            if (ds) ds.appendChild(dc);
+            if (gs && gc) { gs.appendChild(gc); gc.width = 201; gc.height = 150; }
+            rainCanvases.push({ ms: msCopy, rc: rc, dc: dc, gc: gc });
+          });
+          if (!rainCanvases.length) return;
 
-          var heroLimitY = 874;
           function fit() {
             var k = Math.min(2, (window.devicePixelRatio || 1) * (document.documentElement.clientWidth / 402));
-            rc.width = Math.round(402 * k); rc.height = Math.round(874 * k); rc.k = k;
-            if (dc) { dc.width = Math.round(402 * k); dc.height = Math.round(874 * k); dc.k = k; }
-            heroLimitY = Math.round(874 * (document.documentElement.clientWidth / 402));
+            rainCanvases.forEach(function (obj) {
+              obj.rc.width = Math.round(402 * k); obj.rc.height = Math.round(874 * k); obj.rc.k = k;
+              if (obj.dc) { obj.dc.width = Math.round(402 * k); obj.dc.height = Math.round(874 * k); obj.dc.k = k; }
+            });
           }
           fit();
           addEventListener('resize', fit);
@@ -3311,163 +3347,170 @@
               }
             }
 
-            if (window.scrollY > heroLimitY + 50) {
+            var visibleCanvases = rainCanvases.filter(function (obj) {
+              var rect = obj.ms.getBoundingClientRect();
+              return rect.bottom >= -50 && rect.top <= (window.innerHeight + 50);
+            });
+            if (visibleCanvases.length === 0) {
               requestAnimationFrame(frame);
               return;
             }
 
-            var c = rc.getContext('2d'), k = rc.k;
-            c.setTransform(k, 0, 0, k, 0, 0);
-            c.clearRect(0, 0, 402, 874);
+            visibleCanvases.forEach(function (canvasObj) {
+              var rc = canvasObj.rc, dc = canvasObj.dc, gc = canvasObj.gc;
+              var c = rc.getContext('2d'), k = rc.k;
+              c.setTransform(k, 0, 0, k, 0, 0);
+              c.clearRect(0, 0, 402, 874);
 
-            var cd = dc.getContext('2d'), kd = dc.k;
-            cd.setTransform(kd, 0, 0, kd, 0, 0);
-            cd.clearRect(0, 0, 402, 874);
+              var cd = dc.getContext('2d'), kd = dc.k;
+              cd.setTransform(kd, 0, 0, kd, 0, 0);
+              cd.clearRect(0, 0, 402, 874);
 
-            if (LT.I > .02 && LT.bolt) {
-              var B = LT.bolt, I = LT.I;
-              c.save();
-              c.lineJoin = 'round';
-              c.shadowColor = 'rgba(150,190,255,' + I + ')';
-              c.shadowBlur = 14;
-              var ln = function (pts, w, a) {
-                c.lineWidth = w;
-                c.strokeStyle = 'rgba(235,243,255,' + (a * I) + ')';
-                c.beginPath();
-                c.moveTo(pts[0][0], pts[0][1]);
-                for (var n = 1; n < pts.length; n++) c.lineTo(pts[n][0], pts[n][1]);
-                c.stroke();
-              };
-              ln(B.main, 3, .55);
-              ln(B.main, 1.4, 1);
-              B.br.forEach(function (s2) { ln(s2, 2, .45); ln(s2, .8, .9); });
-              c.restore();
-              var g = c.createRadialGradient(LT.tx, LT.ty, 1, LT.tx, LT.ty, 70);
-              g.addColorStop(0, 'rgba(235,245,255,' + (.75 * I) + ')');
-              g.addColorStop(1, 'rgba(150,190,255,0)');
-              c.fillStyle = g;
-              c.fillRect(LT.tx - 70, LT.ty - 70, 140, 140);
-            }
-
-            if (storm.rainStarted && storm.rainFade > 0) {
-              var rf = storm.rainFade;
-              var eRain = Math.max(0, e - 2.15);
-              var weather = getRainWeather(eRain);
-
-              // 1. Falling raindrops in .mrain canvas
-              c.lineCap = 'round';
-              c.lineWidth = 1.4;
-              for (var i = 0; i < drops.length; i++) {
-                var d = drops[i];
-                if (d.y < -100) continue;
-                var tp = top[d.x | 0] || 1e9;
-                var effLen = d.len * weather.lenMul;
-                var y1 = Math.min(d.y, tp), y0 = d.y - effLen;
-                if (y0 >= y1) continue;
-                var fade = Math.min(1, Math.max(0, (d.y - d.sy) / 50));
-                c.strokeStyle = 'rgba(205,228,255,' + (d.a * fade * rf) + ')';
-                c.beginPath();
-                c.moveTo(d.x, y0);
-                c.lineTo(d.x, y1);
-                c.stroke();
+              if (LT.I > .02 && LT.bolt) {
+                var B = LT.bolt, I = LT.I;
+                c.save();
+                c.lineJoin = 'round';
+                c.shadowColor = 'rgba(150,190,255,' + I + ')';
+                c.shadowBlur = 14;
+                var ln = function (pts, w, a) {
+                  c.lineWidth = w;
+                  c.strokeStyle = 'rgba(235,243,255,' + (a * I) + ')';
+                  c.beginPath();
+                  c.moveTo(pts[0][0], pts[0][1]);
+                  for (var n = 1; n < pts.length; n++) c.lineTo(pts[n][0], pts[n][1]);
+                  c.stroke();
+                };
+                ln(B.main, 3, .55);
+                ln(B.main, 1.4, 1);
+                B.br.forEach(function (s2) { ln(s2, 2, .45); ln(s2, .8, .9); });
+                c.restore();
+                var g = c.createRadialGradient(LT.tx, LT.ty, 1, LT.tx, LT.ty, 70);
+                g.addColorStop(0, 'rgba(235,245,255,' + (.75 * I) + ')');
+                g.addColorStop(1, 'rgba(150,190,255,0)');
+                c.fillStyle = g;
+                c.fillRect(LT.tx - 70, LT.ty - 70, 140, 140);
               }
 
-              // 2. Umbrella surface runs in .mdrips canvas (on top of umbrella)
-              for (var ri = 0; ri < runs.length; ri++) {
-                var R = runs[ri];
-                if (R.st === 0) {
-                  cd.lineCap = 'round';
-                  for (var k2 = 1; k2 < R.tr.length; k2++) {
-                    var fr = k2 / R.tr.length;
-                    cd.lineWidth = R.w * (.4 + .9 * fr);
-                    cd.strokeStyle = 'rgba(215,235,255,' + (.55 * fr * rf) + ')';
+              if (storm.rainStarted && storm.rainFade > 0) {
+                var rf = storm.rainFade;
+                var eRain = Math.max(0, e - 2.15);
+                var weather = getRainWeather(eRain);
+
+                // 1. Falling raindrops in .mrain canvas
+                c.lineCap = 'round';
+                c.lineWidth = 1.4;
+                for (var i = 0; i < drops.length; i++) {
+                  var d = drops[i];
+                  if (d.y < -100) continue;
+                  var tp = top[d.x | 0] || 1e9;
+                  var effLen = d.len * weather.lenMul;
+                  var y1 = Math.min(d.y, tp), y0 = d.y - effLen;
+                  if (y0 >= y1) continue;
+                  var fade = Math.min(1, Math.max(0, (d.y - d.sy) / 50));
+                  c.strokeStyle = 'rgba(205,228,255,' + (d.a * fade * rf) + ')';
+                  c.beginPath();
+                  c.moveTo(d.x, y0);
+                  c.lineTo(d.x, y1);
+                  c.stroke();
+                }
+
+                // 2. Umbrella surface runs in .mdrips canvas (on top of umbrella)
+                for (var ri = 0; ri < runs.length; ri++) {
+                  var R = runs[ri];
+                  if (R.st === 0) {
+                    cd.lineCap = 'round';
+                    for (var k2 = 1; k2 < R.tr.length; k2++) {
+                      var fr = k2 / R.tr.length;
+                      cd.lineWidth = R.w * (.4 + .9 * fr);
+                      cd.strokeStyle = 'rgba(215,235,255,' + (.55 * fr * rf) + ')';
+                      cd.beginPath();
+                      cd.moveTo(R.tr[k2 - 1][0], R.tr[k2 - 1][1]);
+                      cd.lineTo(R.tr[k2][0], R.tr[k2][1]);
+                      cd.stroke();
+                    }
+                    cd.fillStyle = 'rgba(235,246,255,' + (.9 * rf) + ')';
                     cd.beginPath();
-                    cd.moveTo(R.tr[k2 - 1][0], R.tr[k2 - 1][1]);
-                    cd.lineTo(R.tr[k2][0], R.tr[k2][1]);
-                    cd.stroke();
+                    cd.arc(R.x, R.y, 1.4, 0, TWO_PI);
+                    cd.fill();
+                  } else {
+                    cd.fillStyle = 'rgba(235,246,255,' + (.95 * rf) + ')';
+                    cd.beginPath();
+                    cd.ellipse(R.x, R.y + 1.2, 1.4, 2.0, 0, 0, TWO_PI);
+                    cd.fill();
                   }
-                  cd.fillStyle = 'rgba(235,246,255,' + (.9 * rf) + ')';
+                }
+
+                // 3. Umbrella ripples in .mdrips canvas
+                for (var ri2 = 0; ri2 < rips.length; ri2++) {
+                  var Q = rips[ri2], pr = 1 - Q.l / Q.m, al = (1 - pr) * (1 - pr) * rf;
+                  cd.strokeStyle = 'rgba(215,236,255,' + (.55 * al) + ')';
+                  cd.lineWidth = 1.1;
                   cd.beginPath();
-                  cd.arc(R.x, R.y, 1.4, 0, TWO_PI);
-                  cd.fill();
-                } else {
-                  cd.fillStyle = 'rgba(235,246,255,' + (.95 * rf) + ')';
+                  cd.ellipse(Q.x, Q.y, Q.r * (.4 + pr * 2.2), Q.r * (.4 + pr * 2.2) * .28, 0, 0, TWO_PI);
+                  cd.stroke();
+                  var sg = cd.createRadialGradient(Q.x, Q.y, 0, Q.x, Q.y, 8);
+                  sg.addColorStop(0, 'rgba(235,246,255,' + (.5 * al) + ')');
+                  sg.addColorStop(1, 'rgba(235,246,255,0)');
+                  cd.fillStyle = sg;
+                  cd.fillRect(Q.x - 8, Q.y - 8, 16, 16);
+                }
+
+                // 4. Splashes bouncing up from canopy in .mdrips canvas
+                cd.lineCap = 'round';
+                for (var p = 0; p < parts.length; p++) {
+                  var q = parts[p];
+                  cd.globalAlpha = Math.max(0, Math.min(1, q.l / q.m)) * .85 * rf;
+                  cd.lineWidth = q.w;
+                  cd.strokeStyle = 'rgba(228,242,255,1)';
                   cd.beginPath();
-                  cd.ellipse(R.x, R.y + 1.2, 1.4, 2.0, 0, 0, TWO_PI);
-                  cd.fill();
+                  cd.moveTo(q.x, q.y);
+                  cd.lineTo(q.x - q.vx * .028, q.y - q.vy * .028);
+                  cd.stroke();
+                }
+                cd.globalAlpha = 1;
+
+                // 5. Drips falling down from umbrella in .mdrips canvas
+                for (var di = 0; di < drips.length; di++) {
+                  var D = drips[di];
+                  if (D.delay > 0) continue;
+                  var fa = D.y > 750 ? Math.max(0, 1 - (D.y - 750) / 120) : 1;
+                  cd.strokeStyle = 'rgba(205,228,255,' + (D.a * fa * rf) + ')';
+                  cd.lineWidth = 1.4;
+                  cd.beginPath();
+                  cd.moveTo(D.x, D.y - D.len);
+                  cd.lineTo(D.x, D.y);
+                  cd.stroke();
                 }
               }
 
-              // 3. Umbrella ripples in .mdrips canvas
-              for (var ri2 = 0; ri2 < rips.length; ri2++) {
-                var Q = rips[ri2], pr = 1 - Q.l / Q.m, al = (1 - pr) * (1 - pr) * rf;
-                cd.strokeStyle = 'rgba(215,236,255,' + (.55 * al) + ')';
-                cd.lineWidth = 1.1;
-                cd.beginPath();
-                cd.ellipse(Q.x, Q.y, Q.r * (.4 + pr * 2.2), Q.r * (.4 + pr * 2.2) * .28, 0, 0, TWO_PI);
-                cd.stroke();
-                var sg = cd.createRadialGradient(Q.x, Q.y, 0, Q.x, Q.y, 8);
-                sg.addColorStop(0, 'rgba(235,246,255,' + (.5 * al) + ')');
-                sg.addColorStop(1, 'rgba(235,246,255,0)');
-                cd.fillStyle = sg;
-                cd.fillRect(Q.x - 8, Q.y - 8, 16, 16);
+              if (gc) {
+                var gx = gc.getContext('2d');
+                gx.setTransform(.5, 0, 0, .5, 0, 0);
+                gx.clearRect(0, 0, 402, 300);
+                if (LT.I > .01) {
+                  var I2 = LT.I;
+                  gx.setTransform(.5, 0, 0, .5, 0, 25);
+                  var lg = gx.createLinearGradient(0, -100, 0, 200);
+                  lg.addColorStop(0, 'rgba(160,195,255,0)');
+                  lg.addColorStop(.3, 'rgba(165,198,255,' + (.3 * I2) + ')');
+                  lg.addColorStop(.5, 'rgba(190,215,255,' + (.5 * I2) + ')');
+                  lg.addColorStop(.8, 'rgba(165,198,255,' + (.32 * I2) + ')');
+                  lg.addColorStop(1, 'rgba(160,195,255,0)');
+                  gx.fillStyle = lg;
+                  gx.fillRect(-50, -100, 500, 300);
+                  gx.save();
+                  gx.translate(LT.fx, 40);
+                  gx.scale(1, .55);
+                  var rg = gx.createRadialGradient(0, 0, 5, 0, 0, 260);
+                  rg.addColorStop(0, 'rgba(240,248,255,' + (.85 * I2) + ')');
+                  rg.addColorStop(.35, 'rgba(170,200,255,' + (.4 * I2) + ')');
+                  rg.addColorStop(1, 'rgba(120,150,255,0)');
+                  gx.fillStyle = rg;
+                  gx.fillRect(-600, -500, 1200, 1000);
+                  gx.restore();
+                }
               }
-
-              // 4. Splashes bouncing up from canopy in .mdrips canvas
-              cd.lineCap = 'round';
-              for (var p = 0; p < parts.length; p++) {
-                var q = parts[p];
-                cd.globalAlpha = Math.max(0, Math.min(1, q.l / q.m)) * .85 * rf;
-                cd.lineWidth = q.w;
-                cd.strokeStyle = 'rgba(228,242,255,1)';
-                cd.beginPath();
-                cd.moveTo(q.x, q.y);
-                cd.lineTo(q.x - q.vx * .028, q.y - q.vy * .028);
-                cd.stroke();
-              }
-              cd.globalAlpha = 1;
-
-              // 5. Drips falling down from umbrella in .mdrips canvas
-              for (var di = 0; di < drips.length; di++) {
-                var D = drips[di];
-                if (D.delay > 0) continue;
-                var fa = D.y > 750 ? Math.max(0, 1 - (D.y - 750) / 120) : 1;
-                cd.strokeStyle = 'rgba(205,228,255,' + (D.a * fa * rf) + ')';
-                cd.lineWidth = 1.4;
-                cd.beginPath();
-                cd.moveTo(D.x, D.y - D.len);
-                cd.lineTo(D.x, D.y);
-                cd.stroke();
-              }
-            }
-
-            if (gc) {
-              var gx = gc.getContext('2d');
-              gx.setTransform(.5, 0, 0, .5, 0, 0);
-              gx.clearRect(0, 0, 402, 300);
-              if (LT.I > .01) {
-                var I2 = LT.I;
-                gx.setTransform(.5, 0, 0, .5, 0, 25);
-                var lg = gx.createLinearGradient(0, -100, 0, 200);
-                lg.addColorStop(0, 'rgba(160,195,255,0)');
-                lg.addColorStop(.3, 'rgba(165,198,255,' + (.3 * I2) + ')');
-                lg.addColorStop(.5, 'rgba(190,215,255,' + (.5 * I2) + ')');
-                lg.addColorStop(.8, 'rgba(165,198,255,' + (.32 * I2) + ')');
-                lg.addColorStop(1, 'rgba(160,195,255,0)');
-                gx.fillStyle = lg;
-                gx.fillRect(-50, -100, 500, 300);
-                gx.save();
-                gx.translate(LT.fx, 40);
-                gx.scale(1, .55);
-                var rg = gx.createRadialGradient(0, 0, 5, 0, 0, 260);
-                rg.addColorStop(0, 'rgba(240,248,255,' + (.85 * I2) + ')');
-                rg.addColorStop(.35, 'rgba(170,200,255,' + (.4 * I2) + ')');
-                rg.addColorStop(1, 'rgba(120,150,255,0)');
-                gx.fillStyle = rg;
-                gx.fillRect(-600, -500, 1200, 1000);
-                gx.restore();
-              }
-            }
+            });
 
             requestAnimationFrame(frame);
           }
@@ -3514,23 +3557,22 @@
       function updateMobileFolders() {
         if (!MOB) {
           if (activeMobileFold) {
-            stage.querySelectorAll('[data-f].hov').forEach(function (el) { el.classList.remove('hov'); });
+            wrap.querySelectorAll('[data-f].hov').forEach(function (el) { el.classList.remove('hov'); });
             activeMobileFold = null;
           }
           return;
         }
-        if (!cachedMobileFolds) {
-          cachedMobileFolds = Array.from(stage.querySelectorAll('.fold[data-f]'));
-        }
-        if (!cachedMobileFolds.length) return;
+        var allFolds = Array.from(wrap.querySelectorAll('.stage .fold[data-f]'));
+        if (!allFolds.length) return;
         var screenCenter = window.innerHeight * 0.5;
         var bestId = null;
         var minDist = Infinity;
         var maxDist = window.innerHeight * 0.22;
 
-        cachedMobileFolds.forEach(function (f) {
+        allFolds.forEach(function (f) {
           var container = f.parentElement || f;
           var rect = container.getBoundingClientRect();
+          if (rect.bottom < -100 || rect.top > window.innerHeight + 100) return;
           var centerY = rect.top + rect.height * 0.5;
           var dist = Math.abs(centerY - screenCenter);
           if (dist < minDist) {
@@ -3542,7 +3584,7 @@
         var targetId = (minDist < maxDist) ? bestId : null;
         if (targetId !== activeMobileFold) {
           activeMobileFold = targetId;
-          stage.querySelectorAll('[data-f]').forEach(function (el) {
+          wrap.querySelectorAll('[data-f]').forEach(function (el) {
             var match = targetId && el.getAttribute('data-f') === targetId;
             el.classList.toggle('hov', !!match);
           });
@@ -3565,25 +3607,28 @@
       function updateMobileServices() {
         if (!MOB) return;
         if (Date.now() - manualSvcTapTime < 800) return;
-        if (!cachedMobileSvcRows) {
-          cachedMobileSvcRows = Array.from(stage.querySelectorAll('.srow'));
-        }
-        if (!cachedMobileSvcRows.length) return;
+        var allSvcRows = Array.from(wrap.querySelectorAll('.stage .srow'));
+        if (!allSvcRows.length) return;
+        var visibleRows = allSvcRows.filter(function (r) {
+          var rect = r.getBoundingClientRect();
+          return rect.bottom >= -100 && rect.top <= window.innerHeight + 100;
+        });
+        if (!visibleRows.length) return;
         var screenCenter = window.innerHeight * 0.48;
         var bestIdx = 0;
         var minDist = Infinity;
 
-        var firstRect = cachedMobileSvcRows[0].getBoundingClientRect();
+        var firstRect = visibleRows[0].getBoundingClientRect();
         if (firstRect.top > screenCenter) {
           bestIdx = 0;
         } else {
-          cachedMobileSvcRows.forEach(function (r, idx) {
+          visibleRows.forEach(function (r, idx) {
             var rect = r.getBoundingClientRect();
             var centerY = rect.top + rect.height * 0.5;
             var dist = Math.abs(centerY - screenCenter);
             if (dist < minDist) {
               minDist = dist;
-              bestIdx = idx;
+              bestIdx = idx % 5;
             }
           });
         }
