@@ -8,3 +8,5 @@ export function lerp(a, b, t) {
 
 export const TWO_PI = Math.PI * 2;
 export const HALF_PI = Math.PI * 0.5;
+
+// Utility: High performance interpolation and clamping helpers
