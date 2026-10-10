@@ -1859,7 +1859,10 @@
       var c2 = stage.cloneNode(true); c2.removeAttribute('id'); wrap.appendChild(c2); copies.push(c2);
       var CK = ['8bc30', 'de02e', '255d2', '764ac', '20b2c', '0b3fd', '57e01', '0d995'];
       var CK_SET = new Set(CK);
-      copies.forEach(function (cp) {
+      var mstageEl = document.getElementById('mstage');
+      var allCloudStages = [stage, c1, c2];
+      if (mstageEl) allCloudStages.push(mstageEl);
+      allCloudStages.forEach(function (cp) {
         cp.querySelectorAll('img[data-k]').forEach(function (im) {
           if (!CK_SET.has(im.getAttribute('data-k'))) return;
           var w = im.parentNode; if (w.classList.contains('r')) w = w.parentNode; w.classList.add('cld');
@@ -2665,9 +2668,12 @@
         requestAnimationFrame(frame);
       })();
 
-      /* ---------- CONTINUOUS CLOUD DRIFT (IDLE MOTION) + FAST JIGGLE + TITLE REVEAL ---------- */
+      /* ---------- CONTINUOUS CLOUD DRIFT (IDLE MOTION) + SMOOTH SCROLL REACTIVE MOTION ---------- */
       (function fx() {
-        var cl = copies.map(function (cp) { return cp.querySelectorAll('.cld'); }), tl = copies.map(function (cp) { return cp.querySelectorAll('.ttl'); });
+        var cl = copies.map(function (cp) { return cp.querySelectorAll('.cld'); });
+        var mstageEl = document.getElementById('mstage');
+        var mcl = mstageEl ? Array.from(mstageEl.querySelectorAll('.cld')) : [];
+        var tl = copies.map(function (cp) { return cp.querySelectorAll('.ttl'); });
         var last = performance.now(), ly = window.scrollY, v = 0, n = cl[0].length;
         var ST = [], DRIFT = [
           // 0: 8bc30 footer center
@@ -2706,22 +2712,36 @@
           var T = t / 1000;
           var p = Math.floor(H * s), y = window.scrollY, dy = y - ly; ly = y;
           if (isLoopWrapping || Math.abs(dy) > p * 0.25) dy = 0;
-          var maxV = isMobileDevice ? 800 : 1500;
+          var maxV = isMobileDevice ? 900 : 1500;
           var targetV = (dy / Math.max(0.65, s)) / dt;
           targetV = Math.max(-maxV, Math.min(maxV, targetV));
-          v += (targetV - v) * Math.min(1, dt * (isMobileDevice ? 12 : 20));
+          v += (targetV - v) * Math.min(1, dt * (isMobileDevice ? 8 : 20));
+
+          var maxDisplacement = isMobileDevice ? 45 : 70;
+          var displacementFactor = isMobileDevice ? 0.030 : 0.038;
+          var driftScale = isMobileDevice ? 0.38 : 1.0;
+
           for (var i = 0; i < n; i++) {
             var S = ST[i], D = DRIFT[i] || DRIFT[0];
-            var maxDisplacement = isMobileDevice ? 40 : 70;
-            var tg = MOB ? 0 : Math.max(-maxDisplacement, Math.min(maxDisplacement, -v * (isMobileDevice ? 0.025 : 0.038) * S.a));
-            S.vy += (S.k * (tg - S.y) - S.c * S.vy) * dt; S.y += S.vy * dt;
-            // Idle organic atmospheric cloud drift (dual harmonic for natural wind breeze):
-            var driftX = Math.sin(T * D.sx + D.px) * D.ax + Math.sin(T * D.sx * 0.45 + D.px * 1.5) * (D.ax * 0.25);
-            var driftY = Math.cos(T * D.sy + D.py) * D.ay;
+            var tg = Math.max(-maxDisplacement, Math.min(maxDisplacement, -v * displacementFactor * S.a));
+            var kVal = S.k;
+            var cVal = isMobileDevice ? S.c * 1.55 : S.c;
+            S.vy += (kVal * (tg - S.y) - cVal * S.vy) * dt; S.y += S.vy * dt;
+
+            // Idle organic atmospheric cloud drift:
+            var driftX = (Math.sin(T * D.sx + D.px) * D.ax + Math.sin(T * D.sx * 0.45 + D.px * 1.5) * (D.ax * 0.25)) * driftScale;
+            var driftY = (Math.cos(T * D.sy + D.py) * D.ay) * driftScale;
             var totalX = driftX;
             var totalY = S.y + driftY;
             var tr = 'translate3d(' + totalX.toFixed(2) + 'px,' + totalY.toFixed(2) + 'px,0)';
-            for (var j = 0; j < cl.length; j++)cl[j][i].style.transform = tr;
+            for (var j = 0; j < cl.length; j++) cl[j][i].style.transform = tr;
+            if (mcl.length >= 5) {
+              if (i === 8 && mcl[0]) mcl[0].style.transform = tr;
+              if (i === 9 && mcl[1]) mcl[1].style.transform = tr;
+              if (i === 10 && mcl[2]) mcl[2].style.transform = tr;
+              if (i === 11 && mcl[3]) mcl[3].style.transform = tr;
+              if (i === 12 && mcl[4]) mcl[4].style.transform = tr;
+            }
           }
           if (MOB) {
             tl.forEach(function (list) {
