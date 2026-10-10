@@ -13,3 +13,5 @@ export class SplashPool {
     return this.splashes;
   }
 }
+
+// Rain Engine: Surface water ripple expansion and exponential fade
